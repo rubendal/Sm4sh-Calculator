@@ -33,5 +33,7 @@ app.controller('calculator', function ($scope) {
         $scope.vs = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
         console.debug(in_air);
     };
+
+    $scope.update();
 });
 

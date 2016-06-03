@@ -81,7 +81,7 @@ function AerialCancel(kb) {
     if (percent > .1) {
         percent = .1;
     }
-    var res = Math.Floor(hitstun - (hitstun * percent));
+    var res = Math.floor(hitstun - (hitstun * percent));
     if (res < 46) {
         return 46;
     }
@@ -103,7 +103,7 @@ function AirdodgeCancel(kb) {
     if (percent > .2) {
         percent = .2;
     }
-    var res = Math.Floor(hitstun - (hitstun * percent));
+    var res = Math.floor(hitstun - (hitstun * percent));
     if (res < 41) {
         return 41;
     }
