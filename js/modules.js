@@ -27,10 +27,20 @@ app.controller('calculator', function ($scope) {
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
         KBModifier($scope.kb_modifier);
+        if (attacker.name == "Lucario") {
+            base_damage *= Aura(attacker_percent);
+        }
         trainingkb = TrainingKB(target_percent, base_damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, angle, in_air);
         vskb = VSKB(target_percent, base_damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, stale, attacker_percent, angle, in_air);
-        $scope.training = List([base_damage, trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
-        $scope.vs = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
+        var traininglist = List([base_damage, trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
+        var vslist = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
+        vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
+        if (attacker.name == "Lucario") {
+            traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
+        }
+        $scope.training = traininglist;
+        $scope.vs = vslist;
         console.debug(in_air);
     };
 

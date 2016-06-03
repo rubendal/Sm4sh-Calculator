@@ -12,6 +12,8 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 
 ### What does it calculate
 * Rage
+* Aura
+* Knockback modifiers
 * Stale-move negation
 * Sakurai Angle
 * Knockback Horizontal and Vertical components
@@ -21,8 +23,6 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 
 ### TO DO
 * Modifiers like Monado Arts and Deep Breathing
-* Aura
-* Knockback modifiers
 
 ### Windows Application
 The original C# application is here https://github.com/rubendal/Sm4sh-Calculator
