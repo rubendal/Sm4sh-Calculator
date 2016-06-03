@@ -1,0 +1,1 @@
+{"name":"Zero Suit Samus","weight":80,"run_speed":2.1,"walk_speed":1.4,"air_speed":1.2,"fall_speed":1.7,"fast_fall_speed":2.72,"air_acceleration":0.085,"gravity":0.12,"sh_air_time":38,"jumps":2,"wall_jump":true,"wall_cling":false,"crawl":true,"tether":true,"jumpsquat":4,"soft_landing_lag":2,"hard_landing_lag":4,"fh_air_time":60}

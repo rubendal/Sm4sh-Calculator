@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/formulas.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="js/modules.js"></script>
+    <title>Sm4sh Calculator</title>
+	<meta charset="utf-8" />
+</head>
+<body>
+
+    <div ng-app="calculator" ng-controller="calculator">
+        
+        <div>
+            Attacker:
+            <select name="attackerSelect" ng-model="attackerValue" ng-change="update()">
+                <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+            </select>
+            Percent:
+            <input type="text" ng-model="attackerPercent" ng-change="update()" />
+        </div>
+        <div>
+            Target:
+            <select name="targetSelect" ng-model="targetValue" ng-change="update()">
+                <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+            </select>
+            Percent:
+            <input type="text" ng-model="targetPercent" ng-change="update()" />
+        </div>
+        <br />
+        <div>
+            Base damage:
+            <input type="text" ng-model="baseDamage" ng-change="update()" />
+            <br/>
+            Angle:
+            <input type="text" ng-model="angle" ng-change="update()" />
+            <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
+            <br />
+            BKB:
+            <input type="text" ng-model="bkb" ng-change="update()" />
+            <br/>
+            KBG:
+            <input type="text" ng-model="kbg" ng-change="update()" />
+            <br/>
+            Times in Queue:
+            <input type="text" ng-model="stale" ng-change="update()" />
+            <div>
+                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()"/>None
+                <br/>
+                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
+                <br />
+                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="grounded" ng-change="update()" />Grounded meteor
+                <br />
+                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Charging Smash
+            </div>
+        </div>
+        <div>
+            Training Mode
+            <br />
+            <table>
+                <tr ng-repeat="x in training">
+                    <td>{{ x.attribute }}</td>
+                    <td>{{ x.value }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            Vs Mode
+            <br />
+            <table>
+                <tr ng-repeat="x in vs">
+                    <td>{{ x.attribute }}</td>
+                    <td>{{ x.value }}</td>
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+
+</body>
+</html>

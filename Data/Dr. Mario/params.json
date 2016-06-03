@@ -1,0 +1,1 @@
+{"name":"Dr. Mario","weight":98,"run_speed":1.312,"walk_speed":0.902,"air_speed":0.943,"fall_speed":1.5,"fast_fall_speed":2.4,"air_acceleration":0.0574,"gravity":0.08715,"sh_air_time":35,"jumps":2,"wall_jump":true,"wall_cling":false,"crawl":false,"tether":false,"jumpsquat":5,"soft_landing_lag":2,"hard_landing_lag":4,"fh_air_time":53}
