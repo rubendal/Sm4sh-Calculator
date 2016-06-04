@@ -153,7 +153,7 @@ function KBModifier(value) {
         case "crouch":
             r = 0.85;
             break;
-        case "meteor":
+        case "grounded":
             r = 0.8;
             break;
         case "charging":

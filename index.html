@@ -11,7 +11,7 @@
 </head>
 <body>
 
-    <div ng-app="calculator" ng-controller="calculator">
+    <div name="calculator" ng-app="calculator" ng-controller="calculator">
         
         <div>
             Attacker:
@@ -19,7 +19,7 @@
                 <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
             </select>
             Percent:
-            <input type="number" ng-model="attackerPercent" ng-change="update()" />
+            <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
         </div>
         <div>
             Target:
@@ -27,25 +27,25 @@
                 <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
             </select>
             Percent:
-            <input type="number" ng-model="targetPercent" ng-change="update()" />
+            <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
         </div>
         <br />
         <div>
             Base damage:
-            <input type="number" ng-model="baseDamage" ng-change="update()" />
+            <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="update()" />
             <br/>
             Angle:
-            <input type="number" ng-model="angle" ng-change="update()" />
+            <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
             <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
             <br />
             BKB:
-            <input type="number" ng-model="bkb" ng-change="update()" />
+            <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
             <br/>
             KBG:
-            <input type="number" ng-model="kbg" ng-change="update()" />
+            <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
             <br/>
             Times in Queue:
-            <input type="number" ng-model="stale" ng-change="update()" />
+            <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
             <div>
                 <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()"/>None
                 <br/>
