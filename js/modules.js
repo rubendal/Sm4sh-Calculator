@@ -27,10 +27,10 @@ app.controller('calculator', function ($scope) {
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
         KBModifier($scope.kb_modifier);
-        if (attacker.name == "Lucario") {
-            base_damage *= Aura(attacker_percent);
-        }
         var damage = base_damage;
+        if (attacker.name == "Lucario") {
+            damage *= Aura(attacker_percent);
+        }
         if (target.modifier.damage_taken < 1) {
             damage *= target.modifier.damage_taken;
         }
