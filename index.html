@@ -19,7 +19,7 @@
                 <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
             </select>
             Percent:
-            <input type="text" ng-model="attackerPercent" ng-change="update()" />
+            <input type="number" ng-model="attackerPercent" ng-change="update()" />
         </div>
         <div>
             Target:
@@ -27,25 +27,25 @@
                 <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
             </select>
             Percent:
-            <input type="text" ng-model="targetPercent" ng-change="update()" />
+            <input type="number" ng-model="targetPercent" ng-change="update()" />
         </div>
         <br />
         <div>
             Base damage:
-            <input type="text" ng-model="baseDamage" ng-change="update()" />
+            <input type="number" ng-model="baseDamage" ng-change="update()" />
             <br/>
             Angle:
-            <input type="text" ng-model="angle" ng-change="update()" />
+            <input type="number" ng-model="angle" ng-change="update()" />
             <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
             <br />
             BKB:
-            <input type="text" ng-model="bkb" ng-change="update()" />
+            <input type="number" ng-model="bkb" ng-change="update()" />
             <br/>
             KBG:
-            <input type="text" ng-model="kbg" ng-change="update()" />
+            <input type="number" ng-model="kbg" ng-change="update()" />
             <br/>
             Times in Queue:
-            <input type="text" ng-model="stale" ng-change="update()" />
+            <input type="number" ng-model="stale" ng-change="update()" />
             <div>
                 <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()"/>None
                 <br/>

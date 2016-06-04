@@ -30,18 +30,42 @@ app.controller('calculator', function ($scope) {
         if (attacker.name == "Lucario") {
             base_damage *= Aura(attacker_percent);
         }
-        trainingkb = TrainingKB(target_percent, base_damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, angle, in_air);
-        vskb = VSKB(target_percent, base_damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, stale, attacker_percent, angle, in_air);
+        var damage = base_damage;
+        if (target.modifier.damage_taken < 1) {
+            damage *= target.modifier.damage_taken;
+        }
+        trainingkb = TrainingKB(target_percent, damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, angle, in_air);
+        vskb = VSKB(target_percent, damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, stale, attacker_percent, angle, in_air);
+        base_damage *= attacker.modifier.damage_dealt * target.modifier.damage_taken;
+        trainingkb.addModifier(attacker.modifier.kb_dealt);
+        trainingkb.addModifier(target.modifier.kb_received);
+        vskb.addModifier(attacker.modifier.kb_dealt);
+        vskb.addModifier(target.modifier.kb_received);
         var traininglist = List([base_damage, trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
         var vslist = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
         vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
+        if (target.modifier.kb_received != 1) {
+            traininglist.splice(1, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+            vslist.splice(2, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+        }
+        if (attacker.modifier.kb_received != 1) {
+            traininglist.splice(1, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+            vslist.splice(2, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+        }
         if (attacker.name == "Lucario") {
             traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
             vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
         }
+        if (target.modifier.damage_taken != 1) {
+            traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
+        }
+        if (attacker.modifier.damage_dealt != 1) {
+            traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+        }
         $scope.training = traininglist;
         $scope.vs = vslist;
-        console.debug(in_air);
     };
 
     $scope.update();
