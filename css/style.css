@@ -21,13 +21,13 @@ input,select{
 #training{
     position: absolute;
     top:90px;
-    left:550px;
+    left:600px;
 }
 
 #vs{
     position: absolute;
     top:90px;
-    left:850px;
+    left:900px;
 }
 
 .hide-link{
