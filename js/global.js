@@ -82,6 +82,7 @@ class Knockback {
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
+        this.add_gravity_kb = ((this.gravity - 0.075) * 5);
         if (this.angle == 361) {
             this.angle = SakuraiAngle(this.kb, this.aerial);
         }

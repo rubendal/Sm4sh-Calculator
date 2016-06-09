@@ -1,5 +1,6 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
+    loadGitHubData();
     $scope.characters = characters.sort();
     $scope.attackerValue = attacker.name;
     $scope.targetValue = target.name;
@@ -43,6 +44,8 @@ app.controller('calculator', function ($scope) {
         vskb.addModifier(target.modifier.kb_received);
         var traininglist = List([base_damage, trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
         var vslist = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
+        traininglist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        vslist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
         if (target.modifier.kb_received != 1) {
             traininglist.splice(1, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
@@ -64,6 +67,8 @@ app.controller('calculator', function ($scope) {
             traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
             vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
         }
+        vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale).toFixed(4)));
+        
         $scope.training = traininglist;
         $scope.vs = vslist;
     };

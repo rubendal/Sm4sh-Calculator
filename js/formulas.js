@@ -1,5 +1,5 @@
 ﻿function TrainingKB(percent,base_damage,weight,kbg,bkb,gravity,r,angle,in_air) {
-    return new Knockback(((((((percent + base_damage) / 10) + (((percent + base_damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb * r, angle, gravity, in_air);
+    return new Knockback((((((((percent + base_damage) / 10) + (((percent + base_damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, in_air);
 }
 
 function Rage(percent) {
@@ -54,7 +54,7 @@ function SakuraiAngle(kb, aerial) {
 
 function VSKB(percent, base_damage, weight, kbg, bkb, gravity, r, timesInQueue, attacker_percent, angle, in_air) {
     var s = StaleNegation(timesInQueue);
-    return new Knockback(((((((percent + base_damage * s) / 10 + (((percent + base_damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb) * (r*Rage(attacker_percent)), angle, gravity, in_air);
+    return new Knockback((((((((percent + base_damage * s) / 10 + (((percent + base_damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r*Rage(attacker_percent)), angle, gravity, in_air);
 }
 
 function StaleDamage(base_damage, timesInQueue) {

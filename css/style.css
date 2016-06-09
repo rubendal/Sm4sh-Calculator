@@ -1,0 +1,60 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+  position: relative;
+  margin: 0;
+  padding-bottom: 160px;
+  min-height: 100%;
+  font-family: Open Sans;
+  background:#F0F0F0;
+}
+
+input,select{
+    font-family: Open Sans;
+}
+
+#calculator{
+    margin-top:10px;
+    margin-left:10px;
+}
+
+#training{
+    position: absolute;
+    top:90px;
+    left:550px;
+}
+
+#vs{
+    position: absolute;
+    top:90px;
+    left:850px;
+}
+
+.hide-link{
+    color:black;
+    font-style:normal;
+    text-decoration: none;
+}
+
+table,td,tr{
+    border:1px solid black;
+    padding:1px;
+    border-collapse: collapse;
+}
+
+.header {
+    position: relative;
+    right: 0;
+    top: 0;
+    left: 0;
+    border-bottom:1px solid black;
+    width:100%;
+    padding: 10px;
+    height:auto;
+    text-align: left;
+}
+
+#header-cont h2{
+    display: inline;
+    margin-left:10px;
+}
