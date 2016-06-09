@@ -3,6 +3,7 @@ app.controller('calculator', function ($scope) {
     loadGitHubData();
     $scope.characters = characters.sort();
     $scope.attackerValue = attacker.name;
+    $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;
@@ -13,12 +14,14 @@ app.controller('calculator', function ($scope) {
     $scope.kbg = kbg;
     $scope.stale = stale;
     $scope.kb_modifier = "none";
-    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.hitlag_modifier = "none";
+    $scope.hitlag = hitlag;
     $scope.update = function () {
         attacker = new Character($scope.attackerValue);
         target = new Character($scope.targetValue);
+        $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
         target_percent = parseFloat($scope.targetPercent);
         base_damage = parseFloat($scope.baseDamage);
@@ -27,6 +30,7 @@ app.controller('calculator', function ($scope) {
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
+        hitlag = parseFloat($scope.hitlag);
         KBModifier($scope.kb_modifier);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
@@ -42,8 +46,8 @@ app.controller('calculator', function ($scope) {
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(target.modifier.kb_received);
-        var traininglist = List([base_damage, trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
-        var vslist = List([StaleDamage(base_damage, stale), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
+        var traininglist = List([base_damage, Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
+        var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
         traininglist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));

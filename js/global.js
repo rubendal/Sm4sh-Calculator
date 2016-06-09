@@ -104,7 +104,7 @@ class Knockback {
 class ListItem {
     constructor(attribute, value) {
         this.attribute = attribute;
-        if (attribute == "Hitstun") {
+        if (attribute == "Hitstun" || attribute == "Hitlag") {
             this.value = value + " frames";
         } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel") {
             this.value = "Frame " + value;
@@ -117,7 +117,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Total KB", "X", "Y", "Angle", "Hitstun", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var attributes = ["Damage", "Hitlag", "Total KB", "X", "Y", "Angle", "Hitstun", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
     for (var i = 0; i < attributes.length; i++) {
         list[i] = new ListItem(attributes[i], +values[i].toFixed(4));
     }
@@ -138,6 +138,7 @@ var in_air = false;
 var bkb = 15;
 var kbg = 100;
 var stale = 0;
+var hitlag = 1;
 
 for (var i = 0; i < monado.length; i++) {
     characters.push("Shulk (" + monado[i].name + ")");
@@ -165,4 +166,25 @@ function KBModifier(value) {
             break;
     }
     return r;
+}
+
+function HitlagCrouch(value) {
+    switch (value) {
+        case "crouch":
+            return 0.67;
+            break;
+    }
+    return 1;
+}
+
+function HitlagElectric(value) {
+    switch (value) {
+        case "electric":
+            return 1.5;
+            break;
+        case "none":
+            return 1;
+            break;
+    }
+    return 1;
 }

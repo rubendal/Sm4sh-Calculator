@@ -109,3 +109,14 @@ function AirdodgeCancel(kb) {
     }
     return res;
 }
+
+function Hitlag(base_damage, hitlag_mult, electric, crouch) {
+    var h = Math.floor((((base_damage / 2.6 + 5) * electric) * hitlag_mult) * crouch) - 1;
+    if (h > 30) {
+        return 30;
+    }
+    if (h < 0) {
+        return 0;
+    }
+    return h;
+}
