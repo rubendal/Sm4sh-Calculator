@@ -18,6 +18,18 @@ app.controller('calculator', function ($scope) {
     $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
+
+    $scope.is_smash = false;
+    $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
+    $scope.smashCharge = 0;
+
+    $scope.charging = function(){
+        $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
+        $scope.smashCharge = 0;
+        charge_frames = 0;
+        $scope.update();
+    };
+
     $scope.update = function () {
         attacker = new Character($scope.attackerValue);
         target = new Character($scope.targetValue);
@@ -31,7 +43,9 @@ app.controller('calculator', function ($scope) {
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
         hitlag = parseFloat($scope.hitlag);
+        charge_frames = parseFloat($scope.smashCharge);
         KBModifier($scope.kb_modifier);
+        base_damage = ChargeSmash(base_damage, charge_frames);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);

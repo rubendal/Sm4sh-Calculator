@@ -120,3 +120,7 @@ function Hitlag(base_damage, hitlag_mult, electric, crouch) {
     }
     return h;
 }
+
+function ChargeSmash(base_damage, frames) {
+    return base_damage * (1 + (frames / 150));
+}

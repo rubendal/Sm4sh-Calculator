@@ -13,6 +13,11 @@ input,select{
     font-family: Open Sans;
 }
 
+
+input[type=number]{
+    width:5em;
+}
+
 #calculator{
     margin-top:10px;
     margin-left:10px;

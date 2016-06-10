@@ -140,6 +140,8 @@ var kbg = 100;
 var stale = 0;
 var hitlag = 1;
 
+var charge_frames = 0;
+
 for (var i = 0; i < monado.length; i++) {
     characters.push("Shulk (" + monado[i].name + ")");
     characters.push("Kirby (" + monado[i].name + ")");
