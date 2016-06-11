@@ -22,6 +22,7 @@ app.controller('calculator', function ($scope) {
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
     $scope.smashCharge = 0;
+    $scope.set_kb = false;
 
     $scope.charging = function(){
         $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
@@ -53,8 +54,16 @@ app.controller('calculator', function ($scope) {
         if (target.modifier.damage_taken < 1) {
             damage *= target.modifier.damage_taken;
         }
-        trainingkb = TrainingKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, angle, in_air);
-        vskb = VSKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, stale, attacker_percent, angle, in_air);
+        if (attacker.modifier.damage_dealt > 1 && monado.indexOf(attacker.modifier) == -1) {
+            damage *= attacker.modifier.damage_dealt;
+        }
+        if (!$scope.set_kb) {
+            trainingkb = TrainingKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, angle, in_air);
+            vskb = VSKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, stale, attacker_percent, angle, in_air);
+        } else {
+            trainingkb = new Knockback(bkb * r, angle, target.params.gravity, in_air);
+            vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.params.gravity, in_air);
+        }
         base_damage *= attacker.modifier.damage_dealt * target.modifier.damage_taken;
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
