@@ -14,6 +14,8 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Modifiers like Monado Arts and Deep Breathing
 * Rage
 * Aura
+* Charged Smash attacks multiplier
+* Hitlag
 * Knockback modifiers
 * Stale-move negation
 * Sakurai Angle

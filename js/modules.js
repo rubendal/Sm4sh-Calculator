@@ -53,8 +53,8 @@ app.controller('calculator', function ($scope) {
         if (target.modifier.damage_taken < 1) {
             damage *= target.modifier.damage_taken;
         }
-        trainingkb = TrainingKB(target_percent, damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, angle, in_air);
-        vskb = VSKB(target_percent, damage, attacker.params.weight, kbg, bkb, attacker.params.gravity, r, stale, attacker_percent, angle, in_air);
+        trainingkb = TrainingKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, angle, in_air);
+        vskb = VSKB(target_percent, damage, target.params.weight, kbg, bkb, target.params.gravity, r, stale, attacker_percent, angle, in_air);
         base_damage *= attacker.modifier.damage_dealt * target.modifier.damage_taken;
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
