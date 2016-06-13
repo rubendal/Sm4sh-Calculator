@@ -88,7 +88,10 @@ class Knockback {
         }
         this.calculate = function () {
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
-            this.y = Math.abs((Math.sin(this.angle * Math.PI / 180) * this.kb) + ((this.gravity - 0.075) * 5));
+            this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
+            if(this.kb >= 80){
+                this.y += this.add_gravity_kb;
+            }
         };
         this.addModifier = function (modifier) {
             this.kb *= modifier;
