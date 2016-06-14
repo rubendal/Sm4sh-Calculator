@@ -61,7 +61,7 @@ function StaleDamage(base_damage, timesInQueue) {
     return base_damage * StaleNegation(timesInQueue);
 }
 
-function NextActionableFrame(kb) {
+function FirstActionableFrame(kb) {
     var hitstun = Hitstun(kb);
     return hitstun + 1;
 }
@@ -69,13 +69,13 @@ function NextActionableFrame(kb) {
 function AerialCancel(kb) {
     var hitstun = Hitstun(kb);
     if (hitstun < 46) {
-        return NextActionableFrame(kb);
+        return FirstActionableFrame(kb);
     }
     if (hitstun >= 46 && hitstun < 56) {
         return 46;
     }
     if (kb >= 180) {
-        return NextActionableFrame(kb);
+        return FirstActionableFrame(kb);
     }
     var percent = 1 - ((hitstun - 46) / (72 - 46));
     if (percent > .1) {
@@ -91,13 +91,13 @@ function AerialCancel(kb) {
 function AirdodgeCancel(kb) {
     var hitstun = Hitstun(kb);
     if (hitstun < 41) {
-        return NextActionableFrame(kb);
+        return FirstActionableFrame(kb);
     }
     if (hitstun >= 41 && hitstun < 60) {
         return 41;
     }
     if (kb >= 230) {
-        return NextActionableFrame(kb);
+        return FirstActionableFrame(kb);
     }
     var percent = 1 - ((hitstun - 41) / (91 - 41));
     if (percent > .2) {

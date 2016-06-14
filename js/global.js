@@ -109,7 +109,7 @@ class ListItem {
         this.attribute = attribute;
         if (attribute == "Hitstun" || attribute == "Hitlag") {
             this.value = value + " frames";
-        } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel") {
+        } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
             this.value = "Frame " + value;
         } else {
             this.value = value;
@@ -120,8 +120,17 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Hitlag", "Total KB", "X", "Y", "Angle", "Hitstun", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var attributes = ["Damage", "Hitlag", "Total KB", "X", "Y", "Angle", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var hitstun = -1;
     for (var i = 0; i < attributes.length; i++) {
+        if (attributes[i] == "Hitstun") {
+            hitstun = +values[i].toFixed(4);
+        }
+        if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
+            if (hitstun + 1 == +values[i].toFixed(4)) {
+                continue;
+            }
+        }
         list[i] = new ListItem(attributes[i], +values[i].toFixed(4));
     }
     return list;
