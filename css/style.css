@@ -19,20 +19,21 @@ input[type=number]{
 }
 
 #calculator{
+    position:relative;
     margin-top:10px;
     margin-left:10px;
 }
 
 #training{
     position: absolute;
-    top:90px;
-    left:600px;
+    top:0;
+    left:500px;
 }
 
 #vs{
     position: absolute;
-    top:90px;
-    left:900px;
+    top:0;
+    left:800px;
 }
 
 .hide-link{
@@ -54,12 +55,48 @@ table,td,tr{
     left: 0;
     border-bottom:1px solid black;
     width:100%;
-    padding: 10px;
+    padding: 10px 0 10px 0;
     height:auto;
     text-align: left;
+    display: inline-block;
+    background:#cfcfcf;
+}
+
+.header-image{
+    width:60px;
+    height:60px;
+}
+
+#header-icon{
+    float:left;
+    margin-left:10px;
+}
+
+#header-text{
+    float:left;
+    display: inline-block;
+}
+
+#github-profile{
+    clear:none;
+    float:right;
+    margin-right:20px;
 }
 
 #header-cont h2{
     display: inline;
     margin-left:10px;
+    
+}
+
+.description{
+    margin-left:10px;
+}
+
+.attribute{
+    padding:2px;
+}
+
+.value{
+    padding:2px;
 }
