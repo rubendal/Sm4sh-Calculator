@@ -72,8 +72,8 @@ app.controller('calculator', function ($scope) {
         vskb.addModifier(target.modifier.kb_received);
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
-        var traininglist = List([base_damage, Hitlag(base_damage, hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
-        var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
+        var traininglist = List([base_damage, Hitlag(base_damage, $scope.is_projectile ? 1 : hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
+        var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, $scope.is_projectile ? 1 : hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
         traininglist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
