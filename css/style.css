@@ -27,13 +27,13 @@ input[type=number]{
 #training{
     position: absolute;
     top:0;
-    left:500px;
+    left:550px;
 }
 
 #vs{
     position: absolute;
     top:0;
-    left:800px;
+    left:850px;
 }
 
 .hide-link{

@@ -78,6 +78,7 @@ class Character {
 
 class Knockback {
     constructor(kb, angle, gravity, aerial) {
+        this.base_kb = kb;
         this.kb = kb;
         this.angle = angle;
         this.gravity = gravity;
@@ -95,8 +96,15 @@ class Knockback {
         };
         this.addModifier = function (modifier) {
             this.kb *= modifier;
+            this.base_kb *= modifier;
             this.calculate();
         };
+        this.bounce = function (bounce) {
+            if (bounce) {
+                this.kb *= 0.8;
+                this.calculate();
+            }
+        }
         this.calculate();
     }
 
@@ -107,7 +115,7 @@ class Knockback {
 class ListItem {
     constructor(attribute, value) {
         this.attribute = attribute;
-        if (attribute == "Hitstun" || attribute == "Hitlag") {
+        if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag") {
             this.value = value + " frames";
         } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
             this.value = "Frame " + value;
@@ -120,7 +128,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Hitlag", "Total KB", "X", "Y", "Angle", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
     var hitstun = -1;
     for (var i = 0; i < attributes.length; i++) {
         if (attributes[i] == "Hitstun") {
@@ -170,7 +178,7 @@ function KBModifier(value) {
             r = 0.85;
             break;
         case "grounded":
-            r = 0.8;
+            r = 1; //0.8 applied after hitstun
             break;
         case "charging":
             r = 1.2;

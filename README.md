@@ -4,6 +4,14 @@ Webpage using Github Pages of https://github.com/rubendal/Sm4sh-Calculator web v
 ## Github Pages
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
+### Recent Changes
+* Changed - Grounded meteor to checkbox since it is applied after knockback calculation since it can be stacked with crouch cancelling, also Hitstun isn't affected by this reduction
+* Changed - Angle moved above X and Y components
+* Changed - Tables position moved due to overlap with charge smash frames
+* Added - Charged Smash multiplier
+* Added - Attacker hitlag
+
+### How to use it
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 ### What does it calculate
@@ -11,7 +19,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Rage
 * Aura
 * Charged Smash attacks multiplier
-* Hitlag
+* Hitlag (Attacker and Target)
 * Knockback modifiers
 * Stale-move negation
 * Sakurai Angle

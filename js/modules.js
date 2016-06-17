@@ -14,8 +14,8 @@ app.controller('calculator', function ($scope) {
     $scope.kbg = kbg;
     $scope.stale = stale;
     $scope.kb_modifier = "none";
-    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
 
@@ -47,6 +47,7 @@ app.controller('calculator', function ($scope) {
         charge_frames = parseFloat($scope.smashCharge);
         KBModifier($scope.kb_modifier);
         base_damage = ChargeSmash(base_damage, charge_frames);
+        var bounce = $scope.kb_modifier_bounce;
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);
@@ -69,8 +70,10 @@ app.controller('calculator', function ($scope) {
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(target.modifier.kb_received);
-        var traininglist = List([base_damage, Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.angle, Hitstun(trainingkb.kb), FirstActionableFrame(trainingkb.kb), AirdodgeCancel(trainingkb.kb), AerialCancel(trainingkb.kb)]);
-        var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.x, vskb.y, vskb.angle, Hitstun(vskb.kb), FirstActionableFrame(vskb.kb), AirdodgeCancel(vskb.kb), AerialCancel(vskb.kb)]);
+        trainingkb.bounce(bounce);
+        vskb.bounce(bounce);
+        var traininglist = List([base_damage, Hitlag(base_damage, hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
+        var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
         traininglist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
@@ -85,6 +88,10 @@ app.controller('calculator', function ($scope) {
         if (attacker.name == "Lucario") {
             traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
             vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
+        }
+        if ($scope.is_smash) {
+            traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames).toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames).toFixed(4)));
         }
         if (target.modifier.damage_taken != 1) {
             traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));

@@ -124,3 +124,7 @@ function Hitlag(base_damage, hitlag_mult, electric, crouch) {
 function ChargeSmash(base_damage, frames) {
     return base_damage * (1 + (frames / 150));
 }
+
+function ChargeSmashMultiplier(frames) {
+    return (1 + (frames / 150));
+}
