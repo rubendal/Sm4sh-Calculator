@@ -1,0 +1,17 @@
+﻿#results{
+    margin-top:20px;
+    position:relative;
+}
+
+#training{
+    position: relative;
+    top:0;
+    left:auto;
+}
+
+#vs{
+    position: absolute;
+    top:0;
+    left:300px;
+}
+

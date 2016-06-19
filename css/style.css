@@ -13,7 +13,6 @@ input,select{
     font-family: Open Sans;
 }
 
-
 input[type=number]{
     width:5em;
 }
@@ -62,6 +61,19 @@ table,td,tr{
     background:#cfcfcf;
 }
 
+.footer{
+    position:absolute;
+    bottom:0;
+    right:0;
+    left:0;
+    border-top:1px solid #aeaeae;
+    width:100%;
+    padding: 3px 0 3px 0;
+    height:auto;
+    display: inline-block;
+    font-size:12px;
+}
+
 .header-image{
     width:80px;
     height:80px;
@@ -77,6 +89,12 @@ table,td,tr{
     display: inline-block;
 }
 
+#footer-text{
+    display: inline-block;
+    float:right;
+    margin-right:10px;
+}
+
 #github-profile{
     clear:none;
     float:right;
@@ -86,7 +104,6 @@ table,td,tr{
 #header-cont h2{
     display: inline;
     margin-left:10px;
-    
 }
 
 .description{

@@ -74,16 +74,16 @@ app.controller('calculator', function ($scope) {
         vskb.bounce(bounce);
         var traininglist = List([base_damage, Hitlag(base_damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
         var vslist = List([StaleDamage(base_damage, stale), Hitlag(base_damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(base_damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
-        traininglist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-        vslist.splice(1, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-        vslist.splice(1, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
+        traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
         if (target.modifier.kb_received != 1) {
-            traininglist.splice(1, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-            vslist.splice(2, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+            traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+            vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
         }
         if (attacker.modifier.kb_received != 1) {
-            traininglist.splice(1, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-            vslist.splice(2, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+            traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+            vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
         }
         if (attacker.name == "Lucario") {
             traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));

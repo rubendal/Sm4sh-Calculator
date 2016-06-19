@@ -8,7 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/modules.js"></script>
     <link id="favicon" rel="shortcut icon" href="" type="image/png" />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/style-small.css" media="screen and (max-width: 1199px) and (min-width: 0px)" />
     <title>Sm4sh Calculator</title>
 	<meta charset="utf-8" />
 </head>
@@ -26,6 +27,14 @@
         </div>
         
     </div>
+
+    <!--<div id="footer" class="footer">
+        <div id="footer-cont">
+            <div id="footer-text">
+                
+            </div>
+        </div>
+    </div>-->
 
     <div name="calculator" id="calculator" ng-app="calculator" ng-controller="calculator">
         
@@ -91,28 +100,29 @@
                 <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
             </div>
         </div>
-        <div id="training">
-            Training Mode
-            <br />
-            <table>
-                <tr ng-repeat="x in training">
-                    <td class="attribute">{{ x.attribute }}</td>
-                    <td class="value">{{ x.value }}</td>
-                </tr>
-            </table>
-        </div>
+        <div id="results">
+            <div id="training">
+                Training Mode
+                <br />
+                <table>
+                    <tr ng-repeat="x in training">
+                        <td class="attribute">{{ x.attribute }}</td>
+                        <td class="value">{{ x.value }}</td>
+                    </tr>
+                </table>
+            </div>
 
-        <div id="vs">
-            Vs Mode
-            <br />
-            <table>
-                <tr ng-repeat="x in vs">
-                    <td class="attribute">{{ x.attribute }}</td>
-                    <td class="value">{{ x.value }}</td>
-                </tr>
-            </table>
+            <div id="vs">
+                Vs Mode
+                <br />
+                <table>
+                    <tr ng-repeat="x in vs">
+                        <td class="attribute">{{ x.attribute }}</td>
+                        <td class="value">{{ x.value }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        
     </div>
 
 </body>
