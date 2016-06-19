@@ -100,7 +100,7 @@ class Knockback {
             if (this.angle == 0 || this.angle == 180) {
                 this.can_jablock = true;
             }
-            if (this.angle >= 200 && this.angle <= 300) {
+            if (this.angle >= 240 && this.angle <= 300) {
                 this.can_jablock = !this.tumble;
             }
         };

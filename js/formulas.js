@@ -49,7 +49,7 @@ function SakuraiAngle(kb, aerial) {
     if (kb >= 88) {
         return 40;
     }
-    return 40 * (kb - 60) / (88 - 60);
+    return 40 * (kb - 59.9999) / (88 - 59.9999);
 }
 
 function VSKB(percent, base_damage, weight, kbg, bkb, gravity, r, timesInQueue, attacker_percent, angle, in_air) {
