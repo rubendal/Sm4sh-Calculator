@@ -103,6 +103,11 @@ app.controller('calculator', function ($scope) {
         }
         vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale).toFixed(4)));
         
+        traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
+        vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"))
+        traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
+        vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"))
+
         $scope.training = traininglist;
         $scope.vs = vslist;
     };

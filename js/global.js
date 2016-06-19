@@ -83,6 +83,8 @@ class Knockback {
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
+        this.tumble = false;
+        this.can_jablock = false;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
         if (this.angle == 361) {
             this.angle = SakuraiAngle(this.kb, this.aerial);
@@ -90,8 +92,16 @@ class Knockback {
         this.calculate = function () {
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            if(this.kb >= 80){
+            if(this.kb > 80){
                 this.y += this.add_gravity_kb;
+            }
+            this.tumble = this.kb > 80;
+            this.can_jablock = false;
+            if (this.angle == 0 || this.angle == 180) {
+                this.can_jablock = true;
+            }
+            if (this.angle >= 200 && this.angle <= 300) {
+                this.can_jablock = !this.tumble;
             }
         };
         this.addModifier = function (modifier) {

@@ -10,6 +10,8 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 * Changed - Tables position moved due to overlap with charge smash frames
 * Added - Charged Smash multiplier
 * Added - Attacker hitlag
+* Added - Check if attack will jab lock or not
+* Added - Check if attack will make the target enter tumble
 
 ### How to use it
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
@@ -27,6 +29,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Gravity included in the vertical component
 * Hitstun
 * Hitstun cancel frames
+* Determine if the move can jab lock
 
 ### Windows Application
 The original C# application is here https://github.com/rubendal/Sm4sh-Calculator
