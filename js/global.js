@@ -37,8 +37,8 @@ class Modifier {
 var monado = [
     new Modifier("Jump", 1, 1.22, 1, 1),
     new Modifier("Speed", 0.8, 1, 1, 1),
-    new Modifier("Shield", 0.8, 0.67, 1, 1),
-    new Modifier("Buster", 1.4, 1.13, 0.68, 1),
+    new Modifier("Shield", 0.8, 0.667, 1, 1),
+    new Modifier("Buster", 1.4, 1.13, 0.73, 1),
     new Modifier("Smash", 0.5, 1, 1.18, 1.07)
 ];
 
@@ -80,16 +80,20 @@ class Knockback {
     constructor(kb, angle, gravity, aerial) {
         this.base_kb = kb;
         this.kb = kb;
+        this.original_angle = angle;
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
         this.tumble = false;
         this.can_jablock = false;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
-        if (this.angle == 361) {
+        if (this.original_angle == 361) {
             this.angle = SakuraiAngle(this.kb, this.aerial);
         }
         this.calculate = function () {
+            if (this.original_angle == 361) {
+                this.angle = SakuraiAngle(this.kb, this.aerial);
+            }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             if(this.kb > 80){

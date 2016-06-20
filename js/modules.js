@@ -65,10 +65,15 @@ app.controller('calculator', function ($scope) {
             trainingkb = new Knockback(bkb * r, angle, target.params.gravity, in_air);
             vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.params.gravity, in_air);
         }
+        var at_kb_dealt = attacker.modifier.kb_dealt;
+        if (attacker.modifier.name == "Buster") {
+            //Buster KB dealt is based on target weight
+            at_kb_dealt -= ((1.7 * (target.params.weight - 66) / (130 - 66)) / 100);
+        }
         base_damage *= attacker.modifier.damage_dealt * target.modifier.damage_taken;
-        trainingkb.addModifier(attacker.modifier.kb_dealt);
+        trainingkb.addModifier(at_kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
-        vskb.addModifier(attacker.modifier.kb_dealt);
+        vskb.addModifier(at_kb_dealt);
         vskb.addModifier(target.modifier.kb_received);
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
@@ -81,9 +86,9 @@ app.controller('calculator', function ($scope) {
             traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
             vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
         }
-        if (attacker.modifier.kb_received != 1) {
-            traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-            vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+        if (at_kb_dealt != 1) {
+            traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +at_kb_dealt.toFixed(4)));
+            vslist.splice(4, 0, new ListItem("KB dealt", "x" + +at_kb_dealt.toFixed(4)));
         }
         if (attacker.name == "Lucario") {
             traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
