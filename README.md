@@ -13,7 +13,7 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 * Added - Check if attack will jab lock or not
 * Added - Check if attack will make the target enter tumble
 * Fixed - Recalculate angle when using Sakurai angle and using KB modifiers
-* Fixed - Buster KB dealt reduction is based on target weight https://docs.google.com/spreadsheets/d/1SivXipYYilt-2heux9_AFlPBnu9FeFvuvG2yWZy6V5U/edit?usp=sharing
+* Fixed - Buster KB dealt reduction is based on target weight and base damage https://docs.google.com/spreadsheets/d/1SivXipYYilt-2heux9_AFlPBnu9FeFvuvG2yWZy6V5U/edit?usp=sharing (Unkwown formula but calculator results has ±2 total KB)
 
 ### How to use it
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)

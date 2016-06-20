@@ -67,8 +67,8 @@ app.controller('calculator', function ($scope) {
         }
         var at_kb_dealt = attacker.modifier.kb_dealt;
         if (attacker.modifier.name == "Buster") {
-            //Buster KB dealt is based on target weight
-            at_kb_dealt -= ((1.7 * (target.params.weight - 66) / (130 - 66)) / 100);
+            //Buster KB dealt is based on target weight and base damage (Result could be wrong, unknown formula)
+            at_kb_dealt -= (((1.7 * (target.params.weight - 68) / (130 - 68)) / 100) * (base_damage / 11));
         }
         base_damage *= attacker.modifier.damage_dealt * target.modifier.damage_taken;
         trainingkb.addModifier(at_kb_dealt);
