@@ -1,19 +1,16 @@
 ## Sm4sh Calculator Web
-Webpage using Github Pages of https://github.com/rubendal/Sm4sh-Calculator web version
+Web Smash 4 knockback calculator
 
 ## Github Pages
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
-* Changed - Grounded meteor to checkbox since it is applied after knockback calculation since it can be stacked with crouch cancelling, also Hitstun isn't affected by this reduction
-* Changed - Angle moved above X and Y components
-* Changed - Tables position moved due to overlap with charge smash frames
 * Added - Charged Smash multiplier
 * Added - Attacker hitlag
 * Added - Check if attack will jab lock or not
 * Added - Check if attack will make the target enter tumble
 * Fixed - Recalculate angle when using Sakurai angle and using KB modifiers
-* Fixed - Buster KB dealt reduction is based on target weight and base damage https://docs.google.com/spreadsheets/d/1SivXipYYilt-2heux9_AFlPBnu9FeFvuvG2yWZy6V5U/edit?usp=sharing (Unkwown formula but calculator results has ±2 total KB)
+* Fixed - Buster KB dealt reduction is based on target weight and base damage https://docs.google.com/spreadsheets/d/1SivXipYYilt-2heux9_AFlPBnu9FeFvuvG2yWZy6V5U/edit?usp=sharing (Unkwown formula but calculator results has ï¿½2 total KB)
 
 ### How to use it
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
@@ -32,9 +29,6 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Hitstun
 * Hitstun cancel frames
 * Determine if the move can jab lock
-
-### Windows Application
-The original C# application is here https://github.com/rubendal/Sm4sh-Calculator
 
 ### Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
