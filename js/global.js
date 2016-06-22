@@ -37,8 +37,8 @@ class Modifier {
 var monado = [
     new Modifier("Jump", 1, 1.22, 1, 1),
     new Modifier("Speed", 0.8, 1, 1, 1),
-    new Modifier("Shield", 0.8, 0.667, 1, 1),
-    new Modifier("Buster", 1.4, 1.13, 0.73, 1),
+    new Modifier("Shield", 0.8, 0.67, 1, .78),
+    new Modifier("Buster", 1.4, 1.13, 0.68, 1),
     new Modifier("Smash", 0.5, 1, 1.18, 1.07)
 ];
 

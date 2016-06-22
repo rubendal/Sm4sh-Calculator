@@ -9,6 +9,10 @@ body{
   background:#F0F0F0;
 }
 
+#content{
+    margin-left:20px;
+}
+
 input,select{
     font-family: Open Sans;
 }
@@ -45,6 +49,30 @@ table,td,tr{
     border:1px solid black;
     padding:1px;
     border-collapse: collapse;
+}
+
+.footer-table{
+    border:unset;
+    padding:4px;
+    border-collapse: collapse;
+}
+
+.footer-table-center{
+    border:unset;
+    padding:4px;
+    border-right:1px solid black;
+}
+
+.footer-table-left{
+    border:unset;
+    padding:4px;
+    border-right:1px solid black;
+}
+
+.footer-table-right{
+    border:unset;
+    padding:4px;
+    border-left:1px solid black;
 }
 
 .header {
