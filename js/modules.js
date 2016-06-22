@@ -47,8 +47,8 @@ app.controller('calculator', function ($scope) {
         charge_frames = parseFloat($scope.smashCharge);
         KBModifier($scope.kb_modifier);
         var bounce = $scope.kb_modifier_bounce;
-
-        damage = ChargeSmash(base_damage, charge_frames);
+        
+        base_damage = ChargeSmash(base_damage, charge_frames);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);
