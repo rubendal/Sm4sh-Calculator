@@ -101,6 +101,19 @@
                 <br />
                 <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
             </div>
+            <div id="shield">
+                Shield stun and advantage
+                <br />
+                Hit frame:
+                <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
+                <br />
+                FAF:
+                <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
+                <br />
+                <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
+                <br />
+                <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
+            </div>
         </div>
         <div id="results">
             <div id="training">

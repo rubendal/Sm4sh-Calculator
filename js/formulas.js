@@ -71,15 +71,15 @@ function AerialCancel(kb) {
     if (hitstun < 46) {
         return FirstActionableFrame(kb);
     }
-    if (hitstun >= 46 && hitstun < 56) {
+    if (hitstun >= 46 && hitstun < 55) {
         return 46;
     }
     if (kb >= 180) {
         return FirstActionableFrame(kb);
     }
-    var percent = 1 - ((hitstun - 46) / (72 - 46));
-    if (percent > .1) {
-        percent = .1;
+    var percent = 1 - ((hitstun - 41) / (70 - 41));
+    if (percent > .09) {
+        percent = .09;
     }
     var res = Math.floor(hitstun - (hitstun * percent));
     if (res < 46) {
@@ -93,15 +93,15 @@ function AirdodgeCancel(kb) {
     if (hitstun < 41) {
         return FirstActionableFrame(kb);
     }
-    if (hitstun >= 41 && hitstun < 60) {
+    if (hitstun >= 41 && hitstun < 59) {
         return 41;
     }
     if (kb >= 230) {
         return FirstActionableFrame(kb);
     }
-    var percent = 1 - ((hitstun - 41) / (91 - 41));
-    if (percent > .2) {
-        percent = .2;
+    var percent = 1 - ((hitstun - 41) / (90 - 41));
+    if (percent > .15) {
+        percent = .15;
     }
     var res = Math.floor(hitstun - (hitstun * percent));
     if (res < 41) {
@@ -127,4 +127,36 @@ function ChargeSmash(base_damage, frames) {
 
 function ChargeSmashMultiplier(frames) {
     return (1 + (frames / 150));
+}
+
+function ShieldStun(damage, is_projectile, powershield) {
+    if (is_projectile) {
+        if (powershield) {
+            return Math.floor((damage/5.22)+3)-1;
+        }
+        return Math.floor((damage / 3.5) + 3) - 1;
+    } else {
+        if (powershield) {
+            return Math.floor((damage / 2.61) + 3) - 1;
+        }
+        return Math.floor((damage / 1.72) + 3) - 1;
+    }
+}
+
+function ShieldHitlag(damage, hitlag, electric) {
+    return Hitlag(damage, hitlag, electric, 1);
+}
+
+function AttackerShieldHitlag(damage, hitlag, electric) {
+    if (hitlag > 1) {
+        hitlag /= 1.25;
+        if (hitlag < 1) {
+            hitlag = 1;
+        }
+    }
+    return ShieldHitlag(damage, hitlag, electric);
+}
+
+function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric, powershield ) {
+    return hitframe - (FAF - 1) + ShieldStun(damage, is_projectile, powershield) + ShieldHitlag(damage,hitlag,electric) - (is_projectile ? 0 : AttackerShieldHitlag(damage, hitlag, electric));
 }

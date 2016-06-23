@@ -158,6 +158,15 @@ function List(values) {
     return list;
 }
 
+function ShieldList(values) {
+    var list = [];
+    var attributes = ["Shield stun", "Shield Hitlag", "Shield Advantage" ];
+    for (var i = 0; i < attributes.length; i++) {
+        list[i] = new ListItem(attributes[i], values[i] + " frames");
+    }
+    return list;
+}
+
 var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Cloud (Limit Break)", "Corrin", "Bayonetta"];
 
 var attacker = new Character("Bayonetta");

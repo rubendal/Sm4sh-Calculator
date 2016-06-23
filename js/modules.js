@@ -18,6 +18,9 @@ app.controller('calculator', function ($scope) {
     $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
+    $scope.shield = "normal";
+    $scope.hit_frame = 0;
+    $scope.faf = 1;
 
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
@@ -44,6 +47,9 @@ app.controller('calculator', function ($scope) {
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
         hitlag = parseFloat($scope.hitlag);
+
+        var hitframe = parseFloat($scope.hit_frame);
+        var faf = parseFloat($scope.faf);
         charge_frames = parseFloat($scope.smashCharge);
         KBModifier($scope.kb_modifier);
         var bounce = $scope.kb_modifier_bounce;
@@ -103,6 +109,12 @@ app.controller('calculator', function ($scope) {
         vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"))
         traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
         vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"))
+
+        //Shield stuff
+        var powershield = $scope.shield == "power";
+        var is_projectile = $scope.is_projectile == true;
+        traininglist.push.apply(traininglist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric($scope.hitlag_modifier), powershield)]));
+        vslist.push.apply(vslist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric($scope.hitlag_modifier), powershield)]));
 
         $scope.training = traininglist;
         $scope.vs = vslist;
