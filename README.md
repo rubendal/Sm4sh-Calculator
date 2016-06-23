@@ -26,7 +26,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Knockback Horizontal and Vertical components
 * Gravity included in the vertical component
 * Hitstun
-* Hitstun cancel frames
+* Hitstun cancel frames (Not 100% accurate)
 * Determine if the move can jab lock
 * Shield stun
 * Shield Hitlag
