@@ -153,7 +153,12 @@ function List(values) {
                 continue;
             }
         }
-        list[i] = new ListItem(attributes[i], +values[i].toFixed(4));
+        list.push(new ListItem(attributes[i], +values[i].toFixed(4)));
+        if (attributes[i] == "Angle") {
+            if (values[i] > 361) {
+                i += 2;
+            }
+        }
     }
     return list;
 }

@@ -10,6 +10,7 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 * Added - Check if attack will make the target enter tumble
 * Fixed - Recalculate angle when using Sakurai angle and using KB modifiers
 * Fixed - KB formula fixed when using damage modifiers (Aura, Monado, Deep Breathing )
+* Changed - Ignore X and Y components when using angles > 361 since these are special angles
 
 ### How to use it
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
