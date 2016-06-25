@@ -43,7 +43,10 @@ var monado = [
 ];
 
 class Character {
-    constructor(name) {
+    constructor(n) {
+        this.display_name = n;
+        var name = characters[names.indexOf(n)];
+        console.debug(name);
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
@@ -173,6 +176,8 @@ function ShieldList(values) {
 }
 
 var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Cloud (Limit Break)", "Corrin", "Bayonetta"];
+var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Cloud (Limit Break)", "Corrin", "Bayonetta"];
+
 
 var attacker = new Character("Bayonetta");
 var target = new Character("Bayonetta");
@@ -193,10 +198,30 @@ var charge_frames = 0;
 for (var i = 0; i < monado.length; i++) {
     characters.push("Shulk (" + monado[i].name + ")");
     characters.push("Kirby (" + monado[i].name + ")");
+    names.push("Shulk (" + monado[i].name + ")");
+    names.push("Kirby (" + monado[i].name + ")");
 }
 
 characters.push("Wii Fit Trainer (Deep Breathing (Fastest))");
 characters.push("Wii Fit Trainer (Deep Breathing (Slowest))");
+names.push("Wii Fit Trainer (Deep Breathing (Fastest))");
+names.push("Wii Fit Trainer (Deep Breathing (Slowest))");
+
+function sorted_characters() {
+    var list = [];
+    for (var i = 0; i < characters.length; i++) {
+        list.push({ 'character': characters[i], 'name': names[i] });
+    }
+    list.sort(function (a, b) {
+        return ((a.name < b.name) ? -1 : ((a.name == b.name) ? 0 : 1));
+    });
+    for (var i = 0; i < list.length; i++) {
+        characters[i] = list[i].character;
+        names[i] = list[i].name;
+    }
+}
+
+sorted_characters();
 
 var r = 1;
 

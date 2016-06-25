@@ -1,7 +1,7 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
     loadGitHubData();
-    $scope.characters = characters.sort();
+    $scope.characters = names;
     $scope.attackerValue = attacker.name;
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
