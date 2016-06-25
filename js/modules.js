@@ -23,20 +23,32 @@ app.controller('calculator', function ($scope) {
     $scope.faf = 1;
 
     $scope.is_smash = false;
-    $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
+    $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
+    $scope.megaman_fsmash = false;
+    $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
     $scope.set_kb = false;
 
     $scope.charging = function(){
-        $scope.is_smash_visibility = { 'visibility': $scope.is_smash ? 'visible' : 'hidden' };
+        $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
+        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+        $scope.megaman_fsmash = false;
         $scope.smashCharge = 0;
         charge_frames = 0;
         $scope.update();
     };
 
+    $scope.check = function () {
+        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+        if (attacker.name != "Mega Man") {
+            $scope.megaman_fsmash = false;
+        }
+    }
+
     $scope.update = function () {
         attacker = new Character($scope.attackerValue);
         target = new Character($scope.targetValue);
+        $scope.check();
         $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
         target_percent = parseFloat($scope.targetPercent);
@@ -54,7 +66,7 @@ app.controller('calculator', function ($scope) {
         KBModifier($scope.kb_modifier);
         var bounce = $scope.kb_modifier_bounce;
         
-        base_damage = ChargeSmash(base_damage, charge_frames);
+        base_damage = ChargeSmash(base_damage, charge_frames, $scope.megaman_fsmash);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);
@@ -92,8 +104,8 @@ app.controller('calculator', function ($scope) {
             vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
         }
         if ($scope.is_smash) {
-            traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames).toFixed(4)));
-            vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames).toFixed(4)));
+            traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, $scope.megaman_fsmash).toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, $scope.megaman_fsmash).toFixed(4)));
         }
         if (target.modifier.damage_taken != 1) {
             traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
@@ -118,6 +130,7 @@ app.controller('calculator', function ($scope) {
 
         $scope.training = traininglist;
         $scope.vs = vslist;
+
     };
 
     $scope.update();

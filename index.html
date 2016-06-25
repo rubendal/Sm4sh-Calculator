@@ -63,7 +63,11 @@
             <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="update()" />
             <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> Smash attack
             <span ng-style="is_smash_visibility">
+                <br/>
                 Charging frames: <input name="charge" type="number" min="0" max="60" step="1" ng-model="smashCharge" ng-change="update()" />
+                <span ng-style="is_megaman">
+                    <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
+                </span>
             </span>
             <br/>
             Hitlag multiplier:

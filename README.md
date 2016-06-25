@@ -5,6 +5,7 @@ Web Smash 4 knockback calculator
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
+* Added - Mega Man Fsmash charge formula
 * Added - Shield stun, Shield Hitlag and Shield Advantage
 * Added - Check if attack will jab lock or not
 * Added - Check if attack will make the target enter tumble
