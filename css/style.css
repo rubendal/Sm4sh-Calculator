@@ -28,6 +28,32 @@ input[type=number]{
     margin-left:10px;
 }
 
+#section{
+    position:relative;
+    margin-top:10px;
+    margin-left:10px;
+}
+
+.section-table-content{
+    padding:5px;
+    text-align:center;
+    width:250px;
+}
+
+.section-table{
+    width:500px;
+}
+
+#main{
+    position:relative;
+    display:block;
+}
+
+#attributes{
+    position:relative;
+    display:none;
+}
+
 #training{
     position: absolute;
     top:0;
@@ -38,6 +64,10 @@ input[type=number]{
     position: absolute;
     top:0;
     left:850px;
+}
+
+.select-link{
+    color:blue;
 }
 
 .hide-link{
@@ -145,4 +175,16 @@ table,td,tr{
 
 .value{
     padding:2px;
+}
+
+#attacker-attr{
+    position:relative;
+    top:0;
+    padding-bottom:30px;
+}
+
+#target-attr{
+    position:absolute;
+    top:0;
+    left:300px;
 }

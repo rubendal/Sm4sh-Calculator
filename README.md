@@ -5,6 +5,8 @@ Web Smash 4 knockback calculator
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
+* Added - Attribute editor
+* Added - Custom Monado Arts (Decisive and Hyper)
 * Added - Mega Man Fsmash charge formula
 * Added - Shield stun, Shield Hitlag and Shield Advantage
 * Added - Check if attack will jab lock or not

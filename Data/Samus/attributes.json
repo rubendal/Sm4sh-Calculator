@@ -1,0 +1,1 @@
+{"name":"Samus","weight":108,"run_speed":1.504,"walk_speed":1.0615,"air_speed":1.03,"fall_speed":1.3,"fast_fall_speed":2.08,"air_acceleration":0.05,"gravity":0.77,"sh_air_time":43,"jumps":2,"wall_jump":true,"wall_cling":false,"crawl":false,"tether":true,"jumpsquat":4,"soft_landing_lag":2,"hard_landing_lag":4,"fh_air_time":67}

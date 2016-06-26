@@ -15,3 +15,12 @@
     left:300px;
 }
 
+.section-table-content{
+    padding:5px;
+    text-align:center;
+    width:50%;
+}
+
+.section-table{
+    width:100%;
+}

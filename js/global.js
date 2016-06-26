@@ -2,7 +2,7 @@
     var json = null;
     $.ajax({
         'async': false,
-        'url': "./Data/" + name + "/params.json",
+        'url': "./Data/" + name + "/attributes.json",
         'dataType': 'json',
         'success': function (data) {
             json = data;
@@ -42,19 +42,45 @@ var monado = [
     new Modifier("Smash", 0.5, 1, 1.18, 1.07)
 ];
 
+var decisive_monado = [
+    new Modifier("Decisive Jump", 1, 1.22, 1, 1),
+    new Modifier("Decisive Speed", 0.8, 1, 1, 1),
+    new Modifier("Decisive Shield", 0.603, 1, .702),
+    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1),
+    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07)
+];
+
+var hyper_monado = [
+    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1),
+    new Modifier("Hyper Speed", 0.64, 1, 1, 1),
+    new Modifier("Hyper Shield", 0.64, 0.536, 1, .624),
+    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1),
+    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2)
+];
+
 class Character {
     constructor(n) {
         this.display_name = n;
         var name = characters[names.indexOf(n)];
-        console.debug(name);
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
         this.modifier = new Modifier("", 1, 1, 1, 1);
         for (var i = 0; i < monado.length; i++) {
+            if (name.includes("(" + decisive_monado[i].name + ")")) {
+                this.modifier = decisive_monado[i];
+                this.name = name.split(" ")[0];
+                break;
+            }
+            if (name.includes("(" + hyper_monado[i].name + ")")) {
+                this.modifier = hyper_monado[i];
+                this.name = name.split(" ")[0];
+                break;
+            }
             if (name.includes("(" + monado[i].name + ")")) {
                 this.modifier = monado[i];
                 this.name = name.split(" ")[0];
+                break;
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
@@ -69,9 +95,9 @@ class Character {
             this.name = name;
         }
         if (name != "Cloud (Limit Break)") {
-            this.params = loadJSON(this.name);
+            this.attributes = loadJSON(this.name);
         } else {
-            this.params = loadJSONPath("./Data/Cloud/params limit break.json");
+            this.attributes = loadJSONPath("./Data/Cloud/attributes limit break.json");
         }
         
         
@@ -197,8 +223,12 @@ var charge_frames = 0;
 
 for (var i = 0; i < monado.length; i++) {
     characters.push("Shulk (" + monado[i].name + ")");
+    characters.push("Shulk (" + decisive_monado[i].name + ")");
+    characters.push("Shulk (" + hyper_monado[i].name + ")");
     characters.push("Kirby (" + monado[i].name + ")");
     names.push("Shulk (" + monado[i].name + ")");
+    names.push("Shulk (" + decisive_monado[i].name + ")");
+    names.push("Shulk (" + hyper_monado[i].name + ")");
     names.push("Kirby (" + monado[i].name + ")");
 }
 

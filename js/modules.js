@@ -22,12 +22,22 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = 0;
     $scope.faf = 1;
 
+    $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
+    $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
+    $scope.target_weight = target.attributes.weight;
+    $scope.target_gravity = target.attributes.gravity;
+    $scope.target_damage_taken = target.modifier.damage_taken;
+    $scope.target_kb_received = target.modifier.kb_received;
+
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
     $scope.megaman_fsmash = false;
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
     $scope.set_kb = false;
+
+    $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
+    $scope.section_attributes = { 'background': 'transparent' };
 
     $scope.charging = function(){
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -45,9 +55,41 @@ app.controller('calculator', function ($scope) {
         }
     }
 
-    $scope.update = function () {
+    $scope.updateAttr = function () {
+        attacker.modifier.damage_dealt = parseFloat($scope.attacker_damage_dealt);
+        attacker.modifier.kb_dealt = parseFloat($scope.attacker_kb_dealt);
+        target.attributes.weight = parseFloat($scope.target_weight);
+        target.attributes.gravity = parseFloat($scope.target_gravity);
+        target.modifier.damage_taken = parseFloat($scope.target_damage_taken);
+        target.modifier.kb_received = parseFloat($scope.target_kb_received);
+
+        $scope.update();
+    }
+
+    $scope.show = function (section) {
+        $scope.main_style = { 'display': section == "main" ? 'block' : 'none' };
+        $scope.attributes_style = { 'display': section == "attributes" ? 'block' : 'none' };
+        $scope.section_main = { 'background': section == "main" ? 'rgba(0, 0, 255, 0.3)': 'transparent' };
+        $scope.section_attributes = { 'background': section == "attributes" ? 'rgba(0, 0, 255, 0.3)' : 'transparent' };
+    }
+
+    $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
+        $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
+        $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
+        $scope.update();
+    }
+
+    $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
+        $scope.target_weight = target.attributes.weight;
+        $scope.target_gravity = target.attributes.gravity;
+        $scope.target_damage_taken = target.modifier.damage_taken;
+        $scope.target_kb_received = target.modifier.kb_received;
+        $scope.update();
+    }
+
+    $scope.update = function () {
         $scope.check();
         $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
@@ -74,11 +116,11 @@ app.controller('calculator', function ($scope) {
         damage *= attacker.modifier.damage_dealt;
         damage *= target.modifier.damage_taken;
         if (!$scope.set_kb) {
-            trainingkb = TrainingKB(target_percent, base_damage, damage, target.params.weight, kbg, bkb, target.params.gravity, r, angle, in_air);
-            vskb = VSKB(target_percent,base_damage, damage, target.params.weight, kbg, bkb, target.params.gravity, r, stale, attacker_percent, angle, in_air);
+            trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air);
+            vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, attacker_percent, angle, in_air);
         } else {
-            trainingkb = new Knockback(bkb * r, angle, target.params.gravity, in_air);
-            vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.params.gravity, in_air);
+            trainingkb = new Knockback(bkb * r, angle, target.attributes.gravity, in_air);
+            vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.attributes.gravity, in_air);
         }
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
@@ -88,8 +130,10 @@ app.controller('calculator', function ($scope) {
         vskb.bounce(bounce);
         var traininglist = List([damage, Hitlag(damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
         var vslist = List([StaleDamage(damage, stale), Hitlag(damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
-        traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-        vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        if (r != 1) {
+            traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+            vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        }
         vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
         if (target.modifier.kb_received != 1) {
             traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));

@@ -16,3 +16,18 @@
     margin-top:20px;
 }
 
+#target-attr{
+    position:relative;
+    top:auto;
+    left:auto;
+}
+
+.section-table-content{
+    padding:5px;
+    text-align:center;
+    width:50%;
+}
+
+.section-table{
+    width:100%;
+}

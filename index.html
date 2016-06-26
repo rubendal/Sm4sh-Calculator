@@ -15,7 +15,7 @@
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.5"/>
 </head>
-<body>
+<body ng-app="calculator" ng-controller="calculator">
 
     <div id="header" class="header">
         <div id="header-cont">
@@ -38,87 +38,134 @@
         </div>
     </div>-->
 
-    <div name="calculator" id="calculator" ng-app="calculator" ng-controller="calculator">
-        
-        <div>
-            Attacker:
-            <select name="attackerSelect" ng-model="attackerValue" ng-change="update()">
-                <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
-            </select>
-            <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
-            %
-        </div>
-        <div>
-            Target:
-            <select name="targetSelect" ng-model="targetValue" ng-change="update()">
-                <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
-            </select>
-            <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
-            %
-        </div>
-        <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
-        <br />
-        <div>
-            Base damage:
-            <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="update()" />
-            <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> Smash attack
-            <span ng-style="is_smash_visibility">
-                <br/>
-                Charging frames: <input name="charge" type="number" min="0" max="60" step="1" ng-model="smashCharge" ng-change="update()" />
-                <span ng-style="is_megaman">
-                    <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
-                </span>
-            </span>
-            <br/>
-            Hitlag multiplier:
-            <input name="hitlag_multiplier" type="number" min="0" max="3" step="0.05" ng-model="hitlag" ng-change="update()" />
-            <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
-            <br/>
-            Angle:
-            <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
-            <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
+
+    <div id="section">
+        <table class="section-table">
+            <tr class="section-table-content">
+                <td class="section-table-content" ng-click="show('main')" ng-style="section_main">
+                    <a class="select-link" href="">Main</a>
+                </td>
+                <td class="section-table-content" ng-click="show('attributes')" ng-style="section_attributes">
+                    <a class="select-link" href="">Attributes</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div name="calculator" id="calculator">
+
+        <div id="main" ng-style="main_style">
+            <div>
+                Attacker:
+                <select name="attackerSelect" ng-model="attackerValue" ng-change="updateAttacker()">
+                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+                </select>
+                <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
+                %
+            </div>
+            <div>
+                Target:
+                <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
+                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+                </select>
+                <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
+                %
+            </div>
+            <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
             <br />
-            BKB:
-            <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
-            <input type="checkbox" ng-model="set_kb" ng-change="update()" /> Set knockback/WBKB/FKB
-            <br/>
-            KBG:
-            <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
-            <br/>
-            Times in Queue:
-            <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
-            <div id="kb_modifiers">
-                KB modifiers
-                <br/>
-                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()"/>None
-                <br/>
-                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
+            <div>
+                Base damage:
+                <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="update()" />
+                <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> Smash attack
+                <span ng-style="is_smash_visibility">
+                    <br />
+                    Charging frames: <input name="charge" type="number" min="0" max="60" step="1" ng-model="smashCharge" ng-change="update()" />
+                    <span ng-style="is_megaman">
+                        <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
+                    </span>
+                </span>
                 <br />
-                <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Charging Smash
+                Hitlag multiplier:
+                <input name="hitlag_multiplier" type="number" min="0" max="3" step="0.05" ng-model="hitlag" ng-change="update()" />
+                <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
                 <br />
-                <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
+                Angle:
+                <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
+                <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
+                <br />
+                BKB:
+                <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
+                <input type="checkbox" ng-model="set_kb" ng-change="update()" /> Set knockback/WBKB/FKB
+                <br />
+                KBG:
+                <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
+                <br />
+                Times in Queue:
+                <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
+                <div id="kb_modifiers">
+                    KB modifiers
+                    <br />
+                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()" />None
+                    <br />
+                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
+                    <br />
+                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Charging Smash
+                    <br />
+                    <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
+                </div>
+                <div id="hitlag_modifiers">
+                    Hitlag modifiers
+                    <br />
+                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
+                    <br />
+                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
+                </div>
+                <div id="shield">
+                    Shield stun and advantage
+                    <br />
+                    Hit frame:
+                    <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
+                    <br />
+                    FAF:
+                    <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
+                    <br />
+                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
+                    <br />
+                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
+                </div>
             </div>
-            <div id="hitlag_modifiers">
-                Hitlag modifiers
+            
+        </div>
+
+        <div id="attributes" ng-style="attributes_style">
+            <div id="attacker-attr">
+                Attacker
                 <br />
-                <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
+                Damage dealt: x
+                <input name="attacker_damage_dealt" type="number" min="0" max="10" step="0.01" ng-model="attacker_damage_dealt" ng-change="updateAttr()" />
                 <br />
-                <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
+                KB dealt: x
+                <input name="attacker_kb_dealt" type="number" min="0" max="10" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
+                <br />
             </div>
-            <div id="shield">
-                Shield stun and advantage
+            <div id="target-attr">
+                Target
                 <br />
-                Hit frame:
-                <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
+                Weight:
+                <input name="target_weight" type="number" min="0" max="999" step="1" ng-model="target_weight" ng-change="updateAttr()" />
                 <br />
-                FAF:
-                <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
+                Gravity:
+                <input name="target_gravity" type="number" min="0" max="10" step="0.001" ng-model="target_gravity" ng-change="updateAttr()" />
                 <br />
-                <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
+                Damage received: x
+                <input name="target_damage_taken" type="number" min="0" max="10" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
                 <br />
-                <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
+                KB received: x
+                <input name="target_kb_received" type="number" min="0" max="10" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
+                <br />
             </div>
         </div>
+
         <div id="results">
             <div id="training">
                 Training Mode
@@ -142,7 +189,11 @@
                 </table>
             </div>
         </div>
+
+        
+
     </div>
+
 
 </body>
 
