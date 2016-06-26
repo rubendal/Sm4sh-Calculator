@@ -37,7 +37,7 @@ class Modifier {
 var monado = [
     new Modifier("Jump", 1, 1.22, 1, 1),
     new Modifier("Speed", 0.8, 1, 1, 1),
-    new Modifier("Shield", 0.8, 0.67, 1, .78),
+    new Modifier("Shield", 0.7, 0.67, 1, .78),
     new Modifier("Buster", 1.4, 1.13, 0.68, 1),
     new Modifier("Smash", 0.5, 1, 1.18, 1.07)
 ];
@@ -45,7 +45,7 @@ var monado = [
 var decisive_monado = [
     new Modifier("Decisive Jump", 1, 1.22, 1, 1),
     new Modifier("Decisive Speed", 0.8, 1, 1, 1),
-    new Modifier("Decisive Shield", 0.603, 1, .702),
+    new Modifier("Decisive Shield", .7, 0.603, 1, .702),
     new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1),
     new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07)
 ];
@@ -53,7 +53,7 @@ var decisive_monado = [
 var hyper_monado = [
     new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1),
     new Modifier("Hyper Speed", 0.64, 1, 1, 1),
-    new Modifier("Hyper Shield", 0.64, 0.536, 1, .624),
+    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624),
     new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1),
     new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2)
 ];
