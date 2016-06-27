@@ -5,6 +5,7 @@ Web Smash 4 knockback calculator
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
+* Added - Freshness bonus and ignore staleness option
 * Added - Attribute editor
 * Added - Custom Monado Arts (Decisive and Hyper)
 * Added - Mega Man Fsmash charge formula
