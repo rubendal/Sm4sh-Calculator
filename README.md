@@ -40,6 +40,10 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Hitlag
 * Shield Advantage
 
+### To Do
+* Add attacks (Possibly using KuroganeHammer's API)
+* Improve Hitstun cancel frames formula
+
 ### Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
 * [ssbwiki.com](http://www.ssbwiki.com)

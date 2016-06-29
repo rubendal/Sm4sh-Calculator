@@ -102,79 +102,26 @@ app.controller('calculator', function ($scope) {
         stale = parseFloat($scope.stale);
         hitlag = parseFloat($scope.hitlag);
 
-        var hitframe = parseFloat($scope.hit_frame);
-        var faf = parseFloat($scope.faf);
+        hitframe = parseFloat($scope.hit_frame);
+        faf = parseFloat($scope.faf);
         charge_frames = parseFloat($scope.smashCharge);
-        KBModifier($scope.kb_modifier);
-        var bounce = $scope.kb_modifier_bounce;
-        var ignoreStale = $scope.ignoreStale;
-        
-        base_damage = ChargeSmash(base_damage, charge_frames, $scope.megaman_fsmash);
-        var damage = base_damage;
-        if (attacker.name == "Lucario") {
-            damage *= Aura(attacker_percent);
-        }
-        damage *= attacker.modifier.damage_dealt;
-        damage *= target.modifier.damage_taken;
-        if (!$scope.set_kb) {
-            trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air);
-            vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air);
-        } else {
-            trainingkb = new Knockback(bkb * r, angle, target.attributes.gravity, in_air);
-            vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.attributes.gravity, in_air);
-        }
-        trainingkb.addModifier(attacker.modifier.kb_dealt);
-        trainingkb.addModifier(target.modifier.kb_received);
-        vskb.addModifier(attacker.modifier.kb_dealt);
-        vskb.addModifier(target.modifier.kb_received);
-        trainingkb.bounce(bounce);
-        vskb.bounce(bounce);
-        var traininglist = List([damage, Hitlag(damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
-        var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, $scope.is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier), HitlagCrouch($scope.kb_modifier)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
-        if (r != 1) {
-            traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-            vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-        }
-        vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
-        if (target.modifier.kb_received != 1) {
-            traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-            vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-        }
-        if (attacker.modifier.kb_dealt != 1) {
-            traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-            vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-        }
-        if (attacker.name == "Lucario") {
-            traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
-            vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
-        }
-        if ($scope.is_smash) {
-            traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, $scope.megaman_fsmash).toFixed(4)));
-            vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, $scope.megaman_fsmash).toFixed(4)));
-        }
-        if (target.modifier.damage_taken != 1) {
-            traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-            vslist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-        }
-        if (attacker.modifier.damage_dealt != 1) {
-            traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-            vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-        }
-        vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
-        
-        traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
-        vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
-        traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
-        vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
+        r = KBModifier($scope.kb_modifier);
+        bounce = $scope.kb_modifier_bounce;
+        ignoreStale = $scope.ignoreStale;
+        powershield = $scope.shield == "power";
+        is_projectile = $scope.is_projectile == true;
 
-        //Shield stuff
-        var powershield = $scope.shield == "power";
-        var is_projectile = $scope.is_projectile == true;
-        traininglist.push.apply(traininglist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric($scope.hitlag_modifier), powershield)]));
-        vslist.push.apply(vslist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric($scope.hitlag_modifier)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric($scope.hitlag_modifier), powershield)]));
+        megaman_fsmash = $scope.megaman_fsmash;
+        electric = $scope.hitlag_modifier;
+        crouch = $scope.kb_modifier;
 
-        $scope.training = traininglist;
-        $scope.vs = vslist;
+        is_smash = $scope.is_smash;
+        set_kb = $scope.set_kb;
+        
+        var results = getResults();
+
+        $scope.training = results.training;
+        $scope.vs = results.vs;
 
     };
 
