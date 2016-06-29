@@ -21,6 +21,8 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 Just input your data, the calculator will update the results when you change something
 
+To access KuroganeHammer's API it is required to use webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list
+
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 ### What does it calculate

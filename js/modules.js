@@ -99,6 +99,38 @@ app.controller('calculator', function ($scope) {
         $scope.update();
     }
 
+    $scope.updateAttackData = function () {
+        var attack = $scope.moveset[$scope.move];
+        if (attack.valid) {
+            if($scope.angle == attack.angle &&
+            $scope.baseDamage == attack.base_damage &&
+            $scope.bkb == attack.bkb &&
+            $scope.kbg == attack.kbg &&
+            $scope.set_kb == attack.set_kb){
+
+            } else {
+                $scope.move = "0";
+            }
+        } else {
+            for (var i = 1; i < $scope.moveset.length; i++) {
+                attack = $scope.moveset[i];
+                if (attack.valid) {
+                    if ($scope.angle == attack.angle &&
+                        $scope.baseDamage == attack.base_damage &&
+                        $scope.bkb == attack.bkb &&
+                        $scope.kbg == attack.kbg &&
+                        $scope.set_kb == attack.set_kb) {
+                            $scope.move = i.toString();
+                            break;
+                    } else {
+                        
+                    }
+                }
+            }
+        }
+        $scope.update();
+    }
+
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
         $scope.target_weight = target.attributes.weight;

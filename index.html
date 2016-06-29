@@ -60,7 +60,7 @@
             <div>
                 Attacker:
                 <select name="attackerSelect" ng-model="attackerValue" ng-change="updateAttacker()">
-                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                 </select>
                 <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
                 %
@@ -68,7 +68,7 @@
             <div>
                 Target:
                 <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
-                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="character">{{character}}</option>
+                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                 </select>
                 <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
                 %
@@ -82,7 +82,7 @@
             <br />
             <div>
                 Base damage:
-                <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="update()" />
+                <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="updateAttackData()" />
                 <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> Smash attack
                 <span ng-style="is_smash_visibility">
                     <br />
@@ -98,14 +98,14 @@
                 <br />
                 Angle:
                 <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
-                <input type="checkbox" ng-model="in_air" ng-change="update()" /> Target in air (Used in Sakurai angle)
+                <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
                 <br />
                 BKB:
-                <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
-                <input type="checkbox" ng-model="set_kb" ng-change="update()" /> Set knockback/WBKB/FKB
+                <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="updateAttackData()" />
+                <input type="checkbox" ng-model="set_kb" ng-change="updateAttackData()" /> Set knockback/WBKB/FKB
                 <br />
                 KBG:
-                <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
+                <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
                 <br />
                 Times in Queue:
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
