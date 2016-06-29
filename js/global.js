@@ -94,10 +94,12 @@ class Character {
         if(this.name == null){
             this.name = name;
         }
+        this.api_name = this.name;
         if (name != "Cloud (Limit Break)") {
             this.attributes = loadJSON(this.name);
         } else {
             this.attributes = loadJSONPath("./Data/Cloud/attributes limit break.json");
+            this.api_name = "Cloud";
         }
         
         
@@ -131,7 +133,9 @@ class Knockback {
             this.tumble = this.kb > 80;
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
-                this.can_jablock = true;
+                if (this.kb != 0) {
+                    this.can_jablock = true;
+                }
             }
             if (this.angle >= 240 && this.angle <= 300) {
                 this.can_jablock = !this.tumble;
@@ -179,6 +183,9 @@ function List(values) {
         }
         if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
             if (hitstun + 1 == +values[i].toFixed(4)) {
+                continue;
+            }
+            if (hitstun == 0) {
                 continue;
             }
         }

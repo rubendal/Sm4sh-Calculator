@@ -6,6 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="js/global.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="js/KuroganeAPI.js"></script>
     <script src="js/modules.js"></script>
     <link id="favicon" rel="shortcut icon" href="" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -73,6 +74,11 @@
                 %
             </div>
             <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
+            <br />
+            Attack:
+            <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
+                <option ng-selected="$first" ng:repeat="move in moveset" ng-attr-value="{{move.id}}">{{move.name}}</option>
+            </select>
             <br />
             <div>
                 Base damage:

@@ -39,6 +39,9 @@ app.controller('calculator', function ($scope) {
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
     $scope.section_attributes = { 'background': 'transparent' };
 
+    getMoveset(attacker, $scope);
+    $scope.move = "0";
+
     $scope.charging = function(){
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
@@ -75,8 +78,24 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
+        getMoveset(attacker, $scope);
+        $scope.move = "0";
         $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
         $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
+        $scope.update();
+    }
+
+    $scope.updateAttack = function () {
+        var attack = $scope.moveset[$scope.move];
+        if (attack.valid) {
+            $scope.angle = attack.angle;
+            $scope.baseDamage = attack.base_damage;
+            $scope.bkb = attack.bkb;
+            $scope.kbg = attack.kbg;
+            $scope.set_kb = attack.set_kb;
+        } else {
+            //console.debug(attack.name + " not valid");
+        }
         $scope.update();
     }
 

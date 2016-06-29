@@ -5,6 +5,7 @@ Web Smash 4 knockback calculator
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
+* Added - Using KuroganeHammer's API to get move list (Currently shows single hitbox attacks, some might have missing data showing empty inputs since the API isn't complete)
 * Added - Freshness bonus and ignore staleness option
 * Added - Attribute editor
 * Added - Custom Monado Arts (Decisive and Hyper)
@@ -41,7 +42,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Advantage
 
 ### To Do
-* Add attacks (Possibly using KuroganeHammer's API)
+* Add attacks using KuroganeHammer's API (Trying to parse multiple hitboxes)
 * Improve Hitstun cancel frames formula
 
 ### Credits
