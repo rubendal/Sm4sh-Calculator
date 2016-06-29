@@ -17,6 +17,9 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 * Changed - Ignore X and Y components when using angles > 361 since these are special angles
 
 ### How to use it
+
+Just input your data, the calculator will update the results when you change something
+
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 ### What does it calculate
