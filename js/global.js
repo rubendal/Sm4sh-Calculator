@@ -95,6 +95,9 @@ class Character {
             this.name = name;
         }
         this.api_name = this.name;
+        if (name == "Game And Watch") {
+            this.api_name = "Mrgamewatch";
+        }
         if (name != "Cloud (Limit Break)") {
             this.attributes = loadJSON(this.name);
         } else {

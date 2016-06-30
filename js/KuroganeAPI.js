@@ -70,7 +70,7 @@ class MoveParser {
         var bkbs = [];
         var fkbs = [];
 
-        if (this.base_damage !== undefined && this.bkb !== undefined && this.kbg !== undefined) {
+        if (this.base_damage !== undefined && this.bkb !== undefined && this.kbg !== undefined && this.angle !== undefined) {
             if (this.base_damage == "-" || this.base_damage == "" || this.base_damage == "?") {
                 this.base_damage = "";
             }
@@ -83,18 +83,85 @@ class MoveParser {
             if (this.kbg == "-" || this.kbg == "" || this.kbg == "?") {
                 this.kbg = "";
             }
-            if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/")) {
+            if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/") || this.angle.includes("/")) {
                 //multiple hitboxes
-                //console.debug(this.name + " has multiple hitboxes");
-                //working on this
+                var first_fkb = false;
+                damage = this.base_damage.split("/");
+                angles = this.angle.split("/");
+                kbgs = this.kbg.split("/");
+                if (this.bkb.includes("W: ") && this.bkb.includes("B: ")) {
+                    this.bkb = this.bkb.replace("/W:", "W:").replace("/B:", "B:").split(",").join("");
+                    var w = this.bkb.split("W:");
+                    if (w[1].includes("B:")) {
+                        var b = w[1].split("B:")[1];
+                        w = w[1].split("B:")[0];
+                        fkbs = w.trim().split("/");
+                        bkbs = b.trim().split("/");
+                        first_fkb = true;
+                    } else {
+                        var b = this.bkb.split("B:")[1];
+                        w = b.split("W:")[1];
+                        b = b.trim().split("W:")[0];
+                        fkbs = w.trim().split("/");
+                        bkbs = b.trim().split("/");
+                    }
+                } else {
+                    if (this.bkb.includes("W: ")) {
+                        fkbs = this.bkb.replace("W:", "").trim().split("/");
+                        first_fkb = true;
+                    } else {
+                        bkbs = this.bkb.split("/");
+                    }
+                }
+
+                var hitbox_count = Math.max(damage.length, angles.length, kbgs.length, (fkbs.length + bkbs.length));
+                var set_count = 0;
+                var base_count = 0;
+                for (var i = 0; i < hitbox_count; i++) {
+                    var hitbox_name = this.name + " (Hitbox " + (i + 1) + ")";
+                    var d = i < damage.length ? damage[i] : damage[damage.length - 1];
+                    var a = i < angles.length ? angles[i] : angles[angles.length - 1];
+                    var k = i < kbgs.length ? kbgs[i] : kbgs[kbgs.length - 1];
+                    var b = 0;
+                    if (first_fkb) {
+                        if (set_count < fkbs.length) {
+                            b = fkbs[set_count];
+                            set_kb = true;
+                            set_count++;
+                        } else {
+                            if (bkbs.length > 0) {
+                                b = bkbs[base_count];
+                                set_kb = false;
+                                base_count++;
+                            } else {
+                                b = fkbs[fkbs.length - 1];
+                                set_kb = true;
+                            }
+                        }
+                    } else {
+                        if (base_count < bkbs.length) {
+                            b = bkbs[base_count];
+                            set_kb = false;
+                            base_count++;
+                        } else {
+                            if (fkbs.length > 0) {
+                                b = fkbs[set_count];
+                                set_kb = true;
+                                set_count++;
+                            } else {
+                                b = bkbs[bkbs.length - 1];
+                                set_kb = false;
+                            }
+                        }
+                    }
+                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, 0, 0, 0));
+                }
             } else {
                 //single hitbox
-                //console.debug(this.name + " is valid");
                 if (bkb.includes("W: ")) {
                     set_kb = true;
                     this.bkb = bkb.replace("W: ", "");
                 }
-                //console.debug(this);
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
 
                 } else {
