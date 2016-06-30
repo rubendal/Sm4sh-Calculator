@@ -200,10 +200,10 @@ class Move {
 function getMoveset(attacker, $scope) {
     $scope.moveset = [];
     var api_name = attacker.api_name.toLowerCase().replace("and", "").replace("-", "").split(".").join("").split(" ").join("");
-    loadFunctionJSON("http://api.kuroganehammer.com/api/characters/name/" + api_name, function (character) {
+    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/characters/name/" + api_name, function (character) {
         if (character != null) {
             var id = character.id;
-            var moveset = loadFunctionJSON("http://api.kuroganehammer.com/api/Characters/" + id + "/moves", function (moveset) {
+            loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/Characters/" + id + "/moves", function (moveset) {
                 if (moveset != null) {
                     var moves = [];
                     var count = 1;
@@ -218,7 +218,14 @@ function getMoveset(attacker, $scope) {
                         }
                     }
                     moves.unshift(new Move(0,"Not selected",0,0,0,0,false,0,0,0).invalidate());
-                    $scope.moveset = moves;
+                    
+                    try{
+                        $scope.$apply(function () {
+                            $scope.moveset = moves;
+                        });
+                    } catch (err) {
+                        $scope.moveset = moves;
+                    }
                 } else {
                     $scope.moveset = [new Move(0, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
                 }

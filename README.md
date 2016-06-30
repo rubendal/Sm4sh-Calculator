@@ -44,6 +44,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Advantage
 
 ### To Do
+* Parse attacks hitbox frames and FAF
 * Improve Hitstun cancel frames formula
 
 ### Credits
