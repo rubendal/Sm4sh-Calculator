@@ -35,6 +35,7 @@ app.controller('calculator', function ($scope) {
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
     $scope.set_kb = false;
+    $scope.windbox = false;
 
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
     $scope.section_attributes = { 'background': 'transparent' };
@@ -168,6 +169,7 @@ app.controller('calculator', function ($scope) {
 
         is_smash = $scope.is_smash;
         set_kb = $scope.set_kb;
+        windbox = $scope.windbox;
         
         var results = getResults();
 

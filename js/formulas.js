@@ -1,5 +1,5 @@
-﻿function TrainingKB(percent,base_damage,damage,weight,kbg,bkb,gravity,r,angle,in_air) {
-    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, in_air);
+﻿function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, angle, in_air, windbox) {
+    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, in_air, windbox);
 }
 
 function Rage(percent) {
@@ -41,7 +41,10 @@ function StaleNegation(timesInQueue, ignoreStale) {
     return s;
 }
 
-function Hitstun(kb) {
+function Hitstun(kb, windbox) {
+    if (windbox) {
+        return 0;
+    }
     var hitstun = Math.floor(kb * 0.4) - 1;
     if (hitstun < 0) {
         return 0;
@@ -62,25 +65,25 @@ function SakuraiAngle(kb, aerial) {
     return 40 * (kb - 59.9999) / (88 - 59.9999);
 }
 
-function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air) {
+function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox) {
     var s = StaleNegation(timesInQueue, ignoreStale);
-    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r*Rage(attacker_percent)), angle, gravity, in_air);
+    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox);
 }
 
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {
     return base_damage * StaleNegation(timesInQueue, ignoreStale);
 }
 
-function FirstActionableFrame(kb) {
-    var hitstun = Hitstun(kb);
+function FirstActionableFrame(kb, windbox) {
+    var hitstun = Hitstun(kb, windbox);
     if (hitstun == 0) {
         return 0;
     }
     return hitstun + 1;
 }
 
-function AerialCancel(kb) {
-    var hitstun = Hitstun(kb);
+function AerialCancel(kb, windbox) {
+    var hitstun = Hitstun(kb, windbox);
     if (hitstun < 46) {
         return FirstActionableFrame(kb);
     }
@@ -101,8 +104,8 @@ function AerialCancel(kb) {
     return res;
 }
 
-function AirdodgeCancel(kb) {
-    var hitstun = Hitstun(kb);
+function AirdodgeCancel(kb, windbox) {
+    var hitstun = Hitstun(kb, windbox);
     if (hitstun < 41) {
         return FirstActionableFrame(kb);
     }

@@ -111,13 +111,14 @@ class Character {
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, aerial) {
+    constructor(kb, angle, gravity, aerial, windbox) {
         this.base_kb = kb;
         this.kb = kb;
         this.original_angle = angle;
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
+        this.windbox = windbox;
         this.tumble = false;
         this.can_jablock = false;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
@@ -136,12 +137,14 @@ class Knockback {
             this.tumble = this.kb > 80;
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
-                if (this.kb != 0) {
+                if (this.kb != 0 && !this.windbox) {
                     this.can_jablock = true;
                 }
             }
             if (this.angle >= 240 && this.angle <= 300) {
-                this.can_jablock = !this.tumble;
+                if (this.kb != 0 && !this.windbox) {
+                    this.can_jablock = !this.tumble;
+                }
             }
         };
         this.addModifier = function (modifier) {
@@ -319,6 +322,7 @@ var crouch = "none";
 var is_smash = false;
 
 var set_kb = false;
+var windbox = false;
 
 function getResults() {
     var result = { 'training': [], 'vs': [] };
@@ -330,11 +334,11 @@ function getResults() {
     damage *= attacker.modifier.damage_dealt;
     damage *= target.modifier.damage_taken;
     if (!set_kb) {
-        trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air);
-        vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air);
+        trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
+        vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
     } else {
-        trainingkb = new Knockback(bkb * r, angle, target.attributes.gravity, in_air);
-        vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.attributes.gravity, in_air);
+        trainingkb = new Knockback(bkb * r, angle, target.attributes.gravity, in_air, windbox);
+        vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.attributes.gravity, in_air, windbox);
     }
     trainingkb.addModifier(attacker.modifier.kb_dealt);
     trainingkb.addModifier(target.modifier.kb_received);
@@ -342,8 +346,8 @@ function getResults() {
     vskb.addModifier(target.modifier.kb_received);
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
-    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb), FirstActionableFrame(trainingkb.base_kb), AirdodgeCancel(trainingkb.base_kb), AerialCancel(trainingkb.base_kb)]);
-    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb), FirstActionableFrame(vskb.base_kb), AirdodgeCancel(vskb.base_kb), AerialCancel(vskb.base_kb)]);
+    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
+    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox)]);
     if (r != 1) {
         traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
