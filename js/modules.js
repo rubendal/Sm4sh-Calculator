@@ -43,9 +43,13 @@ app.controller('calculator', function ($scope) {
     getMoveset(attacker, $scope);
     $scope.move = "0";
 
-    $scope.charging = function(){
+    $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+    }
+
+    $scope.charging = function(){
+        $scope.checkSmashVisibility();
         $scope.megaman_fsmash = false;
         $scope.smashCharge = 0;
         charge_frames = 0;
@@ -96,6 +100,7 @@ app.controller('calculator', function ($scope) {
             $scope.kbg = attack.kbg;
             $scope.set_kb = attack.set_kb;
             $scope.is_smash = attack.smash_attack;
+            $scope.checkSmashVisibility();
         } else {
             //console.debug(attack.name + " not valid");
         }
