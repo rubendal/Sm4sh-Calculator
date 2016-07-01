@@ -182,7 +182,7 @@
                 <table>
                     <tr ng-repeat="x in training">
                         <td class="attribute">{{ x.attribute }}</td>
-                        <td class="value">{{ x.value }}</td>
+                        <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                     </tr>
                 </table>
             </div>
@@ -193,7 +193,7 @@
                 <table>
                     <tr ng-repeat="x in vs">
                         <td class="attribute">{{ x.attribute }}</td>
-                        <td class="value">{{ x.value }}</td>
+                        <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                     </tr>
                 </table>
             </div>

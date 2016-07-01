@@ -168,13 +168,24 @@ class Knockback {
 class ListItem {
     constructor(attribute, value) {
         this.attribute = attribute;
-        if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag") {
-            this.value = value + " frames";
-        } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
-            this.value = "Frame " + value;
-        } else {
-            this.value = value;
+        this.addStyle = function (style) {
+            this.style = style;
+            return this;
         }
+        this.style = "";
+        if (typeof value === "number" && isNaN(value)) {
+            this.addStyle({ 'color': 'red' });
+            this.value = "Invalid data";
+        } else {
+            if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag" || attribute == "Shield stun" || attribute == "Shield Hitlag" || attribute == "Shield Advantage") {
+                this.value = value + " frames";
+            } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
+                this.value = "Frame " + value;
+            } else {
+                this.value = value;
+            }
+        }
+
         
     }
 };
@@ -195,7 +206,7 @@ function List(values) {
                 continue;
             }
         }
-        list.push(new ListItem(attributes[i], +values[i].toFixed(4)));
+        list.push(new ListItem(attributes[i], +values[i].toFixed(4))); //.addStyle({'text-decoration':'line-through'})
         if (attributes[i] == "Angle") {
             if (values[i] > 361) {
                 i += 2;
@@ -209,7 +220,7 @@ function ShieldList(values) {
     var list = [];
     var attributes = ["Shield stun", "Shield Hitlag", "Shield Advantage" ];
     for (var i = 0; i < attributes.length; i++) {
-        list[i] = new ListItem(attributes[i], values[i] + " frames");
+        list[i] = new ListItem(attributes[i], values[i]);
     }
     return list;
 }

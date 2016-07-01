@@ -5,6 +5,8 @@ Web Smash 4 knockback calculator
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
 ### Recent Changes
+* Changed - Invalid data message is shown when having blank inputs or inputs with values higher than maximum instead of showing NaN
+* Added - Windboxes
 * Added - Using KuroganeHammer's API to get move list (Some attacks might have missing data, these will show empty inputs since the API isn't complete, also it could have wrong data so double check with the website)
 * Added - Freshness bonus and ignore staleness option
 * Added - Attribute editor
