@@ -106,7 +106,7 @@
                 <br />
                 KBG:
                 <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="windbox" ng-change="update()" /> Windbox
+                <input type="checkbox" ng-model="windbox" ng-change="update()" /> Windbox/Flinchless
                 <br />
                 Times in Queue:
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
@@ -138,6 +138,8 @@
                     FAF:
                     <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
                     <br />
+                    Shield
+                    <br />
                     <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
                     <br />
                     <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
@@ -151,10 +153,10 @@
                 Attacker
                 <br />
                 Damage dealt: x
-                <input name="attacker_damage_dealt" type="number" min="0" max="10" step="0.01" ng-model="attacker_damage_dealt" ng-change="updateAttr()" />
+                <input name="attacker_damage_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_damage_dealt" ng-change="updateAttr()" />
                 <br />
                 KB dealt: x
-                <input name="attacker_kb_dealt" type="number" min="0" max="10" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
+                <input name="attacker_kb_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
                 <br />
             </div>
             <div id="target-attr">
@@ -167,10 +169,10 @@
                 <input name="target_gravity" type="number" min="0" max="10" step="0.001" ng-model="target_gravity" ng-change="updateAttr()" />
                 <br />
                 Damage received: x
-                <input name="target_damage_taken" type="number" min="0" max="10" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
+                <input name="target_damage_taken" type="number" min="0" max="100" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
                 <br />
                 KB received: x
-                <input name="target_kb_received" type="number" min="0" max="10" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
+                <input name="target_kb_received" type="number" min="0" max="100" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
                 <br />
             </div>
         </div>

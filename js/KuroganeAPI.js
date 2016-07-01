@@ -189,10 +189,17 @@ class Move {
         this.hitbox_end = hitbox_end;
         this.faf = faf;
         this.valid = true;
+        this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
+        this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
+        this.chargeable = name.includes("No Charge") || name.includes("Uncharged");
 
         this.invalidate = function () {
             this.valid = false;
             return this;
+        }
+
+        if (this.throw) {
+            this.valid = false;
         }
     }
 };

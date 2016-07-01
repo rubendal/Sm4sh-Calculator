@@ -49,7 +49,8 @@ app.controller('calculator', function ($scope) {
         $scope.megaman_fsmash = false;
         $scope.smashCharge = 0;
         charge_frames = 0;
-        $scope.update();
+
+        $scope.updateAttackData();
     };
 
     $scope.check = function () {
@@ -94,6 +95,7 @@ app.controller('calculator', function ($scope) {
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
             $scope.set_kb = attack.set_kb;
+            $scope.is_smash = attack.smash_attack;
         } else {
             //console.debug(attack.name + " not valid");
         }
@@ -107,29 +109,63 @@ app.controller('calculator', function ($scope) {
             $scope.baseDamage == attack.base_damage &&
             $scope.bkb == attack.bkb &&
             $scope.kbg == attack.kbg &&
-            $scope.set_kb == attack.set_kb){
-
+            $scope.set_kb == attack.set_kb &&
+            $scope.is_smash == attack.smash_attack){
             } else {
-                $scope.move = "0";
+                if (!$scope.detectAttack()) {
+                    $scope.move = "0";
+                    $scope.moveset[0].name = "Custom move";
+                }
             }
         } else {
+            if (!$scope.detectAttack()) {
+                $scope.move = "0";
+                $scope.moveset[0].name = "Custom move";
+            }
+        }
+        $scope.update();
+    }
+
+    $scope.detectAttack = function () {
+        var detected = false;
+        for (var i = 1; i < $scope.moveset.length; i++) {
+            attack = $scope.moveset[i];
+            if (attack.valid) {
+                if ($scope.angle == attack.angle &&
+                    $scope.baseDamage == attack.base_damage &&
+                    $scope.bkb == attack.bkb &&
+                    $scope.kbg == attack.kbg &&
+                    $scope.set_kb == attack.set_kb &&
+                    $scope.is_smash == attack.smash_attack) {
+                    $scope.move = i.toString();
+                    detected = true;
+                    return true;
+                } else {
+
+                }
+            }
+        }
+        if (!detected) {
+            //Chargeable attacks
             for (var i = 1; i < $scope.moveset.length; i++) {
                 attack = $scope.moveset[i];
                 if (attack.valid) {
                     if ($scope.angle == attack.angle &&
-                        $scope.baseDamage == attack.base_damage &&
+                        parseFloat($scope.baseDamage) >= parseFloat(attack.base_damage) &&
                         $scope.bkb == attack.bkb &&
                         $scope.kbg == attack.kbg &&
-                        $scope.set_kb == attack.set_kb) {
-                            $scope.move = i.toString();
-                            break;
+                        $scope.set_kb == attack.set_kb &&
+                        $scope.is_smash == attack.smash_attack &&
+                        attack.chargeable) {
+                        $scope.move = i.toString();
+                        return true;
                     } else {
-                        
+
                     }
                 }
             }
         }
-        $scope.update();
+        return false;
     }
 
     $scope.updateTarget = function () {

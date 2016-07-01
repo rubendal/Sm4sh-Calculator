@@ -1,23 +1,21 @@
 ## Sm4sh Calculator Web
 Web Smash 4 knockback calculator
 
-## Github Pages
+### Github Pages
 http://rubendal.github.io/Sm4sh-Calculator-Web/
 
+## Calculator
+
 ### Recent Changes
+* Added - Detect most Chargeable specials
+* Added - Detect Smash attacks 
+* Changed - Invalidated throws since these have wrong data in the API
 * Changed - Invalid data message is shown when having blank inputs or inputs with values higher than maximum instead of showing NaN
-* Added - Windboxes
+* Added - Windboxes/Flinchless hitboxes
 * Added - Using KuroganeHammer's API to get move list (Some attacks might have missing data, these will show empty inputs since the API isn't complete, also it could have wrong data so double check with the website)
 * Added - Freshness bonus and ignore staleness option
 * Added - Attribute editor
 * Added - Custom Monado Arts (Decisive and Hyper)
-* Added - Mega Man Fsmash charge formula
-* Added - Shield stun, Shield Hitlag and Shield Advantage
-* Added - Check if attack will jab lock or not
-* Added - Check if attack will make the target enter tumble
-* Fixed - Recalculate angle when using Sakurai angle and using KB modifiers
-* Fixed - KB formula fixed when using damage modifiers (Aura, Monado, Deep Breathing )
-* Changed - Ignore X and Y components when using angles > 361 since these are special angles
 
 ### How to use it
 
@@ -49,6 +47,6 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Parse attacks hitbox frames and FAF
 * Improve Hitstun cancel frames formula
 
-### Credits
+## Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
 * [ssbwiki.com](http://www.ssbwiki.com)
