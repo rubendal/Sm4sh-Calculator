@@ -1,29 +1,4 @@
-﻿function loadFunctionJSON(path, success, beforeSend, error) {
-    $.ajax({
-        'async': false,
-        'url': path,
-        'dataType': 'json',
-        'beforeSend': function () {
-            if (beforeSend !== undefined) {
-                if (beforeSend != null) {
-                    beforeSend();
-                }
-            }
-        },
-        'success': function(data) {
-            success(data);
-        },
-        'error': function (xhr) {
-            if (error !== undefined) {
-                if (error != null) {
-                    error(xhr);
-                }
-            }
-        }
-    });
-}
-
-function loadAsyncFunctionJSON(path, success, beforeSend, error) {
+﻿function loadAsyncFunctionJSON(path, success, beforeSend, error) {
     $.ajax({
         'async': true,
         'url': path,
