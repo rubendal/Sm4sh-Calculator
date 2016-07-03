@@ -7,8 +7,9 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 ## Calculator
 
 ### Recent Changes
+* Changed - Removed Cloud (Limit Break) from attacker list
 * Added - Detect most Chargeable specials
-* Added - Detect Smash attacks 
+* Added - Detect Smash attacks
 * Changed - Invalidated throws since these have wrong data in the API
 * Changed - Invalid data message is shown when having blank inputs or inputs with values higher than maximum instead of showing NaN
 * Added - Windboxes/Flinchless hitboxes
@@ -47,6 +48,10 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Parse attacks hitbox frames and FAF
 * Improve Hitstun cancel frames formula
 
+### Issues
+You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
+
 ## Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
+* [FrannHammer (KuroganeHammer API)](https://github.com/Frannsoft/FrannHammer)
 * [ssbwiki.com](http://www.ssbwiki.com)
