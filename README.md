@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 ## Calculator
 
 ### Recent Changes
+* Added - Show vertical component KB increase/decrease done by gravity, Y value already has this value added
 * Changed - Removed Cloud (Limit Break) from attacker list
 * Added - Detect most Chargeable specials
 * Added - Detect Smash attacks

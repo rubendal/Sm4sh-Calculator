@@ -134,6 +134,9 @@ class Knockback {
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
                 this.y += this.add_gravity_kb;
             }
+            if (this.angle == 0 || this.angle == 180) {
+                this.add_gravity_kb = 0;
+            }
             this.tumble = this.kb > 80;
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
@@ -359,6 +362,12 @@ function getResults() {
     vskb.bounce(bounce);
     var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
     var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox)]);
+    if (trainingkb.tumble) {
+        traininglist.splice(7, 0, new ListItem("Gravity KB", + +trainingkb.add_gravity_kb.toFixed(4)));
+    }
+    if (vskb.tumble) {
+        vslist.splice(7, 0, new ListItem("Gravity KB", + +vskb.add_gravity_kb.toFixed(4)));
+    }
     if (r != 1) {
         traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
         vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
