@@ -131,7 +131,7 @@ class Knockback {
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            if(this.kb > 80){
+            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
                 this.y += this.add_gravity_kb;
             }
             this.tumble = this.kb > 80;
