@@ -347,13 +347,13 @@ function getResults() {
     if (!set_kb) {
         trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
         vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
+        trainingkb.addModifier(attacker.modifier.kb_dealt);
+        vskb.addModifier(attacker.modifier.kb_dealt);
     } else {
         trainingkb = new Knockback(bkb * r, angle, target.attributes.gravity, in_air, windbox);
         vskb = new Knockback(bkb * r * Rage(attacker_percent), angle, target.attributes.gravity, in_air, windbox);
     }
-    trainingkb.addModifier(attacker.modifier.kb_dealt);
     trainingkb.addModifier(target.modifier.kb_received);
-    vskb.addModifier(attacker.modifier.kb_dealt);
     vskb.addModifier(target.modifier.kb_received);
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
