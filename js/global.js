@@ -134,7 +134,7 @@ class Knockback {
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
                 this.y += this.add_gravity_kb;
             }
-            if (this.angle == 0 || this.angle == 180) {
+            if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
             }
             this.tumble = this.kb > 80;
