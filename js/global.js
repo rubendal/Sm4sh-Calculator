@@ -84,11 +84,11 @@ class Character {
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)",1.2,1,1,1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)",1.2,0.9,1,1);
             this.name = "Wii Fit Trainer";
         }
         if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 1, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
