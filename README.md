@@ -1,5 +1,5 @@
 ## Sm4sh Calculator Web
-Web Smash 4 knockback calculator
+Web based Smash 4 knockback calculator
 
 ### Github Pages
 http://rubendal.github.io/Sm4sh-Calculator-Web/
@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 ## Calculator
 
 ### Recent Changes
+* Added - Deep Breathing damage reduction
 * Added - Show vertical component KB increase/decrease done by gravity, Y value already has this value added
 * Changed - Removed Cloud (Limit Break) from attacker list
 * Added - Detect most Chargeable specials
@@ -20,7 +21,6 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 * Added - Custom Monado Arts (Decisive and Hyper)
 
 ### How to use it
-
 Just input your data, the calculator will update the results when you change something
 
 To access KuroganeHammer's API it is required to use webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list
