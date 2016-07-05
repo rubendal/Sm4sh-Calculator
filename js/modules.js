@@ -103,6 +103,10 @@ app.controller('calculator', function ($scope) {
             $scope.kbg = attack.kbg;
             $scope.set_kb = attack.set_kb;
             $scope.is_smash = attack.smash_attack;
+            if (!$scope.is_smash) {
+                $scope.smashCharge = 0;
+                charge_frames = 0;
+            }
             $scope.checkSmashVisibility();
         } else {
             //console.debug(attack.name + " not valid");
