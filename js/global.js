@@ -137,7 +137,7 @@ class Knockback {
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
             }
-            this.tumble = this.kb > 80;
+            this.tumble = this.kb > 80 && !windbox;
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox) {
