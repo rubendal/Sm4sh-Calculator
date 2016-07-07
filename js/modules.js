@@ -103,6 +103,12 @@ app.controller('calculator', function ($scope) {
             $scope.kbg = attack.kbg;
             $scope.set_kb = attack.set_kb;
             $scope.is_smash = attack.smash_attack;
+            if (!isNaN(attack.hitbox_start)) {
+                $scope.hit_frame = attack.hitbox_start;
+            } else {
+                $scope.hit_frame = 0;
+            }
+            $scope.faf = attack.faf;
             if (!$scope.is_smash) {
                 $scope.smashCharge = 0;
                 charge_frames = 0;

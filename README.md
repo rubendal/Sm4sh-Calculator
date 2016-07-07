@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator-Web/
 ## Calculator
 
 ### Recent Changes
+* Added - Parsed Hitbox active frame and FAF from KH API
 * Added - Deep Breathing damage reduction
 * Added - Show vertical component KB increase/decrease done by gravity, Y value already has this value added
 * Changed - Removed Cloud (Limit Break) from attacker list
@@ -46,7 +47,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Advantage
 
 ### To Do
-* Parse attacks hitbox frames and FAF
+* Update API stuff once KH API update 0.2.0 releases (Throw data)
 * Improve Hitstun cancel frames formula
 
 ### Issues

@@ -24,7 +24,7 @@
 }
 
 class MoveParser {
-    constructor(name, base_damage, angle, bkb, kbg, hitbox_start, hitbox_end, faf) {
+    constructor(name, base_damage, angle, bkb, kbg, hitboxActive, faf) {
         this.name = name;
         this.angle = angle;
         this.faf = faf;
@@ -32,9 +32,12 @@ class MoveParser {
         this.base_damage = base_damage;
         this.bkb = bkb;
         this.kbg = kbg;
-        this.hitbox_start = hitbox_start;
-        this.hitbox_end = hitbox_end;
-        
+
+        this.hitboxActive = parseHitbox(hitboxActive);
+
+        this.hitbox_start = parseFloat(this.hitboxActive[0]);
+        this.hitbox_end = parseFloat(this.hitboxActive[1]);
+
         this.count = 1;
         this.moves = [];
         var set_kb = false;
@@ -58,6 +61,8 @@ class MoveParser {
             if (this.kbg == "-" || this.kbg == "" || this.kbg == "?") {
                 this.kbg = "";
             }
+            var hitbox = parseHitbox()
+
             if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/") || this.angle.includes("/")) {
                 //multiple hitboxes
                 var first_fkb = false;
@@ -129,7 +134,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, 0, 0, 0));
+                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
                 }
             } else {
                 //single hitbox
@@ -140,7 +145,7 @@ class MoveParser {
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
 
                 } else {
-                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, 0, 0, 0));
+                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
                 }
             }
 
@@ -148,6 +153,23 @@ class MoveParser {
             this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle),0,0,false,0,0,0).invalidate());
         }
 
+        function parseHitbox(hitboxActive) {
+            var result = [0, 0]; //start, end
+            if (hitboxActive === undefined) {
+                return result;
+            }
+            hitboxActive = hitboxActive.replace(/[a-z]|\?|\(.+\)|\:/gi, "");
+            var hitbox = hitboxActive.split(",")[0];
+            result[0] = hitbox.split("-")[0];
+            result[1] = hitbox.split("-")[1];
+            if (result[0] == undefined) {
+                result[0] = "0";
+            }
+            if (result[1] == undefined) {
+                result[1] = "0";
+            }
+            return result;
+        }
     }
 }
 
@@ -191,7 +213,7 @@ function getMoveset(attacker, $scope) {
                     var count = 1;
                     for (var i = 0; i < moveset.length; i++) {
                         var move = moveset[i];
-                        var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.hitboxActive, move.firstActionableFrame);
+                        var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame);
                         for (var c = 0; c < parser.moves.length; c++) {
                             var m = parser.moves[c];
                             m.id = count;
