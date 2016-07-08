@@ -24,3 +24,9 @@
 .section-table{
     width:100%;
 }
+
+#filter{
+    position: relative;
+    top:0;
+    left:auto;
+}

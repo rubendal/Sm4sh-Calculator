@@ -1,4 +1,4 @@
-## Sm4sh Calculator Web
+## Sm4sh Calculator
 Web based Smash 4 knockback calculator
 
 ### Github Pages
@@ -49,6 +49,13 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 ### To Do
 * Update API stuff once KH API update 0.2.0 releases (Throw data)
 * Improve Hitstun cancel frames formula
+
+## Move Filter
+http://rubendal.github.io/Sm4sh-Calculator-Web/filter.html
+
+Search for moves that match certain conditions
+
+Currently can show moves with first hitbox starting frame with selected conditions, just shows first hitbox in the meantime, when base damage/angle/BKB/KBG filters are implemented hitbox numbering will appear
 
 ### Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)

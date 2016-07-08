@@ -234,6 +234,3 @@ app.controller('calculator', function ($scope) {
 
     $scope.update();
 });
-
-
-

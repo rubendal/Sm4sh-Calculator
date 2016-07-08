@@ -188,3 +188,9 @@ table,td,tr{
     top:0;
     left:300px;
 }
+
+#filter{
+    position: absolute;
+    top:0;
+    left:700px;
+}

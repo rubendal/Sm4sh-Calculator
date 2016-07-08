@@ -24,7 +24,7 @@
 }
 
 class MoveParser {
-    constructor(name, base_damage, angle, bkb, kbg, hitboxActive, faf) {
+    constructor(name, base_damage, angle, bkb, kbg, hitboxActive, faf, ignore_hitboxes) {
         this.name = name;
         this.angle = angle;
         this.faf = faf;
@@ -41,6 +41,7 @@ class MoveParser {
         this.count = 1;
         this.moves = [];
         var set_kb = false;
+        this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
 
         var damage = [];
         var angles = [];
@@ -61,7 +62,7 @@ class MoveParser {
             if (this.kbg == "-" || this.kbg == "" || this.kbg == "?") {
                 this.kbg = "";
             }
-            var hitbox = parseHitbox()
+            var hitbox = parseHitbox();
 
             if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/") || this.angle.includes("/")) {
                 //multiple hitboxes
@@ -98,7 +99,11 @@ class MoveParser {
                 var set_count = 0;
                 var base_count = 0;
                 for (var i = 0; i < hitbox_count; i++) {
-                    var hitbox_name = this.name + " (Hitbox " + (i + 1) + ")";
+                    var hitbox_name = this.name;
+                    if (!ignore_hitboxes) {
+                        hitbox_name+= " (Hitbox " + (i + 1) + ")";
+                    }
+                    
                     var d = i < damage.length ? damage[i] : damage[damage.length - 1];
                     var a = i < angles.length ? angles[i] : angles[angles.length - 1];
                     var k = i < kbgs.length ? kbgs[i] : kbgs[kbgs.length - 1];
@@ -135,6 +140,9 @@ class MoveParser {
                         }
                     }
                     this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
+                    if (ignore_hitboxes) {
+                        return;
+                    }
                 }
             } else {
                 //single hitbox
@@ -143,15 +151,20 @@ class MoveParser {
                     this.bkb = bkb.replace("W: ", "");
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
-
+                    if (this.grab) {
+                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
+                    } else {
+                        
+                    }
                 } else {
                     this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle),0,0,false,0,0,0).invalidate());
+            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, 0, 0, 0).invalidate());
         }
+
 
         function parseHitbox(hitboxActive) {
             var result = [0, 0]; //start, end
@@ -189,9 +202,15 @@ class Move {
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
         this.chargeable = name.includes("No Charge") || name.includes("Uncharged");
+        this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
 
         this.invalidate = function () {
             this.valid = false;
+            return this;
+        }
+
+        this.addCharacter = function (character) {
+            this.character = character;
             return this;
         }
 
@@ -213,12 +232,14 @@ function getMoveset(attacker, $scope) {
                     var count = 1;
                     for (var i = 0; i < moveset.length; i++) {
                         var move = moveset[i];
-                        var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame);
+                        var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, false);
                         for (var c = 0; c < parser.moves.length; c++) {
                             var m = parser.moves[c];
                             m.id = count;
-                            moves.push(m);
-                            count++;
+                            if (!m.grab) {
+                                moves.push(m.addCharacter(attacker.name));
+                                count++;
+                            }
                         }
                     }
                     moves.unshift(new Move(0,"Not selected",0,0,0,0,false,0,0,0).invalidate());
@@ -248,4 +269,69 @@ function getMoveset(attacker, $scope) {
         $scope.moveset = [new Move(0, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
     });
     
+}
+
+function getCharactersId(names, $scope) {
+    $scope.charactersId = [];
+    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/characters/", function (character) {
+        if (character != null) {
+            var characters = [];
+            for (var i = 0; i < character.length; i++) {
+                var id = character[i].id;
+                var name = character[i].name;
+                for (var n = 0; n < names.length; n++) {
+                    var api_name = names[n].toLowerCase().replace("and", "").replace("-", "").split(".").join("").split(" ").join("");
+                    if (name.toLowerCase() == api_name) {
+                        name = names[n];
+                        characters.push(new CharacterId(name, id));
+                        break;
+                    }
+                }
+            }
+            try {
+                $scope.$apply(function () {
+                    $scope.charactersId = characters;
+                    $scope.ready();
+                });
+            } catch (err) {
+                $scope.charactersId = characters;
+                $scope.ready();
+            }
+            
+        }
+    }, null, null);
+}
+
+function getAllMoves($scope) {
+    $scope.moves = [];
+    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/moves", function (moveset) {
+        if (moveset != null) {
+            var moves = [];
+            var count = 0;
+            try{
+                $scope.$apply(function () { $scope.status = "Parsing moves..."; });
+            } catch (err) {
+                $scope.status = "Parsing moves...";
+            }
+            for (var i = 0; i < moveset.length; i++) {
+                var move = moveset[i];
+                var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, true);
+                for (var c = 0; c < parser.moves.length; c++) {
+                    var m = parser.moves[c];
+                    m.id = count;
+                    moves.push(m.addCharacter(move.ownerId));
+                    count++;
+                }
+            }
+            try {
+                $scope.$apply(function () {
+                    $scope.moves = moves;
+                    $scope.ready();
+                });
+            } catch (err) {
+                $scope.moves = moves;
+                $scope.ready();
+            }
+        }
+    }, null, null);
 }
