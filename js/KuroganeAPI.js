@@ -327,10 +327,12 @@ function getAllMoves($scope) {
                 $scope.$apply(function () {
                     $scope.moves = moves;
                     $scope.ready();
+                    $scope.update();
                 });
             } catch (err) {
                 $scope.moves = moves;
                 $scope.ready();
+                $scope.update();
             }
         }
     }, null, null);

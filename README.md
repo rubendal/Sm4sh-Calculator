@@ -59,9 +59,10 @@ Filter moves by:
 * Name
 * First hitbox active frame
 * Base damage
-
-Planning on adding angle, BKB, KBG and set knockback filters
-
+* Angle
+* BKB
+* KBG
+* Set knockback
 
 ### Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
