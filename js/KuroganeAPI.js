@@ -315,7 +315,7 @@ function getAllMoves($scope) {
             }
             for (var i = 0; i < moveset.length; i++) {
                 var move = moveset[i];
-                var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, true);
+                var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, false);
                 for (var c = 0; c < parser.moves.length; c++) {
                     var m = parser.moves[c];
                     m.id = count;

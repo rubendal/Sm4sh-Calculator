@@ -55,7 +55,13 @@ http://rubendal.github.io/Sm4sh-Calculator/filter.html
 
 Search for moves that match certain conditions
 
-Currently can show moves with first hitbox starting frame with selected conditions, just shows first hitbox in the meantime, when base damage/angle/BKB/KBG filters are implemented hitbox numbering will appear
+Filter moves by:
+*Name
+*First hitbox active frame
+*Base damage
+
+Planning on adding angle, BKB, KBG and set knockback filters
+
 
 ### Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)

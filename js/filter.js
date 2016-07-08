@@ -7,6 +7,12 @@
             return this;
         }
         this.style = "";
+        if (isNaN(this.move.hitbox_start)) {
+            this.move.hitbox_start = "-";
+        }
+        if (isNaN(this.move.hitbox_end)) {
+            this.move.hitbox_end = "-";
+        }
         if (isNaN(this.move.bkb)) {
             this.move.bkb = "-";
         }
@@ -43,7 +49,9 @@ var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     loadGitHubData();
 
+    $scope.name = "";
     $scope.hitbox_frame_cond = "=";
+    $scope.base_damage_cond = "=";
 
     $scope.updateStatus = function (status) {
         $scope.status = status;
@@ -72,6 +80,8 @@ filter_app.controller('filter', function ($scope) {
 
     $scope.hitbox_frame = 0;
     $scope.hitbox_frame2 = 0;
+    $scope.base_damage = 0;
+    $scope.base_damage2 = 0;
 
     $scope.filteredMoves = [];
 
@@ -91,6 +101,30 @@ filter_app.controller('filter', function ($scope) {
                 break;
             case "between":
                 return value1 >= value2 && value1 <= value3;
+            case "ignore":
+                return true;
+        }
+        return value1 == value2;
+    };
+
+    $scope.base_damage_eval = function (value1, value2, value3) {
+        switch ($scope.base_damage_cond) {
+            case "<":
+                return value1 < value2;
+                break;
+            case ">":
+                return value1 > value2;
+                break;
+            case "<=":
+                return value1 <= value2;
+                break;
+            case ">=":
+                return value1 >= value2;
+                break;
+            case "between":
+                return value1 >= value2 && value1 <= value3;
+            case "ignore":
+                return true;
         }
         return value1 == value2;
     };
@@ -99,10 +133,14 @@ filter_app.controller('filter', function ($scope) {
         $scope.filteredMoves = [];
         var hitbox_start = parseFloat($scope.hitbox_frame);
         var hitbox_start2 = parseFloat($scope.hitbox_frame2);
+        var base_damage = parseFloat($scope.base_damage);
+        var base_damage2 = parseFloat($scope.base_damage2);
         $scope.moves.forEach(function (move, index) {
-            if ($scope.hitbox_eval(move.hitbox_start,hitbox_start, hitbox_start2)) {
+            if (move.name.toLowerCase().includes($scope.name.toLowerCase()) && 
+                $scope.hitbox_eval(move.hitbox_start,hitbox_start, hitbox_start2) && 
+                $scope.base_damage_eval(move.base_damage, base_damage, base_damage2)) {
                 var name = CharacterId.getName($scope.charactersId, move.character);
-                if(name != ""){
+                if (name != "") {
                     $scope.filteredMoves.push(new FilterListItem(name, move));
                 }
             }
