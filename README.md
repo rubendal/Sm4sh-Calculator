@@ -2,7 +2,7 @@
 Web based Smash 4 knockback calculator
 
 ### Github Pages
-http://rubendal.github.io/Sm4sh-Calculator-Web/
+http://rubendal.github.io/Sm4sh-Calculator/
 
 ## Calculator
 
@@ -51,7 +51,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Improve Hitstun cancel frames formula
 
 ## Move Filter
-http://rubendal.github.io/Sm4sh-Calculator-Web/filter.html
+http://rubendal.github.io/Sm4sh-Calculator/filter.html
 
 Search for moves that match certain conditions
 
