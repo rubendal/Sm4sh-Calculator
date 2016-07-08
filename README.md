@@ -56,9 +56,9 @@ http://rubendal.github.io/Sm4sh-Calculator/filter.html
 Search for moves that match certain conditions
 
 Filter moves by:
-*Name
-*First hitbox active frame
-*Base damage
+* Name
+* First hitbox active frame
+* Base damage
 
 Planning on adding angle, BKB, KBG and set knockback filters
 
