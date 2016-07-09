@@ -67,7 +67,7 @@
                 <input name="hit_frame_cond" type="radio" value=">=" ng-model="hitbox_frame_cond" ng-change="update()" />&gt;=
                 <input name="hit_frame_cond" type="radio" value="between" ng-model="hitbox_frame_cond" ng-change="update()" />between
                 <input name="hit_frame2" type="number" min="0" max="300" step="1" ng-model="hitbox_frame2" ng-change="update()" />
-                <input name="hit_frame_cond" type="radio" value="ignore" ng-model="hitbox_frame_cond" ng-change="update()" />Ignore
+                <input name="hit_frame_cond" type="radio" value="any" ng-model="hitbox_frame_cond" ng-change="update()" />Any
                 <br />
                 Base damage:
                 <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="base_damage" ng-change="update()" />
@@ -79,7 +79,7 @@
                 <input name="base_damage_cond" type="radio" value=">=" ng-model="base_damage_cond" ng-change="update()" />&gt;=
                 <input name="base_damage_cond" type="radio" value="between" ng-model="base_damage_cond" ng-change="update()" />between
                 <input name="base_damage2" type="number" min="0" max="999" step="0.5" ng-model="base_damage2" ng-change="update()" />
-                <input name="base_damage_cond" type="radio" value="ignore" ng-model="base_damage_cond" ng-change="update()" />Ignore
+                <input name="base_damage_cond" type="radio" value="any" ng-model="base_damage_cond" ng-change="update()" />Any
                 <br />
                 Angle:
                 <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
@@ -91,7 +91,7 @@
                 <input name="angle_cond" type="radio" value=">=" ng-model="angle_cond" ng-change="update()" />&gt;=
                 <input name="angle_cond" type="radio" value="between" ng-model="angle_cond" ng-change="update()" />between
                 <input name="angle2" type="number" min="0" max="367" step="1" ng-model="angle2" ng-change="update()" />
-                <input name="angle_cond" type="radio" value="ignore" ng-model="angle_cond" ng-change="update()" />Ignore
+                <input name="angle_cond" type="radio" value="any" ng-model="angle_cond" ng-change="update()" />Any
                 <br />
                 BKB:
                 <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
@@ -103,7 +103,7 @@
                 <input name="bkb_cond" type="radio" value=">=" ng-model="bkb_cond" ng-change="update()" />&gt;=
                 <input name="bkb_cond" type="radio" value="between" ng-model="bkb_cond" ng-change="update()" />between
                 <input name="bkb2" type="number" min="0" max="999" step="1" ng-model="bkb2" ng-change="update()" />
-                <input name="bkb_cond" type="radio" value="ignore" ng-model="bkb_cond" ng-change="update()" />Ignore
+                <input name="bkb_cond" type="radio" value="any" ng-model="bkb_cond" ng-change="update()" />Any
                 <br />
                 KBG:
                 <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
@@ -115,10 +115,10 @@
                 <input name="kbg_cond" type="radio" value=">=" ng-model="kbg_cond" ng-change="update()" />&gt;=
                 <input name="kbg_cond" type="radio" value="between" ng-model="kbg_cond" ng-change="update()" />between
                 <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
-                <input name="kbg_cond" type="radio" value="ignore" ng-model="kbg_cond" ng-change="update()" />Ignore
+                <input name="kbg_cond" type="radio" value="any" ng-model="kbg_cond" ng-change="update()" />Any
                 <br />
                 <input name="set_kb" type="checkbox" ng-model="set_kb" ng-change="update()" /> Set knockback/WBKB/FKB
-                <input name="set_kb_cond" type="checkbox" ng-model="set_kb_ignore" ng-change="update()" />Ignore
+                <input name="set_kb_cond" type="checkbox" ng-model="set_kb_any" ng-change="update()" />Any
             </div>
 
         </div>

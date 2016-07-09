@@ -64,7 +64,19 @@ Filter moves by:
 * KBG
 * Set knockback
 
-### Issues
+### Name filter format
+* Case insensitive
+* `,` == or
+* `&` == and
+* `-` == not
+
+#### Examples
+* ftilt & up (Ftilt AND up: all ftilts capable of being angled up)
+* up,down & fsmash (up OR down AND fsmash: all fsmash angled up or down)
+* rapid jab,-finisher (rapid jab NOT finisher: all rapid jabs without finisher hitbox)
+
+
+## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
 
 ## Credits

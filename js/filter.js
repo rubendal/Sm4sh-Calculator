@@ -45,18 +45,66 @@ class CharacterId {
     }
 };
 
+class NameFilter {
+    constructor(name) {
+        this.name = name.toLowerCase().replace(/\&/gi, ",&");
+        var conditions = this.name.split(",");
+        this.OrConditions = [];
+        this.AndConditions = [];
+        this.NotConditions = [];
+        for (var i = 0; i<conditions.length; i++) {
+            if (conditions[i] == "" || conditions[i] == "-" || conditions[i] == "&") {
+                conditions.splice(i, 1);
+                continue;
+            }
+            if (conditions[i].charAt(0) == "&") {
+                this.AndConditions.push(conditions[i].replace("&","").trim());
+            } else {
+                if (conditions[i].charAt(0) == "-") {
+                    this.NotConditions.push(conditions[i].replace("-", "").trim());
+                } else {
+                    this.OrConditions.push(conditions[i].trim());
+                }
+            }
+
+        }
+
+        this.check = function (name) {
+            for (var i = 0; i < this.AndConditions.length; i++) {
+                if (!name.includes(this.AndConditions[i])) {
+                    return false;
+                }
+            }
+            for (var i = 0; i < this.NotConditions.length; i++) {
+                if (name.includes(this.NotConditions[i])) {
+                    return false;
+                }
+            }
+            for (var i = 0; i < this.OrConditions.length; i++) {
+                if (name.includes(this.OrConditions[i])) {
+                    return true;
+                }
+            }
+            if (this.OrConditions.length == 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+};
+
 
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     loadGitHubData();
 
     $scope.name = "";
-    $scope.hitbox_frame_cond = "ignore";
-    $scope.base_damage_cond = "ignore";
-    $scope.angle_cond = "ignore";
-    $scope.bkb_cond = "ignore";
-    $scope.kbg_cond = "ignore";
-    $scope.set_kb_ignore = true;
+    $scope.hitbox_frame_cond = "any";
+    $scope.base_damage_cond = "any";
+    $scope.angle_cond = "any";
+    $scope.bkb_cond = "any";
+    $scope.kbg_cond = "any";
+    $scope.set_kb_any = true;
 
     $scope.updateStatus = function (status) {
         $scope.status = status;
@@ -113,7 +161,7 @@ filter_app.controller('filter', function ($scope) {
                 break;
             case "between":
                 return value1 >= value2 && value1 <= value3;
-            case "ignore":
+            case "any":
                 return true;
         }
         return value1 == value2;
@@ -132,9 +180,10 @@ filter_app.controller('filter', function ($scope) {
         var bkb2 = parseFloat($scope.bkb2);
         var kbg = parseFloat($scope.kbg);
         var kbg2 = parseFloat($scope.kbg2);
+        var nameConditions = new NameFilter($scope.name);
+
         $scope.moves.forEach(function (move, index) {
-            if (move.name.toLowerCase().includes($scope.name.toLowerCase()) && 
-                $scope.compare($scope.hitbox_frame_cond, move.hitbox_start, hitbox_start, hitbox_start2) &&
+            if ($scope.compare($scope.hitbox_frame_cond, move.hitbox_start, hitbox_start, hitbox_start2) &&
                 $scope.compare($scope.base_damage_cond, move.base_damage, base_damage, base_damage2) &&
                 $scope.compare($scope.angle_cond, move.angle, angle, angle2) &&
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
@@ -144,10 +193,15 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
+                if (!nameConditions.check(move.name.toLowerCase())) {
+                    return;
+                }
                 var name = CharacterId.getName($scope.charactersId, move.character);
                 if (name != "") {
                     $scope.filteredMoves.push(new FilterListItem(name, move));
                 }
+                return;
+                
             }
         });
     }
