@@ -300,7 +300,7 @@ function getCharactersId(names, $scope) {
             
         }
     }, null, function () {
-        $scope.moveset = [new Move(0, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+        $scope.status = "Couldn't access API"
     });
 }
 
@@ -338,6 +338,6 @@ function getAllMoves($scope) {
             }
         }
     }, null, function () {
-        $scope.moveset = [new Move(0, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+        $scope.status = "Couldn't access API";
     });
 }
