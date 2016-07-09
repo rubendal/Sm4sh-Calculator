@@ -25,6 +25,8 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = 0;
     $scope.faf = 1;
 
+    $scope.preDamage = 0;
+
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
     $scope.target_weight = target.attributes.weight;
@@ -89,6 +91,7 @@ app.controller('calculator', function ($scope) {
         attacker = new Character($scope.attackerValue);
         getMoveset(attacker, $scope);
         $scope.move = "0";
+        $scope.preDamage = 0;
         $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
         $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
         $scope.update();
@@ -103,6 +106,7 @@ app.controller('calculator', function ($scope) {
             $scope.kbg = attack.kbg;
             $scope.set_kb = attack.set_kb;
             $scope.is_smash = attack.smash_attack;
+            $scope.preDamage = attack.preDamage;
             if (!isNaN(attack.hitbox_start)) {
                 $scope.hit_frame = attack.hitbox_start;
             } else {
@@ -133,12 +137,14 @@ app.controller('calculator', function ($scope) {
                 if (!$scope.detectAttack()) {
                     $scope.move = "0";
                     $scope.moveset[0].name = "Custom move";
+                    $scope.preDamage = 0;
                 }
             }
         } else {
             if (!$scope.detectAttack()) {
                 $scope.move = "0";
                 $scope.moveset[0].name = "Custom move";
+                $scope.preDamage = 0;
             }
         }
         $scope.update();
@@ -156,6 +162,7 @@ app.controller('calculator', function ($scope) {
                     $scope.set_kb == attack.set_kb &&
                     $scope.is_smash == attack.smash_attack) {
                     $scope.move = i.toString();
+                    $scope.preDamage = attack.preDamage;
                     detected = true;
                     return true;
                 } else {
@@ -175,6 +182,7 @@ app.controller('calculator', function ($scope) {
                         $scope.set_kb == attack.set_kb &&
                         $scope.is_smash == attack.smash_attack &&
                         attack.chargeable) {
+                        $scope.preDamage = attack.preDamage;
                         $scope.move = i.toString();
                         return true;
                     } else {
@@ -200,6 +208,7 @@ app.controller('calculator', function ($scope) {
         $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
         target_percent = parseFloat($scope.targetPercent);
+        preDamage = parseFloat($scope.preDamage);
         base_damage = parseFloat($scope.baseDamage);
         angle = parseFloat($scope.angle);
         in_air = $scope.in_air;
@@ -229,6 +238,7 @@ app.controller('calculator', function ($scope) {
 
         $scope.training = results.training;
         $scope.vs = results.vs;
+
 
     };
 

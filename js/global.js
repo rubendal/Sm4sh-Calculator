@@ -338,6 +338,8 @@ var is_smash = false;
 var set_kb = false;
 var windbox = false;
 
+var preDamage = 0;
+
 function getResults() {
     var result = { 'training': [], 'vs': [] };
     base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
@@ -348,8 +350,8 @@ function getResults() {
     damage *= attacker.modifier.damage_dealt;
     damage *= target.modifier.damage_taken;
     if (!set_kb) {
-        trainingkb = TrainingKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
-        vskb = VSKB(target_percent, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
+        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
+        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(attacker.modifier.kb_dealt);
     } else {
@@ -396,6 +398,10 @@ function getResults() {
     if (attacker.modifier.damage_dealt != 1) {
         traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
         vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+    }
+    if (preDamage != 0) {
+        traininglist.splice(0, 0, new ListItem("Before launch damage", "+" + +preDamage.toFixed(4) + "%"));
+        vslist.splice(0, 0, new ListItem("Before launch damage", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
     }
     vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
 

@@ -7,19 +7,17 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Added throws extra hits before launch damage to target percent when calculating KB
+* Added - Throws have been fixed in KH API and are now usable in the calculator
 * Added - Parsed Hitbox active frame and FAF from KH API
 * Added - Deep Breathing damage reduction
 * Added - Show vertical component KB increase/decrease done by gravity, Y value already has this value added
 * Changed - Removed Cloud (Limit Break) from attacker list
 * Added - Detect most Chargeable specials
 * Added - Detect Smash attacks
-* Changed - Invalidated throws since these have wrong data in the API
 * Changed - Invalid data message is shown when having blank inputs or inputs with values higher than maximum instead of showing NaN
 * Added - Windboxes/Flinchless hitboxes
 * Added - Using KuroganeHammer's API to get move list (Some attacks might have missing data, these will show empty inputs since the API isn't complete, also it could have wrong data so double check with the website)
-* Added - Freshness bonus and ignore staleness option
-* Added - Attribute editor
-* Added - Custom Monado Arts (Decisive and Hyper)
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something
@@ -47,7 +45,6 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Advantage
 
 ### To Do
-* Update API stuff once KH API update 0.2.0 releases (Throw data)
 * Improve Hitstun cancel frames formula
 
 ## Move Search

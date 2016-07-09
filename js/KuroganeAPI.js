@@ -33,7 +33,32 @@ class MoveParser {
         this.bkb = bkb;
         this.kbg = kbg;
 
-        this.hitboxActive = parseHitbox(hitboxActive);
+        this.preDamage = 0;
+        this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
+        this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
+
+        if (!this.throw) {
+            this.hitboxActive = parseHitbox(hitboxActive);
+        } else {
+            this.hitboxActive = "0-0";
+            this.faf = "0";
+            var throwdamage = this.base_damage.split(",");
+            if (throwdamage.length > 0) {
+                for (var i = 0; i < throwdamage.length - 1; i++) {
+                    throwdamage[i] = throwdamage[i].replace("&#37;", "").replace("%", "").replace("&#215;", "x");
+                    var value = 0;
+                    if (throwdamage[i].includes("x")) {
+                        value = parseFloat(throwdamage[i].split("x")[0]) * parseFloat(throwdamage[i].split("x")[1]);
+                    }
+                    else{
+                        value = parseFloat(throwdamage[i]);
+                    }
+                    this.preDamage += value;
+
+                }
+                this.base_damage = throwdamage[throwdamage.length - 1];
+            }
+        }
 
         this.hitbox_start = parseFloat(this.hitboxActive[0]);
         this.hitbox_end = parseFloat(this.hitboxActive[1]);
@@ -41,7 +66,7 @@ class MoveParser {
         this.count = 1;
         this.moves = [];
         var set_kb = false;
-        this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
+        
 
         var damage = [];
         var angles = [];
@@ -139,7 +164,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
+                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf),this.preDamage));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -152,17 +177,17 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
+                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitbox_start, this.hitbox_end, parseFloat(this.faf),this.preDamage));
                     } else {
                         
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf)));
+                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf), this.preDamage));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, 0, 0, 0).invalidate());
+            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, 0, 0, 0,0).invalidate());
         }
 
 
@@ -187,7 +212,7 @@ class MoveParser {
 }
 
 class Move {
-    constructor(id, name, base_damage, angle, bkb, kbg, set_kb, hitbox_start, hitbox_end, faf) {
+    constructor(id, name, base_damage, angle, bkb, kbg, set_kb, hitbox_start, hitbox_end, faf, preDamage) {
         this.id = id;
         this.name = name;
         this.base_damage = base_damage;
@@ -198,6 +223,8 @@ class Move {
         this.hitbox_start = hitbox_start;
         this.hitbox_end = hitbox_end;
         this.faf = faf;
+        this.preDamage = preDamage;
+
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
@@ -212,10 +239,6 @@ class Move {
         this.addCharacter = function (character) {
             this.character = character;
             return this;
-        }
-
-        if (this.throw) {
-            this.valid = false;
         }
     }
 };
@@ -300,7 +323,7 @@ function getCharactersId(names, $scope) {
             
         }
     }, null, function () {
-        $scope.status = "Couldn't access API"
+        $scope.status = "Couldn't access API";
     });
 }
 
