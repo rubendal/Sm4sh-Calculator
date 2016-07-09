@@ -117,9 +117,9 @@ filter_app.controller('filter', function ($scope) {
             $scope.filter_interface = { "display": "block" };
         } else {
             if ($scope.charactersId.length != 0) {
-                $scope.status = "Characters IDs loaded, parsing moves...";
+                $scope.status = "Parsing moves...";
             } else {
-                $scope.status = "Moves loaded, Loading characters...";
+                $scope.status = "Moves parsed, Loading characters...";
             }
         }
     }
