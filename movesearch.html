@@ -57,10 +57,22 @@
                 Name:
                 <input name="name" type="text" ng-model="name" ng-change="update()" />
                 <br/>
-                First Hitbox frame:
-                <input name="hit_frame" type="number" min="0" max="300" step="1" ng-model="hitbox_frame" ng-change="update()" />
+                Hitbox startup frame:
+                <input name="hit_start" type="number" min="0" max="300" step="1" ng-model="hitbox_start" ng-change="update()" />
                 
-                <input name="hit_frame_cond" type="radio" value="=" ng-model="hitbox_frame_cond" ng-change="update()"/>=
+                <input name="hit_start_cond" type="radio" value="=" ng-model="hitbox_start_cond" ng-change="update()"/>=
+                <input name="hit_start_cond" type="radio" value="<" ng-model="hitbox_start_cond" ng-change="update()" />&lt;
+                <input name="hit_start_cond" type="radio" value=">" ng-model="hitbox_start_cond" ng-change="update()" />&gt;
+                <input name="hit_start_cond" type="radio" value="<=" ng-model="hitbox_start_cond" ng-change="update()" />&lt;=
+                <input name="hit_start_cond" type="radio" value=">=" ng-model="hitbox_start_cond" ng-change="update()" />&gt;=
+                <input name="hit_start_cond" type="radio" value="between" ng-model="hitbox_start_cond" ng-change="update()" />between
+                <input name="hit_start2" type="number" min="0" max="300" step="1" ng-model="hitbox_start2" ng-change="update()" />
+                <input name="hit_start_cond" type="radio" value="any" ng-model="hitbox_start_cond" ng-change="update()" />Any
+                <br />
+                Hitbox active on frame:
+                <input name="hit_frame" type="number" min="0" max="300" step="1" ng-model="hitbox_frame" ng-change="update()" />
+
+                <input name="hit_frame_cond" type="radio" value="=" ng-model="hitbox_frame_cond" ng-change="update()" />=
                 <input name="hit_frame_cond" type="radio" value="<" ng-model="hitbox_frame_cond" ng-change="update()" />&lt;
                 <input name="hit_frame_cond" type="radio" value=">" ng-model="hitbox_frame_cond" ng-change="update()" />&gt;
                 <input name="hit_frame_cond" type="radio" value="<=" ng-model="hitbox_frame_cond" ng-change="update()" />&lt;=
@@ -131,8 +143,7 @@
                     <tr>
                         <td>Character</td>
                         <td>Move</td>
-                        <td>Hitbox start</td>
-                        <td>Hitbox end</td>
+                        <td>Hitbox active</td>
                         <td>Base damage</td>
                         <td>Angle</td>
                         <td>BKB</td>
@@ -142,8 +153,7 @@
                     <tr ng-repeat="x in filteredMoves track by $index">
                         <td class="attribute">{{ x.character }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.name }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.hitbox_start }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.hitbox_end }}</td>
+                        <td class="value" ng-style="{{x.style}}">{{ x.move.hitboxActiveString}}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.base_damage }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.angle }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.bkb }}</td>

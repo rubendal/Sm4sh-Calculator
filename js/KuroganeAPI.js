@@ -23,6 +23,13 @@
     });
 }
 
+class HitboxActiveFrames {
+    constructor(start, end) {
+        this.start = start;
+        this.end = end;
+    }
+};
+
 class MoveParser {
     constructor(name, base_damage, angle, bkb, kbg, hitboxActive, faf, ignore_hitboxes) {
         this.name = name;
@@ -40,7 +47,7 @@ class MoveParser {
         if (!this.throw) {
             this.hitboxActive = parseHitbox(hitboxActive);
         } else {
-            this.hitboxActive = "0-0";
+            this.hitboxActive = parseHitbox("0-0");
             this.faf = "0";
             var throwdamage = this.base_damage.split(",");
             if (throwdamage.length > 0) {
@@ -60,13 +67,11 @@ class MoveParser {
             }
         }
 
-        this.hitbox_start = parseFloat(this.hitboxActive[0]);
-        this.hitbox_end = parseFloat(this.hitboxActive[1]);
+        this.hitboxes = this.hitboxActive;
 
         this.count = 1;
         this.moves = [];
         var set_kb = false;
-        
 
         var damage = [];
         var angles = [];
@@ -164,7 +169,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf),this.preDamage));
+                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitboxes, parseFloat(this.faf),this.preDamage));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -177,34 +182,40 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitbox_start, this.hitbox_end, parseFloat(this.faf),this.preDamage));
+                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitboxes, parseFloat(this.faf), this.preDamage));
                     } else {
                         
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitbox_start, this.hitbox_end, parseFloat(this.faf), this.preDamage));
+                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitboxes, parseFloat(this.faf), this.preDamage));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, 0, 0, 0,0).invalidate());
+            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, [new HitboxActiveFrames(0,0)], 0,0).invalidate());
         }
 
 
         function parseHitbox(hitboxActive) {
-            var result = [0, 0]; //start, end
+            var result = [];
             if (hitboxActive === undefined) {
-                return result;
+                return [new HitboxActiveFrames(0,0)];
+            }
+            if (hitboxActive == "") {
+                return [new HitboxActiveFrames(0, 0)];
             }
             hitboxActive = hitboxActive.replace(/[a-z]|\?|\(.+\)|\:/gi, "");
-            var hitbox = hitboxActive.split(",")[0];
-            result[0] = hitbox.split("-")[0];
-            result[1] = hitbox.split("-")[1];
-            if (result[0] == undefined) {
-                result[0] = "0";
-            }
-            if (result[1] == undefined) {
-                result[1] = "0";
+            var hitbox = hitboxActive.split(",");
+            for (var i = 0; i < hitbox.length; i++) {
+                var start = hitbox[i].split("-")[0];
+                var end = hitbox[i].split("-")[1];
+                if (start == undefined) {
+                    start = "0";
+                }
+                if (end == undefined) {
+                    end = "0";
+                }
+                result.push(new HitboxActiveFrames(parseFloat(start), parseFloat(end)));
             }
             return result;
         }
@@ -212,7 +223,7 @@ class MoveParser {
 }
 
 class Move {
-    constructor(id, name, base_damage, angle, bkb, kbg, set_kb, hitbox_start, hitbox_end, faf, preDamage) {
+    constructor(id, name, base_damage, angle, bkb, kbg, set_kb, hitboxActive, faf, preDamage) {
         this.id = id;
         this.name = name;
         this.base_damage = base_damage;
@@ -220,8 +231,7 @@ class Move {
         this.bkb = bkb;
         this.kbg = kbg;
         this.set_kb = set_kb;
-        this.hitbox_start = hitbox_start;
-        this.hitbox_end = hitbox_end;
+        this.hitboxActive = hitboxActive;
         this.faf = faf;
         this.preDamage = preDamage;
 

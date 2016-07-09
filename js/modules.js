@@ -107,8 +107,8 @@ app.controller('calculator', function ($scope) {
             $scope.set_kb = attack.set_kb;
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
-            if (!isNaN(attack.hitbox_start)) {
-                $scope.hit_frame = attack.hitbox_start;
+            if (!isNaN(attack.hitboxActive[0].start)) {
+                $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
                 $scope.hit_frame = 0;
             }

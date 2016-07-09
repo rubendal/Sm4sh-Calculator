@@ -54,7 +54,8 @@ Search for moves that match certain conditions using filters
 
 Filter moves by:
 * Name
-* First hitbox active frame
+* Hitbox startup frame
+* Active hitbox frame
 * Base damage
 * Angle
 * BKB
