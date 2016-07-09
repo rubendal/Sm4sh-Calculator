@@ -349,6 +349,8 @@ function getResults() {
     }
     damage *= attacker.modifier.damage_dealt;
     damage *= target.modifier.damage_taken;
+    preDamage *= attacker.modifier.damage_dealt;
+    preDamage *= target.modifier.damage_taken;
     if (!set_kb) {
         trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
         vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
