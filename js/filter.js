@@ -102,7 +102,7 @@ filter_app.controller('filter', function ($scope) {
 
     $scope.name = "";
     $scope.hitbox_start_cond = "any";
-    $scope.hitbox_frame_cond = "any";
+    $scope.hitbox_frame_cond = true;
     $scope.base_damage_cond = "any";
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
@@ -137,7 +137,6 @@ filter_app.controller('filter', function ($scope) {
     $scope.hitbox_start = 0;
     $scope.hitbox_start2 = 0;
     $scope.hitbox_frame = 0;
-    $scope.hitbox_frame2 = 0;
     $scope.base_damage = 0;
     $scope.base_damage2 = 0;
     $scope.angle = 0;
@@ -210,16 +209,14 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
-                for (var i = 0; i < move.hitboxActive.length; i++) {
-                    if ($scope.compare($scope.hitbox_frame_cond, move.hitboxActive[i].start, hitbox_frame, hitbox_frame2)) {
-                        i = move.hitboxActive.length + 1;
-                    } else {
-                        if ($scope.compare($scope.hitbox_frame_cond, move.hitboxActive[i].end, hitbox_frame, hitbox_frame2)) {
+                if (!$scope.hitbox_frame_cond) {
+                    for (var i = 0; i < move.hitboxActive.length; i++) {
+                        if ($scope.compare("between", hitbox_frame, move.hitboxActive[i].start, move.hitboxActive[i].end)) {
                             i = move.hitboxActive.length + 1;
                         }
-                    }
-                    if (i == move.hitboxActive.length - 1) {
-                        return;
+                        if (i == move.hitboxActive.length - 1) {
+                            return;
+                        }
                     }
                 }
                 var name = CharacterId.getName($scope.charactersId, move.character);
