@@ -188,7 +188,7 @@ filter_app.controller('filter', function ($scope) {
                 $scope.compare($scope.angle_cond, move.angle, angle, angle2) &&
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
                 $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2)) {
-                if (!$scope.set_kb_ignore) {
+                if (!$scope.set_kb_any) {
                     if (move.set_kb != $scope.set_kb) {
                         return;
                     }
