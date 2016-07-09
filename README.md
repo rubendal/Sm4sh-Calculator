@@ -50,10 +50,10 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Update API stuff once KH API update 0.2.0 releases (Throw data)
 * Improve Hitstun cancel frames formula
 
-## Move Filter
-http://rubendal.github.io/Sm4sh-Calculator/filter.html
+## Move Search
+http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 
-Search for moves that match certain conditions
+Search for moves that match certain conditions using filters
 
 Filter moves by:
 * Name
