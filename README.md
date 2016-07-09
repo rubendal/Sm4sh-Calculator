@@ -50,6 +50,8 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 ## Move Search
 http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 
+Note: Currently not working due to [API call being closed](https://github.com/Frannsoft/FrannHammer/issues/84)
+
 Search for moves that match certain conditions using filters
 
 Filter moves by:
