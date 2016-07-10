@@ -19,12 +19,6 @@ http://rubendal.github.io/Sm4sh-Calculator/
 * Added - Windboxes/Flinchless hitboxes
 * Added - Using KuroganeHammer's API to get move list (Some attacks might have missing data, these will show empty inputs since the API isn't complete, also it could have wrong data so double check with the website)
 
-### Known issues
-
-#### API related issues
-* [Throws have wrong BKB](https://github.com/Frannsoft/FrannHammer/issues/90), please check KH website and put the correct BKB
-* [Kirby and Lucas have Throws attack](https://github.com/Frannsoft/FrannHammer/issues/89), just ignore these
-
 ### How to use it
 Just input your data, the calculator will update the results when you change something
 
