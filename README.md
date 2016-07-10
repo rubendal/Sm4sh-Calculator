@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Weight-based knockback formula
 * Added - Added throws extra hits before launch damage to target percent when calculating KB
 * Added - Throws have been fixed in KH API and are now usable in the calculator
 * Added - Parsed Hitbox active frame and FAF from KH API
@@ -58,9 +59,8 @@ Filter moves by:
 * Active hitbox frame
 * Base damage
 * Angle
-* BKB
+* BKB/WBKB
 * KBG
-* Set knockback
 
 ### Name filter format
 * Case insensitive
