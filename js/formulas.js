@@ -70,6 +70,10 @@ function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, timesI
     return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox);
 }
 
+function WeightBasedKB(weight, wbkb, kbg, gravity, r, attacker_percent, angle, in_air, windbox) {
+    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox);
+}
+
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {
     return base_damage * StaleNegation(timesInQueue, ignoreStale);
 }

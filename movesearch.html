@@ -122,7 +122,7 @@
                 <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
                 <input name="kbg_cond" type="radio" value="any" ng-model="kbg_cond" ng-change="update()" />Any
                 <br />
-                <input name="set_kb" type="checkbox" ng-model="set_kb" ng-change="update()" /> Set knockback/WBKB/FKB
+                <input name="set_kb" type="checkbox" ng-model="set_kb" ng-change="update()" /> Weight-based knockback
                 <input name="set_kb_cond" type="checkbox" ng-model="set_kb_any" ng-change="update()" />Any
             </div>
 
@@ -141,7 +141,7 @@
                         <td>Angle</td>
                         <td>BKB</td>
                         <td>KBG</td>
-                        <td>Set knockback</td>
+                        <td>Weight-based knockback</td>
                     </tr>
                     <tr ng-repeat="x in filteredMoves track by $index">
                         <td class="attribute">{{ x.character }}</td>
