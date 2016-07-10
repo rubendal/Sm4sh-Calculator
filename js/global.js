@@ -338,7 +338,6 @@ var is_smash = false;
 var set_kb = false;
 var windbox = false;
 
-var preDamage = 0;
 
 function getResults() {
     var result = { 'training': [], 'vs': [] };
@@ -346,6 +345,7 @@ function getResults() {
     var damage = base_damage;
     if (attacker.name == "Lucario") {
         damage *= Aura(attacker_percent);
+        preDamage *= Aura(attacker_percent);
     }
     damage *= attacker.modifier.damage_dealt;
     damage *= target.modifier.damage_taken;
