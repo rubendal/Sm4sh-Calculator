@@ -25,37 +25,38 @@ function loadJSONPath(path) {
 }
 
 class Modifier {
-    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received) {
+    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, weight) {
         this.name = name;
         this.damage_dealt = damage_dealt;
         this.damage_taken = damage_taken;
         this.kb_dealt = kb_dealt;
         this.kb_received = kb_received;
+        this.weight = weight;
     }
 };
 
 var monado = [
-    new Modifier("Jump", 1, 1.22, 1, 1),
-    new Modifier("Speed", 0.8, 1, 1, 1),
-    new Modifier("Shield", 0.7, 0.67, 1, .78),
-    new Modifier("Buster", 1.4, 1.13, 0.68, 1),
-    new Modifier("Smash", 0.5, 1, 1.18, 1.07)
+    new Modifier("Jump", 1, 1.22, 1, 1, 0),
+    new Modifier("Speed", 0.8, 1, 1, 1, 0),
+    new Modifier("Shield", 0.7, 0.67, 1, .78, 44),
+    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 0),
+    new Modifier("Smash", 0.5, 1, 1.18, 1.07, -12.5)
 ];
 
 var decisive_monado = [
-    new Modifier("Decisive Jump", 1, 1.22, 1, 1),
-    new Modifier("Decisive Speed", 0.8, 1, 1, 1),
-    new Modifier("Decisive Shield", .7, 0.603, 1, .702),
-    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1),
-    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07)
+    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 0),
+    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 0),
+    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 68),
+    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 0),
+    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, -12.5)
 ];
 
 var hyper_monado = [
-    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1),
-    new Modifier("Hyper Speed", 0.64, 1, 1, 1),
-    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624),
-    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1),
-    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2)
+    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 0),
+    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 0),
+    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 87),
+    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 0),
+    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, -35)
 ];
 
 class Character {
@@ -65,7 +66,7 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("", 1, 1, 1, 1);
+        this.modifier = new Modifier("", 1, 1, 1, 1, 0);
         for (var i = 0; i < monado.length; i++) {
             if (name.includes("(" + decisive_monado[i].name + ")")) {
                 this.modifier = decisive_monado[i];
@@ -84,11 +85,11 @@ class Character {
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)",1.2,0.9,1,1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 0);
             this.name = "Wii Fit Trainer";
         }
         if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 0);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
@@ -356,12 +357,12 @@ function getResults() {
         vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(attacker.modifier.kb_dealt);
+        trainingkb.addModifier(target.modifier.kb_received);
+        vskb.addModifier(target.modifier.kb_received);
     } else {
         trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, 0, angle, target.attributes.gravity, in_air, windbox);
         vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, attacker_percent, angle, target.attributes.gravity, in_air, windbox);
     }
-    trainingkb.addModifier(target.modifier.kb_received);
-    vskb.addModifier(target.modifier.kb_received);
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
     var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
