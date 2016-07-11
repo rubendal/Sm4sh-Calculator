@@ -45,6 +45,15 @@ class CharacterId {
         }
         return "";
     }
+
+    static getId(list, name) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].name == name) {
+                return list[i].id;
+            }
+        }
+        return -1;
+    }
 };
 
 class NameFilter {
@@ -54,13 +63,12 @@ class NameFilter {
         this.OrConditions = [];
         this.AndConditions = [];
         this.NotConditions = [];
-        for (var i = 0; i<conditions.length; i++) {
+        for (var i = 0; i < conditions.length; i++) {
             if (conditions[i] == "" || conditions[i] == "-" || conditions[i] == "&") {
-                conditions.splice(i, 1);
                 continue;
             }
             if (conditions[i].charAt(0) == "&") {
-                this.AndConditions.push(conditions[i].replace("&","").trim());
+                this.AndConditions.push(conditions[i].replace("&", "").trim());
             } else {
                 if (conditions[i].charAt(0) == "-") {
                     this.NotConditions.push(conditions[i].replace("-", "").trim());
@@ -68,23 +76,42 @@ class NameFilter {
                     this.OrConditions.push(conditions[i].trim());
                 }
             }
-
         }
 
-        this.check = function (name) {
+        this.check = function (name, character) {
+            
             for (var i = 0; i < this.AndConditions.length; i++) {
-                if (!name.includes(this.AndConditions[i])) {
-                    return false;
+                if (this.AndConditions[i].includes("character:")) {
+                    
+                    if (this.AndConditions[i].split(":")[1] != character) {
+                        return false;
+                    }
+                } else {
+                    if (!name.includes(this.AndConditions[i])) {
+                        return false;
+                    }
                 }
             }
             for (var i = 0; i < this.NotConditions.length; i++) {
-                if (name.includes(this.NotConditions[i])) {
-                    return false;
+                if (this.NotConditions[i].includes("character:")) {
+                    if (this.NotConditions[i].split(":")[1] == character) {
+                        return false;
+                    }
+                } else {
+                    if (name.includes(this.NotConditions[i])) {
+                        return false;
+                    }
                 }
             }
             for (var i = 0; i < this.OrConditions.length; i++) {
-                if (name.includes(this.OrConditions[i])) {
-                    return true;
+                if (this.OrConditions[i].includes("character:")) {
+                    if (this.OrConditions[i].split(":")[1] == character) {
+                        return true;
+                    }
+                } else {
+                    if (name.includes(this.OrConditions[i])) {
+                        return true;
+                    }
                 }
             }
             if (this.OrConditions.length == 0) {
@@ -198,7 +225,7 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
-                if (!nameConditions.check(move.name.toLowerCase())) {
+                if (!nameConditions.check(move.name.toLowerCase(), CharacterId.getName($scope.charactersId, move.character).toLowerCase())) {
                     return;
                 }
                 for (var i = 0; i < move.hitboxActive.length; i++) {

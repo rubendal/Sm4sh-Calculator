@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Miis
 * Added - Monado Arts weight modifiers
 * Added - Weight-based knockback formula
 * Added - Added throws extra hits before launch damage to target percent when calculating KB
@@ -55,7 +56,7 @@ http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 Search for moves that match certain conditions using filters
 
 Filter moves by:
-* Name
+* Name/Character
 * Hitbox startup frame
 * Active hitbox frame
 * Base damage
@@ -68,11 +69,14 @@ Filter moves by:
 * `,` == or
 * `&` == and
 * `-` == not
+* character:name == filter by character
 
 #### Examples
 * ftilt & up (Ftilt AND up: all ftilts capable of being angled up)
 * up,down & fsmash (up OR down AND fsmash: all fsmash angled up or down)
 * rapid jab,-finisher (rapid jab NOT finisher: all rapid jabs without finisher hitbox)
+* counter,-attack,-late,-hit,witch time,substitute,vision,toad (All counter moves counter frames)
+* character:Pit,character:dark pit,&smash (Pit and Dark Pit smash attacks)
 
 
 ## Issues
