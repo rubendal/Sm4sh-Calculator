@@ -184,7 +184,7 @@ class MoveParser {
                     if (this.grab) {
                         this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitboxes, parseFloat(this.faf), this.preDamage));
                     } else {
-                        
+                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitboxes, parseFloat(this.faf), this.preDamage).invalidate());
                     }
                 } else {
                     this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitboxes, parseFloat(this.faf), this.preDamage));
@@ -192,7 +192,7 @@ class MoveParser {
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, 0, parseFloat(this.angle), 0, 0, false, [new HitboxActiveFrames(0,0)], 0,0).invalidate());
+            this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, [new HitboxActiveFrames(0, 0)], 0, 0).invalidate());
         }
 
 
@@ -269,7 +269,7 @@ function getMoveset(attacker, $scope) {
                         for (var c = 0; c < parser.moves.length; c++) {
                             var m = parser.moves[c];
                             m.id = count;
-                            if (!m.grab) {
+                            if (!m.grab && m.valid) {
                                 moves.push(m.addCharacter(attacker.name));
                                 count++;
                             }
