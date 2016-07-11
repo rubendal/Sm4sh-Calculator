@@ -177,6 +177,9 @@ filter_app.controller('filter', function ($scope) {
     $scope.filteredMoves = [];
 
     $scope.compare = function (cond, value1, value2, value3) {
+        if (isNaN(value1) && isNaN(value2)) {
+            return true;
+        }
         switch (cond) {
             case "<":
                 return value1 < value2;

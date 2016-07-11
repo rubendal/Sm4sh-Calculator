@@ -199,10 +199,10 @@ class MoveParser {
         function parseHitbox(hitboxActive) {
             var result = [];
             if (hitboxActive === undefined) {
-                return [new HitboxActiveFrames(0,0)];
+                return [new HitboxActiveFrames(NaN,NaN)];
             }
             if (hitboxActive == "") {
-                return [new HitboxActiveFrames(0, 0)];
+                return [new HitboxActiveFrames(NaN, NaN)];
             }
             hitboxActive = hitboxActive.replace(/[a-z]|\?|\(.+\)|\:/gi, "");
             var hitbox = hitboxActive.split(",");
