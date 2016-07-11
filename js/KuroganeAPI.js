@@ -47,8 +47,8 @@ class MoveParser {
         if (!this.throw) {
             this.hitboxActive = parseHitbox(hitboxActive);
         } else {
-            this.hitboxActive = parseHitbox("0-0");
-            this.faf = "0";
+            this.hitboxActive = parseHitbox("-");
+            this.faf = NaN;
             var throwdamage = this.base_damage.split(",");
             if (throwdamage.length > 0) {
                 for (var i = 0; i < throwdamage.length - 1; i++) {
@@ -182,9 +182,9 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitboxes, parseFloat(this.faf), this.preDamage));
+                        this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage));
                     } else {
-                        this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, this.hitboxes, parseFloat(this.faf), this.preDamage).invalidate());
+                        this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage).invalidate());
                     }
                 } else {
                     this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitboxes, parseFloat(this.faf), this.preDamage));
@@ -192,7 +192,7 @@ class MoveParser {
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, 0, 0, 0, 0, false, [new HitboxActiveFrames(0, 0)], 0, 0).invalidate());
+            this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0).invalidate());
         }
 
 
