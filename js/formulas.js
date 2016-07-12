@@ -1,5 +1,5 @@
 ﻿function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, angle, in_air, windbox) {
-    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, in_air, windbox);
+    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, in_air, windbox, percent + damage);
 }
 
 function Rage(percent) {
@@ -62,16 +62,16 @@ function SakuraiAngle(kb, aerial) {
     if (kb >= 88) {
         return 40;
     }
-    return 40 * (kb - 59.9999) / (88 - 59.9999);
+    return (kb - 60) / 0.7;
 }
 
 function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox) {
     var s = StaleNegation(timesInQueue, ignoreStale);
-    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox);
+    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox, percent + (damage*s));
 }
 
-function WeightBasedKB(weight, wbkb, kbg, gravity, r, attacker_percent, angle, in_air, windbox) {
-    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox);
+function WeightBasedKB(weight, wbkb, kbg, gravity, r, target_percent, damage, attacker_percent, angle, in_air, windbox) {
+    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, in_air, windbox, target_percent + damage);
 }
 
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {

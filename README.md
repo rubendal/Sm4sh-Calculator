@@ -7,8 +7,8 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Show Reeling animation chance when possible
 * Added - Miis
-* Added - Monado Arts weight modifiers
 * Added - Weight-based knockback formula
 * Added - Added throws extra hits before launch damage to target percent when calculating KB
 * Added - Throws have been fixed in KH API and are now usable in the calculator

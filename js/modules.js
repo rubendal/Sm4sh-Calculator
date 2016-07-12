@@ -196,8 +196,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
-        $scope.target_weight = target.attributes.weight + target.modifier.weight;
-        $scope.target_gravity = target.attributes.gravity;
+        $scope.target_weight = target.attributes.weight;
+        $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
         $scope.update();

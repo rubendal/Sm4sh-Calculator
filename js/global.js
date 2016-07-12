@@ -25,38 +25,38 @@ function loadJSONPath(path) {
 }
 
 class Modifier {
-    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, weight) {
+    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity) {
         this.name = name;
         this.damage_dealt = damage_dealt;
         this.damage_taken = damage_taken;
         this.kb_dealt = kb_dealt;
         this.kb_received = kb_received;
-        this.weight = weight;
+        this.gravity = gravity;
     }
 };
 
 var monado = [
-    new Modifier("Jump", 1, 1.22, 1, 1, 0),
-    new Modifier("Speed", 0.8, 1, 1, 1, 0),
-    new Modifier("Shield", 0.7, 0.67, 1, .78, 44),
-    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 0),
-    new Modifier("Smash", 0.5, 1, 1.18, 1.07, -12.5)
+    new Modifier("Jump", 1, 1.22, 1, 1, 1.3),
+    new Modifier("Speed", 0.8, 1, 1, 1, 1),
+    new Modifier("Shield", 0.7, 0.67, 1, .78, 1),
+    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 1),
+    new Modifier("Smash", 0.5, 1, 1.18, 1.07, 1)
 ];
 
 var decisive_monado = [
-    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 0),
-    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 0),
-    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 68),
-    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 0),
-    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, -12.5)
+    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 1.43),
+    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 1.1),
+    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 1),
+    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 1),
+    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, 1)
 ];
 
 var hyper_monado = [
-    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 0),
-    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 0),
-    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 87),
-    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 0),
-    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, -35)
+    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 1.56),
+    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 1.2),
+    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 1),
+    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 1),
+    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, 1)
 ];
 
 class Character {
@@ -66,7 +66,7 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("", 1, 1, 1, 1, 0);
+        this.modifier = new Modifier("", 1, 1, 1, 1, 1);
         for (var i = 0; i < monado.length; i++) {
             if (name.includes("(" + decisive_monado[i].name + ")")) {
                 this.modifier = decisive_monado[i];
@@ -85,11 +85,11 @@ class Character {
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 0);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 0);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
@@ -112,7 +112,7 @@ class Character {
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, aerial, windbox) {
+    constructor(kb, angle, gravity, aerial, windbox, percent) {
         this.base_kb = kb;
         this.kb = kb;
         this.original_angle = angle;
@@ -123,6 +123,8 @@ class Knockback {
         this.tumble = false;
         this.can_jablock = false;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
+        this.percent = percent;
+        this.reeling = false;
         if (this.original_angle == 361) {
             this.angle = SakuraiAngle(this.kb, this.aerial);
         }
@@ -149,6 +151,11 @@ class Knockback {
                 if (this.kb != 0 && !this.windbox) {
                     this.can_jablock = !this.tumble;
                 }
+            }
+
+            if (this.angle <= 70 || this.angle >= 110) {
+                this.reeling = this.tumble && !this.windbox && this.percent >= 100;
+
             }
         };
         this.addModifier = function (modifier) {
@@ -339,7 +346,6 @@ var is_smash = false;
 var set_kb = false;
 var windbox = false;
 
-
 function getResults() {
     var result = { 'training': [], 'vs': [] };
     base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
@@ -360,8 +366,10 @@ function getResults() {
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     } else {
-        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, 0, angle, target.attributes.gravity, in_air, windbox);
-        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, attacker_percent, angle, target.attributes.gravity, in_air, windbox);
+        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, target.attributes.gravity, in_air, windbox);
+        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, target.attributes.gravity, in_air, windbox);
+        trainingkb.addModifier(target.modifier.kb_received);
+        vskb.addModifier(target.modifier.kb_received);
     }
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
@@ -410,6 +418,12 @@ function getResults() {
 
     traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
     vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
+    if (trainingkb.reeling) {
+        traininglist.push(new ListItem("Reeling/Spin animation", "30%"));
+    }
+    if (vskb.reeling) {
+        vslist.push(new ListItem("Reeling/Spin animation", "30%"));
+    }
     traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
     vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
 
