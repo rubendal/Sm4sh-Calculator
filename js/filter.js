@@ -175,6 +175,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.set_kb = false;
 
     $scope.filteredMoves = [];
+    $scope.noResults = 0;
 
     $scope.compare = function (cond, value1, value2, value3) {
         if (isNaN(value1) && isNaN(value2)) {
@@ -257,6 +258,7 @@ filter_app.controller('filter', function ($scope) {
                 
             }
         });
+        $scope.noResults = $scope.filteredMoves.length;
     }
 });
 

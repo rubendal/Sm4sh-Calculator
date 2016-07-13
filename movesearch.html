@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="css/style-small-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Move Search</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.5" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.4" />
     <meta name="description" content="Web based Smash 4 move frame data search" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_DAL" />
@@ -132,6 +132,9 @@
 
         <div id="results">
             <div id="filter">
+                <br/>
+                Results: {{noResults}} {{noResults == 1 ? "move" : "moves"}}
+                <br />
                 <table>
                     <tr>
                         <td>Character</td>
