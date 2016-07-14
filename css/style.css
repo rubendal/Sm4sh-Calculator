@@ -82,6 +82,12 @@ table,td,tr{
     border-collapse: collapse;
 }
 
+.header-table{
+    border:unset;
+    padding:4px;
+    border-collapse: collapse;
+}
+
 .footer-table{
     border:unset;
     padding:4px;
@@ -167,6 +173,12 @@ table,td,tr{
 
 .description{
     margin-left:10px;
+}
+
+.header-links{
+    position:relative;
+    top:5px;
+    margin-left:5px;
 }
 
 .attribute{
