@@ -19,6 +19,7 @@ app.controller('calculator', function ($scope) {
     $scope.kb_modifier = "none";
     $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.shield = ShieldList([0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
     $scope.shield = "normal";
@@ -238,6 +239,7 @@ app.controller('calculator', function ($scope) {
 
         $scope.training = results.training;
         $scope.vs = results.vs;
+        $scope.shield_advantage = results.shield;
 
 
     };

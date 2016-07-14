@@ -9,7 +9,7 @@
         this.style = "";
         var string = "";
         for(var i=0;i<this.move.hitboxActive.length;i++){
-            string += (this.move.hitboxActive[i].start != 0 ? (isNaN(this.move.hitboxActive[i].start) ? "" : this.move.hitboxActive[i].start) : "") + ((this.move.hitboxActive[i].start != 0 || this.move.hitboxActive[i].end != 0) ? "-" : "") + (this.move.hitboxActive[i].end != 0 ? (isNaN(this.move.hitboxActive[i].end) ? "" : this.move.hitboxActive[i].end) : "");
+            string += (this.move.hitboxActive[i].start != 0 ? (isNaN(this.move.hitboxActive[i].start) ? "" : this.move.hitboxActive[i].start) : "") + ((this.move.hitboxActive[i].start != 0 || this.move.hitboxActive[i].end != 0 ) ? (!(!isNaN(this.move.hitboxActive[i].start) && this.move.hitboxActive[i].end == 0) ? "-" : "") : "") + (this.move.hitboxActive[i].end != 0 ? (isNaN(this.move.hitboxActive[i].end) ? "" : this.move.hitboxActive[i].end) : "");
             if(i<this.move.hitboxActive.length-1){
                 string+=",";
             }

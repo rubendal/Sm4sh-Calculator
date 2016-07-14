@@ -15,6 +15,13 @@
     left:300px;
 }
 
+#shieldresults{
+    position: relative;
+    top:0;
+    left:auto;
+    margin-top:20px;
+}
+
 .section-table-content{
     padding:5px;
     text-align:center;

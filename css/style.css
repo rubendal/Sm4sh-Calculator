@@ -64,6 +64,13 @@ input[type=number]{
     position: absolute;
     top:0;
     left:850px;
+    width:600px;
+}
+
+#shieldresults{
+    position: absolute;
+    left:300px;
+    top:0;
 }
 
 .select-link{

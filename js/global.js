@@ -347,7 +347,7 @@ var set_kb = false;
 var windbox = false;
 
 function getResults() {
-    var result = { 'training': [], 'vs': [] };
+    var result = { 'training': [], 'vs': [], 'shield':[] };
     base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
     var damage = base_damage;
     if (attacker.name == "Lucario") {
@@ -428,10 +428,9 @@ function getResults() {
     vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
 
     //Shield stuff
-    traininglist.push.apply(traininglist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]));
-    vslist.push.apply(vslist, ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]));
     result.training = traininglist;
     result.vs = vslist;
+    result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
 
     return result;
 }
