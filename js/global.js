@@ -366,8 +366,8 @@ function getResults() {
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     } else {
-        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, target.attributes.gravity, in_air, windbox);
-        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, target.attributes.gravity, in_air, windbox);
+        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, in_air, windbox);
+        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox);
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     }
