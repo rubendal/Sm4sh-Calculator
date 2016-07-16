@@ -27,6 +27,7 @@ app.controller('calculator', function ($scope) {
     $scope.faf = 1;
 
     $scope.preDamage = 0;
+    $scope.di = 0;
 
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
@@ -234,6 +235,8 @@ app.controller('calculator', function ($scope) {
         is_smash = $scope.is_smash;
         set_kb = $scope.set_kb;
         windbox = $scope.windbox;
+
+        di = Math.floor(parseFloat($scope.di));
         
         var results = getResults();
 

@@ -112,25 +112,35 @@ class Character {
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, aerial, windbox, percent) {
+    constructor(kb, angle, gravity, aerial, windbox, percent, di) {
         this.base_kb = kb;
         this.kb = kb;
         this.original_angle = angle;
+        this.base_angle = angle;
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
         this.windbox = windbox;
         this.tumble = false;
         this.can_jablock = false;
+        this.di_able = false;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
         this.percent = percent;
         this.reeling = false;
-        if (this.original_angle == 361) {
-            this.angle = SakuraiAngle(this.kb, this.aerial);
+        if (di !== undefined) {
+            this.di = di;
+        } else {
+            this.di = 0;
         }
         this.calculate = function () {
             if (this.original_angle == 361) {
-                this.angle = SakuraiAngle(this.kb, this.aerial);
+                this.base_angle = SakuraiAngle(this.kb, this.aerial);
+            }
+            this.tumble = this.kb > 80 && !windbox;
+            this.angle = this.base_angle;
+            if (this.base_angle != 0 && this.base_angle != 180) {
+                this.di_able = this.tumble;
+                this.angle += this.di;
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
@@ -140,7 +150,6 @@ class Knockback {
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
             }
-            this.tumble = this.kb > 80 && !windbox;
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox) {
@@ -177,11 +186,16 @@ class Knockback {
 };
 
 class ListItem {
-    constructor(attribute, value) {
+    constructor(attribute, value, title) {
         this.attribute = attribute;
         this.addStyle = function (style) {
             this.style = style;
             return this;
+        }
+        if (title !== undefined) {
+            this.title = title;
+        } else {
+            this.title = ListItem.getTitle(this.attribute);
         }
         this.style = "";
         if (typeof value === "number" && isNaN(value)) {
@@ -199,11 +213,43 @@ class ListItem {
 
         
     }
+
+    static getTitle(attribute) {
+        var titles = [{ "attribute": "Gravity KB", "title": "KB added to Y component caused by gravity" },
+        { "attribute": "KB modifier", "title": "KB multiplier used when target is crouching or charging a smash attack" },
+        { "attribute": "Rage", "title": "KB multiplier used on total KB based on attacker's percent " },
+        { "attribute": "Aura", "title": "Lucario aura damage increase based on his percent" },
+        { "attribute": "KB dealt", "title": "Additional KB multiplier mostly used by attacker Monado Buster/Smash" },
+        { "attribute": "KB received", "title": "Additional KB multiplier mostly used by target Monado Shield/Smash" },
+        { "attribute": "Charged Smash", "title": "Damage multiplier used when using a charged smash attack" },
+        { "attribute": "Damage taken", "title": "Additional damage multiplier target receives caused by the target used in multiple powerups like Monado Jump/Shield/Buster and Deep Breathing" },
+        { "attribute": "Damage dealt", "title": "Additional damage multiplier target receives caused by the attacker used in multiple powerups like Monado Speed/Buster/Smash and Deep Breathing" },
+        { "attribute": "Before launch damage", "title": "Throws can deal some damage during their animations like Pikachu's fthrow, this is added to the target percent before calculating KB" },
+        { "attribute": "Stale-move negation", "title": "Damage reduction caused when using an attack repeatedly, if the attack isn't in the queue it gets a freshness bonus and increases damage a little" },
+        { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80" },
+        { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
+        { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
+        { "attribute": "DI angle", "title": "Angle affected by DI" }];
+        for (var i = 0; i < titles.length; i++) {
+            if (attribute == titles[i].attribute) {
+                return titles[i].title;
+            }
+        }
+        return "";
+    }
 };
 
 function List(values) {
     var list = [];
     var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var titles = ["Damage dealt to the target",
+        "Amount of frames attacker is in hitlag",
+        "Amount of frames the target can SDI",
+        "Total KB dealt",
+        "Angle target is launched without DI",
+        "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
+        "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
+        "Frame target can cancel hitstun by using an aerial"];
     var hitstun = -1;
     for (var i = 0; i < attributes.length; i++) {
         if (attributes[i] == "Hitstun") {
@@ -217,7 +263,7 @@ function List(values) {
                 continue;
             }
         }
-        list.push(new ListItem(attributes[i], +values[i].toFixed(4))); //.addStyle({'text-decoration':'line-through'})
+        list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i])); //.addStyle({'text-decoration':'line-through'})
         if (attributes[i] == "Angle") {
             if (values[i] > 361) {
                 i += 2;
@@ -229,7 +275,7 @@ function List(values) {
 
 function ShieldList(values) {
     var list = [];
-    var attributes = ["Shield stun", "Shield Hitlag", "Shield Advantage" ];
+    var attributes = ["Shield stun", "Shield Hitlag", "Shield Advantage"];
     for (var i = 0; i < attributes.length; i++) {
         list[i] = new ListItem(attributes[i], values[i]);
     }
@@ -345,6 +391,7 @@ var is_smash = false;
 
 var set_kb = false;
 var windbox = false;
+var di = 0;
 
 function getResults() {
     var result = { 'training': [], 'vs': [], 'shield':[] };
@@ -359,22 +406,28 @@ function getResults() {
     preDamage *= attacker.modifier.damage_dealt;
     preDamage *= target.modifier.damage_taken;
     if (!set_kb) {
-        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox);
-        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox);
+        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
+        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(attacker.modifier.kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     } else {
-        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, in_air, windbox);
-        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox);
+        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, in_air, windbox, di);
+        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     }
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
-    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
-    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox)]);
+    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
+    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox)]);
+    if (trainingkb.di_able) {
+        traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
+    }
+    if (vskb.di_able) {
+        vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
+    }
     if (trainingkb.tumble) {
         traininglist.splice(7, 0, new ListItem("Gravity KB", + +trainingkb.add_gravity_kb.toFixed(4)));
     }

@@ -7,6 +7,8 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - DI angle change
+* Added - Tooltips in most table values with explanations
 * Added - Show Reeling animation chance when possible
 * Added - Miis
 * Added - Weight-based knockback formula
@@ -38,6 +40,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Knockback modifiers
 * Stale-move negation
 * Sakurai Angle
+* DI angle changes
 * Knockback Horizontal and Vertical components
 * Gravity included in the vertical component
 * Hitstun
@@ -46,6 +49,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield stun
 * Shield Hitlag
 * Shield Advantage
+* When Reeling/Untechable spin animation could happen
 
 ### To Do
 * Improve Hitstun cancel frames formula

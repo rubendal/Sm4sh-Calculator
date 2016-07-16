@@ -130,6 +130,9 @@
                 Times in Queue:
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
                 <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
+                <br />
+                Target DI angle change:
+                <input name="di" type="number" min="-10" max="10" step="1" ng-model="di" ng-change="update()" />
                 <div id="kb_modifiers">
                     KB modifiers
                     <br />
@@ -202,7 +205,7 @@
                 <br />
                 <table>
                     <tr ng-repeat="x in training">
-                        <td class="attribute">{{ x.attribute }}</td>
+                        <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                     </tr>
                 </table>
@@ -213,7 +216,7 @@
                 <br />
                 <table>
                     <tr ng-repeat="x in vs">
-                        <td class="attribute">{{ x.attribute }}</td>
+                        <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                     </tr>
                 </table>
