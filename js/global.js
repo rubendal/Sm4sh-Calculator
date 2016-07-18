@@ -229,7 +229,9 @@ class ListItem {
         { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
         { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
-        { "attribute": "DI angle", "title": "Angle affected by DI" }];
+        { "attribute": "DI angle", "title": "Angle affected by DI" },
+        { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
+        { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" }];
         for (var i = 0; i < titles.length; i++) {
             if (attribute == titles[i].attribute) {
                 return titles[i].title;
@@ -392,6 +394,7 @@ var is_smash = false;
 var set_kb = false;
 var windbox = false;
 var di = 0;
+var luma_percent = 0;
 
 function getResults() {
     var result = { 'training': [], 'vs': [], 'shield':[] };
@@ -479,6 +482,26 @@ function getResults() {
     }
     traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
     vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
+
+    if (target.name == "Rosalina And Luma") {
+        if (!set_kb) {
+            var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
+            var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+            luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
+            luma_vskb.addModifier(attacker.modifier.kb_dealt);
+            luma_trainingkb.addModifier(target.modifier.kb_received);
+            luma_vskb.addModifier(target.modifier.kb_received);
+            traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
+            traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
+        } else {
+            var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
+            var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+            luma_trainingkb.addModifier(target.modifier.kb_received);
+            luma_vskb.addModifier(target.modifier.kb_received);
+            vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
+            vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
+        }
+    }
 
     //Shield stuff
     result.training = traininglist;

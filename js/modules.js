@@ -29,6 +29,9 @@ app.controller('calculator', function ($scope) {
     $scope.preDamage = 0;
     $scope.di = 0;
 
+    $scope.lumaPercent = 0;
+    $scope.lumaclass = { 'display': 'none' };
+
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
     $scope.target_weight = target.attributes.weight;
@@ -202,6 +205,8 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
+        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left":"292px" };
+        $scope.lumaPercent = 0;
         $scope.update();
     }
 
@@ -237,6 +242,7 @@ app.controller('calculator', function ($scope) {
         windbox = $scope.windbox;
 
         di = Math.floor(parseFloat($scope.di));
+        luma_percent = parseFloat($scope.lumaPercent);
         
         var results = getResults();
 

@@ -91,6 +91,11 @@
                 </select>
                 <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()"/>
                 %
+                <div ng-style="lumaclass">
+                    Luma
+                    <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />
+                    %
+                </div>
             </div>
             <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
             <br />
