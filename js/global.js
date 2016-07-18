@@ -493,11 +493,15 @@ function getResults() {
             luma_vskb.addModifier(target.modifier.kb_received);
             traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
             traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
+            vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
+            vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
         } else {
             var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
             var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
-            luma_trainingkb.addModifier(target.modifier.kb_received);
             luma_vskb.addModifier(target.modifier.kb_received);
+            luma_vskb.addModifier(target.modifier.kb_received);
+            traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
+            traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
             vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
             vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
         }
