@@ -132,8 +132,8 @@
                 <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
                 <input name="kbg_cond" type="radio" value="any" ng-model="kbg_cond" ng-change="update()" />Any
                 <br />
-                <input name="set_kb" type="checkbox" ng-model="set_kb" ng-change="update()" /> Weight-based knockback
-                <input name="set_kb_cond" type="checkbox" ng-model="set_kb_any" ng-change="update()" />Any
+                <input name="wbkb" type="checkbox" ng-model="wbkb" ng-change="update()" /> Weight-based knockback
+                <input name="wbkb_cond" type="checkbox" ng-model="wbkb_any" ng-change="update()" />Any
             </div>
 
         </div>
@@ -160,11 +160,11 @@
                         <td class="attribute">{{ x.character }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.name }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.hitboxActiveString}}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.base_damage }}</td>
+                        <td class="value" ng-style="{{x.style}}">{{ x.move.base_damage_print }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.angle }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.bkb }}</td>
                         <td class="value" ng-style="{{x.style}}">{{ x.move.kbg }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.set_kb_print }}</td>
+                        <td class="value" ng-style="{{x.style}}">{{ x.move.wbkb_print }}</td>
                     </tr>
                 </table>
             </div>

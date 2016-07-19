@@ -71,7 +71,7 @@ class MoveParser {
 
         this.count = 1;
         this.moves = [];
-        var set_kb = false;
+        var wbkb = false;
 
         var damage = [];
         var angles = [];
@@ -141,35 +141,35 @@ class MoveParser {
                     if (first_fkb) {
                         if (set_count < fkbs.length) {
                             b = fkbs[set_count];
-                            set_kb = true;
+                            wbkb = true;
                             set_count++;
                         } else {
                             if (bkbs.length > 0) {
                                 b = bkbs[base_count];
-                                set_kb = false;
+                                wbkb = false;
                                 base_count++;
                             } else {
                                 b = fkbs[fkbs.length - 1];
-                                set_kb = true;
+                                wbkb = true;
                             }
                         }
                     } else {
                         if (base_count < bkbs.length) {
                             b = bkbs[base_count];
-                            set_kb = false;
+                            wbkb = false;
                             base_count++;
                         } else {
                             if (fkbs.length > 0) {
                                 b = fkbs[set_count];
-                                set_kb = true;
+                                wbkb = true;
                                 set_count++;
                             } else {
                                 b = bkbs[bkbs.length - 1];
-                                set_kb = false;
+                                wbkb = false;
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), set_kb, this.hitboxes, parseFloat(this.faf),this.preDamage));
+                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf),this.preDamage));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -177,7 +177,7 @@ class MoveParser {
             } else {
                 //single hitbox
                 if (bkb.includes("W: ")) {
-                    set_kb = true;
+                    wbkb = true;
                     this.bkb = bkb.replace("W: ", "");
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
@@ -187,7 +187,7 @@ class MoveParser {
                         this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), set_kb, this.hitboxes, parseFloat(this.faf), this.preDamage));
+                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage));
                 }
             }
 
@@ -223,14 +223,14 @@ class MoveParser {
 }
 
 class Move {
-    constructor(id, name, base_damage, angle, bkb, kbg, set_kb, hitboxActive, faf, preDamage) {
+    constructor(id, name, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage) {
         this.id = id;
         this.name = name;
         this.base_damage = base_damage;
         this.angle = angle;
         this.bkb = bkb;
         this.kbg = kbg;
-        this.set_kb = set_kb;
+        this.wbkb = wbkb;
         this.hitboxActive = hitboxActive;
         this.faf = faf;
         this.preDamage = preDamage;

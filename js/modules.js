@@ -44,7 +44,7 @@ app.controller('calculator', function ($scope) {
     $scope.megaman_fsmash = false;
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
-    $scope.set_kb = false;
+    $scope.wbkb = false;
     $scope.windbox = false;
 
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
@@ -109,7 +109,7 @@ app.controller('calculator', function ($scope) {
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
-            $scope.set_kb = attack.set_kb;
+            $scope.wbkb = attack.wbkb;
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
@@ -136,7 +136,7 @@ app.controller('calculator', function ($scope) {
             $scope.baseDamage == attack.base_damage &&
             $scope.bkb == attack.bkb &&
             $scope.kbg == attack.kbg &&
-            $scope.set_kb == attack.set_kb &&
+            $scope.wbkb == attack.wbkb &&
             $scope.is_smash == attack.smash_attack){
             } else {
                 if (!$scope.detectAttack()) {
@@ -164,7 +164,7 @@ app.controller('calculator', function ($scope) {
                     $scope.baseDamage == attack.base_damage &&
                     $scope.bkb == attack.bkb &&
                     $scope.kbg == attack.kbg &&
-                    $scope.set_kb == attack.set_kb &&
+                    $scope.wbkb == attack.wbkb &&
                     $scope.is_smash == attack.smash_attack) {
                     $scope.move = i.toString();
                     $scope.preDamage = attack.preDamage;
@@ -184,7 +184,7 @@ app.controller('calculator', function ($scope) {
                         parseFloat($scope.baseDamage) >= parseFloat(attack.base_damage) &&
                         $scope.bkb == attack.bkb &&
                         $scope.kbg == attack.kbg &&
-                        $scope.set_kb == attack.set_kb &&
+                        $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
                         attack.chargeable) {
                         $scope.preDamage = attack.preDamage;
@@ -238,7 +238,7 @@ app.controller('calculator', function ($scope) {
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
-        set_kb = $scope.set_kb;
+        wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
         di = Math.floor(parseFloat($scope.di));

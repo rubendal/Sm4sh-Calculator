@@ -391,7 +391,7 @@ var electric = "none";
 var crouch = "none";
 var is_smash = false;
 
-var set_kb = false;
+var wbkb = false;
 var windbox = false;
 var di = 0;
 var luma_percent = 0;
@@ -408,7 +408,7 @@ function getResults() {
     damage *= target.modifier.damage_taken;
     preDamage *= attacker.modifier.damage_dealt;
     preDamage *= target.modifier.damage_taken;
-    if (!set_kb) {
+    if (!wbkb) {
         trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
         vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
         trainingkb.addModifier(attacker.modifier.kb_dealt);
@@ -484,7 +484,7 @@ function getResults() {
     vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
 
     if (target.name == "Rosalina And Luma") {
-        if (!set_kb) {
+        if (!wbkb) {
             var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
             var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
             luma_trainingkb.addModifier(attacker.modifier.kb_dealt);

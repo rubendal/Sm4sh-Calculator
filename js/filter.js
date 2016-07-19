@@ -24,10 +24,15 @@
         if (isNaN(this.move.angle)) {
             this.move.angle = "-";
         }
+        this.move.base_damage_print = this.move.base_damage;
         if (isNaN(this.move.base_damage)) {
-            this.move.base_damage = "-";
+            this.move.base_damage_print = "-";
+        } else {
+            if (this.move.preDamage != 0) {
+                this.move.base_damage_print = this.move.preDamage + ", " + this.move.base_damage;
+            }
         }
-        this.move.set_kb_print = this.move.set_kb ? "Yes" : "No";
+        this.move.wbkb_print = this.move.wbkb ? "Yes" : "No";
     }
 };
 
@@ -147,7 +152,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
     $scope.kbg_cond = "any";
-    $scope.set_kb_any = true;
+    $scope.wbkb_any = true;
 
     $scope.updateStatus = function (status) {
         $scope.status = status;
@@ -185,7 +190,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.bkb2 = 0;
     $scope.kbg = 0;
     $scope.kbg2 = 0;
-    $scope.set_kb = false;
+    $scope.wbkb = false;
 
     $scope.filteredMoves = [];
     $scope.noResults = 0;
@@ -238,8 +243,8 @@ filter_app.controller('filter', function ($scope) {
                 $scope.compare($scope.angle_cond, move.angle, angle, angle2) &&
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
                 $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2)) {
-                if (!$scope.set_kb_any) {
-                    if (move.set_kb != $scope.set_kb) {
+                if (!$scope.wbkb_any) {
+                    if (move.wbkb != $scope.wbkb) {
                         return;
                     }
                 }
