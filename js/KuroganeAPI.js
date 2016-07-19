@@ -240,6 +240,11 @@ class Move {
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
         this.chargeable = name.includes("No Charge") || name.includes("Uncharged");
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
+        this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
+        this.jab = this.name.includes("Jab");
+        this.aerial = this.name.includes("Uair") || this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("Dair") || this.name.includes("Nair");
+        this.taunt = this.name.includes("Taunt");
+        this.dashAttack = this.name.includes("Dash Attack");
 
         this.invalidate = function () {
             this.valid = false;
@@ -250,6 +255,16 @@ class Move {
             this.character = character;
             return this;
         }
+
+        this.type = this.smash_attack ? "Smash" :
+            this.throw ? "Throw" :
+            this.grab ? "Grab" :
+            this.tilt ? "Tilt" :
+            this.jab ? "Jab" :
+            this.aerial ? "Aerial" :
+            this.taunt ? "Taunt" :
+            this.dashAttack ? "DashAttack" :
+            "Special";
     }
 };
 

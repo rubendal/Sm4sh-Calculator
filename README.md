@@ -61,7 +61,7 @@ http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 Search for moves that match certain conditions using filters
 
 Filter moves by:
-* Name/Character
+* Name/Character/Type
 * Hitbox startup frame
 * Active hitbox frame
 * Base damage
@@ -74,7 +74,9 @@ Filter moves by:
 * `,` == or
 * `&` == and
 * `-` == not
-* character:name == filter by character
+* `character:name` == filter by character
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special)
+
 
 #### Examples
 * ftilt & up (Ftilt AND up: all ftilts capable of being angled up)
@@ -82,6 +84,7 @@ Filter moves by:
 * rapid jab,-finisher (rapid jab NOT finisher: all rapid jabs without finisher hitbox)
 * counter,-attack,-late,-hit,witch time,substitute,vision,toad (All counter moves counter frames)
 * character:pit,character:dark pit,&smash (Pit and Dark Pit smash attacks)
+* type:dashattack (All dash attacks)
 
 
 ## Issues

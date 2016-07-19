@@ -56,6 +56,36 @@ class CharacterId {
     }
 };
 
+class Condition {
+    constructor(condition) {
+        this.condition = condition.toLowerCase();
+        this.type = "Name";
+        if (this.condition.includes("character:")) {
+            this.type = "Character";
+
+            this.eval = function (move) {
+                return CharacterId.getName(characterListId, move.character).toLowerCase() == this.condition.toLowerCase().split("character:")[1];
+            }
+
+        } else {
+            if (this.condition.includes("type:")) {
+                this.type = "Type";
+
+                this.eval = function (move) {
+                    return move.type.toLowerCase() == this.condition.toLowerCase().split("type:")[1];
+                }
+
+            } else {
+
+                this.eval = function (move) {
+                    return move.name.toLowerCase().includes(this.condition);
+                }
+
+            }
+        }
+    }
+};
+
 class NameFilter {
     constructor(name) {
         this.name = name.toLowerCase().replace(/\&/gi, ",&");
@@ -68,50 +98,31 @@ class NameFilter {
                 continue;
             }
             if (conditions[i].charAt(0) == "&") {
-                this.AndConditions.push(conditions[i].replace("&", "").trim());
+                this.AndConditions.push(new Condition(conditions[i].replace("&", "").trim()));
             } else {
                 if (conditions[i].charAt(0) == "-") {
-                    this.NotConditions.push(conditions[i].replace("-", "").trim());
+                    this.NotConditions.push(new Condition(conditions[i].replace("-", "").trim()));
                 } else {
-                    this.OrConditions.push(conditions[i].trim());
+                    this.OrConditions.push(new Condition(conditions[i].trim()));
                 }
             }
         }
 
-        this.check = function (name, character) {
+        this.check = function (move) {
             
             for (var i = 0; i < this.AndConditions.length; i++) {
-                if (this.AndConditions[i].includes("character:")) {
-                    
-                    if (this.AndConditions[i].split(":")[1] != character) {
-                        return false;
-                    }
-                } else {
-                    if (!name.includes(this.AndConditions[i])) {
-                        return false;
-                    }
+                if (!this.AndConditions[i].eval(move)) {
+                    return false;
                 }
             }
             for (var i = 0; i < this.NotConditions.length; i++) {
-                if (this.NotConditions[i].includes("character:")) {
-                    if (this.NotConditions[i].split(":")[1] == character) {
-                        return false;
-                    }
-                } else {
-                    if (name.includes(this.NotConditions[i])) {
-                        return false;
-                    }
+                if (this.NotConditions[i].eval(move)) {
+                    return false;
                 }
             }
             for (var i = 0; i < this.OrConditions.length; i++) {
-                if (this.OrConditions[i].includes("character:")) {
-                    if (this.OrConditions[i].split(":")[1] == character) {
-                        return true;
-                    }
-                } else {
-                    if (name.includes(this.OrConditions[i])) {
-                        return true;
-                    }
+                if (this.OrConditions[i].eval(move)) {
+                    return true;
                 }
             }
             if (this.OrConditions.length == 0) {
@@ -121,6 +132,8 @@ class NameFilter {
         }
     }
 };
+
+var characterListId = [];
 
 
 var filter_app = angular.module('filter', []);
@@ -205,6 +218,7 @@ filter_app.controller('filter', function ($scope) {
     
     $scope.update = function () {
         $scope.filteredMoves = [];
+        characterListId = $scope.charactersId;
         var hitbox_start = parseFloat($scope.hitbox_start);
         var hitbox_start2 = parseFloat($scope.hitbox_start2);
         var hitbox_frame = parseFloat($scope.hitbox_frame);
@@ -229,7 +243,7 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
-                if (!nameConditions.check(move.name.toLowerCase(), CharacterId.getName($scope.charactersId, move.character).toLowerCase())) {
+                if (!nameConditions.check(move)) {
                     return;
                 }
                 for (var i = 0; i < move.hitboxActive.length; i++) {
