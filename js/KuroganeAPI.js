@@ -242,7 +242,7 @@ class Move {
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");
-        this.aerial = this.name.includes("Uair") || this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("Dair") || this.name.includes("Nair");
+        this.aerial = this.name.includes("Uair") || this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("Dair") || this.name.includes("Nair") || this.name.includes("Zair");
         this.taunt = this.name.includes("Taunt");
         this.dashAttack = this.name.includes("Dash Attack");
 
