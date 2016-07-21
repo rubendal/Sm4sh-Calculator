@@ -50,9 +50,11 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield stun
 * Shield Hitlag
 * Shield Advantage
+* Luma knockback
 * When Reeling/Untechable spin animation could happen
 
 ### To Do
+* App Icon
 * Improve Hitstun cancel frames formula
 
 ## Move Search
