@@ -397,7 +397,8 @@ var di = 0;
 var luma_percent = 0;
 
 function getResults() {
-    var result = { 'training': [], 'vs': [], 'shield':[] };
+    var result = { 'training': [], 'vs': [], 'shield': [] };
+
     base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
     var damage = base_damage;
     if (attacker.name == "Lucario") {

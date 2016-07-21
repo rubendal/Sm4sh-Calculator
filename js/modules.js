@@ -49,6 +49,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
     $scope.section_attributes = { 'background': 'transparent' };
+    $scope.counterStyle = { "display": "none" };
+    $scope.counteredDamage = 0;
+    $scope.counterMult = 0;
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -56,6 +59,10 @@ app.controller('calculator', function ($scope) {
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+    }
+
+    $scope.checkCounterVisibility = function () {
+        $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
     }
 
     $scope.charging = function(){
@@ -99,12 +106,18 @@ app.controller('calculator', function ($scope) {
         $scope.preDamage = 0;
         $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
         $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
+        $scope.counterMult = 0;
+        $scope.counteredDamage = 0;
+        $scope.checkCounterVisibility();
         $scope.update();
     }
 
     $scope.updateAttack = function () {
         var attack = $scope.moveset[$scope.move];
         if (attack.valid) {
+            if (attack.counterMult == 0) {
+                $scope.counteredDamage = 0;
+            }
             $scope.angle = attack.angle;
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
@@ -112,6 +125,7 @@ app.controller('calculator', function ($scope) {
             $scope.wbkb = attack.wbkb;
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
+            $scope.counterMult = attack.counterMult;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -123,6 +137,10 @@ app.controller('calculator', function ($scope) {
                 charge_frames = 0;
             }
             $scope.checkSmashVisibility();
+            $scope.checkCounterVisibility();
+            if ($scope.counterMult != 0) {
+                $scope.counterDamage();
+            }
         } else {
             //console.debug(attack.name + " not valid");
         }
@@ -151,6 +169,18 @@ app.controller('calculator', function ($scope) {
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
             }
+        }
+        $scope.update();
+    }
+
+    $scope.counterDamage = function () {
+        var attack = $scope.moveset[$scope.move];
+        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(2);
+        if (damage > 50) {
+            damage = 50;
+        }
+        if (attack.base_damage < damage) {
+            $scope.baseDamage = damage;
         }
         $scope.update();
     }
@@ -186,7 +216,7 @@ app.controller('calculator', function ($scope) {
                         $scope.kbg == attack.kbg &&
                         $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
-                        attack.chargeable) {
+                        (attack.chargeable || attack.counterMult != 0)) {
                         $scope.preDamage = attack.preDamage;
                         $scope.move = i.toString();
                         return true;
@@ -205,7 +235,7 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left":"292px" };
+        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
         $scope.lumaPercent = 0;
         $scope.update();
     }

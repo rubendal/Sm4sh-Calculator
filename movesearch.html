@@ -156,15 +156,15 @@
                         <td>KBG</td>
                         <td>Weight-based knockback</td>
                     </tr>
-                    <tr ng-repeat="x in filteredMoves track by $index">
+                    <tr ng-repeat="x in filteredMoves track by $index" ng-style="{'background':x.color}">
                         <td class="attribute">{{ x.character }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.name }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.hitboxActiveString}}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.base_damage_print }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.angle }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.bkb }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.kbg }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.move.wbkb_print }}</td>
+                        <td class="value">{{ x.move.name }}</td>
+                        <td class="value">{{ x.move.hitboxActiveString}}</td>
+                        <td class="value">{{ x.move.base_damage_print }}</td>
+                        <td class="value">{{ x.move.angle }}</td>
+                        <td class="value">{{ x.move.bkb }}</td>
+                        <td class="value">{{ x.move.kbg }}</td>
+                        <td class="value">{{ x.move.wbkb_print }}</td>
                     </tr>
                 </table>
             </div>

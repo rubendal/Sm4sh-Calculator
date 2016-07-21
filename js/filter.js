@@ -1,7 +1,12 @@
 ﻿class FilterListItem {
     constructor(character, move) {
-        this.character = character;
+        this.character = character.name;
         this.move = move;
+        if (character.color !== undefined) {
+            this.color = character.color;
+        } else {
+            this.color = "transparent";
+        }
         this.addStyle = function (style) {
             this.style = style;
             return this;
@@ -30,25 +35,31 @@
         } else {
             if (this.move.preDamage != 0) {
                 this.move.base_damage_print = this.move.preDamage + ", " + this.move.base_damage;
+            }else{
+                if (this.move.counterMult != 0) {
+                    this.move.base_damage_print = this.move.base_damage + " (Counter: x" + this.move.counterMult + ")";
+                }
             }
         }
         this.move.wbkb_print = this.move.wbkb ? "Yes" : "No";
+
     }
 };
 
 class CharacterId {
-    constructor(name, id) {
+    constructor(name, id, color) {
         this.name = name;
         this.id = id;
+        //this.color = color;
     }
 
     static getName(list, id){
         for (var i = 0; i < list.length; i++) {
             if (list[i].id == id) {
-                return list[i].name;
+                return list[i];
             }
         }
-        return "";
+        return null;
     }
 
     static getId(list, name) {
@@ -77,7 +88,13 @@ class Condition {
                 this.type = "Type";
 
                 this.eval = function (move) {
-                    return move.type.toLowerCase() == this.condition.toLowerCase().split("type:")[1];
+                    var types = move.type.split(",");
+                    for (var i = 0; i < types.length; i++) {
+                        if(types[i].toLowerCase() == this.condition.toLowerCase().split("type:")[1]){
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
             } else {
@@ -270,7 +287,7 @@ filter_app.controller('filter', function ($scope) {
                     }
                 }
                 var name = CharacterId.getName($scope.charactersId, move.character);
-                if (name != "") {
+                if (name != null) {
                     $scope.filteredMoves.push(new FilterListItem(name, move));
                 }
                 return;

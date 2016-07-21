@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Parsed counters damage multipliers from KH API
 * Added - [Luma knockback](https://twitter.com/LettuceUdon/status/755101541405556736)
 * Added - DI angle change
 * Added - Tooltips in most table values with explanations
@@ -37,6 +38,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Rage
 * Aura
 * Charged Smash attacks multiplier
+* Countered damage
 * Hitlag (Attacker and Target)
 * Knockback modifiers
 * Stale-move negation
