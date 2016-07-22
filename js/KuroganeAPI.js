@@ -255,6 +255,7 @@ class Move {
         this.taunt = this.name.includes("Taunt");
         this.dashAttack = this.name.includes("Dash Attack");
         this.counter = this.counterMult != 0 || this.name.includes("Counter (Attack)") || this.name.includes("Substitute (Attack") || this.name.includes("Toad (Attack") || this.name.includes("Witch Time");
+        this.commandGrab = !this.grab && (this.name.includes("Grab") || this.name.includes("Confusion") || (this.name.includes("Inhale") && !this.name.includes("Spit")) || (this.name.includes("Chomp") && !this.name.includes("Food") && !this.name.includes("Eating")) || this.name.includes("Egg Lay") || this.name.includes("Flame Choke")) && !this.name.includes("Attack") && !this.name.includes("(Hitbox)");
 
         this.invalidate = function () {
             this.valid = false;
@@ -278,6 +279,10 @@ class Move {
 
         if (this.counter) {
             this.type += ",Counter";
+        }
+
+        if(this.commandGrab){
+            this.type += ",CommandGrab";
         }
     }
 };

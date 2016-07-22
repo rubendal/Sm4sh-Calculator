@@ -79,7 +79,7 @@ Filter moves by:
 * `&` == and
 * `-` == not
 * `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special)
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab)
 
 
 #### Examples
