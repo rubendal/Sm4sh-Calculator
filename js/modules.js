@@ -181,6 +181,8 @@ app.controller('calculator', function ($scope) {
         }
         if (attack.base_damage < damage) {
             $scope.baseDamage = damage;
+        } else {
+            $scope.baseDamage = attack.base_damage;
         }
         $scope.update();
     }
