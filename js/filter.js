@@ -50,7 +50,7 @@ class CharacterId {
     constructor(name, id, color) {
         this.name = name;
         this.id = id;
-        //this.color = color;
+        this.color = color;
     }
 
     static getName(list, id){
