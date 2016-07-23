@@ -100,7 +100,10 @@ class Condition {
             } else {
 
                 this.eval = function (move) {
-                    return move.name.toLowerCase().includes(this.condition);
+                    if(this.condition.charAt(0) == '"'){
+                        return this.condition.toLowerCase().replace(/\"/gi,"") == move.name.toLowerCase(); // || this.condition.toLowerCase().replace(/\"/gi,"") == move.moveName.toLowerCase();
+                    }
+                    return move.name.toLowerCase().includes(this.condition.toLowerCase());
                 }
 
             }
@@ -116,7 +119,7 @@ class NameFilter {
         this.AndConditions = [];
         this.NotConditions = [];
         for (var i = 0; i < conditions.length; i++) {
-            if (conditions[i] == "" || conditions[i] == "-" || conditions[i] == "&") {
+            if (conditions[i] == "" || conditions[i] == "-" || conditions[i] == "&" || conditions[i] == '"' || conditions[i] == '""') {
                 continue;
             }
             if (conditions[i].charAt(0) == "&") {
@@ -219,16 +222,12 @@ filter_app.controller('filter', function ($scope) {
         switch (cond) {
             case "<":
                 return value1 < value2;
-                break;
             case ">":
                 return value1 > value2;
-                break;
             case "<=":
                 return value1 <= value2;
-                break;
             case ">=":
                 return value1 >= value2;
-                break;
             case "between":
                 return value1 >= value2 && value1 <= value3;
             case "any":

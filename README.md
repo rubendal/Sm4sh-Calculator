@@ -78,6 +78,7 @@ Filter moves by:
 * `,` == or
 * `&` == and
 * `-` == not
+* `"name"` == Move name is exactly the one between double quotes
 * `character:name` == filter by character
 * `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab)
 

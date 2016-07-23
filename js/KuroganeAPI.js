@@ -177,7 +177,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                    this.moves.push(new Move(0, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -190,17 +190,17 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
                     } else {
-                        this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult).invalidate());
+                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                    this.moves.push(new Move(0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult).invalidate());
+            this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult).invalidate());
         }
 
 
@@ -231,9 +231,10 @@ class MoveParser {
 }
 
 class Move {
-    constructor(id, name, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult) {
+    constructor(id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult) {
         this.id = id;
         this.name = name;
+        this.moveName = moveName;
         this.base_damage = base_damage;
         this.angle = angle;
         this.bkb = bkb;
