@@ -1,14 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
-    <script src="js/github.js"></script>
     <script src="js/formulas.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="js/global.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
     <script src="js/modules.js"></script>
-    <link id="favicon" rel="shortcut icon" href="" type="image/png" />
+    <link id="favicon" rel="shortcut icon" href="https://avatars.githubusercontent.com/u/10661132?v=3" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/style-1200.css" media="screen and (max-width: 1500px) and (min-width: 1200px)"/>
     <link rel="stylesheet" type="text/css" href="css/style-small.css" media="screen and (max-width: 1199px) and (min-width: 600px)" />
@@ -46,7 +45,11 @@
                     </table>
                 </div>
             </div>
-            <span id="github-user"></span>
+            <span id="github-user">
+                <a href="https://github.com/rubendal" target="_blank" title="Github profile">
+                    <img id="github-profile" class="header-image" src="https://avatars.githubusercontent.com/u/10661132?v=3"/>
+                </a>
+            </span>
         </div>
         
     </div>
@@ -129,7 +132,7 @@
                 <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
                 <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
                 <br />
-                BKB:
+                {{wbkb ? "WBKB" : "BKB"}}:
                 <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="updateAttackData()" />
                 <input type="checkbox" ng-model="wbkb" ng-change="updateAttackData()" /> WBKB
                 <br />

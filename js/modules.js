@@ -1,6 +1,5 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
-    loadGitHubData();
     var anames = names.slice();
     anames.splice(anames.indexOf("Cloud (Limit Break)"), 1);
     $scope.attacker_characters = anames;

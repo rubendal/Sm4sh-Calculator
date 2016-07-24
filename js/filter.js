@@ -163,8 +163,6 @@ var characterListId = [];
 
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
-    loadGitHubData();
-
     $scope.name = "";
     $scope.hitbox_start_cond = "any";
     $scope.hitbox_frame_cond = true;
