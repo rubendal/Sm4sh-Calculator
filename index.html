@@ -129,7 +129,7 @@
                 <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
                 <br />
                 Angle:
-                <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
+                <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="updateAttackData()" />
                 <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
                 <br />
                 {{wbkb ? "WBKB" : "BKB"}}:
@@ -138,7 +138,7 @@
                 <br />
                 KBG:
                 <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="windbox" ng-change="update()" /> Windbox/Flinchless
+                <input type="checkbox" ng-model="windbox" ng-change="updateAttackData()" /> Windbox/Flinchless
                 <br />
                 Times in Queue:
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />

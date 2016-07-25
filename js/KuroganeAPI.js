@@ -77,6 +77,13 @@ class MoveParser {
 
         this.hitboxes = this.hitboxActive;
 
+        var rehitRateRegex = /(Rehit rate: [0-9]+)/i;
+        this.rehitRate = 0;
+
+        if(rehitRateRegex.test(hitboxActive)){
+            this.rehitRate = parseFloat(/[0-9]+/i.exec(rehitRateRegex.exec(hitboxActive)[0])[0]);
+        }
+        
         this.count = 1;
         this.moves = [];
         var wbkb = false;
@@ -177,7 +184,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                    this.moves.push(new Move(0, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -190,17 +197,17 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate));
                     } else {
-                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult).invalidate());
+                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult));
+                    this.moves.push(new Move(0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult).invalidate());
+            this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult, this.rehitRate).invalidate());
         }
 
 
@@ -233,7 +240,7 @@ class MoveParser {
 var previousMove = null;
 
 class Move {
-    constructor(id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult) {
+    constructor(id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult, rehitRate) {
         this.id = id;
         this.name = name;
         this.moveName = moveName;
@@ -246,6 +253,7 @@ class Move {
         this.faf = faf;
         this.preDamage = preDamage;
         this.counterMult = counterMult;
+        this.rehitRate = rehitRate;
 
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
@@ -260,6 +268,8 @@ class Move {
         this.counter = this.counterMult != 0 || this.name.includes("Counter (Attack)") || this.name.includes("Substitute (Attack") || this.name.includes("Toad (Attack") || this.name.includes("Witch Time");
         this.commandGrab = !this.grab && (this.name.includes("Grab") || this.name.includes("Confusion") || (this.name.includes("Inhale") && !this.name.includes("Spit")) || (this.name.includes("Chomp") && !this.name.includes("Food") && !this.name.includes("Eating")) || this.name.includes("Egg Lay") || this.name.includes("Flame Choke")) && !this.name.includes("Attack") && !this.name.includes("(Hitbox)");
         this.unblockable = this.grab || this.throw || this.commandGrab || (this.name.includes("Vision") && this.name.includes("Attack")) || this.name.includes("Witch Time") || this.name.includes("KO Punch") || this.name == "Focus Attack (Stage 3)" || this.name == "Reflect Barrier"; 
+        this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)";
+        this.multihit = /(Hit [0-9]+)/gi.test(this.name) || /(Hits [0-9]+\-[0-9]+)/gi.test(this.name) || this.name.includes("Final Hit") || this.rehitRate != 0;
 
         this.invalidate = function () {
             this.valid = false;
@@ -291,6 +301,14 @@ class Move {
 
         if(this.unblockable && !this.throw && !this.grab && !this.commandGrab){
             this.type += ",Unblockable";
+        }
+
+        if(this.windbox){
+            this.type += ",Windbox";
+        }
+
+        if(this.multihit){
+            this.type += ",Multihit";
         }
 
         if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){

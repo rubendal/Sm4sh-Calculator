@@ -128,6 +128,7 @@ app.controller('calculator', function ($scope) {
             $scope.preDamage = attack.preDamage;
             $scope.counterMult = attack.counterMult;
             $scope.unblockable = attack.unblockable;
+            $scope.windbox = attack.windbox;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -157,7 +158,8 @@ app.controller('calculator', function ($scope) {
             $scope.bkb == attack.bkb &&
             $scope.kbg == attack.kbg &&
             $scope.wbkb == attack.wbkb &&
-            $scope.is_smash == attack.smash_attack){
+            $scope.is_smash == attack.smash_attack &&
+            $scope.windbox == attack.windbox){
             } else {
                 if (!$scope.detectAttack()) {
                     $scope.move = "0";
@@ -201,13 +203,14 @@ app.controller('calculator', function ($scope) {
                     $scope.bkb == attack.bkb &&
                     $scope.kbg == attack.kbg &&
                     $scope.wbkb == attack.wbkb &&
-                    $scope.is_smash == attack.smash_attack) {
-                    $scope.move = i.toString();
-                    $scope.preDamage = attack.preDamage;
-                    $scope.counterMult = attack.counterMult;
-                    $scope.unblockable = attack.unblockable;
-                    detected = true;
-                    return true;
+                    $scope.is_smash == attack.smash_attack &&
+                    $scope.windbox == attack.windbox) {
+                        $scope.move = i.toString();
+                        $scope.preDamage = attack.preDamage;
+                        $scope.counterMult = attack.counterMult;
+                        $scope.unblockable = attack.unblockable;
+                        detected = true;
+                        return true;
                 } else {
 
                 }
@@ -224,12 +227,13 @@ app.controller('calculator', function ($scope) {
                         $scope.kbg == attack.kbg &&
                         $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
+                        $scope.windbox == attack.windbox &&
                         (attack.chargeable || attack.counterMult != 0)) {
-                        $scope.preDamage = attack.preDamage;
-                        $scope.counterMult = attack.counterMult;
-                        $scope.unblockable = attack.unblockable;
-                        $scope.move = i.toString();
-                        return true;
+                            $scope.preDamage = attack.preDamage;
+                            $scope.counterMult = attack.counterMult;
+                            $scope.unblockable = attack.unblockable;
+                            $scope.move = i.toString();
+                            return true;
                     } else {
 
                     }

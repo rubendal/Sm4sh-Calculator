@@ -12,14 +12,17 @@
             return this;
         }
         this.style = "";
-        var string = "";
+        var hitbox = "";
         for(var i=0;i<this.move.hitboxActive.length;i++){
-            string += (this.move.hitboxActive[i].start != 0 ? (isNaN(this.move.hitboxActive[i].start) ? "" : this.move.hitboxActive[i].start) : "") + ((this.move.hitboxActive[i].start != 0 || this.move.hitboxActive[i].end != 0 ) ? (!(!isNaN(this.move.hitboxActive[i].start) && this.move.hitboxActive[i].end == 0) ? "-" : "") : "") + (this.move.hitboxActive[i].end != 0 ? (isNaN(this.move.hitboxActive[i].end) ? "" : this.move.hitboxActive[i].end) : "");
+            hitbox += (this.move.hitboxActive[i].start != 0 ? (isNaN(this.move.hitboxActive[i].start) ? "" : this.move.hitboxActive[i].start) : "") + ((this.move.hitboxActive[i].start != 0 || this.move.hitboxActive[i].end != 0 ) ? (!(!isNaN(this.move.hitboxActive[i].start) && this.move.hitboxActive[i].end == 0) ? "-" : "") : "") + (this.move.hitboxActive[i].end != 0 ? (isNaN(this.move.hitboxActive[i].end) ? "" : this.move.hitboxActive[i].end) : "");
             if(i<this.move.hitboxActive.length-1){
-                string+=",";
+                hitbox+=",";
             }
         }
-        this.move.hitboxActiveString = string;
+        if(this.move.rehitRate != 0){
+            hitbox += " (Rehit rate: " + this.move.rehitRate + ")";
+        }
+        this.move.hitboxActive_print = hitbox;
         if (isNaN(this.move.faf)) {
             this.move.faf = "-";
         }
