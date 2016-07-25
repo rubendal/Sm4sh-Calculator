@@ -20,6 +20,9 @@
             }
         }
         this.move.hitboxActiveString = string;
+        if (isNaN(this.move.faf)) {
+            this.move.faf = "-";
+        }
         if (isNaN(this.move.bkb)) {
             this.move.bkb = "-";
         }
@@ -170,6 +173,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.name = "";
     $scope.hitbox_start_cond = "any";
     $scope.hitbox_frame_cond = true;
+    $scope.faf_cond = "any";
     $scope.base_damage_cond = "any";
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
@@ -204,6 +208,8 @@ filter_app.controller('filter', function ($scope) {
     $scope.hitbox_start = 0;
     $scope.hitbox_start2 = 0;
     $scope.hitbox_frame = 0;
+    $scope.faf = 0;
+    $scope.faf2 = 0;
     $scope.base_damage = 0;
     $scope.base_damage2 = 0;
     $scope.angle = 0;
@@ -246,6 +252,8 @@ filter_app.controller('filter', function ($scope) {
         var hitbox_start2 = parseFloat($scope.hitbox_start2);
         var hitbox_frame = parseFloat($scope.hitbox_frame);
         var hitbox_frame2 = parseFloat($scope.hitbox_frame2);
+        var faf = parseFloat($scope.faf);
+        var faf2 = parseFloat($scope.faf2);
         var base_damage = parseFloat($scope.base_damage);
         var base_damage2 = parseFloat($scope.base_damage2);
         var angle = parseFloat($scope.angle);
@@ -260,7 +268,8 @@ filter_app.controller('filter', function ($scope) {
             if ($scope.compare($scope.base_damage_cond, move.base_damage, base_damage, base_damage2) &&
                 $scope.compare($scope.angle_cond, move.angle, angle, angle2) &&
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
-                $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2)) {
+                $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2) &&
+                $scope.compare($scope.faf_cond, move.faf, faf, faf2)) {
                 if (!$scope.wbkb_any) {
                     if (move.wbkb != $scope.wbkb) {
                         return;

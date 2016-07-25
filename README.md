@@ -70,6 +70,7 @@ Filter moves by:
 * Name/Character/Type
 * Hitbox startup frame
 * Active hitbox frame
+* FAF
 * Base damage
 * Angle
 * BKB/WBKB
