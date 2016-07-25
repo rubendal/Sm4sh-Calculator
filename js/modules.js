@@ -51,6 +51,7 @@ app.controller('calculator', function ($scope) {
     $scope.counterStyle = { "display": "none" };
     $scope.counteredDamage = 0;
     $scope.counterMult = 0;
+    $scope.unblockable = false;
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -107,6 +108,7 @@ app.controller('calculator', function ($scope) {
         $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
+        $scope.unblockable = false;
         $scope.checkCounterVisibility();
         $scope.update();
     }
@@ -125,6 +127,7 @@ app.controller('calculator', function ($scope) {
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
             $scope.counterMult = attack.counterMult;
+            $scope.unblockable = attack.unblockable;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -160,6 +163,7 @@ app.controller('calculator', function ($scope) {
                     $scope.move = "0";
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
+                    $scope.unblockable = false;
                 }
             }
         } else {
@@ -167,6 +171,7 @@ app.controller('calculator', function ($scope) {
                 $scope.move = "0";
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
+                $scope.unblockable=false;
             }
         }
         $scope.update();
@@ -199,6 +204,8 @@ app.controller('calculator', function ($scope) {
                     $scope.is_smash == attack.smash_attack) {
                     $scope.move = i.toString();
                     $scope.preDamage = attack.preDamage;
+                    $scope.counterMult = attack.counterMult;
+                    $scope.unblockable = attack.unblockable;
                     detected = true;
                     return true;
                 } else {
@@ -219,6 +226,8 @@ app.controller('calculator', function ($scope) {
                         $scope.is_smash == attack.smash_attack &&
                         (attack.chargeable || attack.counterMult != 0)) {
                         $scope.preDamage = attack.preDamage;
+                        $scope.counterMult = attack.counterMult;
+                        $scope.unblockable = attack.unblockable;
                         $scope.move = i.toString();
                         return true;
                     } else {
@@ -274,6 +283,8 @@ app.controller('calculator', function ($scope) {
 
         di = Math.floor(parseFloat($scope.di));
         luma_percent = parseFloat($scope.lumaPercent);
+
+        unblockable = $scope.unblockable;
         
         var results = getResults();
 

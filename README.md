@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Detect unblockable moves
 * Added - Parsed counters damage multipliers from KH API
 * Added - [Luma knockback](https://twitter.com/LettuceUdon/status/755101541405556736)
 * Added - DI angle change
@@ -80,7 +81,7 @@ Filter moves by:
 * `-` == not
 * `"name"` == Move name is exactly the one between double quotes
 * `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab)
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable)
 
 
 #### Examples

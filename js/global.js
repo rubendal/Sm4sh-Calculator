@@ -396,6 +396,8 @@ var windbox = false;
 var di = 0;
 var luma_percent = 0;
 
+var unblockable = false;
+
 function getResults() {
     var result = { 'training': [], 'vs': [], 'shield': [] };
 
@@ -508,10 +510,15 @@ function getResults() {
         }
     }
 
-    //Shield stuff
     result.training = traininglist;
     result.vs = vslist;
-    result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
+
+    //Shield stuff
+    if(!unblockable){
+        result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
+    }else{
+        result.shield = ([new ListItem("Unblockable attack", "Yes")]);
+    }
 
     return result;
 }
