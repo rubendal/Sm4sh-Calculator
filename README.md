@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Fixed - Missing FAF in moves with multiple hitboxes
 * Added - Detect unblockable moves
 * Added - Parsed counters damage multipliers from KH API
 * Added - [Luma knockback](https://twitter.com/LettuceUdon/status/755101541405556736)

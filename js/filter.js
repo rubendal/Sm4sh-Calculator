@@ -80,7 +80,11 @@ class Condition {
             this.type = "Character";
 
             this.eval = function (move) {
-                return CharacterId.getName(characterListId, move.character).toLowerCase() == this.condition.toLowerCase().split("character:")[1];
+                var character = CharacterId.getName(characterListId, move.character);
+                if(character == null){
+                    return false;
+                }
+                return character.name.toLowerCase() == this.condition.toLowerCase().split("character:")[1];
             }
 
         } else {

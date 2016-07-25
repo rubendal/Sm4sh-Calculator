@@ -230,6 +230,8 @@ class MoveParser {
     }
 }
 
+var previousMove = null;
+
 class Move {
     constructor(id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult) {
         this.id = id;
@@ -290,6 +292,13 @@ class Move {
         if(this.unblockable && !this.throw && !this.grab && !this.commandGrab){
             this.type += ",Unblockable";
         }
+
+        if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){
+            if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
+                this.faf = previousMove.faf;
+            }
+        }
+        previousMove = this;
     }
 };
 
