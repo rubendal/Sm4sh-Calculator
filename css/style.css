@@ -15,17 +15,20 @@ body{
 
 input,select{
     font-family: Open Sans;
-
+    border-radius:4px;
+    padding: 1px 1px;
+    margin-bottom: 1px;
 }
 
 input[type=number]{
-    width:5em;
+    width:4em;
 }
 
 #calculator{
     position:relative;
     margin-top:10px;
     margin-left:10px;
+    font-size: 15px;
 }
 
 #section{
@@ -65,6 +68,10 @@ input[type=number]{
     top:0;
     left:850px;
     width:600px;
+}
+
+#results{
+    font-size: 16px;
 }
 
 #shieldresults{

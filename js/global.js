@@ -136,9 +136,9 @@ class Knockback {
             if (this.original_angle == 361) {
                 this.base_angle = SakuraiAngle(this.kb, this.aerial);
             }
-            this.tumble = this.kb > 80 && !windbox;
             this.angle = this.base_angle;
             if (this.base_angle != 0 && this.base_angle != 180) {
+                this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
                 this.angle += this.di;
             }
