@@ -144,6 +144,9 @@
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
                 <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
                 <br />
+                Extra Shield Damage:
+                <input name="shield_damage" type="number" min="0" max="50" step="1" ng-model="shieldDamage" ng-change="updateAttackData()" />
+                <br />
                 Target DI angle change:
                 <input name="di" type="number" min="-10" max="10" step="1" ng-model="di" ng-change="update()" />
                 <div id="kb_modifiers">

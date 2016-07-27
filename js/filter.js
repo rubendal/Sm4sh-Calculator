@@ -46,6 +46,9 @@
                     this.move.base_damage_print = this.move.base_damage + " (Counter: x" + this.move.counterMult + ")";
                 }
             }
+            if(this.move.shieldDamage != 0){
+                this.move.base_damage_print += " (SD +" + this.move.shieldDamage + ")";
+            }
         }
         this.move.wbkb_print = this.move.wbkb ? "Yes" : "No";
 

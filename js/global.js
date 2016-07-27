@@ -25,38 +25,39 @@ function loadJSONPath(path) {
 }
 
 class Modifier {
-    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity) {
+    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, shield) {
         this.name = name;
         this.damage_dealt = damage_dealt;
         this.damage_taken = damage_taken;
         this.kb_dealt = kb_dealt;
         this.kb_received = kb_received;
         this.gravity = gravity;
+        this.shield = shield;
     }
 };
 
 var monado = [
-    new Modifier("Jump", 1, 1.22, 1, 1, 1.3),
-    new Modifier("Speed", 0.8, 1, 1, 1, 1),
-    new Modifier("Shield", 0.7, 0.67, 1, .78, 1),
-    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 1),
-    new Modifier("Smash", 0.5, 1, 1.18, 1.07, 1)
+    new Modifier("Jump", 1, 1.22, 1, 1, 1.3, 1),
+    new Modifier("Speed", 0.8, 1, 1, 1, 1, 1),
+    new Modifier("Shield", 0.7, 0.67, 1, .78, 1, 1.5),
+    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 1, 1),
+    new Modifier("Smash", 0.5, 1, 1.18, 1.07, 1, 1)
 ];
 
 var decisive_monado = [
-    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 1.43),
-    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 1.1),
-    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 1),
-    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 1),
-    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, 1)
+    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 1.43, 1),
+    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 1.1, 1),
+    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 1, 1.5*1.1),
+    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 1, 1),
+    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, 1, 1)
 ];
 
 var hyper_monado = [
-    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 1.56),
-    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 1.2),
-    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 1),
-    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 1),
-    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, 1)
+    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 1.56, 1),
+    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 1.2, 1),
+    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 1, 1.5*1.2),
+    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 1, 1),
+    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, 1, 1)
 ];
 
 class Character {
@@ -66,7 +67,7 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("", 1, 1, 1, 1, 1);
+        this.modifier = new Modifier("", 1, 1, 1, 1, 1, 1);
         for (var i = 0; i < monado.length; i++) {
             if (name.includes("(" + decisive_monado[i].name + ")")) {
                 this.modifier = decisive_monado[i];
@@ -85,11 +86,11 @@ class Character {
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
@@ -396,6 +397,8 @@ var windbox = false;
 var di = 0;
 var luma_percent = 0;
 
+var shieldDamage = 0;
+
 var unblockable = false;
 
 function getResults() {
@@ -516,6 +519,13 @@ function getResults() {
     //Shield stuff
     if(!unblockable){
         result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
+        if(!powershield){
+            var s = (base_damage * 1.19) + shieldDamage;
+            result.shield.splice(0, 0, new ListItem("Shield Damage", +s.toFixed(4)));
+            result.shield.splice(1, 0, new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
+            result.shield.splice(2, 0, new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
+
+        }
     }else{
         result.shield = ([new ListItem("Unblockable attack", "Yes")]);
     }

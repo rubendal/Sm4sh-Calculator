@@ -24,6 +24,7 @@ app.controller('calculator', function ($scope) {
     $scope.shield = "normal";
     $scope.hit_frame = 0;
     $scope.faf = 1;
+    $scope.shieldDamage = 0;
 
     $scope.preDamage = 0;
     $scope.di = 0;
@@ -129,6 +130,7 @@ app.controller('calculator', function ($scope) {
             $scope.counterMult = attack.counterMult;
             $scope.unblockable = attack.unblockable;
             $scope.windbox = attack.windbox;
+            $scope.shieldDamage = attack.shieldDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -159,7 +161,8 @@ app.controller('calculator', function ($scope) {
             $scope.kbg == attack.kbg &&
             $scope.wbkb == attack.wbkb &&
             $scope.is_smash == attack.smash_attack &&
-            $scope.windbox == attack.windbox){
+            $scope.windbox == attack.windbox &&
+            $scope.shieldDamage == attack.shieldDamage){
             } else {
                 if (!$scope.detectAttack()) {
                     $scope.move = "0";
@@ -204,7 +207,8 @@ app.controller('calculator', function ($scope) {
                     $scope.kbg == attack.kbg &&
                     $scope.wbkb == attack.wbkb &&
                     $scope.is_smash == attack.smash_attack &&
-                    $scope.windbox == attack.windbox) {
+                    $scope.windbox == attack.windbox &&
+                    $scope.shieldDamage == attack.shieldDamage) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
@@ -228,6 +232,7 @@ app.controller('calculator', function ($scope) {
                         $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
                         $scope.windbox == attack.windbox &&
+                        $scope.shieldDamage == attack.shieldDamage &&
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
@@ -289,6 +294,8 @@ app.controller('calculator', function ($scope) {
         luma_percent = parseFloat($scope.lumaPercent);
 
         unblockable = $scope.unblockable;
+
+        shieldDamage = parseFloat($scope.shieldDamage);
         
         var results = getResults();
 

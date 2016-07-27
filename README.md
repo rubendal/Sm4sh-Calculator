@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Shield damage
 * Added - Detect attacks with windboxes
 * Fixed - Missing FAF in moves with multiple hitboxes
 * Added - Detect unblockable moves
@@ -84,7 +85,7 @@ Filter moves by:
 * `-` == not
 * `"name"` == Move name is exactly the one between double quotes
 * `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit)
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage)
 
 
 #### Examples
