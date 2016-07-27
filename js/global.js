@@ -141,7 +141,9 @@ class Knockback {
             if (this.base_angle != 0 && this.base_angle != 180) {
                 this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
-                this.angle += this.di;
+                if(this.di_able){
+                    this.angle += this.di;
+                }
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
