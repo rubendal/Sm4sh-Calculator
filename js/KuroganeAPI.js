@@ -31,7 +31,8 @@ class HitboxActiveFrames {
 };
 
 class MoveParser {
-    constructor(name, base_damage, angle, bkb, kbg, hitboxActive, faf, ignore_hitboxes) {
+    constructor(id, name, base_damage, angle, bkb, kbg, hitboxActive, faf, ignore_hitboxes) {
+        this.id = id;
         this.name = name;
         this.angle = angle;
         this.faf = faf;
@@ -206,7 +207,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(0, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, s));
+                    this.moves.push(new Move(this.id, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, s));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -219,17 +220,17 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+                        this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                     } else {
-                        this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+                        this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+                    this.moves.push(new Move(this.id, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                 }
             }
 
         } else {
-            this.moves.push(new Move(0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+            this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
         }
 
 
@@ -262,8 +263,9 @@ class MoveParser {
 var previousMove = null;
 
 class Move {
-    constructor(id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult, rehitRate, shieldDamage) {
-        this.id = id;
+    constructor(api_id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, preDamage, counterMult, rehitRate, shieldDamage) {
+        this.api_id = api_id;
+        this.id = 0;
         this.name = name;
         this.moveName = moveName;
         this.base_damage = base_damage;
@@ -445,7 +447,7 @@ function getAllMoves($scope) {
             }
             for (var i = 0; i < moveset.length; i++) {
                 var move = moveset[i];
-                var parser = new MoveParser(move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, false);
+                var parser = new MoveParser(move.id, move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, false);
                 for (var c = 0; c < parser.moves.length; c++) {
                     var m = parser.moves[c];
                     m.id = count;

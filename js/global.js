@@ -229,12 +229,19 @@ class ListItem {
         { "attribute": "Damage dealt", "title": "Additional damage multiplier target receives caused by the attacker used in multiple powerups like Monado Speed/Buster/Smash and Deep Breathing" },
         { "attribute": "Before launch damage", "title": "Throws can deal some damage during their animations like Pikachu's fthrow, this is added to the target percent before calculating KB" },
         { "attribute": "Stale-move negation", "title": "Damage reduction caused when using an attack repeatedly, if the attack isn't in the queue it gets a freshness bonus and increases damage a little" },
-        { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80" },
+        { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80 and angle isn't 0 or 180" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
         { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
         { "attribute": "DI angle", "title": "Angle affected by DI" },
         { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
-        { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" }];
+        { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" },
+        { "attribute": "Shield Damage", "title": "Damage done to target shield, (damage + SD) * 1.19" },
+        { "attribute": "Full HP shield", "title": "Maximum HP target shield has, can only be increased using Monado Shield" },
+        { "attribute": "Shield Break", "title": "" },
+        { "attribute": "Shield stun", "title": "Amount of frames target target cannot do any action after shielding an attack" },
+        { "attribute": "Shield Hitlag", "title": "Amount of frames target suffers hitlag while shielding" },
+        { "attribute": "Shield Advantage", "title": "" },
+        { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" }];
         for (var i = 0; i < titles.length; i++) {
             if (attribute == titles[i].attribute) {
                 return titles[i].title;
@@ -345,16 +352,12 @@ function KBModifier(value) {
     switch (value) {
         case "crouch":
             return  0.85;
-            break;
         case "grounded":
             return 1; //0.8 applied after hitstun
-            break;
         case "charging":
             return 1.2;
-            break;
         case "none":
             return 1;
-            break;
     }
     return 1;
 }
@@ -363,7 +366,6 @@ function HitlagCrouch(value) {
     switch (value) {
         case "crouch":
             return 0.67;
-            break;
     }
     return 1;
 }
@@ -372,10 +374,8 @@ function HitlagElectric(value) {
     switch (value) {
         case "electric":
             return 1.5;
-            break;
         case "none":
             return 1;
-            break;
     }
     return 1;
 }
@@ -478,7 +478,9 @@ function getResults() {
         traininglist.splice(0, 0, new ListItem("Before launch damage", "+" + +preDamage.toFixed(4) + "%"));
         vslist.splice(0, 0, new ListItem("Before launch damage", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
     }
-    vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
+    if(!ignoreStale){
+        vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
+    }
 
     traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
     vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
