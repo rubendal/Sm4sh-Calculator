@@ -22,6 +22,15 @@
         if(this.move.rehitRate != 0){
             hitbox += " (Rehit rate: " + this.move.rehitRate + ")";
         }
+        if(this.move.throw){
+            if(this.move.weightDependent !== undefined){
+                if(this.move.weightDependent){
+                    hitbox = "Weight Dependent: Yes";
+                }else{
+                    hitbox = "Weight Dependent: No";
+                }
+            }
+        }
         this.move.hitboxActive_print = hitbox;
         if (isNaN(this.move.faf)) {
             this.move.faf = "-";
@@ -190,16 +199,42 @@ filter_app.controller('filter', function ($scope) {
         $scope.status = status;
     }
 
+    $scope.charactersId = [];
+    $scope.moves = [];
+    $scope.throws = [];
+
     $scope.ready = function () {
-        if ($scope.charactersId.length != 0 && $scope.moves.length != 0) {
+        if ($scope.charactersId.length != 0 && $scope.moves.length != 0 && $scope.throws.length != 0) {
+            $scope.status = "Adding throw data to moves...";
+
+            $scope.throws.forEach(function(t, index) {
+                var i = $scope.moves.map(function(move){
+                    return move.api_id;
+                }).indexOf(t.move_id);
+                if(i!=-1){
+                    if($scope.moves[i].throw){
+                        $scope.moves[i].weightDependent = t.weightDependent;
+                        if(t.weightDependent){
+                            $scope.moves[i].type += ",WeightDependentThrow";
+                        }
+                    }
+                }
+            });
+
+
             $scope.status = "";
             $scope.loading = { "display": "none" };
             $scope.filter_interface = { "display": "block" };
+            $scope.update();
         } else {
-            if ($scope.charactersId.length != 0) {
-                $scope.status = "Parsing moves...";
-            } else {
-                $scope.status = "Moves parsed, Loading characters...";
+            if($scope.throws.length == 0){
+                getThrowData($scope);
+                $scope.status = "Getting throw data...";
+            }else{
+                if($scope.moves.length == 0){
+                    getAllMoves($scope);
+                    $scope.status = "Parsing moves...";
+                }
             }
         }
     }
@@ -209,7 +244,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.filter_interface = { "display": "none" };
 
     getCharactersId(KHcharacters, $scope);
-    getAllMoves($scope);
+    
 
     $scope.hitbox_start = 0;
     $scope.hitbox_start2 = 0;

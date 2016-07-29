@@ -17,23 +17,11 @@ http://rubendal.github.io/Sm4sh-Calculator/
 * Added - Tooltips in most table values with explanations
 * Added - Show Reeling animation chance when possible
 * Added - Miis
-* Added - Weight-based knockback formula
-* Added - Added throws extra hits before launch damage to target percent when calculating KB
-* Added - Throws have been fixed in KH API and are now usable in the calculator
-* Added - Parsed Hitbox active frame and FAF from KH API
-* Added - Deep Breathing damage reduction
-* Added - Show vertical component KB increase/decrease done by gravity, Y value already has this value added
-* Changed - Removed Cloud (Limit Break) from attacker list
-* Added - Detect most Chargeable specials
-* Added - Detect Smash attacks
-* Changed - Invalid data message is shown when having blank inputs or inputs with values higher than maximum instead of showing NaN
-* Added - Windboxes/Flinchless hitboxes
-* Added - Using KuroganeHammer's API to get move list (Some attacks might have missing data, these will show empty inputs since the API isn't complete, also it could have wrong data so double check with the website)
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something
 
-To access KuroganeHammer's API it is required to use webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list
+To access KuroganeHammer's API it is required to use webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list, some attacks might have missing data, these will show empty inputs since the API isn't complete or the website doesn't have them, also it could have wrong data so double check with the website
 
 To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
@@ -85,7 +73,7 @@ Filter moves by:
 * `-` == not
 * `"name"` == Move name is exactly the one between double quotes
 * `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage)
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage, weightdependentthrow)
 
 
 #### Examples

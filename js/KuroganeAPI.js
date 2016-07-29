@@ -459,12 +459,48 @@ function getAllMoves($scope) {
                 $scope.$apply(function () {
                     $scope.moves = moves;
                     $scope.ready();
-                    $scope.update();
                 });
             } catch (err) {
                 $scope.moves = moves;
                 $scope.ready();
-                $scope.update();
+            }
+        }
+    }, null, function () {
+        $scope.status = "Couldn't access API";
+    });
+}
+
+class Throw{
+    constructor(id, move_id, weightDependent){
+        this.id = id;
+        this.move_id = move_id;
+        this.weightDependent = weightDependent;
+    }
+};
+
+function getThrowData($scope) {
+    $scope.throws = [];
+    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/throws", function (throwData) {
+        if (throwData != null) {
+            var throws = [];
+            var count = 0;
+            try{
+                $scope.$apply(function () { $scope.status = "Parsing moves..."; });
+            } catch (err) {
+                $scope.status = "Parsing moves...";
+            }
+            for (var i = 0; i < throwData.length; i++) {
+                var t = throwData[i];
+                throws.push(new Throw(t.id, t.moveId, t.weightDependent));
+            }
+            try {
+                $scope.$apply(function () {
+                    $scope.throws = throws;
+                    $scope.ready();
+                });
+            } catch (err) {
+                $scope.throws = throws;
+                $scope.ready();
             }
         }
     }, null, function () {
