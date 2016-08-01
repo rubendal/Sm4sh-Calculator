@@ -81,7 +81,7 @@ Filter moves by:
 * up,down & fsmash (up OR down AND fsmash: all fsmash angled up or down)
 * rapid jab,-finisher (rapid jab NOT finisher: all rapid jabs without finisher hitbox)
 * counter,-attack,-late,-hit,witch time,substitute,vision,toad (All counter moves counter frames)
-* character:pit,character:dark pit,&smash (Pit and Dark Pit smash attacks)
+* character:pit,character:dark pit,& type:smash (Pit and Dark Pit smash attacks)
 * type:dashattack (All dash attacks)
 
 
