@@ -6,7 +6,7 @@
     <script src="js/global.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
-    <script src="js/modules.js"></script>
+    <script src="js/percentcalc.js"></script>
     <link id="favicon" rel="shortcut icon" href="https://avatars.githubusercontent.com/u/10661132?v=3" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/style-1200.css" media="screen and (max-width: 1500px) and (min-width: 1200px)"/>
@@ -31,18 +31,18 @@
         <div id="header-cont">
             <!--<img id="header-icon" class="header-image" src="" />-->
             <div id="header-text">
-                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator" target="_blank" title="Github repository"><h2>Sm4sh Calculator</h2></a>
+                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#percentage-calculator" target="_blank" title="Github repository"><h2>Sm4sh Percentage Calculator</h2></a>
                 <br/>
-                <span class="description">Smash 4 knockback calculator</span>
+                <span class="description">Smash 4 percentage calculator</span>
                 <br/>
                 <div class="header-links">
                     <table class="header-table">
                         <tr class="header-table">
                             <td class="header-table">
-                                <a href="./movesearch.html">Move search</a>
+                                <a href="./index.html">Calculator</a>
                             </td>
                             <td class="header-table">
-                                <a href="./percentcalc.html">Percentage Calculator</a>
+                                <a href="./movesearch.html">Move search</a>
                             </td>
                         </tr>
                     </table>
@@ -64,7 +64,6 @@
             </div>
         </div>
     </div>-->
-
 
     <div id="section">
         <table class="section-table">
@@ -95,15 +94,12 @@
                 <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
                     <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                 </select>
-                <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()"/>
-                %
-                <div ng-style="lumaclass">
-                    Luma
-                    <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />
-                    %
-                </div>
             </div>
-            <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
+            KB:
+            <input type="number" style="width:6em;" name="kb" ng-model="kb" min="0" max="3000" step="0.5" ng-change="update()"/>
+            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="total" ng-change="update()" />Total KB
+            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="x" ng-change="update()" />X
+            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="y" ng-change="update()" />Y
             <br />
             Attack:
             <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
@@ -127,10 +123,6 @@
                     </span>
                 </span>
                 <br />
-                Hitlag multiplier:
-                <input name="hitlag_multiplier" type="number" min="0" max="3" step="0.05" ng-model="hitlag" ng-change="update()" />
-                <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
-                <br />
                 Angle:
                 <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="updateAttackData()" />
                 <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
@@ -147,12 +139,6 @@
                 <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
                 <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
                 <br />
-                Extra Shield Damage:
-                <input name="shield_damage" type="number" min="0" max="50" step="1" ng-model="shieldDamage" ng-change="updateAttackData()" />
-                <br />
-                Target DI angle:
-                <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
-                <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI
                 <div id="kb_modifiers">
                     KB modifiers
                     <br />
@@ -164,28 +150,7 @@
                     <br />
                     <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
                 </div>
-                <div id="hitlag_modifiers">
-                    Hitlag modifiers
-                    <br />
-                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
-                    <br />
-                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
-                </div>
-                <div id="shield">
-                    Shield stun and advantage
-                    <br />
-                    Hit frame:
-                    <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
-                    <br />
-                    FAF:
-                    <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
-                    <br />
-                    Shield
-                    <br />
-                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
-                    <br />
-                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
-                </div>
+                
             </div>
             
         </div>
@@ -240,17 +205,6 @@
                         <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                     </tr>
                 </table>
-
-                <div id="shieldresults">
-                    Shield advantage
-                    <br />
-                    <table>
-                        <tr ng-repeat="x in shield_advantage">
-                            <td class="attribute">{{ x.attribute }}</td>
-                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                        </tr>
-                    </table>
-                </div>
             </div>
 
             

@@ -18,20 +18,12 @@ app.controller('calculator', function ($scope) {
     $scope.kb_modifier = "none";
     $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.shield = ShieldList([0, 0, 0]);
-    $scope.hitlag_modifier = "none";
-    $scope.hitlag = hitlag;
-    $scope.shield = "normal";
-    $scope.hit_frame = 0;
-    $scope.faf = 1;
-    $scope.shieldDamage = 0;
+    $scope.kb = 0;
+    $scope.kbType = "total";
 
     $scope.preDamage = 0;
     $scope.di = 0;
     $scope.noDI = true;
-
-    $scope.lumaPercent = 0;
-    $scope.lumaclass = { 'display': 'none' };
 
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
@@ -47,6 +39,7 @@ app.controller('calculator', function ($scope) {
     $scope.smashCharge = 0;
     $scope.wbkb = false;
     $scope.windbox = false;
+
     $scope.ignoreStale = false;
 
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
@@ -135,7 +128,6 @@ app.controller('calculator', function ($scope) {
             $scope.counterMult = attack.counterMult;
             $scope.unblockable = attack.unblockable;
             $scope.windbox = attack.windbox;
-            $scope.shieldDamage = attack.shieldDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -166,8 +158,7 @@ app.controller('calculator', function ($scope) {
             $scope.kbg == attack.kbg &&
             $scope.wbkb == attack.wbkb &&
             $scope.is_smash == attack.smash_attack &&
-            $scope.windbox == attack.windbox &&
-            $scope.shieldDamage == attack.shieldDamage){
+            $scope.windbox == attack.windbox){
             } else {
                 if (!$scope.detectAttack()) {
                     $scope.move = "0";
@@ -218,8 +209,7 @@ app.controller('calculator', function ($scope) {
                     $scope.kbg == attack.kbg &&
                     $scope.wbkb == attack.wbkb &&
                     $scope.is_smash == attack.smash_attack &&
-                    $scope.windbox == attack.windbox &&
-                    $scope.shieldDamage == attack.shieldDamage) {
+                    $scope.windbox == attack.windbox) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
@@ -243,7 +233,6 @@ app.controller('calculator', function ($scope) {
                         $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
                         $scope.windbox == attack.windbox &&
-                        $scope.shieldDamage == attack.shieldDamage &&
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
@@ -265,16 +254,13 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
-        $scope.lumaPercent = 0;
         $scope.update();
     }
 
     $scope.update = function () {
         $scope.check();
-        $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
-        target_percent = parseFloat($scope.targetPercent);
+        
         preDamage = parseFloat($scope.preDamage);
         base_damage = parseFloat($scope.baseDamage);
         angle = parseFloat($scope.angle);
@@ -282,16 +268,11 @@ app.controller('calculator', function ($scope) {
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
-        hitlag = parseFloat($scope.hitlag);
 
-        hitframe = parseFloat($scope.hit_frame);
-        faf = parseFloat($scope.faf);
         charge_frames = parseFloat($scope.smashCharge);
         r = KBModifier($scope.kb_modifier);
         bounce = $scope.kb_modifier_bounce;
         ignoreStale = $scope.ignoreStale;
-        powershield = $scope.shield == "power";
-        is_projectile = $scope.is_projectile == true;
 
         megaman_fsmash = $scope.megaman_fsmash;
         electric = $scope.hitlag_modifier;
@@ -301,22 +282,40 @@ app.controller('calculator', function ($scope) {
         wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
-        if($scope.noDI){
-            di = angle;
-        }else{
-            di = parseFloat($scope.di);
+        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
+        var damage = base_damage;
+        if (attacker.name == "Lucario") {
+            damage *= Aura(attacker_percent);
+            preDamage *= Aura(attacker_percent);
         }
-        luma_percent = parseFloat($scope.lumaPercent);
+        damage *= attacker.modifier.damage_dealt;
+        damage *= target.modifier.damage_taken;
+        preDamage *= attacker.modifier.damage_dealt;
+        preDamage *= target.modifier.damage_taken;
 
-        unblockable = $scope.unblockable;
+        var kb = parseFloat($scope.kb);
+        var type = $scope.kbType;
 
-        shieldDamage = parseFloat($scope.shieldDamage);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
+        kb.addModifier(attacker.modifier.kb_dealt);
+        kb.addModifier(target.modifier.kb_received);
+        kb.bounce(bounce);
+        var results = {'training':[], 'vs':[]};
+        if(kb.wbkb){
+            results.training.push(new ListItem("WBKB not supported", ""));
+            results.vs.push(new ListItem("WBKB not supported", ""));
+        }else{
+            var t = kb.training_percent != -1 ? new ListItem("Required Percent", +kb.training_percent.toFixed(4)) : new ListItem("Impossible", "");
+            var v = kb.vs_percent != -1 ? new ListItem("Required Percent", +kb.vs_percent.toFixed(4)) : new ListItem("Impossible", "");
+
+            results.training.push(t);
+            results.vs.push(v);
+        }
         
-        var results = getResults();
+
 
         $scope.training = results.training;
         $scope.vs = results.vs;
-        $scope.shield_advantage = results.shield;
 
 
     };

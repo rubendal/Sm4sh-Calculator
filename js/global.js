@@ -147,11 +147,11 @@ class Knockback {
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y += this.add_gravity_kb;
-            }
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
+            }
+            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
+                this.y += this.add_gravity_kb;
             }
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
@@ -186,6 +186,137 @@ class Knockback {
 
     
 
+};
+
+class PercentFromKnockback{
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
+        this.base_kb = kb;
+        this.type = type;
+        this.original_angle = angle;
+        this.base_angle = angle;
+        this.base_damage = base_damage;
+        this.damage = damage;
+        this.angle = angle;
+        this.gravity = gravity;
+        this.aerial = aerial;
+        this.bkb = bkb;
+        this.kbg = kbg;
+        this.wbkb = wbkb;
+        this.r = r;
+        this.windbox = windbox;
+        this.weight = weight;
+        this.attacker_percent = attacker_percent;
+        this.rage = Rage(attacker_percent);
+        this.tumble = false;
+        this.can_jablock = false;
+        this.di_able = false;
+        this.add_gravity_kb = ((this.gravity - 0.075) * 5);
+        this.reeling = false;
+        this.training_percent = 0;
+        this.vs_percent = 0;
+        this.timesInQueue = timesInQueue;
+        this.ignoreStale = ignoreStale;
+
+        this.best_di = 0;
+        this.worst_di = 0;
+
+        this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r){
+            var s=1;
+            return (500 * kb * (weight+100)- (r * (kbg * (7 * damage * s * (3 * base_damage * s+7 * base_damage+20)+90 * (weight+100))+ 500 * bkb * (weight+100))))/(7 * kbg * r * (base_damage * (3 *s +7)+20));
+        }
+        this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, timesInQueue, ignoreStale){
+            var s = StaleNegation(timesInQueue, ignoreStale);
+            r = r * Rage(attacker_percent);
+            return (500 * kb * (weight+100)- (r * (kbg * (7 * damage * s * (3 * base_damage * s+7 * base_damage+20)+90 * (weight+100))+ 500 * bkb * (weight+100))))/(7 * kbg * r * (base_damage * (3 *s +7)+20));
+        }
+
+        if(!this.wbkb){
+            if(this.type == "total"){
+                this.kb = kb;
+            }
+            if(this.type == "x"){
+                this.x = kb;
+            }
+            if(this.type == "y"){
+                this.y = kb;
+            }
+        }
+
+
+
+        this.calculate = function () {
+            
+            if(!this.wbkb){
+                if(this.type == "x"){
+                    this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
+                }
+                if(this.type == "y"){
+                    this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
+                }
+            }
+
+
+            if (this.original_angle == 361) {
+                this.base_angle = SakuraiAngle(this.kb, this.aerial);
+            }
+            this.angle = this.base_angle;
+            if (this.base_angle != 0 && this.base_angle != 180) {
+                this.tumble = this.kb > 80 && !windbox;
+                this.di_able = this.tumble;
+            }
+            
+            
+            if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
+                this.add_gravity_kb = 0;
+            }
+            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
+                this.y += this.add_gravity_kb;
+            }
+            this.can_jablock = false;
+            if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
+                if (this.kb != 0 && !this.windbox) {
+                    this.can_jablock = true;
+                }
+            }
+            if (this.angle >= 240 && this.angle <= 300) {
+                if (this.kb != 0 && !this.windbox) {
+                    this.can_jablock = !this.tumble;
+                }
+            }
+            if (this.angle <= 70 || this.angle >= 110) {
+                this.reeling = this.tumble && !this.windbox && this.percent >= 100;
+
+            }
+
+            this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
+            this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
+
+            if(this.training_percent < 0){
+                this.training_percent = 0;
+            }   
+            if(this.training_percent > 999 || isNaN(this.training_percent)){
+                this.training_percent = -1;
+            }
+            if(this.vs_percent < 0){
+                this.vs_percent = 0;
+            }   
+            if(this.vs_percent > 999 || isNaN(this.vs_percent)){
+                this.vs_percent = -1;
+            }
+        };
+        this.addModifier = function (modifier) {
+            this.kb /= modifier;
+            this.base_kb /= modifier;
+            this.calculate();
+        };
+        this.bounce = function (bounce) {
+            if (bounce) {
+                this.kb /= 0.8;
+                this.calculate();
+            }
+        }
+        this.calculate();
+    }
 };
 
 class ListItem {
@@ -403,7 +534,7 @@ var shieldDamage = 0;
 
 var unblockable = false;
 
-function getResults() {
+function getResults(){
     var result = { 'training': [], 'vs': [], 'shield': [] };
 
     base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);

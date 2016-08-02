@@ -85,6 +85,14 @@ Filter moves by:
 * character:pit,character:dark pit,& type:smash (Pit and Dark Pit smash attacks)
 * type:dashattack (All dash attacks)
 
+## Percentage Calculator
+http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
+
+Get target percent required to obtain certain knockback
+
+* All knockback/damage modifiers are available (Rage, Aura, Monado, Deep Breathing, Crouch cancel, Charge Smash, Staleness)
+* Search desired total KB or search with X or Y components
+* WBKB isn't supported due to being weight related
 
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
