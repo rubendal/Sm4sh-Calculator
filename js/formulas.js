@@ -186,3 +186,7 @@ function AttackerShieldHitlag(damage, hitlag, electric) {
 function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric, powershield ) {
     return hitframe - (FAF - 1) + ShieldStun(damage, is_projectile, powershield) + ShieldHitlag(damage,hitlag,electric) - (is_projectile ? 0 : AttackerShieldHitlag(damage, hitlag, electric));
 }
+
+function DI(angle, move_angle){
+    return 10 * Math.sin((angle-move_angle) * Math.PI / 180);
+}

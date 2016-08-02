@@ -28,6 +28,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.preDamage = 0;
     $scope.di = 0;
+    $scope.noDI = true;
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
@@ -121,6 +122,9 @@ app.controller('calculator', function ($scope) {
                 $scope.counteredDamage = 0;
             }
             $scope.angle = attack.angle;
+            if(attack.angle < 360){
+                $scope.di = attack.angle;
+            }
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
@@ -169,6 +173,9 @@ app.controller('calculator', function ($scope) {
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
                     $scope.unblockable = false;
+                    if($scope.angle < 360){
+                        $scope.di = $scope.angle;
+                    }
                 }
             }
         } else {
@@ -177,6 +184,9 @@ app.controller('calculator', function ($scope) {
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
                 $scope.unblockable=false;
+                if($scope.angle < 360){
+                    $scope.di = $scope.angle;
+                }
             }
         }
         $scope.update();
@@ -290,7 +300,11 @@ app.controller('calculator', function ($scope) {
         wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
-        di = Math.floor(parseFloat($scope.di));
+        if($scope.noDI){
+            di = angle;
+        }else{
+            di = parseFloat($scope.di);
+        }
         luma_percent = parseFloat($scope.lumaPercent);
 
         unblockable = $scope.unblockable;

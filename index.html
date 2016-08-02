@@ -147,8 +147,9 @@
                 Extra Shield Damage:
                 <input name="shield_damage" type="number" min="0" max="50" step="1" ng-model="shieldDamage" ng-change="updateAttackData()" />
                 <br />
-                Target DI angle change:
-                <input name="di" type="number" min="-10" max="10" step="1" ng-model="di" ng-change="update()" />
+                Target DI angle:
+                <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
+                <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI
                 <div id="kb_modifiers">
                     KB modifiers
                     <br />

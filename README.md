@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Changed - Target DI angle change with DI angle calculation
 * Added - Shield damage
 * Added - Detect attacks with windboxes
 * Fixed - Missing FAF in moves with multiple hitboxes
@@ -35,7 +36,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Knockback modifiers
 * Stale-move negation
 * Sakurai Angle
-* DI angle changes
+* DI angle
 * Knockback Horizontal and Vertical components
 * Gravity included in the vertical component
 * Hitstun
@@ -86,7 +87,7 @@ Filter moves by:
 
 
 ## Issues
-You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_DAL), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
+You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
 
 ## Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
