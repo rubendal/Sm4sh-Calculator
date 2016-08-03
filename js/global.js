@@ -258,6 +258,40 @@ class PercentFromKnockback{
                 }
             }
 
+
+            if (this.original_angle == 361) {
+                this.base_angle = SakuraiAngle(this.kb, this.aerial);
+            }
+            this.angle = this.base_angle;
+
+            if (this.original_angle == 361 && !this.aerial && type != "total") {
+                //Find the original kb and get the angle
+                var angle_found = false;
+                for(var temp_kb = 59; temp_kb < 88; temp_kb+=0.001){
+                    var temp_angle = SakuraiAngle(temp_kb,this.aerial);
+                    var temp_var = 0;
+                    if(this.type == "x"){
+                        temp_var = Math.abs(temp_kb * Math.cos(temp_angle * Math.PI / 180));
+                        if(temp_var >= this.x){
+                            this.angle = temp_angle;
+                            angle_found = true;
+                            break;
+                        }
+                    }
+                    if(this.type == "y"){
+                        temp_var = Math.abs(temp_kb * Math.sin(temp_angle * Math.PI / 180));
+                        if(temp_var >= this.y){
+                            this.angle = temp_angle;
+                            angle_found = true;
+                            break;
+                        }
+                    }
+                }
+                if(!angle_found){
+                    this.angle = SakuraiAngle(88,this.aerial);
+                }
+            }
+
             if(!this.wbkb){
                 if(this.type == "x"){
                     this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
@@ -267,11 +301,6 @@ class PercentFromKnockback{
                 }
             }
 
-
-            if (this.original_angle == 361) {
-                this.base_angle = SakuraiAngle(this.kb, this.aerial);
-            }
-            this.angle = this.base_angle;
             if (this.base_angle != 0 && this.base_angle != 180) {
                 this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
