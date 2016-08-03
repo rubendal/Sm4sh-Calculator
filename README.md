@@ -92,6 +92,7 @@ Get target percent required to obtain certain knockback
 
 * All knockback/damage modifiers are available (Rage, Aura, Monado, Deep Breathing, Crouch cancel, Charge Smash, Staleness)
 * Search desired total KB or search with X or Y components
+* Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback
 * WBKB isn't supported due to being weight related
 
 ## Issues

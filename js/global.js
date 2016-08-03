@@ -383,6 +383,30 @@ class PercentFromKnockback{
                 this.best_di.vs = di_angles[0].vs;
                 this.worst_di.angle_vs = di_angles[di_angles.length-1].angle;
                 this.worst_di.vs = di_angles[di_angles.length-1].vs;
+                if(this.best_di.training < 0){
+                    this.best_di.training = 0;
+                }
+                if(this.best_di.training > 999 || isNaN(this.best_di.training)){
+                    this.best_di.training = -1;
+                }
+                if(this.best_di.vs < 0){
+                    this.best_di.vs = 0;
+                }
+                if(this.best_di.vs > 999 || isNaN(this.best_di.vs)){
+                    this.best_di.vs = -1;
+                }
+                if(this.worst_di.training < 0){
+                    this.worst_di.training = 0;
+                }
+                if(this.worst_di.training > 999 || isNaN(this.worst_di.training)){
+                    this.worst_di.training = -1;
+                }
+                if(this.worst_di.vs < 0){
+                    this.worst_di.vs = 0;
+                }
+                if(this.worst_di.vs > 999 || isNaN(this.worst_di.vs)){
+                    this.worst_di.vs = -1;
+                }
             }
 
         };
