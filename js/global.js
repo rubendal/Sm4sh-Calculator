@@ -247,6 +247,18 @@ class PercentFromKnockback{
         this.calculate = function () {
             
             if(!this.wbkb){
+                if(this.type == "total"){
+                    this.kb = this.base_kb;
+                }
+                if(this.type == "x"){
+                    this.x = this.base_kb;
+                }
+                if(this.type == "y"){
+                    this.y = this.base_kb;
+                }
+            }
+
+            if(!this.wbkb){
                 if(this.type == "x"){
                     this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
                 }
@@ -270,7 +282,10 @@ class PercentFromKnockback{
                 this.add_gravity_kb = 0;
             }
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y += this.add_gravity_kb;
+                this.y -= this.add_gravity_kb;
+                if(this.type == "y"){
+                    this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
+                }
             }
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
@@ -307,6 +322,7 @@ class PercentFromKnockback{
         this.addModifier = function (modifier) {
             this.kb /= modifier;
             this.base_kb /= modifier;
+            this.add_gravity_kb /= modifier;
             this.calculate();
         };
         this.bounce = function (bounce) {
