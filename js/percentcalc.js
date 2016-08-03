@@ -310,6 +310,21 @@ app.controller('calculator', function ($scope) {
 
             results.training.push(t);
             results.vs.push(v);
+
+            if(kb.type != "total"){
+                if(kb.training_percent != -1){
+                    results.training.push(new ListItem("Worst DI angle", +kb.worst_di.angle_training.toFixed(4)));
+                    results.training.push(new ListItem("Worst DI percent", +kb.worst_di.training.toFixed(4)));
+                    results.training.push(new ListItem("Best DI angle", +kb.best_di.angle_training.toFixed(4)));
+                    results.training.push(new ListItem("Best DI percent", +kb.best_di.training.toFixed(4)));
+                }
+                if(kb.vs_percent != -1){
+                    results.vs.push(new ListItem("Worst DI angle", +kb.worst_di.angle_vs.toFixed(4)));
+                    results.vs.push(new ListItem("Worst DI percent", +kb.worst_di.vs.toFixed(4)));
+                    results.vs.push(new ListItem("Best DI angle", +kb.best_di.angle_vs.toFixed(4)));
+                    results.vs.push(new ListItem("Best DI percent", +kb.best_di.vs.toFixed(4)));
+                }
+            }
         }
         
 
