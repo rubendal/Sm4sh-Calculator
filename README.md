@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Launch speed
 * Changed - Target DI angle change with DI angle calculation
 * Added - Shield damage
 * Added - Detect attacks with windboxes
@@ -47,6 +48,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Shield Advantage
 * Luma knockback
 * When Reeling/Untechable spin animation could happen
+* Launch speed
 
 ### To Do
 * App Icon
@@ -92,8 +94,12 @@ Get target percent required to obtain certain knockback
 
 * All knockback/damage modifiers are available (Rage, Aura, Monado, Deep Breathing, Crouch cancel, Charge Smash, Staleness)
 * Search desired total KB or search with X or Y components
-* Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback
+* Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback with the hitstun difference
 * WBKB isn't supported due to being weight related
+
+### To Do
+* Find distance launched formula
+* Change it to calculate distance once formula has been discovered
 
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)

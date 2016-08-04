@@ -193,3 +193,7 @@ function DI(angle, move_angle){
     }
     return 10 * Math.sin((angle-move_angle) * Math.PI / 180);
 }
+
+function LaunchSpeed(kb){
+    return kb * 0.03;
+}

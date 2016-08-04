@@ -128,6 +128,8 @@ class Knockback {
         this.add_gravity_kb = ((this.gravity - 0.075) * 5);
         this.percent = percent;
         this.reeling = false;
+        this.spike = false;
+        this.launch_speed = LaunchSpeed(kb);
         if (di !== undefined) {
             this.di = di;
         } else {
@@ -159,7 +161,8 @@ class Knockback {
                     this.can_jablock = true;
                 }
             }
-            if (this.angle >= 240 && this.angle <= 300) {
+            this.spike = this.angle >= 230 && this.angle <= 310;
+            if (this.spike) {
                 if (this.kb != 0 && !this.windbox) {
                     this.can_jablock = !this.tumble;
                 }
@@ -167,8 +170,8 @@ class Knockback {
 
             if (this.angle <= 70 || this.angle >= 110) {
                 this.reeling = this.tumble && !this.windbox && this.percent >= 100;
-
             }
+            this.launch_speed = LaunchSpeed(this.kb);
         };
         this.addModifier = function (modifier) {
             this.kb *= modifier;
@@ -217,8 +220,8 @@ class PercentFromKnockback{
         this.timesInQueue = timesInQueue;
         this.ignoreStale = ignoreStale;
 
-        this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0 };
-        this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0 };
+        this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
+        this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
 
         this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r){
             var s=1;
@@ -301,6 +304,8 @@ class PercentFromKnockback{
                 }
             }
 
+            this.hitstun = Hitstun(this.kb, this.windbox);
+
             if (this.base_angle != 0 && this.base_angle != 180) {
                 this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
@@ -361,9 +366,10 @@ class PercentFromKnockback{
                         kb -= this.add_gravity_kb;
                         kb = Math.abs(kb / Math.sin(angle * Math.PI / 180));
                     }
+                    var hitstun = Hitstun(kb, this.windbox);
                     var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
                     var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
-                    di_angles.push({'angle':i,'training':training,'vs':vs});
+                    di_angles.push({'angle':i,'training':training,'vs':vs, 'hitstun':hitstun});
                 }
                 di_angles.sort(function(a,b){
                     return a.training < b.training ? 1 :
@@ -372,8 +378,12 @@ class PercentFromKnockback{
                 });
                 this.best_di.angle_training = di_angles[0].angle;
                 this.best_di.training = di_angles[0].training;
+                this.best_di.hitstun = di_angles[0].hitstun;
+                this.best_di.hitstun_dif = this.hitstun - di_angles[0].hitstun;
                 this.worst_di.angle_training = di_angles[di_angles.length-1].angle;
                 this.worst_di.training = di_angles[di_angles.length-1].training;
+                this.worst_di.hitstun = di_angles[di_angles.length-1].hitstun;
+                this.worst_di.hitstun_dif = this.hitstun - di_angles[di_angles.length-1].hitstun;
                 di_angles.sort(function(a,b){
                     return a.vs < b.vs ? 1 :
                     a.vs > b.vs ? -1 :
@@ -491,7 +501,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -499,7 +509,8 @@ function List(values) {
         "Angle target is launched without DI",
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
-        "Frame target can cancel hitstun by using an aerial"];
+        "Frame target can cancel hitstun by using an aerial",
+        ""];
     var hitstun = -1;
     for (var i = 0; i < attributes.length; i++) {
         if (attributes[i] == "Hitstun") {
@@ -670,8 +681,8 @@ function getResults(){
     }
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
-    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox)]);
-    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox)]);
+    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed]);
+    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed]);
     if (trainingkb.di_able) {
         traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
     }

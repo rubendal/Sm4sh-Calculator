@@ -316,20 +316,24 @@ app.controller('calculator', function ($scope) {
                     if(kb.worst_di.training!=-1){
                         results.training.push(new ListItem("Worst DI angle", +kb.worst_di.angle_training.toFixed(4)));
                         results.training.push(new ListItem("Worst DI percent", +kb.worst_di.training.toFixed(4)));
+                        results.training.push(new ListItem("Worst DI hitstun difference", +kb.worst_di.hitstun_dif.toFixed(4) + " frames"));
                     }
                     if(kb.best_di.training!=-1){
                         results.training.push(new ListItem("Best DI angle", +kb.best_di.angle_training.toFixed(4)));
                         results.training.push(new ListItem("Best DI percent", +kb.best_di.training.toFixed(4)));
+                        results.training.push(new ListItem("Best DI hitstun difference", +kb.best_di.hitstun_dif.toFixed(4) + " frames"));
                     }
                 }
                 if(kb.vs_percent != -1){
                     if(kb.worst_di.vs!=-1){
                         results.vs.push(new ListItem("Worst DI angle", +kb.worst_di.angle_vs.toFixed(4)));
                         results.vs.push(new ListItem("Worst DI percent", +kb.worst_di.vs.toFixed(4)));
+                        results.vs.push(new ListItem("Worst DI hitstun difference", +kb.worst_di.hitstun_dif.toFixed(4) + " frames"));
                     }
                     if(kb.best_di.vs != -1){
                         results.vs.push(new ListItem("Best DI angle", +kb.best_di.angle_vs.toFixed(4)));
                         results.vs.push(new ListItem("Best DI percent", +kb.best_di.vs.toFixed(4)));
+                        results.vs.push(new ListItem("Best DI hitstun difference", +kb.best_di.hitstun_dif.toFixed(4) + " frames"));
                     }
                 }
             }

@@ -16,8 +16,8 @@ app.controller('calculator', function ($scope) {
     $scope.kbg = kbg;
     $scope.stale = stale;
     $scope.kb_modifier = "none";
-    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.shield = ShieldList([0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
