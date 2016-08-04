@@ -302,7 +302,7 @@ app.controller('calculator', function ($scope) {
         windbox = $scope.windbox;
 
         if($scope.noDI){
-            di = angle;
+            di = -1;
         }else{
             di = parseFloat($scope.di);
         }

@@ -188,5 +188,8 @@ function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric,
 }
 
 function DI(angle, move_angle){
+    if(angle == -1){
+        return 0;
+    }
     return 10 * Math.sin((angle-move_angle) * Math.PI / 180);
 }
