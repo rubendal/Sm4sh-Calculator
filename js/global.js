@@ -142,7 +142,7 @@ class Knockback {
                 this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
                 if(this.di_able){
-                    this.angle += this.di;
+                    this.angle += DI(this.di,this.angle);
                 }
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
@@ -352,7 +352,7 @@ class PercentFromKnockback{
                 var di_angles = [];
                 for(var i = 0; i < 360; i++){
                     var di = DI(i, this.angle);
-                    var angle = this.angle + di;
+                    var angle = this.angle + DI(i,this.angle);
                     var kb = this.base_kb;
                     if(this.type == "x"){
                         kb = Math.abs(kb / Math.cos(angle * Math.PI / 180));
@@ -654,8 +654,6 @@ function getResults(){
     damage *= target.modifier.damage_taken;
     preDamage *= attacker.modifier.damage_dealt;
     preDamage *= target.modifier.damage_taken;
-
-    di = DI(di, angle);
 
     if (!wbkb) {
         trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
