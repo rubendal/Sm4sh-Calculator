@@ -16,22 +16,12 @@ app.controller('calculator', function ($scope) {
     $scope.kbg = kbg;
     $scope.stale = stale;
     $scope.kb_modifier = "none";
-    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.shield = ShieldList([0, 0, 0]);
-    $scope.hitlag_modifier = "none";
-    $scope.hitlag = hitlag;
-    $scope.shield = "normal";
-    $scope.hit_frame = 0;
-    $scope.faf = 1;
-    $scope.shieldDamage = 0;
+    $scope.inverseX = false;
+    $scope.surface = false;
 
     $scope.preDamage = 0;
     $scope.di = 0;
     $scope.noDI = true;
-
-    $scope.lumaPercent = 0;
-    $scope.lumaclass = { 'display': 'none' };
 
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
@@ -39,6 +29,7 @@ app.controller('calculator', function ($scope) {
     $scope.target_gravity = target.attributes.gravity;
     $scope.target_damage_taken = target.modifier.damage_taken;
     $scope.target_kb_received = target.modifier.kb_received;
+    $scope.target_traction = target.attributes.traction;
 
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -47,6 +38,7 @@ app.controller('calculator', function ($scope) {
     $scope.smashCharge = 0;
     $scope.wbkb = false;
     $scope.windbox = false;
+
     $scope.ignoreStale = false;
 
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
@@ -91,6 +83,7 @@ app.controller('calculator', function ($scope) {
         target.attributes.gravity = parseFloat($scope.target_gravity);
         target.modifier.damage_taken = parseFloat($scope.target_damage_taken);
         target.modifier.kb_received = parseFloat($scope.target_kb_received);
+        target.attributes.traction = parseFloat($scope.target_traction);
 
         $scope.update();
     }
@@ -135,7 +128,6 @@ app.controller('calculator', function ($scope) {
             $scope.counterMult = attack.counterMult;
             $scope.unblockable = attack.unblockable;
             $scope.windbox = attack.windbox;
-            $scope.shieldDamage = attack.shieldDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
                 $scope.hit_frame = attack.hitboxActive[0].start;
             } else {
@@ -166,8 +158,7 @@ app.controller('calculator', function ($scope) {
             $scope.kbg == attack.kbg &&
             $scope.wbkb == attack.wbkb &&
             $scope.is_smash == attack.smash_attack &&
-            $scope.windbox == attack.windbox &&
-            $scope.shieldDamage == attack.shieldDamage){
+            $scope.windbox == attack.windbox){
             } else {
                 if (!$scope.detectAttack()) {
                     $scope.move = "0";
@@ -218,8 +209,7 @@ app.controller('calculator', function ($scope) {
                     $scope.kbg == attack.kbg &&
                     $scope.wbkb == attack.wbkb &&
                     $scope.is_smash == attack.smash_attack &&
-                    $scope.windbox == attack.windbox &&
-                    $scope.shieldDamage == attack.shieldDamage) {
+                    $scope.windbox == attack.windbox) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
@@ -243,7 +233,6 @@ app.controller('calculator', function ($scope) {
                         $scope.wbkb == attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
                         $scope.windbox == attack.windbox &&
-                        $scope.shieldDamage == attack.shieldDamage &&
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
@@ -265,14 +254,12 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
-        $scope.lumaPercent = 0;
+        $scope.target_traction = target.attributes.traction;
         $scope.update();
     }
 
     $scope.update = function () {
         $scope.check();
-        $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
         attacker_percent = parseFloat($scope.attackerPercent);
         target_percent = parseFloat($scope.targetPercent);
         preDamage = parseFloat($scope.preDamage);
@@ -282,16 +269,11 @@ app.controller('calculator', function ($scope) {
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
         stale = parseFloat($scope.stale);
-        hitlag = parseFloat($scope.hitlag);
 
-        hitframe = parseFloat($scope.hit_frame);
-        faf = parseFloat($scope.faf);
         charge_frames = parseFloat($scope.smashCharge);
         r = KBModifier($scope.kb_modifier);
         bounce = $scope.kb_modifier_bounce;
         ignoreStale = $scope.ignoreStale;
-        powershield = $scope.shield == "power";
-        is_projectile = $scope.is_projectile == true;
 
         megaman_fsmash = $scope.megaman_fsmash;
         electric = $scope.hitlag_modifier;
@@ -306,19 +288,48 @@ app.controller('calculator', function ($scope) {
         }else{
             di = parseFloat($scope.di);
         }
-        luma_percent = parseFloat($scope.lumaPercent);
 
-        unblockable = $scope.unblockable;
+        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
+        var damage = base_damage;
+        if (attacker.name == "Lucario") {
+            damage *= Aura(attacker_percent);
+            preDamage *= Aura(attacker_percent);
+        }
+        damage *= attacker.modifier.damage_dealt;
+        damage *= target.modifier.damage_taken;
+        preDamage *= attacker.modifier.damage_dealt;
+        preDamage *= target.modifier.damage_taken;
 
-        shieldDamage = parseFloat($scope.shieldDamage);
-        
-        var results = getResults();
+        if (!wbkb) {
+            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
+            vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+            trainingkb.addModifier(attacker.modifier.kb_dealt);
+            vskb.addModifier(attacker.modifier.kb_dealt);
+            trainingkb.addModifier(target.modifier.kb_received);
+            vskb.addModifier(target.modifier.kb_received);
+        } else {
+            trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, in_air, windbox, di);
+            vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+            trainingkb.addModifier(target.modifier.kb_received);
+            vskb.addModifier(target.modifier.kb_received);
+        }
+        trainingkb.bounce(bounce);
+        vskb.bounce(bounce);
 
-        $scope.training = results.training;
-        $scope.vs = results.vs;
-        $scope.shield_advantage = results.shield;
+        var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface);
+        var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface);
 
+        var max_x = trainingDistance.max_x + 10;
+        var max_y = trainingDistance.max_y + 10;
+        max_x = max_y = Math.max(max_x, max_y);
+        var data = trainingDistance.plot;
+        Plotly.newPlot('training_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
 
+        max_x = vsDistance.max_x + 10;
+        max_y = vsDistance.max_y + 10;
+        max_x = max_y = Math.max(max_x, max_y);
+        data = vsDistance.plot;
+        Plotly.newPlot('vs_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
     };
 
     $scope.update();

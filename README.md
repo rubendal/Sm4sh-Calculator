@@ -49,6 +49,7 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Luma knockback
 * When Reeling/Untechable spin animation could happen
 * Launch speed
+* Max distance
 
 ### To Do
 * App Icon
@@ -97,9 +98,17 @@ Get target percent required to obtain certain knockback
 * Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback with the hitstun difference
 * WBKB isn't supported due to being weight related
 
-### To Do
-* Find distance launched formula
-* Change it to calculate distance once formula has been discovered
+## Launch Visualizer
+http://rubendal.github.io/Sm4sh-Calculator/launchvisualizer.html
+
+Visualize launch trajectory, position per hitstun frame and distance launched in a graph
+
+* Each marker represents a frame in hitstun
+* Line color represents vertical momentum
+* Yellow markers represents frames that hitstun can be cancelled by using an airdodge
+* Green markers represents frames that hitstun can be cancelled by using an aerial
+* X-axis can be inverted when launching opponents to the left
+* X-axis can be used to represent a surface, showing traction effects (Grounded meteors not implemented)
 
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)

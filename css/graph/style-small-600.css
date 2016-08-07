@@ -1,0 +1,47 @@
+﻿#results{
+    margin-top:20px;
+    position:relative;
+}
+
+#training{
+    position: relative;
+    top:0;
+    left:auto;
+}
+
+#vs{
+    position: relative;
+    top:0;
+    left:auto;
+    margin-top:20px;
+    width:auto;
+}
+
+#target-attr{
+    position:relative;
+    top:auto;
+    left:auto;
+}
+
+.section-table-content{
+    padding:5px;
+    text-align:center;
+    width:50%;
+}
+
+.section-table{
+    width:100%;
+}
+
+#filter{
+    position: relative;
+    top:0;
+    left:auto;
+}
+
+#shieldresults{
+    position: relative;
+    top:0;
+    left:auto;
+    margin-top:20px;
+}

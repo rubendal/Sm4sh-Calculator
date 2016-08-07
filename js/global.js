@@ -112,6 +112,241 @@ class Character {
 
 };
 
+class Distance{
+    constructor(kb, x_kb, y_kb, hitstun, angle, gravity, fall_speed, traction, inverseX, onSurface){
+        this.kb = kb;
+        this.x_kb = x_kb;
+        this.y_kb = y_kb;
+        this.hitstun = hitstun;
+        this.angle = angle;
+        this.gravity = gravity;
+        this.fall_speed = fall_speed;
+        this.traction = traction;
+        this.max_x = 0;
+        this.max_y = 0;
+        this.inverseX = inverseX;
+        this.onSurface = onSurface;
+        this.tumble = false;
+        if(kb > 80 && angle != 0 && angle != 180){
+            this.tumble = true;
+        }
+
+        var x_speed = LaunchSpeed(+x_kb.toFixed(6));
+        var y_speed = LaunchSpeed(+y_kb.toFixed(6));
+        var x_a = 0.03;
+        var y_a = 0.03;
+        if(this.inverseX){
+            if(angle < 180){
+                angle = 180 - angle;
+            }else{
+                angle = 360 - (angle - 180);
+            }
+        }
+        if(Math.cos(angle * Math.PI / 180) < 0){
+            x_speed *= -1;
+            x_a *= -1;
+        }
+        if(Math.sin(angle * Math.PI / 180) < 0){
+            y_speed *= -1;
+            y_a *= -1;
+        }
+        this.x = [0];
+        this.y = [0];
+        var xd = 0;
+        var yd = 0;
+        var xs = x_speed;
+        var ys = y_speed;
+        var g = 0;
+        var fg = 0;
+        var sliding = false;
+        var limit = hitstun < 200 ? hitstun : 200;
+        for(var i=0;i<limit;i++){
+            var p_xd = xd;
+
+            g += gravity;
+            fg = Math.min(g, fall_speed);
+            
+            if(sliding){
+                if(!this.tumble){
+                    xs -= x_a;
+                }
+            }else{
+                
+            }
+            xs -= x_a;
+            ys -= y_a;            
+
+            if(Math.cos(angle * Math.PI / 180) < 0){
+                if(sliding){
+                    if(!this.tumble){
+                        xd += Math.min(xs,0);
+                        this.max_x = Math.min(this.max_x, xd);
+                    }
+                }else{
+                    xd += Math.min(xs,0);
+                    this.max_x = Math.min(this.max_x, xd);
+                }
+                
+            }else{
+                if(sliding){
+                    if(!this.tumble){
+                        xd += Math.max(xs,0);
+                        this.max_x = Math.max(this.max_x, xd);
+                    }
+                }else{
+                    xd += Math.max(xs,0);
+                    this.max_x = Math.max(this.max_x, xd);
+                }
+                
+            }
+            
+            if(y_speed!=0){
+                
+            }
+
+            if(Math.sin(angle * Math.PI / 180) < 0){
+                yd += Math.min(ys,0);
+            }else{
+                yd += Math.max(ys,0);
+            }
+            yd -= fg;
+            if(this.onSurface && Math.sin(angle * Math.PI / 180) >= 0){
+                if(yd < 0){
+                    sliding = true;
+                    yd = 0;
+                    //Traction applied here
+                    if(Math.cos(angle * Math.PI / 180) < 0){
+                        xd += traction;
+                    }else{
+                        xd -= traction;
+                    }
+                }
+            }
+            if(Math.sin(angle * Math.PI / 180) < 0){
+                this.max_y = Math.min(this.max_y, yd);
+            }else{
+                this.max_y = Math.max(this.max_y, yd);
+            }
+
+
+            this.x.push(+xd.toFixed(4));
+            this.y.push(+yd.toFixed(4));
+
+        }
+
+        this.max_x = Math.abs(this.max_x);
+        this.max_y = Math.abs(this.max_y);
+
+        this.data = [];
+        var px = 0;
+        var py = 0;
+        var cx = px;
+        var cy = py;
+        var color = "blue";
+        var dir = 1;
+        var data = [];
+        var airdodge = AirdodgeCancel(kb, false);
+        var aerial = AerialCancel(kb, false);
+        for(var i = 0; i < this.x.length; i++){
+            var xdata = [];
+            var ydata = [];
+            var change = false;
+            do{
+                px = this.x[i];
+                py = this.y[i];
+                if(i==0){
+                    if(i+1 < this.x.length){
+                        if(py > this.y[i+1]){
+                            if(dir==1){
+                                change = true;
+                                dir=-1;
+                            }
+                        }else{
+                            if(py < this.y[i+1]){
+                                if(dir==-1){
+                                    change = true;
+                                    dir=1;
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    if(py < cy){
+                        if(dir == 1){
+                            change = true;
+                        }
+                        dir = -1;
+                    }else{
+                        if(dir == -1){
+                            change = true;
+                        }
+                        dir = 1;
+                    }
+                }
+                if(!change){
+                    xdata.push(px);
+                    ydata.push(py);
+                    cx = px;
+                    cy = py;
+                    i++;
+                }else{
+                    if(i!=0){
+                        xdata.push(px);
+                        ydata.push(py);
+                    }
+                    i--;
+                }
+            }while(!change && i < this.x.length);
+            if(xdata.length > 0){
+                data.push({'x':xdata, 'y':ydata, 'mode':'lines+markers', 'marker':{'color':color}, 'line':{'color':color}, 'name':color == 'blue' ? "Upward momentum" : "Downward momentum"});
+            }
+            switch(color){
+                case 'blue':
+                    color = "red";
+                break;
+                case 'red':
+                    color = "blue";
+                break;
+            }
+        }
+
+        var adxdata = [];
+        var adydata = [];
+
+        if(airdodge< limit){
+            for(var i = airdodge; i < limit; i++){
+                console.debug(i);
+                adxdata.push(this.x[i]);
+                adydata.push(this.y[i]);
+            }
+            
+
+            if(adxdata.length>0){
+                data.push({'x':adxdata, 'y':adydata, 'mode':'markers', 'marker':{'color':'yellow'}, 'name':"Airdodge cancel"});
+            }
+
+        }
+
+        if(aerial < limit){
+
+            adxdata = [];
+            adydata = [];
+            for(var i = aerial; i < limit; i++){
+                adxdata.push(this.x[i]);
+                adydata.push(this.y[i]);
+            }
+            if(adxdata.length>0){
+                data.push({'x':adxdata, 'y':adydata, 'mode':'markers', 'marker':{'color':'green'}, 'name':"Aerial cancel"});
+            }
+
+        }
+
+        this.plot = data;
+
+
+    }
+};
+
 class Knockback {
     constructor(kb, angle, gravity, aerial, windbox, percent, di) {
         this.base_kb = kb;
@@ -130,6 +365,7 @@ class Knockback {
         this.reeling = false;
         this.spike = false;
         this.launch_speed = LaunchSpeed(kb);
+        this.hitstun = Hitstun(this.base_kb, this.windbox);
         if (di !== undefined) {
             this.di = di;
         } else {
@@ -172,6 +408,7 @@ class Knockback {
                 this.reeling = this.tumble && !this.windbox && this.percent >= 100;
             }
             this.launch_speed = LaunchSpeed(this.kb);
+            this.hitstun = Hitstun(this.base_kb, false);
         };
         this.addModifier = function (modifier) {
             this.kb *= modifier;
@@ -501,7 +738,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed"]; //"Max Distance Launched X", "Max Distance Launched Y"
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -510,9 +747,11 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
+        "",
+        "",
         ""];
     var hitstun = -1;
-    for (var i = 0; i < attributes.length; i++) {
+    for (var i = 0; i < attributes.length && i < values.length; i++) {
         if (attributes[i] == "Hitstun") {
             hitstun = +values[i].toFixed(4);
         }
@@ -681,8 +920,12 @@ function getResults(){
     }
     trainingkb.bounce(bounce);
     vskb.bounce(bounce);
-    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed]);
-    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed]);
+
+    var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed);
+    var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed);
+
+    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
+    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed, vsDistance.max_x, vsDistance.max_y]);
     if (trainingkb.di_able) {
         traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
     }
