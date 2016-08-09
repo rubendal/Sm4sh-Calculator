@@ -32,6 +32,20 @@
             }
         }
         this.move.hitboxActive_print = hitbox;
+        if (isNaN(this.move.landingLag)) {
+            this.move.landingLag = "-";
+        }
+        var autoCancel = "";
+        for(var i=0;i<this.move.autoCancel.length;i++){
+            autoCancel += this.move.autoCancel[i].print();
+            if(i<this.move.autoCancel.length-1){
+                autoCancel+=",";
+            }
+        }
+        if(autoCancel == ""){
+            autoCancel = "-";
+        }
+        this.move.autoCancel_print = autoCancel;
         if (isNaN(this.move.faf)) {
             this.move.faf = "-";
         }

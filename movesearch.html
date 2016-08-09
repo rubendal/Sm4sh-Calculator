@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="css/style-small-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Move Search</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.4" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.3" />
     <meta name="description" content="Web based Smash 4 move frame data search" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_dal" />
@@ -44,7 +44,7 @@
                                 <a href="./percentcalc.html">Percentage Calculator</a>
                             </td>
                             <td class="header-table">
-                                <a href="./launchdistance.html">Launch Visualizer</a>
+                                <a href="./launchvisualizer.html">Launch Visualizer</a>
                             </td>
                         </tr>
                     </table>
@@ -172,6 +172,8 @@
                         <td>Move</td>
                         <td>Hitbox active</td>
                         <td>FAF</td>
+                        <td>Landing Lag</td>
+                        <td>Autocancel</td>
                         <td>Base damage</td>
                         <td>Angle</td>
                         <td>BKB</td>
@@ -183,6 +185,8 @@
                         <td class="value">{{ x.move.name }}</td>
                         <td class="value">{{ x.move.hitboxActive_print}}</td>
                         <td class="value">{{ x.move.faf}}</td>
+                        <td class="value">{{ x.move.landingLag}}</td>
+                        <td class="value">{{ x.move.autoCancel_print}}</td>
                         <td class="value">{{ x.move.base_damage_print }}</td>
                         <td class="value">{{ x.move.angle }}</td>
                         <td class="value">{{ x.move.bkb }}</td>

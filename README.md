@@ -88,6 +88,10 @@ Filter moves by:
 * character:pit,character:dark pit,& type:smash (Pit and Dark Pit smash attacks)
 * type:dashattack (All dash attacks)
 
+### To Do
+* Make table columns sortable
+* Filter by landing lag and auto cancel frames
+
 ## Percentage Calculator
 http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
 
@@ -103,11 +107,11 @@ http://rubendal.github.io/Sm4sh-Calculator/launchvisualizer.html
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph
 
-* Each marker represents a frame in hitstun
+* Each marker represents each frame in hitstun
 * Line color represents vertical momentum
 * Yellow markers represents frames that hitstun can be cancelled by using an airdodge
 * Green markers represents frames that hitstun can be cancelled by using an aerial
-* X-axis can be inverted when launching opponents to the left
+* X-axis can be inverted to represent launching opponents to the left
 * X-axis can be used to represent a surface, showing traction effects (Grounded meteors not implemented)
 
 ## Issues
