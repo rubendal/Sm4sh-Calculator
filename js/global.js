@@ -216,9 +216,9 @@ class Distance{
                     yd = 0;
                     //Traction applied here
                     if(Math.cos(angle * Math.PI / 180) < 0){
-                        xd += traction;
-                    }else{
                         xd -= traction;
+                    }else{
+                        xd += traction;
                     }
                 }
             }
