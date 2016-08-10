@@ -104,6 +104,8 @@ Get target percent required to obtain certain knockback
 ## Launch Visualizer
 http://rubendal.github.io/Sm4sh-Calculator/launchvisualizer.html
 
+Note: Work in progress, can display wrong values specially Y values
+
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph
 
 * Each marker represents each frame in hitstun

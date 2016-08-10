@@ -133,6 +133,8 @@ class Distance{
 
         var x_speed = LaunchSpeed(+x_kb.toFixed(6));
         var y_speed = LaunchSpeed(+y_kb.toFixed(6));
+
+        //Not exact value, still testing and comparing with parameter files
         var x_a = 0.03;
         var y_a = 0.03;
         if(this.inverseX){
@@ -197,10 +199,6 @@ class Distance{
                     xd += Math.max(xs,0);
                     this.max_x = Math.max(this.max_x, xd);
                 }
-                
-            }
-            
-            if(y_speed!=0){
                 
             }
 
