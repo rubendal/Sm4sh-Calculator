@@ -155,6 +155,22 @@
                 <br />
                 <input name="wbkb" type="checkbox" ng-model="wbkb" ng-change="update()" /> Weight-based knockback
                 <input name="wbkb_cond" type="checkbox" ng-model="wbkb_any" ng-change="update()" />Any
+
+                <br/>
+                Sort by:
+                <br/>
+                <input name="sort_by" type="radio" ng-model="sort_by" value="character" ng-change="sort()"/> Character
+                <input name="sort_by" type="radio" ng-model="sort_by" value="name" ng-change="sort()"/> Move name
+                <input name="sort_by" type="radio" ng-model="sort_by" value="base_damage" ng-change="sort()"/> Base damage
+                <input name="sort_by" type="radio" ng-model="sort_by" value="angle" ng-change="sort()"/> Angle
+                <input name="sort_by" type="radio" ng-model="sort_by" value="bkb" ng-change="sort()"/> BKB
+                <input name="sort_by" type="radio" ng-model="sort_by" value="kbg" ng-change="sort()"/> KBG
+
+                <br/>
+                Order by:
+                <br/>
+                <input name="order_by" type="radio" ng-model="order_by" value="asc" ng-change="sort()"/> Asc
+                <input name="order_by" type="radio" ng-model="order_by" value="desc" ng-change="sort()"/> Desc
             </div>
 
         </div>
@@ -180,7 +196,7 @@
                         <td>KBG</td>
                         <td>Weight-based knockback</td>
                     </tr>
-                    <tr ng-repeat="x in filteredMoves track by $index">
+                    <tr ng-repeat="x in sortedMoves track by $index">
                         <td class="attribute" ng-style="{'background':x.color}">{{ x.character }}</td>
                         <td class="value">{{ x.move.name }}</td>
                         <td class="value">{{ x.move.hitboxActive_print}}</td>

@@ -89,7 +89,6 @@ Filter moves by:
 * type:dashattack (All dash attacks)
 
 ### To Do
-* Make table columns sortable
 * Filter by landing lag and auto cancel frames
 
 ## Percentage Calculator

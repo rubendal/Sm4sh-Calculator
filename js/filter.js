@@ -209,6 +209,9 @@ filter_app.controller('filter', function ($scope) {
     $scope.kbg_cond = "any";
     $scope.wbkb_any = true;
 
+    $scope.sort_by = "character";
+    $scope.order_by = "asc";
+
     $scope.updateStatus = function (status) {
         $scope.status = status;
     }
@@ -299,6 +302,103 @@ filter_app.controller('filter', function ($scope) {
         return value1 == value2;
     }
 
+    $scope.sort = function(){
+        var c = [];
+        for(var i = 0; i < $scope.filteredMoves.length; i++){
+            c.push($scope.filteredMoves[i]);
+        }
+        var av = -1;
+        var bv = 1;
+        if($scope.order_by == "desc"){
+            av = 1;
+            bv = -1;
+        }
+        switch($scope.sort_by){
+            case "character":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    return a.character < b.character ? av :
+                    a.character > b.character ? bv :
+                    0
+                });
+            break;
+            case "name":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    return a.move.name < b.move.name ? av :
+                    a.move.name > b.move.name ? bv :
+                    0
+                });
+            break;
+            case "base_damage":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    if(isNaN(a.move.base_damage)){
+                        if(isNaN(b.move.base_damage)){
+                            return 0;
+                        }else{
+                            return av;
+                        }
+                    }
+                    if(isNaN(b.move.base_damage)){
+                        return bv;
+                    }
+                    return a.move.base_damage < b.move.base_damage ? av :
+                    a.move.base_damage > b.move.base_damage ? bv :
+                    0
+                });
+            break;
+            case "angle":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    if(a.move.angle == "-"){
+                        if(b.move.angle == "-"){
+                            return 0;
+                        }else{
+                            return av;
+                        }
+                    }
+                    if(b.move.angle == "-"){
+                        return bv;
+                    }
+                    return a.move.angle < b.move.angle ? av :
+                    a.move.angle > b.move.angle ? bv :
+                    0
+                });
+            break;
+            case "bkb":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    if(a.move.bkb == "-"){
+                        if(b.move.bkb == "-"){
+                            return 0;
+                        }else{
+                            return av;
+                        }
+                    }
+                    if(b.move.bkb == "-"){
+                        return bv;
+                    }
+                    return a.move.bkb < b.move.bkb ? av :
+                    a.move.bkb > b.move.bkb ? bv :
+                    0
+                });
+            break;
+            case "kbg":
+                $scope.sortedMoves = c.sort(function(a,b){
+                    if(a.move.kbg == "-"){
+                        if(b.move.kbg == "-"){
+                            return 0;
+                        }else{
+                            return av;
+                        }
+                    }
+                    if(b.move.kbg == "-"){
+                        return bv;
+                    }
+                    return a.move.kbg < b.move.kbg ? av :
+                    a.move.kbg > b.move.kbg ? bv :
+                    0
+                });
+            break;
+        }
+    }
+
     
     $scope.update = function () {
         $scope.filteredMoves = [];
@@ -360,6 +460,7 @@ filter_app.controller('filter', function ($scope) {
             }
         });
         $scope.noResults = $scope.filteredMoves.length;
+        $scope.sort();
     }
 });
 

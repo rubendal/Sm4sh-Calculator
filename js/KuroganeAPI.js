@@ -47,7 +47,6 @@ class CancelCond{
             if(/[0-9]+\-[0-9]+/i.test(cond)){
                 //Range
                 this.type = "-";
-                console.debug(cond);
                 this.value = [parseFloat(cond.split("-")[0]),parseFloat(cond.split("-")[1])];
                 this.print = function(){
                     return this.value[0] + "-" + this.value[1];
