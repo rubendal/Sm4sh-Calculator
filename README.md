@@ -52,7 +52,6 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Max distance
 
 ### To Do
-* App Icon
 * Improve Hitstun cancel frames formula
 
 ## Move Search

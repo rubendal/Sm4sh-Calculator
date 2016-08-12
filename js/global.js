@@ -134,9 +134,8 @@ class Distance{
         var x_speed = LaunchSpeed(+x_kb.toFixed(6));
         var y_speed = LaunchSpeed(+y_kb.toFixed(6));
 
-        //Not exact value, still testing and comparing with parameter files
-        var x_a = 0.03;
-        var y_a = 0.03;
+        var x_a = 0.051 * Math.cos(angle * Math.PI / 180);
+        var y_a = 0.051 * Math.sin(angle * Math.PI / 180);
         if(this.inverseX){
             if(angle < 180){
                 angle = 180 - angle;
@@ -163,7 +162,6 @@ class Distance{
         var sliding = false;
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
-            var p_xd = xd;
 
             g += gravity;
             fg = Math.min(g, fall_speed);
@@ -175,8 +173,10 @@ class Distance{
             }else{
                 
             }
-            xs -= x_a;
-            ys -= y_a;            
+            if(i!=0){
+                xs -= x_a;
+                ys -= y_a;
+            }            
 
             if(Math.cos(angle * Math.PI / 180) < 0){
                 if(sliding){
