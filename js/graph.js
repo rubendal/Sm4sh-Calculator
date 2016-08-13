@@ -30,6 +30,7 @@ app.controller('calculator', function ($scope) {
     $scope.target_damage_taken = target.modifier.damage_taken;
     $scope.target_kb_received = target.modifier.kb_received;
     $scope.target_traction = target.attributes.traction;
+    $scope.target_fall_speed = target.attributes.fall_speed;
 
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -84,6 +85,7 @@ app.controller('calculator', function ($scope) {
         target.modifier.damage_taken = parseFloat($scope.target_damage_taken);
         target.modifier.kb_received = parseFloat($scope.target_kb_received);
         target.attributes.traction = parseFloat($scope.target_traction);
+        target.attributes.fall_speed = parseFloat($scope.target_fall_speed);
 
         $scope.update();
     }
@@ -252,6 +254,7 @@ app.controller('calculator', function ($scope) {
         target = new Character($scope.targetValue);
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
+        $scope.target_fall_speed = target.attributes.fall_speed;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
         $scope.target_traction = target.attributes.traction;
