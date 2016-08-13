@@ -134,8 +134,8 @@ class Distance{
         var x_speed = LaunchSpeed(+x_kb.toFixed(6));
         var y_speed = LaunchSpeed(+y_kb.toFixed(6));
 
-        var x_a = 0.051 * Math.cos(angle * Math.PI / 180);
-        var y_a = 0.051 * Math.sin(angle * Math.PI / 180);
+        var x_a = 0.051 * Math.abs(Math.cos(angle * Math.PI / 180));
+        var y_a = 0.051 * Math.abs(Math.sin(angle * Math.PI / 180));
         if(this.inverseX){
             if(angle < 180){
                 angle = 180 - angle;
