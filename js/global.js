@@ -358,7 +358,8 @@ class Knockback {
         this.tumble = false;
         this.can_jablock = false;
         this.di_able = false;
-        this.add_gravity_kb = ((this.gravity - 0.075) * 5);
+        this.add_gravity_kb = ((this.gravity - 0.075) * 5) * Math.abs(Math.sin(angle * Math.PI / 180));
+        this.gravity_mult = (1 + (this.add_gravity_kb / 2.6));
         this.percent = percent;
         this.reeling = false;
         this.spike = false;
@@ -385,9 +386,11 @@ class Knockback {
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
+                this.gravity_mult = 1;
             }
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y += this.add_gravity_kb;
+                //this.y += this.add_gravity_kb;
+                this.y *= this.gravity_mult;
             }
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
@@ -448,7 +451,8 @@ class PercentFromKnockback{
         this.tumble = false;
         this.can_jablock = false;
         this.di_able = false;
-        this.add_gravity_kb = ((this.gravity - 0.075) * 5);
+        this.add_gravity_kb = ((this.gravity - 0.075) * 5) * Math.abs(Math.sin(angle * Math.PI / 180));
+        this.gravity_mult = (1 + (this.add_gravity_kb / 2.6));
         this.reeling = false;
         this.training_percent = 0;
         this.vs_percent = 0;
@@ -549,9 +553,10 @@ class PercentFromKnockback{
             
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
+                this.gravity_mult = 1;
             }
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y -= this.add_gravity_kb;
+                this.y *= this.gravity_mult;
                 if(this.type == "y"){
                     this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                 }
@@ -931,10 +936,10 @@ function getResults(){
         vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
     }
     if (trainingkb.tumble) {
-        traininglist.splice(7, 0, new ListItem("Gravity KB", + +trainingkb.add_gravity_kb.toFixed(4)));
+        traininglist.splice(7, 0, new ListItem("Gravity KB", "x" +trainingkb.gravity_mult.toFixed(4)));
     }
     if (vskb.tumble) {
-        vslist.splice(7, 0, new ListItem("Gravity KB", + +vskb.add_gravity_kb.toFixed(4)));
+        vslist.splice(7, 0, new ListItem("Gravity KB", "x" +vskb.gravity_mult.toFixed(4)));
     }
     if (r != 1) {
         traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
