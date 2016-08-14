@@ -153,6 +153,18 @@
                     <!--<br />
                     <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off-->
                 </div>
+                <div id="stage" style="margin-top:5px;">
+                    Stage:
+                    <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
+                        <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
+                    </select>
+                    <br/>
+                    Position
+                    <br/>
+                    X:<input name="position_x" type="number" min="-500" max="500" step="1" ng-model="position_x" ng-change="update()" />
+                    <br/>
+                    Y:<input name="position_y" type="number" min="-500" max="500" step="1" ng-model="position_y" ng-change="update()" />
+                </div>
                 <div id="graph_options">
                     Graph options
                     <br/>

@@ -113,7 +113,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_kb, y_kb, hitstun, angle, gravity, fall_speed, traction, inverseX, onSurface){
+    constructor(kb, x_kb, y_kb, hitstun, angle, gravity, fall_speed, traction, inverseX, onSurface, position, stage){
         this.kb = kb;
         this.x_kb = x_kb;
         this.y_kb = y_kb;
@@ -124,9 +124,19 @@ class Distance{
         this.traction = traction;
         this.max_x = 0;
         this.max_y = 0;
+        this.graph_x = 0;
+        this.graph_y = 0;
         this.inverseX = inverseX;
         this.onSurface = onSurface;
         this.tumble = false;
+        this.position = {"x":0, "y":0};
+        if(position !== undefined){
+            this.position = position;
+        }
+        this.stage = null;
+        if(stage !== undefined){
+            this.stage = stage;
+        }
         if(kb > 80 && angle != 0 && angle != 180){
             this.tumble = true;
         }
@@ -151,10 +161,10 @@ class Distance{
             y_speed *= -1;
             y_a *= -1;
         }
-        this.x = [0];
-        this.y = [0];
-        var xd = 0;
-        var yd = 0;
+        this.x = [this.position.x];
+        this.y = [this.position.y];
+        var xd = this.position.x;
+        var yd = this.position.y;
         var xs = x_speed;
         var ys = y_speed;
         var g = 0;
@@ -231,6 +241,9 @@ class Distance{
             this.y.push(+yd.toFixed(4));
 
         }
+
+        this.graph_x = Math.abs(this.max_x);
+        this.graph_y = Math.abs(this.max_y);
 
         this.max_x = Math.abs(this.max_x);
         this.max_y = Math.abs(this.max_y);
@@ -313,7 +326,6 @@ class Distance{
 
         if(airdodge< limit){
             for(var i = airdodge; i < limit; i++){
-                console.debug(i);
                 adxdata.push(this.x[i]);
                 adydata.push(this.y[i]);
             }
@@ -326,7 +338,6 @@ class Distance{
         }
 
         if(aerial < limit){
-
             adxdata = [];
             adydata = [];
             for(var i = aerial; i < limit; i++){
@@ -338,6 +349,52 @@ class Distance{
             }
 
         }
+
+        //Stage blast zones
+        if(this.stage != null){
+            adxdata = [];
+            adydata = [];
+            adxdata.push(this.stage.blast_zones[0]);
+            adxdata.push(this.stage.blast_zones[1]);
+            adxdata.push(this.stage.blast_zones[1]);
+            adxdata.push(this.stage.blast_zones[0]);
+            adxdata.push(this.stage.blast_zones[0]);
+
+            adydata.push(this.stage.blast_zones[2]);
+            adydata.push(this.stage.blast_zones[2]);
+            adydata.push(this.stage.blast_zones[3]);
+            adydata.push(this.stage.blast_zones[3]);
+            adydata.push(this.stage.blast_zones[2]);
+
+            data.push({'x':adxdata, 'y':adydata, 'mode':'lines', 'line':{'color':'purple'}, 'name':"Blast zone"});
+
+            //Stage surface
+            adxdata = [];
+            adydata = [];
+            for(var i=0;i<this.stage.surface.length;i++){
+                adxdata.push(this.stage.surface[i][0]);
+                adydata.push(this.stage.surface[i][1]);
+            }
+
+            data.push({'x':adxdata, 'y':adydata, 'mode':'lines', 'line':{'color':'purple'}, 'name':"Stage"});
+
+            //Stage platforms
+            if(this.stage.platforms !== undefined){
+                for(var i=0;i<this.stage.platforms.length;i++){
+                    adxdata = [];
+                    adydata = [];
+                    for(var j=0;j<this.stage.platforms[i].vertex.length;j++){
+                        adxdata.push(this.stage.platforms[i].vertex[j][0]);
+                        adydata.push(this.stage.platforms[i].vertex[j][1]);
+                    }
+                    data.push({'x':adxdata, 'y':adydata, 'mode':'lines', 'line':{'color':'purple'}, 'name':this.stage.platforms[i].name});
+                }
+            }
+
+            this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
+            this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
+        }
+
 
         this.plot = data;
 
@@ -786,6 +843,10 @@ function ShieldList(values) {
         list[i] = new ListItem(attributes[i], values[i]);
     }
     return list;
+}
+
+function getStages(){
+    return loadJSONPath("./Data/Stages/stagedata.json");
 }
 
 var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Cloud (Limit Break)", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];

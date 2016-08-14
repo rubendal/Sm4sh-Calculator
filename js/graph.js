@@ -18,6 +18,8 @@ app.controller('calculator', function ($scope) {
     $scope.kb_modifier = "none";
     $scope.inverseX = false;
     $scope.surface = false;
+    $scope.position_x = 0;
+    $scope.position_y = 0;
 
     $scope.preDamage = 0;
     $scope.di = 0;
@@ -51,6 +53,16 @@ app.controller('calculator', function ($scope) {
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
+
+    $scope.stages = getStages();
+    $scope.stage = null;
+
+    $scope.updateStage = function(){
+        $scope.stage = JSON.parse($scope.stageValue);
+        $scope.position_x = $scope.stage.center[0];
+        $scope.position_y = $scope.stage.center[1];
+        $scope.update();
+    }
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -286,6 +298,8 @@ app.controller('calculator', function ($scope) {
         wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
+        var position = {"x":parseFloat($scope.position_x), "y":parseFloat($scope.position_y)};
+
         if($scope.noDI){
             di = -1;
         }else{
@@ -319,17 +333,17 @@ app.controller('calculator', function ($scope) {
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
 
-        var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface);
-        var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface);
+        var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
+        var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
 
-        var max_x = trainingDistance.max_x + 10;
-        var max_y = trainingDistance.max_y + 10;
+        var max_x = trainingDistance.graph_x + 10;
+        var max_y = trainingDistance.graph_y + 10;
         max_x = max_y = Math.max(max_x, max_y);
         var data = trainingDistance.plot;
         Plotly.newPlot('training_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
 
-        max_x = vsDistance.max_x + 10;
-        max_y = vsDistance.max_y + 10;
+        max_x = vsDistance.graph_x + 10;
+        max_y = vsDistance.graph_y + 10;
         max_x = max_y = Math.max(max_x, max_y);
         data = vsDistance.plot;
         Plotly.newPlot('vs_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
