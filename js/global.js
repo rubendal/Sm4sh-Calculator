@@ -346,7 +346,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, aerial, windbox, percent, di) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di) {
         this.base_kb = kb;
         this.kb = kb;
         this.original_angle = angle;
@@ -358,7 +358,9 @@ class Knockback {
         this.tumble = false;
         this.can_jablock = false;
         this.di_able = false;
+        this.fall_speed = fall_speed;
         this.add_gravity_kb = ((this.gravity - 0.075) * 5) * Math.abs(Math.sin(angle * Math.PI / 180));
+        //this.gravity_mult = ((1 - (this.fall_speed / 90)) + (this.add_gravity_kb / 3));
         this.gravity_mult = (1 + (this.add_gravity_kb / 2.6));
         this.percent = percent;
         this.reeling = false;
@@ -430,7 +432,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
         this.base_kb = kb;
         this.type = type;
         this.original_angle = angle;
@@ -439,6 +441,7 @@ class PercentFromKnockback{
         this.damage = damage;
         this.angle = angle;
         this.gravity = gravity;
+        this.fall_speed = fall_speed;
         this.aerial = aerial;
         this.bkb = bkb;
         this.kbg = kbg;
@@ -909,15 +912,15 @@ function getResults(){
     preDamage *= target.modifier.damage_taken;
 
     if (!wbkb) {
-        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
-        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
+        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
         trainingkb.addModifier(attacker.modifier.kb_dealt);
         vskb.addModifier(attacker.modifier.kb_dealt);
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     } else {
-        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, damage, 0, angle, in_air, windbox, di);
-        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, di);
+        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
         trainingkb.addModifier(target.modifier.kb_received);
         vskb.addModifier(target.modifier.kb_received);
     }
@@ -991,8 +994,8 @@ function getResults(){
 
     if (target.name == "Rosalina And Luma") {
         if (!wbkb) {
-            var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, angle, in_air, windbox, di);
-            var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+            var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
+            var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
             luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
             luma_vskb.addModifier(attacker.modifier.kb_dealt);
             luma_trainingkb.addModifier(target.modifier.kb_received);
@@ -1002,8 +1005,8 @@ function getResults(){
             vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
             vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
         } else {
-            var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
-            var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+            var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
+            var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
             luma_vskb.addModifier(target.modifier.kb_received);
             luma_vskb.addModifier(target.modifier.kb_received);
             traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));

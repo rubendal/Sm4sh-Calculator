@@ -296,7 +296,7 @@ app.controller('calculator', function ($scope) {
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
         kb.addModifier(attacker.modifier.kb_dealt);
         kb.addModifier(target.modifier.kb_received);
         kb.bounce(bounce);
