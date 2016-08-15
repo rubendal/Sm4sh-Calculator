@@ -203,6 +203,7 @@ class Distance{
                         sliding = true;
                         yd = 0;
                         g=0;
+                        ys=0;
                     }else{
                         angle = InvertYAngle(angle);
                         y_a *= -1;
@@ -254,13 +255,20 @@ class Distance{
                             xd += xs;
                             yd += ys;
                         }else{
-                            sliding = true;
+                            if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
+                                sliding = true;
+                                g=0;
+                                ys=0;
+                            }else{
+                                ys = 0;
+                                g=0;
+                                xs = 0;
+                            }
                             yd = line[0][1];
-                            g=0;
                         }
                     }else{
                         //Platform intersection
-                        
+
                     }
                 }
             }

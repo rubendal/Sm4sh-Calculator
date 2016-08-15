@@ -259,3 +259,47 @@ function closestLine(point, surface){
     }
     return line;
 }
+
+function findSubArray(array, find){
+    for(var i=0;i<array.length;i++){
+        var found = true;
+        for(var j=0;array[i].length;j++){
+            if(array[i][j] != find[j]){
+                found = false;
+                break;
+            }
+            if(found){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function lineIsFloor(line, surface, edges){
+    //Get surface floor
+    var floor = [];
+    var edgeid = -1;
+    var found = false;
+    for(var i=0;i<surface.length;i++){
+        if(edgeid != -1 && !found){
+            floor.push(surface[i]);
+        }
+        if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1]) || (surface[i][0] == edges[1][0] && surface[i][1] == edges[1][1])){
+            if(edgeid==-1){
+                floor.push(surface[i]);
+            }
+            if(edgeid != -1){
+                found = true;
+                return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
+            }
+            if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1])){
+                edgeid = 0;
+            }else{
+                edgeid = 1;
+            }
+            
+        }
+    }
+    return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
+}
