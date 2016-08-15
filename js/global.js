@@ -147,11 +147,7 @@ class Distance{
         var x_a = 0.051 * Math.abs(Math.cos(angle * Math.PI / 180));
         var y_a = 0.051 * Math.abs(Math.sin(angle * Math.PI / 180));
         if(this.inverseX){
-            if(angle < 180){
-                angle = 180 - angle;
-            }else{
-                angle = 360 - (angle - 180);
-            }
+            angle = InvertXAngle(angle);
         }
         if(Math.cos(angle * Math.PI / 180) < 0){
             x_speed *= -1;
@@ -165,28 +161,118 @@ class Distance{
         this.y = [this.position.y];
         var xd = this.position.x;
         var yd = this.position.y;
+        var momentum = 1;
+        var prev_xd = xd;
+        var prev_yd = yd;
         var xs = x_speed;
         var ys = y_speed;
         var g = 0;
         var fg = 0;
         var sliding = false;
+        var bounce = false;
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
 
             g += gravity;
             fg = Math.min(g, fall_speed);
             
-            if(sliding){
-                if(!this.tumble){
-                    xs -= x_a;
-                }
-            }else{
-                
-            }
             if(i!=0){
                 xs -= x_a;
                 ys -= y_a;
-            }            
+            }        
+            
+
+            if(Math.sin(angle * Math.PI / 180) < 0){
+                yd += Math.min(ys,0);
+            }else{
+                yd += Math.max(ys,0);
+            }
+            yd -= fg;
+            if(prev_yd > yd){
+                momentum = -1;
+            }else{
+                if(prev_yd > yd){
+                    momentum = 1;
+                }else{
+                    momentum = 0;
+                }
+            }
+            if(this.stage == null && this.onSurface && momentum == -1){
+                if(yd < 0){
+                    if(!this.tumble){
+                        sliding = true;
+                        yd = 0;
+                        g=0;
+                    }else{
+                        angle = InvertYAngle(angle);
+                        y_a *= -1;
+                        ys*=-1;
+                        yd=0;
+                        momentum = 0;
+                        g=0;
+                    }
+                }
+            }else{
+                if(this.stage != null && !bounce){
+                    if(insideSurface([xd,yd], this.stage.surface)){
+                        var line = closestLine([xd,yd], this.stage.surface);
+                        if(this.tumble){
+                            bounce = true;
+                            var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
+                            var t_angle = (2* (line_angle + 90)) - 180 - angle;
+                            x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
+                            y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
+                            xs = Math.abs(xs);
+                            ys = Math.abs(ys);
+                            if(Math.cos(t_angle * Math.PI / 180) < 0){
+                                xs *= -1;
+                                x_a *= -1;
+                            }
+                            if(Math.sin(t_angle * Math.PI / 180) < 0){
+                                ys *= -1;
+                                y_a *= -1;
+                            }
+                            if(!insideSurface([xd + (xs*3),yd + (ys*3)], this.stage.surface)){
+                                angle = t_angle;
+                            }else{
+                                angle = line_angle + 90;
+                                x_a = 0.051 * Math.abs(Math.cos(angle * Math.PI / 180));
+                                y_a = 0.051 * Math.abs(Math.sin(angle * Math.PI / 180));
+                                xs = Math.abs(xs);
+                                ys = Math.abs(ys);
+                                if(Math.cos(angle * Math.PI / 180) < 0){
+                                    xs *= -1;
+                                    x_a *= -1;
+                                }
+                                if(Math.sin(angle * Math.PI / 180) < 0){
+                                    ys *= -1;
+                                    y_a *= -1;
+                                }
+                            }
+                            momentum = 0;
+                            g=0;
+                            xd += xs;
+                            yd += ys;
+                        }else{
+                            sliding = true;
+                            yd = line[0][1];
+                            g=0;
+                        }
+                    }else{
+                        //Platform intersection
+                        
+                    }
+                }
+            }
+
+            if(sliding){
+                //Traction applied here
+                if(Math.cos(angle * Math.PI / 180) < 0){
+                    xs += traction;
+                }else{
+                    xs -= traction;
+                }
+            }    
 
             if(Math.cos(angle * Math.PI / 180) < 0){
                 if(sliding){
@@ -210,25 +296,6 @@ class Distance{
                     this.max_x = Math.max(this.max_x, xd);
                 }
                 
-            }
-
-            if(Math.sin(angle * Math.PI / 180) < 0){
-                yd += Math.min(ys,0);
-            }else{
-                yd += Math.max(ys,0);
-            }
-            yd -= fg;
-            if(this.onSurface && Math.sin(angle * Math.PI / 180) >= 0){
-                if(yd < 0){
-                    sliding = true;
-                    yd = 0;
-                    //Traction applied here
-                    if(Math.cos(angle * Math.PI / 180) < 0){
-                        xd -= traction;
-                    }else{
-                        xd += traction;
-                    }
-                }
             }
             if(Math.sin(angle * Math.PI / 180) < 0){
                 this.max_y = Math.min(this.max_y, yd);

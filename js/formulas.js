@@ -197,3 +197,65 @@ function DI(angle, move_angle){
 function LaunchSpeed(kb){
     return kb * 0.03;
 }
+
+function InvertXAngle(angle){
+    if(angle < 180){
+        return 180 - angle;
+    }else{
+        return 360 - (angle - 180);
+    }
+}
+
+function InvertYAngle(angle){
+    if(angle < 180){
+        return (180 - angle) + 180;
+    }else{
+        return 180 - (angle - 180);
+    }
+}
+
+function insideSurface(point, surface) {
+    var x = point[0];
+    var y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = surface.length - 1; i < surface.length; j = i++) {
+        var xi = surface[i][0];
+        var yi = surface[i][1];
+        var xj = surface[j][0];
+        var yj = surface[j][1];
+
+        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect){
+            inside = !inside;
+        }
+    }
+
+    return inside;
+};
+
+function closestLine(point, surface){
+    var x = point[0];
+    var y = point[1];
+
+    var line = [];
+    var min_distance = null;
+
+    for(var i=0;i<surface.length-1;i++){
+        var x1 = surface[i][0];
+        var x2 = surface[i+1][0];
+        var y1 = surface[i][1];
+        var y2 = surface[i+1][1];
+        var distance = Math.abs(((y2-y1) * x) - ((x2-x1) * y) + (x2*y1) - (y2*x1)) / Math.sqrt(Math.pow(y2-y1,2) + Math.pow(x2-x1,2));
+        if(min_distance == null){
+            min_distance = distance;
+            line = [[x1,y1],[x2,y2]];
+        }else{
+            if(distance < min_distance){
+                min_distance = distance;
+                line = [[x1,y1],[x2,y2]];
+            }
+        }
+    }
+    return line;
+}
