@@ -7,6 +7,7 @@ http://rubendal.github.io/Sm4sh-Calculator/
 ## Calculator
 
 ### Recent Changes
+* Added - Distance launched and improved gravity-knockback calculation
 * Added - Launch speed
 * Changed - Target DI angle change with DI angle calculation
 * Added - Shield damage
@@ -100,19 +101,27 @@ Get target percent required to obtain certain knockback
 * Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback with the hitstun difference
 * WBKB isn't supported due to being weight related
 
+### To Do
+* Change application to calculate the minimum percentage needed to launch certain distance instead of knockback
+
 ## Launch Visualizer
 http://rubendal.github.io/Sm4sh-Calculator/launchvisualizer.html
 
-Note: Work in progress, can display wrong values specially Y values
+Note: Work in progress, stage layout collision detection might give weird results
 
-Visualize launch trajectory, position per hitstun frame and distance launched in a graph
+Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
 * Each marker represents each frame in hitstun
 * Line color represents vertical momentum
 * Yellow markers represents frames that hitstun can be cancelled by using an airdodge
 * Green markers represents frames that hitstun can be cancelled by using an aerial
+* Give target position when hit using x,y coordinates
 * X-axis can be inverted to represent launching opponents to the left
-* X-axis can be used to represent a surface, showing traction effects (Grounded meteors not implemented)
+* X-axis can represent a surface to show traction and bouncing effects
+* Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
+
+### To Do
+* Add platform collision detection when falling
 
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
