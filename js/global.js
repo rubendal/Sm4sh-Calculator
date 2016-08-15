@@ -173,6 +173,9 @@ class Distance{
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
 
+            prev_xd = xd;
+            prev_yd = yd;
+
             g += gravity;
             fg = Math.min(g, fall_speed);
             
@@ -188,15 +191,6 @@ class Distance{
                 yd += Math.max(ys,0);
             }
             yd -= fg;
-            if(prev_yd > yd){
-                momentum = -1;
-            }else{
-                if(prev_yd > yd){
-                    momentum = 1;
-                }else{
-                    momentum = 0;
-                }
-            }
             if(this.stage == null && this.onSurface && momentum == -1){
                 if(yd < 0){
                     if(!this.tumble){
@@ -250,25 +244,65 @@ class Distance{
                                     y_a *= -1;
                                 }
                             }
+
                             momentum = 0;
                             g=0;
-                            xd += xs;
-                            yd += ys;
+
                         }else{
                             if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
                                 sliding = true;
                                 g=0;
                                 ys=0;
+                                yd+=fg;
                             }else{
                                 ys = 0;
                                 g=0;
                                 xs = 0;
                             }
-                            yd = line[0][1];
                         }
                     }else{
                         //Platform intersection
+                        if(this.stage.platforms !== undefined){
+                            if(momentum == -1){
+                                for(var i=0;i<this.stage.platforms.length;i++){
+                                    var intersect = false;
+                                    //Intersection code goes here
 
+                                    if(intersect){
+                                        var line = this.stage.platforms[i].vertex; 
+                                        if(this.tumble){
+                                            bounce = true;
+                                            
+                                            var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
+                                            var t_angle = (2* (line_angle + 90)) - 180 - angle;
+                                            x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
+                                            y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
+                                            xs = Math.abs(xs);
+                                            ys = Math.abs(ys);
+                                            if(Math.cos(t_angle * Math.PI / 180) < 0){
+                                                xs *= -1;
+                                                x_a *= -1;
+                                            }
+                                            if(Math.sin(t_angle * Math.PI / 180) < 0){
+                                                ys *= -1;
+                                                y_a *= -1;
+                                            }
+                                            angle = t_angle;
+                                            momentum = 0;
+                                            g=0;
+
+                                        }else{
+                                            sliding = true;
+                                            g=0;
+                                            ys=0;
+                                            yd = line[0][1];
+                                        }
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                        }
                     }
                 }
             }
@@ -311,6 +345,15 @@ class Distance{
                 this.max_y = Math.max(this.max_y, yd);
             }
 
+            if(prev_yd > yd){
+                momentum = -1;
+            }else{
+                if(prev_yd > yd){
+                    momentum = 1;
+                }else{
+                    momentum = 0;
+                }
+            }
 
             this.x.push(+xd.toFixed(4));
             this.y.push(+yd.toFixed(4));
