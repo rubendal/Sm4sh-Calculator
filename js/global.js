@@ -262,7 +262,7 @@ class Distance{
                         }
                     }else{
                         //Platform intersection
-                        if(this.stage.platforms !== undefined){
+                        /*if(this.stage.platforms !== undefined){
                             if(momentum == -1){
                                 for(var i=0;i<this.stage.platforms.length;i++){
                                     var intersect = false;
@@ -302,7 +302,7 @@ class Distance{
                                 }
                                 
                             }
-                        }
+                        }*/
                     }
                 }
             }
