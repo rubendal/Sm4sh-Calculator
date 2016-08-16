@@ -173,8 +173,6 @@ class Distance{
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
 
-            prev_xd = xd;
-            prev_yd = yd;
 
             g += gravity;
             fg = Math.min(g, fall_speed);
@@ -184,13 +182,6 @@ class Distance{
                 ys -= y_a;
             }        
             
-
-            if(Math.sin(angle * Math.PI / 180) < 0){
-                yd += Math.min(ys,0);
-            }else{
-                yd += Math.max(ys,0);
-            }
-            yd -= fg;
             if(this.stage == null && this.onSurface && momentum == -1){
                 if(yd < 0){
                     if(!this.tumble){
@@ -214,7 +205,8 @@ class Distance{
                         if(this.tumble){
                             bounce = true;
                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                            var t_angle = (2* (line_angle + 90)) - 180 - angle;
+                            var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
+                            var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
                             x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
                             y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
                             xs = Math.abs(xs);
@@ -253,7 +245,6 @@ class Distance{
                                 sliding = true;
                                 g=0;
                                 ys=0;
-                                yd+=fg;
                             }else{
                                 ys = 0;
                                 g=0;
@@ -262,19 +253,30 @@ class Distance{
                         }
                     }else{
                         //Platform intersection
-                        /*if(this.stage.platforms !== undefined){
+                        if(this.stage.platforms !== undefined){
                             if(momentum == -1){
-                                for(var i=0;i<this.stage.platforms.length;i++){
+                                for(var j=0;j<this.stage.platforms.length;j++){
                                     var intersect = false;
                                     //Intersection code goes here
-
+                                    if((prev_yd >= this.stage.platforms[j].vertex[0][1] || prev_yd >= this.stage.platforms[j].vertex[1][1]) && 
+                                    (yd <= this.stage.platforms[j].vertex[0][1] || yd <= this.stage.platforms[j].vertex[1][1])){
+                                        
+                                    }else{
+                                        continue;
+                                    }
+                                    var point = IntersectionPoint([[prev_xd, prev_yd],[xd,yd]],this.stage.platforms[j].vertex);
+                                    if(point == null){
+                                        continue;
+                                    }
+                                    intersect = PointInLine(point, this.stage.platforms[j].vertex);
                                     if(intersect){
-                                        var line = this.stage.platforms[i].vertex; 
+                                        var line = this.stage.platforms[j].vertex; 
                                         if(this.tumble){
                                             bounce = true;
                                             
                                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                                            var t_angle = (2* (line_angle + 90)) - 180 - angle;
+                                            var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
+                                            var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
                                             x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
                                             y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
                                             xs = Math.abs(xs);
@@ -290,21 +292,34 @@ class Distance{
                                             angle = t_angle;
                                             momentum = 0;
                                             g=0;
-
+                                            yd = point[1];
                                         }else{
                                             sliding = true;
                                             g=0;
                                             ys=0;
-                                            yd = line[0][1];
+                                            yd = point[1];
                                         }
                                         break;
                                     }
                                 }
                                 
                             }
-                        }*/
+                        }
                     }
                 }
+            }
+            
+
+            prev_xd = xd;
+            prev_yd = yd;
+
+            if(Math.sin(angle * Math.PI / 180) < 0){
+                yd += Math.min(ys,0);
+            }else{
+                yd += Math.max(ys,0);
+            }
+            if(!sliding){
+                yd -= fg;
             }
 
             if(sliding){
@@ -354,6 +369,7 @@ class Distance{
                     momentum = 0;
                 }
             }
+            
 
             this.x.push(+xd.toFixed(4));
             this.y.push(+yd.toFixed(4));

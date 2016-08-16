@@ -120,9 +120,6 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * X-axis can represent a surface to show traction and bouncing effects
 * Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 
-### To Do
-* Add platform collision detection when falling
-
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
 

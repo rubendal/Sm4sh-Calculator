@@ -303,3 +303,35 @@ function lineIsFloor(line, surface, edges){
     }
     return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
 }
+
+function IntersectionPoint(line_a, line_b){
+    var x1 = line_a[0][0];
+    var x2 = line_a[1][0];
+    var y1 = line_a[0][1];
+    var y2 = line_a[1][1];
+    var x3 = line_b[0][0];
+    var x4 = line_b[1][0];
+    var y3 = line_b[0][1];
+    var y4 = line_b[1][1];
+    var d = ((x1-x2)*(y3-y4))-((y1-y2)*(x3-x4));
+    var x = (((x1*y2)-(y1*x2))*(x3-x4))-((x1-x2)*((x3*y4)-(y3*x4)));
+    var y = (((x1*y2)-(y1*x2))*(y3-y4))-((y1-y2)*((x3*y4)-(y3*x4)));
+    if(d!=0){
+        return [x/d,y/d];
+    }
+    return null;
+}
+
+function PointInLine(point, line){
+    var x = point[0];
+    var y = point[1];
+    var x1 = line[0][0];
+    var x2 = line[1][0];
+    var y1 = line[0][1];
+    var y2 = line[1][1];
+    var distance = Math.abs(((y2-y1) * x) - ((x2-x1) * y) + (x2*y1) - (y2*x1)) / Math.sqrt(Math.pow(y2-y1,2) + Math.pow(x2-x1,2));
+    if(distance < 0.0001){
+        return x1 <= x && x2 >= x;
+    }
+    return false;
+}
