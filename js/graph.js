@@ -20,6 +20,7 @@ app.controller('calculator', function ($scope) {
     $scope.surface = false;
     $scope.position_x = 0;
     $scope.position_y = 0;
+    $scope.game_mode = "vs";
 
     $scope.preDamage = 0;
     $scope.di = 0;
@@ -333,20 +334,21 @@ app.controller('calculator', function ($scope) {
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
 
-        var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
-        var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
+        var distance;
 
-        var max_x = trainingDistance.graph_x + 10;
-        var max_y = trainingDistance.graph_y + 10;
-        max_x = max_y = Math.max(max_x, max_y);
-        var data = trainingDistance.plot;
-        Plotly.newPlot('training_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
+        if($scope.game_mode == "training"){
+            distance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
+        }else{
+            distance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, $scope.inverseX, $scope.surface, position, $scope.stage);
+        }
 
-        max_x = vsDistance.graph_x + 10;
-        max_y = vsDistance.graph_y + 10;
+        var max_x = distance.graph_x + 10;
+        var max_y = distance.graph_y + 10;
         max_x = max_y = Math.max(max_x, max_y);
-        data = vsDistance.plot;
-        Plotly.newPlot('vs_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
+        max_x = max_y = Math.max(max_x, max_y);
+        var data = distance.plot;
+        Plotly.newPlot('res_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
+
     };
 
     $scope.update();

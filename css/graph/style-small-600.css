@@ -3,18 +3,10 @@
     position:relative;
 }
 
-#training{
+#graph{
     position: relative;
     top:0;
     left:auto;
-}
-
-#vs{
-    position: relative;
-    top:0;
-    left:auto;
-    margin-top:20px;
-    width:auto;
 }
 
 #target-attr{

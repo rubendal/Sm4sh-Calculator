@@ -154,6 +154,12 @@
                     <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off-->
                 </div>
                 <div id="stage" style="margin-top:5px;">
+                    Game mode
+                    <br/>
+                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="training" ng-change="update()" />Training mode
+                    <br />
+                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="vs" ng-change="update()" />Vs mode
+                    <br />
                     Stage:
                     <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
                         <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
@@ -212,16 +218,9 @@
         </div>
 
         <div id="results">
-            <div id="training">
-                Training Mode
-                <div id="training_graph" style="width:400px;height:400px;" class="plot">
+            <div id="graph">
+                <div id="res_graph" style="width:500px;height:500px;" class="plot">
 
-                </div>
-                <div id="vs">
-                    Vs Mode
-                    <div id="vs_graph" style="width:400px;height:400px;" class="plot">
-
-                    </div>
                 </div>
             </div>
 
