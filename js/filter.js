@@ -203,6 +203,8 @@ filter_app.controller('filter', function ($scope) {
     $scope.hitbox_start_cond = "any";
     $scope.hitbox_frame_cond = true;
     $scope.faf_cond = "any";
+    $scope.landing_lag_cond = "any";
+    $scope.autocancel_cond = "any";
     $scope.base_damage_cond = "any";
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
@@ -219,8 +221,14 @@ filter_app.controller('filter', function ($scope) {
     $scope.charactersId = [];
     $scope.moves = [];
     $scope.throws = [];
+    $scope.fail = false;
 
-    $scope.ready = function () {
+    $scope.ready = function (fail) {
+        if(fail || $scope.fail){
+            $scope.fail = true;
+            $scope.status = "Couldn't access API";
+            return;
+        }
         if ($scope.charactersId.length != 0 && $scope.moves.length != 0 && $scope.throws.length != 0) {
             $scope.status = "Adding throw data to moves...";
 
@@ -268,6 +276,9 @@ filter_app.controller('filter', function ($scope) {
     $scope.hitbox_frame = 0;
     $scope.faf = 0;
     $scope.faf2 = 0;
+    $scope.landing_lag = 0;
+    $scope.landing_lag2 = 0;
+    $scope.autocancel = 0;
     $scope.base_damage = 0;
     $scope.base_damage2 = 0;
     $scope.angle = 0;
@@ -409,6 +420,9 @@ filter_app.controller('filter', function ($scope) {
         var hitbox_frame2 = parseFloat($scope.hitbox_frame2);
         var faf = parseFloat($scope.faf);
         var faf2 = parseFloat($scope.faf2);
+        var landing_lag = parseFloat($scope.landing_lag);
+        var landing_lag2 = parseFloat($scope.landing_lag2);
+        var autocancel = parseFloat($scope.autocancel);
         var base_damage = parseFloat($scope.base_damage);
         var base_damage2 = parseFloat($scope.base_damage2);
         var angle = parseFloat($scope.angle);
@@ -421,12 +435,28 @@ filter_app.controller('filter', function ($scope) {
 
         $scope.moves.forEach(function (move, index) {
             if ($scope.compare($scope.base_damage_cond, move.base_damage, base_damage, base_damage2) &&
+                $scope.compare($scope.landing_lag_cond, move.landingLag, landing_lag, landing_lag2) && 
                 $scope.compare($scope.angle_cond, move.angle, angle, angle2) &&
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
                 $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2) &&
                 $scope.compare($scope.faf_cond, move.faf, faf, faf2)) {
                 if (!$scope.wbkb_any) {
                     if (move.wbkb != $scope.wbkb) {
+                        return;
+                    }
+                }
+                if($scope.autocancel_cond != "any"){
+                    if(move.autoCancel.length < 0){
+                        return;
+                    }
+                    var eval = false;
+                    for(var i=0;i<move.autoCancel.length;i++){
+                        if(move.autoCancel[i].eval(autocancel)){
+                            eval = true;
+                            break;
+                        }
+                    }
+                    if(!eval){
                         return;
                     }
                 }

@@ -113,7 +113,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_kb, y_kb, hitstun, angle, gravity, fall_speed, traction, inverseX, onSurface, position, stage){
+    constructor(kb, x_kb, y_kb, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage){
         this.kb = kb;
         this.x_kb = x_kb;
         this.y_kb = y_kb;
@@ -130,6 +130,7 @@ class Distance{
         this.onSurface = onSurface;
         this.tumble = false;
         this.position = {"x":0, "y":0};
+        this.bounce = false;
         if(position !== undefined){
             this.position = position;
         }
@@ -141,6 +142,15 @@ class Distance{
             this.tumble = true;
         }
 
+        if(this.stage == null){
+            if(this.position.y < 0 && this.onSurface){
+                this.position.y = 0;
+            }
+        }
+
+        this.max_x = this.position.x;
+        this.max_y = this.position.y;
+
         var x_speed = LaunchSpeed(+x_kb.toFixed(6));
         var y_speed = LaunchSpeed(+y_kb.toFixed(6));
 
@@ -149,6 +159,7 @@ class Distance{
         if(this.inverseX){
             angle = InvertXAngle(angle);
         }
+        angle+=di;
         if(Math.cos(angle * Math.PI / 180) < 0){
             x_speed *= -1;
             x_a *= -1;
@@ -169,20 +180,62 @@ class Distance{
         var g = 0;
         var fg = 0;
         var sliding = false;
-        var bounce = false;
+        var bounce_frame = -1;
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
 
 
             g += gravity;
-            fg = Math.min(g, fall_speed);
             
             if(i!=0){
                 xs -= x_a;
                 ys -= y_a;
             }        
-            
-            if(this.stage == null && this.onSurface && momentum == -1){
+
+            if(bounce_frame != i-1){
+                fg = Math.min(g, fall_speed);
+                if(Math.sin(angle * Math.PI / 180) < 0){
+                    yd += Math.min(ys,0);
+                }else{
+                    yd += Math.max(ys,0);
+                }
+                if(!sliding){
+                    yd -= fg;
+                }
+            }
+
+            if(sliding){
+                //Traction applied here
+                if(Math.cos(angle * Math.PI / 180) < 0){
+                    xs += traction;
+                }else{
+                    xs -= traction;
+                }
+            }    
+
+            if(bounce_frame != i-1){
+                if(Math.cos(angle * Math.PI / 180) < 0){
+                    if(sliding){
+                        if(!this.tumble){
+                            xd += Math.min(xs,0);
+                        }
+                    }else{
+                        xd += Math.min(xs,0);
+                    }
+                    
+                }else{
+                    if(sliding){
+                        if(!this.tumble){
+                            xd += Math.max(xs,0);
+                        }
+                    }else{
+                        xd += Math.max(xs,0);
+                    }
+                    
+                }
+            }
+
+            if(this.stage == null && this.onSurface){
                 if(yd < 0){
                     if(!this.tumble){
                         sliding = true;
@@ -199,13 +252,20 @@ class Distance{
                     }
                 }
             }else{
-                if(this.stage != null && !bounce){
-                    if(insideSurface([xd,yd], this.stage.surface)){
-                        var line = closestLine([xd,yd], this.stage.surface);
+                if(this.stage != null && !this.bounce){
+                    //Calculate if some points between previous and current positions are inside a surface
+                    var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
+                    var p1 = [prev_xd + (xd - prev_xd)/5, prev_yd + (yd - prev_yd)/5];
+                    var p2 = [prev_xd + 3*(xd - prev_xd)/5, prev_yd + 3*(yd - prev_yd)/5];;
+                    var p1_inside = insideSurface(p1, this.stage.surface);
+                    var p2_inside = insideSurface(p2, this.stage.surface);
+                    if(p1_inside || p2_inside || insideSurface([xd,yd], this.stage.surface)){
+                        var line = p1_inside ? closestLine([prev_xd, prev_yd], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([xd,yd], this.stage.surface);
                         if(this.tumble){
-                            bounce = true;
+                            this.bounce = true;
+                            //Intersection point
+                            var point = p1_inside ? IntersectionPoint([[prev_xd, prev_yd],p1],line) : p2_inside ? IntersectionPoint([[prev_xd, prev_yd],p2],line)  : IntersectionPoint([[prev_xd, prev_yd],[xd,yd]],line);
                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                            var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
                             x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
                             y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
@@ -219,7 +279,16 @@ class Distance{
                                 ys *= -1;
                                 y_a *= -1;
                             }
-                            if(!insideSurface([xd + (xs*3),yd + (ys*3)], this.stage.surface)){
+                            if(point!=null){
+                                if(this.x.length > 0){
+                                    this.x[this.x.length-1] = point[0];
+                                    this.y[this.y.length-1] = point[1];
+                                }
+                                xd = point[0];
+                                yd = point[1];
+                                limit++;
+                            }
+                            if(!insideSurface([xd + (xs),yd + (ys)], this.stage.surface)){
                                 angle = t_angle;
                             }else{
                                 angle = line_angle + 90;
@@ -236,15 +305,21 @@ class Distance{
                                     y_a *= -1;
                                 }
                             }
-
                             momentum = 0;
                             g=0;
-
+                            ys *= 0.8;
+                            xs *= 0.8;
+                            bounce_frame = i;
                         }else{
                             if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
                                 sliding = true;
                                 g=0;
                                 ys=0;
+                                var point = IntersectionPoint([[prev_xd, prev_yd],[xd, yd]],line);
+                                if(point != null){
+                                    xd = point[0];
+                                    yd = point[1];
+                                }
                             }else{
                                 ys = 0;
                                 g=0;
@@ -272,10 +347,9 @@ class Distance{
                                     if(intersect){
                                         var line = this.stage.platforms[j].vertex; 
                                         if(this.tumble){
-                                            bounce = true;
-                                            
+                                            this.bounce = true;
+                                            bounce_frame = i;
                                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                                            var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
                                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
                                             x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
                                             y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
@@ -292,12 +366,26 @@ class Distance{
                                             angle = t_angle;
                                             momentum = 0;
                                             g=0;
+                                            if(this.x.length > 0){
+                                                this.x[this.x.length-1] = point[0];
+                                                this.y[this.y.length-1] = point[1];
+                                            }
+                                            xd = point[0];
                                             yd = point[1];
+                                            limit++;
+                                            ys *= 0.8;
+                                            xs *= 0.8;
                                         }else{
                                             sliding = true;
                                             g=0;
                                             ys=0;
+                                            if(this.x.length > 0){
+                                                this.x[this.x.length-1] = point[0];
+                                                this.y[this.y.length-1] = point[1];
+                                            }
+                                            xd = point[0];
                                             yd = point[1];
+                                            limit++;
                                         }
                                         break;
                                     }
@@ -310,51 +398,16 @@ class Distance{
             }
             
 
-            prev_xd = xd;
-            prev_yd = yd;
+            
 
-            if(Math.sin(angle * Math.PI / 180) < 0){
-                yd += Math.min(ys,0);
+            
+
+            if(Math.cos(angle*Math.PI / 180) < 0){
+                this.max_x = Math.min(this.max_x, xd);
             }else{
-                yd += Math.max(ys,0);
+                this.max_x = Math.max(this.max_x, xd);
             }
-            if(!sliding){
-                yd -= fg;
-            }
-
-            if(sliding){
-                //Traction applied here
-                if(Math.cos(angle * Math.PI / 180) < 0){
-                    xs += traction;
-                }else{
-                    xs -= traction;
-                }
-            }    
-
-            if(Math.cos(angle * Math.PI / 180) < 0){
-                if(sliding){
-                    if(!this.tumble){
-                        xd += Math.min(xs,0);
-                        this.max_x = Math.min(this.max_x, xd);
-                    }
-                }else{
-                    xd += Math.min(xs,0);
-                    this.max_x = Math.min(this.max_x, xd);
-                }
-                
-            }else{
-                if(sliding){
-                    if(!this.tumble){
-                        xd += Math.max(xs,0);
-                        this.max_x = Math.max(this.max_x, xd);
-                    }
-                }else{
-                    xd += Math.max(xs,0);
-                    this.max_x = Math.max(this.max_x, xd);
-                }
-                
-            }
-            if(Math.sin(angle * Math.PI / 180) < 0){
+            if(Math.sin(angle * Math.PI / 180) <= 0){
                 this.max_y = Math.min(this.max_y, yd);
             }else{
                 this.max_y = Math.max(this.max_y, yd);
@@ -370,6 +423,8 @@ class Distance{
                 }
             }
             
+            prev_xd = xd;
+            prev_yd = yd;
 
             this.x.push(+xd.toFixed(4));
             this.y.push(+yd.toFixed(4));
@@ -555,6 +610,7 @@ class Knockback {
         this.percent = percent;
         this.reeling = false;
         this.spike = false;
+        this.di_change = 0;
         this.launch_speed = LaunchSpeed(kb);
         this.hitstun = Hitstun(this.base_kb, this.windbox);
         if (di !== undefined) {
@@ -571,7 +627,8 @@ class Knockback {
                 this.tumble = this.kb > 80 && !windbox;
                 this.di_able = this.tumble;
                 if(this.di_able){
-                    this.angle += DI(this.di,this.angle);
+                    this.di_change = DI(this.di,this.angle);
+                    this.angle += this.di_change;
                 }
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
@@ -931,7 +988,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed", "Max Distance Launched X", "Max Distance Launched Y"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -940,8 +997,6 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
-        "",
-        "",
         ""];
     var hitstun = -1;
     for (var i = 0; i < attributes.length && i < values.length; i++) {
@@ -1088,141 +1143,9 @@ var shieldDamage = 0;
 
 var unblockable = false;
 
-function getResults(){
-    var result = { 'training': [], 'vs': [], 'shield': [] };
+var game_mode = "vs";
+var graph = false;
 
-    base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
-    var damage = base_damage;
-    if (attacker.name == "Lucario") {
-        damage *= Aura(attacker_percent);
-        preDamage *= Aura(attacker_percent);
-    }
-    damage *= attacker.modifier.damage_dealt;
-    damage *= target.modifier.damage_taken;
-    preDamage *= attacker.modifier.damage_dealt;
-    preDamage *= target.modifier.damage_taken;
-
-    if (!wbkb) {
-        trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
-        vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
-        trainingkb.addModifier(attacker.modifier.kb_dealt);
-        vskb.addModifier(attacker.modifier.kb_dealt);
-        trainingkb.addModifier(target.modifier.kb_received);
-        vskb.addModifier(target.modifier.kb_received);
-    } else {
-        trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, di);
-        vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
-        trainingkb.addModifier(target.modifier.kb_received);
-        vskb.addModifier(target.modifier.kb_received);
-    }
-    trainingkb.bounce(bounce);
-    vskb.bounce(bounce);
-
-    var trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity, target.attributes.fall_speed);
-    var vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.angle, target.attributes.gravity, target.attributes.fall_speed);
-
-    var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
-    var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed, vsDistance.max_x, vsDistance.max_y]);
-    if (trainingkb.di_able) {
-        traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
-    }
-    if (vskb.di_able) {
-        vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
-    }
-    if (trainingkb.tumble) {
-        traininglist.splice(7, 0, new ListItem("Gravity KB", +trainingkb.add_gravity_kb.toFixed(4)));
-    }
-    if (vskb.tumble) {
-        vslist.splice(7, 0, new ListItem("Gravity KB", +vskb.add_gravity_kb.toFixed(4)));
-    }
-    if (r != 1) {
-        traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-        vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-    }
-    vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
-    if (target.modifier.kb_received != 1) {
-        traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-        vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-    }
-    if (attacker.modifier.kb_dealt != 1) {
-        traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-        vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-    }
-    if (attacker.name == "Lucario") {
-        traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
-        vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
-    }
-    if (is_smash) {
-        traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash).toFixed(4)));
-        vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash).toFixed(4)));
-    }
-    if (target.modifier.damage_taken != 1) {
-        traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-        vslist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-    }
-    if (attacker.modifier.damage_dealt != 1) {
-        traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-        vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-    }
-    if (preDamage != 0) {
-        traininglist.splice(0, 0, new ListItem("Before launch damage", "+" + +preDamage.toFixed(4) + "%"));
-        vslist.splice(0, 0, new ListItem("Before launch damage", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
-    }
-    if(!ignoreStale){
-        vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
-    }
-
-    traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
-    vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
-    if (trainingkb.reeling) {
-        traininglist.push(new ListItem("Reeling/Spin animation", "30%"));
-    }
-    if (vskb.reeling) {
-        vslist.push(new ListItem("Reeling/Spin animation", "30%"));
-    }
-    traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
-    vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
-
-    if (target.name == "Rosalina And Luma") {
-        if (!wbkb) {
-            var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
-            var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
-            luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
-            luma_vskb.addModifier(attacker.modifier.kb_dealt);
-            luma_trainingkb.addModifier(target.modifier.kb_received);
-            luma_vskb.addModifier(target.modifier.kb_received);
-            traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
-            traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
-            vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
-            vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
-        } else {
-            var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
-            var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
-            luma_vskb.addModifier(target.modifier.kb_received);
-            luma_vskb.addModifier(target.modifier.kb_received);
-            traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
-            traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
-            vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
-            vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
-        }
-    }
-
-    result.training = traininglist;
-    result.vs = vslist;
-
-    //Shield stuff
-    if(!unblockable){
-        result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
-        if(!powershield){
-            var s = (base_damage * 1.19) + (shieldDamage * 1.19);
-            result.shield.splice(0, 0, new ListItem("Shield Damage", +s.toFixed(4)));
-            result.shield.splice(1, 0, new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
-            result.shield.splice(2, 0, new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-
-        }
-    }else{
-        result.shield = ([new ListItem("Unblockable attack", "Yes")]);
-    }
-
-    return result;
-}
+var position = {"x":0, "y":0};
+var inverseX = false;
+var onSurface = false;

@@ -43,9 +43,6 @@
                             <td class="header-table">
                                 <a class="select-link" href="./percentcalc.html">Percentage Calculator</a>
                             </td>
-                            <td class="header-table">
-                                <a class="select-link" href="./launchvisualizer.html">Launch Visualizer</a>
-                            </td>
                         </tr>
                     </table>
                 </div>
@@ -104,6 +101,24 @@
                 <input name="faf_cond" type="radio" value="between" ng-model="faf_cond" ng-change="update()" />between
                 <input name="faf2" type="number" min="0" max="300" step="1" ng-model="faf2" ng-change="update()" />
                 <input name="faf_cond" type="radio" value="any" ng-model="faf_cond" ng-change="update()" />Any
+                <br />
+                Landing lag:
+                <input name="landing_lag" type="number" min="0" max="367" step="1" ng-model="landing_lag" ng-change="update()" />
+
+                <input name="landing_lag_cond" type="radio" value="=" ng-model="landing_lag_cond" ng-change="update()" />=
+                <input name="landing_lag_cond" type="radio" value="<" ng-model="landing_lag_cond" ng-change="update()" />&lt;
+                <input name="landing_lag_cond" type="radio" value=">" ng-model="landing_lag_cond" ng-change="update()" />&gt;
+                <input name="landing_lag_cond" type="radio" value="<=" ng-model="landing_lag_cond" ng-change="update()" />&lt;=
+                <input name="landing_lag_cond" type="radio" value=">=" ng-model="landing_lag_cond" ng-change="update()" />&gt;=
+                <input name="landing_lag_cond" type="radio" value="between" ng-model="landing_lag_cond" ng-change="update()" />between
+                <input name="landing_lag2" type="number" min="0" max="60" step="1" ng-model="landing_lag2" ng-change="update()" />
+                <input name="landing_lag_cond" type="radio" value="any" ng-model="landing_lag_cond" ng-change="update()" />Any
+                <br />
+                Autocancel:
+                <input name="autocancel" type="number" min="0" max="367" step="1" ng-model="autocancel" ng-change="update()" />
+
+                <input name="autocancel_cond" type="radio" value="=" ng-model="autocancel_cond" ng-change="update()" />=
+                <input name="autocancel_cond" type="radio" value="any" ng-model="autocancel_cond" ng-change="update()" />Any
                 <br />
                 Base damage:
                 <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="base_damage" ng-change="update()" />

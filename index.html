@@ -6,6 +6,7 @@
     <script src="js/global.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="js/modules.js"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -44,9 +45,6 @@
                             <td class="header-table">
                                 <a class="select-link" href="./percentcalc.html">Percentage Calculator</a>
                             </td>
-                            <td class="header-table">
-                                <a class="select-link" href="./launchvisualizer.html">Launch Visualizer</a>
-                            </td>
                         </tr>
                     </table>
                 </div>
@@ -68,7 +66,6 @@
         </div>
     </div>-->
 
-
     <div id="section">
         <table class="section-table">
             <tr class="section-table-content">
@@ -77,6 +74,9 @@
                 </td>
                 <td class="section-table-content" ng-click="show('attributes')" ng-style="section_attributes">
                     <a class="select-link" href="">Attributes</a>
+                </td>
+                <td class="section-table-content" ng-click="show('visualizer')" ng-style="section_visualizer">
+                    <a class="select-link" href="">Stage/Position</a>
                 </td>
             </tr>
         </table>
@@ -213,49 +213,99 @@
                 Gravity:
                 <input name="target_gravity" type="number" min="0" max="10" step="0.001" ng-model="target_gravity" ng-change="updateAttr()" />
                 <br />
+                Fall speed:
+                <input name="target_fall_speed" type="number" min="0" max="10" step="0.001" ng-model="target_fall_speed" ng-change="updateAttr()" />
+                <br />
                 Damage received: x
                 <input name="target_damage_taken" type="number" min="0" max="100" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
                 <br />
                 KB received: x
                 <input name="target_kb_received" type="number" min="0" max="100" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
                 <br />
+                Traction:
+                <input name="target_traction" type="number" min="0" max="1" step="0.001" ng-model="target_traction" ng-change="updateAttr()" style="width:5em;" />
+                <br />
             </div>
         </div>
-
+        <div id="visualizer-settings" ng-style="visualizer_style">
+                <div id="stage">
+                    Game mode
+                    <br/>
+                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="training" ng-change="update()" />Training mode
+                    <br />
+                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="vs" ng-change="update()" />Vs mode
+                    <br />
+                    Stage:
+                    <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
+                        <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
+                    </select>
+                    <br/>
+                    Target position when hit
+                    <br/>
+                    X:<input name="position_x" type="number" min="-500" max="500" step="1" ng-model="position_x" ng-change="update()" />
+                    <br/>
+                    Y:<input name="position_y" type="number" min="-500" max="500" step="1" ng-model="position_y" ng-change="update()" />
+                </div>
+                <div id="graph_options">
+                    Visualizer options
+                    <br/>
+                    <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="update()" />Invert move angle horizontally
+                    <br/>
+                    <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
+                </div>
+        </div>
+        <div id="section_res">
+            <table class="section-table-res">
+                <tr class="section-table-content-res">
+                    <td class="section-table-content-res" ng-click="showres('calc')" ng-style="section_calculation">
+                        <a class="select-link" href="">Results</a>
+                    </td>
+                    <td class="section-table-content-res" ng-click="showres('vis')" ng-style="section_graph">
+                        <a class="select-link" href="">Visualizer</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div id="results">
-            <div id="training">
-                Training Mode
-                <br />
-                <table>
-                    <tr ng-repeat="x in training">
-                        <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div id="vs">
-                Vs Mode
-                <br />
-                <table>
-                    <tr ng-repeat="x in vs">
-                        <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
-                        <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                    </tr>
-                </table>
-
-                <div id="shieldresults">
-                    Shield advantage
+            <div id="data" ng-style="calc_style">
+                <div id="training">
+                    Training Mode
                     <br />
                     <table>
-                        <tr ng-repeat="x in shield_advantage">
-                            <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                        <tr ng-repeat="x in training">
+                            <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
                             <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                         </tr>
                     </table>
                 </div>
-            </div>
 
+                <div id="vs">
+                    Vs Mode
+                    <br />
+                    <table>
+                        <tr ng-repeat="x in vs">
+                            <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
+                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                        </tr>
+                    </table>
+
+                    <div id="shieldresults">
+                        Shield advantage
+                        <br />
+                        <table>
+                            <tr ng-repeat="x in shield_advantage">
+                                <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                                <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="graph" ng-style="graph_style">
+                <div id="res_graph" style="width:500px;height:500px;" class="plot">
+
+                </div>
+            </div>
             
         </div>
 

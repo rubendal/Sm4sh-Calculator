@@ -304,6 +304,33 @@ function lineIsFloor(line, surface, edges){
     return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
 }
 
+function getFloorLines(surface, edges){
+    var floor = [];
+    var found = false;
+    var edgeid = -1;
+    for(var i=0;i<surface.length;i++){
+        if(edgeid != -1 && !found){
+            floor.push(surface[i]);
+        }
+        if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1]) || (surface[i][0] == edges[1][0] && surface[i][1] == edges[1][1])){
+            if(edgeid==-1){
+                floor.push(surface[i]);
+            }
+            if(edgeid != -1){
+                found = true;
+                return floor;
+            }
+            if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1])){
+                edgeid = 0;
+            }else{
+                edgeid = 1;
+            }
+            
+        }
+    }
+    return floor;
+}
+
 function IntersectionPoint(line_a, line_b){
     var x1 = line_a[0][0];
     var x2 = line_a[1][0];

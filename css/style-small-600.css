@@ -17,6 +17,19 @@
     width:auto;
 }
 
+#graph{
+    position: relative;
+    top:0;
+    left:auto;
+}
+
+#section_res{
+    position:relative;
+    top:0;
+    margin-top: 10px;
+    left:auto;
+}
+
 #target-attr{
     position:relative;
     top:auto;
@@ -44,4 +57,14 @@
     top:0;
     left:auto;
     margin-top:20px;
+}
+
+.section-table-content-res{
+    padding:5px;
+    text-align:center;
+    width:33%;
+}
+
+.section-table-res{
+    width:100%;
 }

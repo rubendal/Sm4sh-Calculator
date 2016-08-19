@@ -492,6 +492,7 @@ function getCharactersId(names, $scope) {
         }
     }, null, function () {
         $scope.status = "Couldn't access API";
+        $scope.ready(true);
     });
 }
 
@@ -528,6 +529,7 @@ function getAllMoves($scope) {
         }
     }, null, function () {
         $scope.status = "Couldn't access API";
+        $scope.ready(true);
     });
 }
 

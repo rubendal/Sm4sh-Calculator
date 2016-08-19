@@ -37,14 +37,30 @@ input[type=number]{
     margin-left:10px;
 }
 
+#section_res{
+    position:absolute;
+    top:-43px;
+    left:550px;
+}
+
 .section-table-content{
     padding:5px;
     text-align:center;
-    width:250px;
+    width:167px;
 }
 
 .section-table{
     width:500px;
+}
+
+.section-table-content-res{
+    padding:5px;
+    text-align:center;
+    width:500px;
+}
+
+.section-table-res{
+    width:1000px;
 }
 
 #main{
@@ -55,6 +71,15 @@ input[type=number]{
 #attributes{
     position:relative;
     display:none;
+}
+
+#visualizer-settings{
+    position: relative;
+    display: none;
+}
+
+#data{
+    display: block;
 }
 
 #training{
@@ -68,6 +93,12 @@ input[type=number]{
     top:0;
     left:850px;
     width:600px;
+}
+
+#graph{
+    position: absolute;
+    top:0;
+    left:550px;
 }
 
 #results{

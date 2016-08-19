@@ -1,32 +1,27 @@
 ## Sm4sh Calculator
 Web based Smash 4 knockback calculator
 
-### Github Pages
-http://rubendal.github.io/Sm4sh-Calculator/
-
 ## Calculator
 
 ### Recent Changes
-* Added - Distance launched and improved gravity-knockback calculation
-* Added - Launch speed
-* Changed - Target DI angle change with DI angle calculation
-* Added - Shield damage
-* Added - Detect attacks with windboxes
-* Fixed - Missing FAF in moves with multiple hitboxes
-* Added - Detect unblockable moves
-* Added - Parsed counters damage multipliers from KH API
-* Added - [Luma knockback](https://twitter.com/LettuceUdon/status/755101541405556736)
-* Added - DI angle change
-* Added - Tooltips in most table values with explanations
-* Added - Show Reeling animation chance when possible
-* Added - Miis
+* Launch visualizer merged with the calculator
+* Added - Stage, position, game mode and graph options to the new visualizer section
+* Added - Results are now divided by numeric results and the launch visualizer
+* Changed - Selected game mode will show maximum distance on the results affected by stage layout and target hit position
+* Added - Grounded meteors and surface bouncing will be detected and reflected on the calculator knockback modifier
+
+#### Launch visualizer updates
+* A lot of bug fixes...
+* Improved collision detection by detecting collision position and additional calculations to solve some results that made launch trajectory "pass-through" stage layout
+* Improved position precision when sliding through layout
+* Fixed inverse move angle X-axis making DI angle change calculation give wrong results
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something
 
 To access KuroganeHammer's API it is required to use webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list, some attacks might have missing data, these will show empty inputs since the API isn't complete or the website doesn't have them, also it could have wrong data so double check with the website
 
-To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
+If the API is not available or having issues you can fill move related data (Base damage, Angle, BKB, KBG) using [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 ### What does it calculate
 * Modifiers like Monado Arts and Deep Breathing
@@ -52,6 +47,20 @@ To fill move related data (Base damage, Angle, BKB, KBG) use [KuroganeHammer fra
 * Launch speed
 * Max distance
 
+#### Launch Visualizer
+Note: Work in progress, stage layout collision detection might give weird results and bounced trajectories are not accurate and can only calculate one bounce per calculation
+
+Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
+
+* Each marker represents each frame in hitstun
+* Line color represents vertical momentum
+* Yellow markers represents frames that hitstun can be cancelled by using an airdodge
+* Green markers represents frames that hitstun can be cancelled by using an aerial
+* Give target position when hit using x,y coordinates
+* Move angle can be inverted horizontally to visualize launching opponents to the left
+* X-axis can represent a surface to show traction and bouncing effects when no stage is selected
+* Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
+
 ### To Do
 * Improve Hitstun cancel frames formula
 
@@ -65,6 +74,8 @@ Filter moves by:
 * Hitbox startup frame
 * Active hitbox frame
 * FAF
+* Landing lag
+* Autocancel frame
 * Base damage
 * Angle
 * BKB/WBKB
@@ -88,37 +99,16 @@ Filter moves by:
 * character:pit,character:dark pit,& type:smash (Pit and Dark Pit smash attacks)
 * type:dashattack (All dash attacks)
 
-### To Do
-* Filter by landing lag and auto cancel frames
-
 ## Percentage Calculator
 http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
 
 Get target percent required to obtain certain knockback
 
-* All knockback/damage modifiers are available (Rage, Aura, Monado, Deep Breathing, Crouch cancel, Charge Smash, Staleness)
-* Search desired total KB or search with X or Y components
-* Using X or Y components will calculate best and worst DI angles and percents needed to get inputted knockback with the hitstun difference
-* WBKB isn't supported due to being weight related
+Note: WBKB isn't supported due to being weight related
 
-### To Do
-* Change application to calculate the minimum percentage needed to launch certain distance instead of knockback
+Update: Removed X and Y component calculation since these don't represent distance launched, distance calculation is also affected by hitstun and other factors giving wrong results
 
-## Launch Visualizer
-http://rubendal.github.io/Sm4sh-Calculator/launchvisualizer.html
-
-Note: Work in progress, stage layout collision detection might give weird results
-
-Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
-
-* Each marker represents each frame in hitstun
-* Line color represents vertical momentum
-* Yellow markers represents frames that hitstun can be cancelled by using an airdodge
-* Green markers represents frames that hitstun can be cancelled by using an aerial
-* Give target position when hit using x,y coordinates
-* X-axis can be inverted to represent launching opponents to the left
-* X-axis can represent a surface to show traction and bouncing effects
-* Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
+Planning to change application to calculate distance instead of knockback for Horizontal and Vertical Distance
 
 ## Issues
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)

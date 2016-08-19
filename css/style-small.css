@@ -16,6 +16,19 @@
     width:auto;
 }
 
+#graph{
+    position: relative;
+    top:0;
+    left:auto;
+}
+
+#section_res{
+    position:relative;
+    top:0;
+    margin-top: 30px;
+    left:auto;
+}
+
 #shieldresults{
     position: relative;
     top:0;
@@ -27,7 +40,7 @@
 .section-table-content{
     padding:5px;
     text-align:center;
-    width:50%;
+    width:33%;
 }
 
 .section-table{
@@ -38,4 +51,14 @@
     position: relative;
     top:0;
     left:auto;
+}
+
+.section-table-content-res{
+    padding:5px;
+    text-align:center;
+    width:50%;
+}
+
+.section-table-res{
+    width:100%;
 }

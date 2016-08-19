@@ -44,9 +44,6 @@
                             <td class="header-table">
                                 <a class="select-link" href="./movesearch.html">Move search</a>
                             </td>
-                            <td class="header-table">
-                                <a class="select-link" href="./launchvisualizer.html">Launch Visualizer</a>
-                            </td>
                         </tr>
                     </table>
                 </div>
@@ -100,9 +97,9 @@
             </div>
             KB:
             <input type="number" style="width:6em;" name="kb" ng-model="kb" min="0" max="3000" step="0.5" ng-change="update()"/>
-            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="total" ng-change="update()" />Total KB
+            <!--<input type="radio" name="kbType" ng-model="kbType" ng-attr-value="total" ng-change="update()" />Total KB
             <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="x" ng-change="update()" />X
-            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="y" ng-change="update()" />Y
+            <input type="radio" name="kbType" ng-model="kbType" ng-attr-value="y" ng-change="update()" />Y-->
             <br />
             Attack:
             <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
