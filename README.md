@@ -116,10 +116,11 @@ Update: Removed X and Y component calculation since these don't represent distan
 
 Planning to change application to calculate distance instead of knockback for Horizontal and Vertical Distance
 
-## Issues
-You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal), all KH API related issues will be sent to [Frannsoft](https://github.com/Frannsoft/FrannHammer)
+## Issues and Feedback
+You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 
 ## Credits
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
 * [FrannHammer (KuroganeHammer API)](https://github.com/Frannsoft/FrannHammer)
 * [ssbwiki.com](http://www.ssbwiki.com)
+* [Meshima's](https://twitter.com/LettuceUdon) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
