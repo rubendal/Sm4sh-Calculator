@@ -333,8 +333,10 @@ app.controller('calculator', function ($scope) {
         }
 
         if(stage != null){
-            $scope.kb_modifier_bounce = distance.bounce;
-            bounce = distance.bounce;
+            if(distance.bounce_speed >= 1){
+                $scope.kb_modifier_bounce = distance.bounce;
+                bounce = distance.bounce;
+            }
         }
 
         trainingkb.bounce(bounce);

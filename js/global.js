@@ -159,7 +159,14 @@ class Distance{
         if(this.inverseX){
             angle = InvertXAngle(angle);
         }
-        angle+=di;
+        if(this.tumble){
+            angle+=di;
+        }
+        if(this.angle == 0 || this.angle == 180){
+            if(x_speed > 8.3){
+                x_speed = 8.3;
+            }
+        }
         if(Math.cos(angle * Math.PI / 180) < 0){
             x_speed *= -1;
             x_a *= -1;
@@ -170,6 +177,7 @@ class Distance{
         }
         this.x = [this.position.x];
         this.y = [this.position.y];
+        this.vertical_speed = [];
         var xd = this.position.x;
         var yd = this.position.y;
         var momentum = 1;
@@ -180,7 +188,8 @@ class Distance{
         var g = 0;
         var fg = 0;
         var sliding = false;
-        var bounce_frame = -1;
+        this.bounce_frame = -1;
+        this.bounce_speed = 0;
         var limit = hitstun < 200 ? hitstun : 200;
         for(var i=0;i<limit;i++){
 
@@ -192,7 +201,7 @@ class Distance{
                 ys -= y_a;
             }        
 
-            if(bounce_frame != i-1){
+            if(this.bounce_frame != i-1){
                 fg = Math.min(g, fall_speed);
                 if(Math.sin(angle * Math.PI / 180) < 0){
                     yd += Math.min(ys,0);
@@ -213,7 +222,7 @@ class Distance{
                 }
             }    
 
-            if(bounce_frame != i-1){
+            if(this.bounce_frame != i-1){
                 if(Math.cos(angle * Math.PI / 180) < 0){
                     if(sliding){
                         if(!this.tumble){
@@ -256,10 +265,17 @@ class Distance{
                     //Calculate if some points between previous and current positions are inside a surface
                     var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
                     var p1 = [prev_xd + (xd - prev_xd)/5, prev_yd + (yd - prev_yd)/5];
-                    var p2 = [prev_xd + 3*(xd - prev_xd)/5, prev_yd + 3*(yd - prev_yd)/5];;
-                    var p1_inside = insideSurface(p1, this.stage.surface);
-                    var p2_inside = insideSurface(p2, this.stage.surface);
-                    if(p1_inside || p2_inside || insideSurface([xd,yd], this.stage.surface)){
+                    var p2 = [prev_xd + 3*(xd - prev_xd)/5, prev_yd + 3*(yd - prev_yd)/5];
+                    var p1_inside = false;
+                    var p2_inside = false;
+                    var p_inside = false;
+                    //Reducing cases, if Y position isn't on the surface Y range go to else
+                    if((this.stage.surfaceY[0] <= prev_yd || this.stage.surfaceY[0] <= yd) && (this.stage.surfaceY[1] >= prev_yd || this.stage.surfaceY[1] >= yd)){
+                        p1_inside = insideSurface(p1, this.stage.surface);
+                        p2_inside = insideSurface(p2, this.stage.surface);
+                        p_inside = insideSurface([xd,yd], this.stage.surface);
+                    }
+                    if(p1_inside || p2_inside || p_inside){
                         var line = p1_inside ? closestLine([prev_xd, prev_yd], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([xd,yd], this.stage.surface);
                         if(this.tumble){
                             this.bounce = true;
@@ -307,9 +323,10 @@ class Distance{
                             }
                             momentum = 0;
                             g=0;
+                            this.bounce_speed = Math.abs(ys);
                             ys *= 0.8;
                             xs *= 0.8;
-                            bounce_frame = i;
+                            this.bounce_frame = i;
                         }else{
                             if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
                                 sliding = true;
@@ -348,7 +365,8 @@ class Distance{
                                         var line = this.stage.platforms[j].vertex; 
                                         if(this.tumble){
                                             this.bounce = true;
-                                            bounce_frame = i;
+                                            this.bounce_speed = Math.abs(ys);
+                                            this.bounce_frame = i;
                                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
                                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
                                             x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
@@ -428,6 +446,12 @@ class Distance{
 
             this.x.push(+xd.toFixed(4));
             this.y.push(+yd.toFixed(4));
+            
+            this.vertical_speed.push(+ys.toFixed(4));
+
+            if(this.bounce_frame == i && this.bounce_speed < 1){
+                i = limit;
+            }
 
         }
 
@@ -513,8 +537,8 @@ class Distance{
         var adxdata = [];
         var adydata = [];
 
-        if(airdodge< limit){
-            for(var i = airdodge; i < limit; i++){
+        if(airdodge< this.x.length){
+            for(var i = airdodge; i < this.x.length; i++){
                 adxdata.push(this.x[i]);
                 adydata.push(this.y[i]);
             }
@@ -526,10 +550,10 @@ class Distance{
 
         }
 
-        if(aerial < limit){
+        if(aerial < this.x.length){
             adxdata = [];
             adydata = [];
-            for(var i = aerial; i < limit; i++){
+            for(var i = aerial; i < this.x.length; i++){
                 adxdata.push(this.x[i]);
                 adydata.push(this.y[i]);
             }
@@ -577,6 +601,37 @@ class Distance{
                         adydata.push(this.stage.platforms[i].vertex[j][1]);
                     }
                     data.push({'x':adxdata, 'y':adydata, 'mode':'lines', 'line':{'color':'purple'}, 'name':this.stage.platforms[i].name});
+                }
+            }
+
+            var ko = false;
+
+            //Calculate if KO in vertical blast zones
+            for(var i=0;i<this.y.length;i++){
+                if(this.y[i] >= this.stage.blast_zones[2]){
+                    if(this.kb >= 80){
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        ko = true;
+                        break;
+                    }
+                }else{
+                    if(this.y[i] <= this.stage.blast_zones[3]){
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        ko = true;
+                        break;
+                    }
+                }
+
+            }
+
+            if(!ko){
+
+                //Calculate if KO in horizontal blast zones
+                for(var i=0;i<this.x.length;i++){
+                    if(this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1]){
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        break;
+                    }
                 }
             }
 

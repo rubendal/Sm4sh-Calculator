@@ -54,7 +54,7 @@ function Hitstun(kb, windbox) {
 
 function SakuraiAngle(kb, aerial) {
     if (aerial) {
-        return 45;
+        return (.79 * 180 / Math.PI);
     }
     if (kb < 60) {
         return 0;
@@ -191,12 +191,15 @@ function DI(angle, move_angle){
     if(angle == -1){
         return 0;
     }
-    return 10 * Math.sin((angle-move_angle) * Math.PI / 180);
+    //Value was 10, however in params is 0.17 in radians, https://twitter.com/LettuceUdon/status/766640794807603200
+    return (0.17 * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
 }
 
 function LaunchSpeed(kb){
     return kb * 0.03;
 }
+
+//Launch visualizer formulas
 
 function InvertXAngle(angle){
     if(angle < 180){

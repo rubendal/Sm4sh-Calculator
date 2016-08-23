@@ -4,6 +4,12 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - DI angle changed from 10 degrees to 0.17 radians which is the one used in-game (https://twitter.com/LettuceUdon/status/766640794807603200)
+* Changed - Sakurai angle for airborne opponents changed to 0.79 radians
+* Changed - Launch visualizer bouncing on surface checks target speed and verifies if it bounce or stops
+* Changed - Implemented maximum horizontal speed for moves with 0 and 180 degrees angle
+* Improved - Stage layout collision detection improved, will avoid additional calculations if target position isn't near, improving distance calculation performance
+* Added - Marker on launch visualizer that indicates when a move KO's the target
 * Launch visualizer merged with the calculator
 * Added - Stage, position, game mode and graph options to the new visualizer section
 * Added - Results are now divided by numeric results and the launch visualizer
