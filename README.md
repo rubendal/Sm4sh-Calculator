@@ -4,6 +4,9 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Increased number of frames shown in launch visualizer, previously showed only hitstun frames, now shows hitstun + 20 frames after hitstun to show trajectory during actionable frames if target doesn't move, uses an attack that doesn't cancel momentum or uses an airdodge
+* Added - Launch visualizer marker that indicates hitstun end and increase KO marker size
+* Changed - Faster distance calculation when not showing visualizer
 * Changed - DI angle changed from 10 degrees to 0.17 radians which is the one used in-game (https://twitter.com/LettuceUdon/status/766640794807603200)
 * Changed - Sakurai angle for airborne opponents changed to 0.79 radians
 * Changed - Launch visualizer bouncing on surface checks target speed and verifies if it bounce or stops

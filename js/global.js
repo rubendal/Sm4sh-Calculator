@@ -113,7 +113,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_kb, y_kb, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage){
+    constructor(kb, x_kb, y_kb, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
         this.kb = kb;
         this.x_kb = x_kb;
         this.y_kb = y_kb;
@@ -131,6 +131,7 @@ class Distance{
         this.tumble = false;
         this.position = {"x":0, "y":0};
         this.bounce = false;
+        this.doPlot = doPlot;
         if(position !== undefined){
             this.position = position;
         }
@@ -190,7 +191,7 @@ class Distance{
         var sliding = false;
         this.bounce_frame = -1;
         this.bounce_speed = 0;
-        var limit = hitstun < 200 ? hitstun : 200;
+        var limit = hitstun < 200 ? hitstun + 20 : 200;
         for(var i=0;i<limit;i++){
 
 
@@ -419,16 +420,17 @@ class Distance{
             
 
             
-
-            if(Math.cos(angle*Math.PI / 180) < 0){
-                this.max_x = Math.min(this.max_x, xd);
-            }else{
-                this.max_x = Math.max(this.max_x, xd);
-            }
-            if(Math.sin(angle * Math.PI / 180) <= 0){
-                this.max_y = Math.min(this.max_y, yd);
-            }else{
-                this.max_y = Math.max(this.max_y, yd);
+            if(i<hitstun){
+                if(Math.cos(angle*Math.PI / 180) < 0){
+                    this.max_x = Math.min(this.max_x, xd);
+                }else{
+                    this.max_x = Math.max(this.max_x, xd);
+                }
+                if(Math.sin(angle * Math.PI / 180) <= 0){
+                    this.max_y = Math.min(this.max_y, yd);
+                }else{
+                    this.max_y = Math.max(this.max_y, yd);
+                }
             }
 
             if(prev_yd > yd){
@@ -460,6 +462,12 @@ class Distance{
 
         this.max_x = Math.abs(this.max_x);
         this.max_y = Math.abs(this.max_y);
+
+        if(!doPlot){
+            this.data = [];
+            this.plot = [];
+            return;
+        }
 
         this.data = [];
         var px = 0;
@@ -534,11 +542,27 @@ class Distance{
             }
         }
 
+        if(hitstun < this.x.length){
+            data.push({'x':[this.x[hitstun]], 'y':[this.y[hitstun]], 'mode':'markers', 'marker':{'color':'brown','size':14}, 'name':"Hitstun end"});
+        }
+
         var adxdata = [];
         var adydata = [];
 
-        if(airdodge< this.x.length){
-            for(var i = airdodge; i < this.x.length; i++){
+       for(var i=hitstun+1;i<this.x.length;i++){
+            adxdata.push(this.x[i]);
+            adydata.push(this.y[i]);
+        }
+
+        if(adxdata.length>0){
+            data.push({'x':adxdata, 'y':adydata, 'mode':'markers', 'marker':{'color':'orange'}, 'name':"Actionable frame"});
+        }
+
+        adxdata = [];
+        adydata = [];
+
+        if(airdodge < hitstun){
+            for(var i = airdodge; i < hitstun; i++){
                 adxdata.push(this.x[i]);
                 adydata.push(this.y[i]);
             }
@@ -550,10 +574,10 @@ class Distance{
 
         }
 
-        if(aerial < this.x.length){
+        if(aerial < hitstun){
             adxdata = [];
             adydata = [];
-            for(var i = aerial; i < this.x.length; i++){
+            for(var i = aerial; i < hitstun; i++){
                 adxdata.push(this.x[i]);
                 adydata.push(this.y[i]);
             }
@@ -607,16 +631,19 @@ class Distance{
             var ko = false;
 
             //Calculate if KO in vertical blast zones
-            for(var i=0;i<this.y.length;i++){
+            for(var i=0;i<=hitstun;i++){
+                if(this.y[i] >= this.stage.blast_zones[2] + 10 || this.y[i] <= this.stage.blast_zones[3] - 10){
+                    break;
+                }
                 if(this.y[i] >= this.stage.blast_zones[2]){
                     if(this.kb >= 80){
-                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red', size: 15}, 'name':"KO"});
                         ko = true;
                         break;
                     }
                 }else{
                     if(this.y[i] <= this.stage.blast_zones[3]){
-                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red',size: 15}, 'name':"KO"});
                         ko = true;
                         break;
                     }
@@ -627,9 +654,9 @@ class Distance{
             if(!ko){
 
                 //Calculate if KO in horizontal blast zones
-                for(var i=0;i<this.x.length;i++){
+                for(var i=0;i<=hitstun;i++){
                     if(this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1]){
-                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red'}, 'name':"KO"});
+                        data.push({'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red', size: 15}, 'name':"KO"});
                         break;
                     }
                 }

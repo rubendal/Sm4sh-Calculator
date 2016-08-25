@@ -327,9 +327,9 @@ app.controller('calculator', function ($scope) {
 
         var distance;
         if(game_mode == "vs"){
-            distance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage);
+            distance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }else{
-            distance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage);
+            distance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }
 
         if(stage != null){
