@@ -167,6 +167,14 @@ class MoveParser {
             }
             var hitbox = parseHitbox();
 
+            var ryu_true = /\(True: [0-9]+(\.[0-9]+)*\)/gi;
+            var is_ryu_special = false;
+
+            if(ryu_true.test(this.base_damage)){
+                is_ryu_special = true;
+                this.base_damage = this.base_damage.split('(')[0] + "/" + this.base_damage.split(':')[1].replace(')',"");
+            }
+
             if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/") || this.angle.includes("/")) {
                 //multiple hitboxes
                 var first_fkb = false;
@@ -208,8 +216,14 @@ class MoveParser {
                 var base_count = 0;
                 for (var i = 0; i < hitbox_count; i++) {
                     var hitbox_name = this.name;
-                    if (!ignore_hitboxes) {
-                        hitbox_name+= " (Hitbox " + (i + 1) + ")";
+                    if(!is_ryu_special){
+                        if (!ignore_hitboxes) {
+                            hitbox_name+= " (Hitbox " + (i + 1) + ")";
+                        }
+                    }else{
+                        if(i==1){
+                            hitbox_name = "True " + hitbox_name;
+                        }
                     }
                     
                     var d = i < damage.length ? damage[i] : damage[damage.length - 1];
