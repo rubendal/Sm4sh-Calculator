@@ -106,6 +106,7 @@ class Character {
             this.attributes = loadJSONPath("./Data/Cloud/attributes limit break.json");
             this.api_name = "Cloud";
             this.name = "Cloud";
+            this.modifier = new Modifier("Limit Break", 1, 1, 1, 1, 1, 1);
         }
         
         
