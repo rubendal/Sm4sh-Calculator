@@ -171,6 +171,11 @@ app.controller('calculator', function ($scope) {
                 $scope.smashCharge = 0;
                 charge_frames = 0;
             }
+            if(attack.name == "Fsmash" && attacker.name == "Mega Man"){
+                $scope.megaman_fsmash = true;
+            }else{
+                $scope.megaman_fsmash = false;
+            }
             $scope.checkSmashVisibility();
             $scope.checkCounterVisibility();
             if ($scope.counterMult != 0) {
@@ -343,15 +348,17 @@ app.controller('calculator', function ($scope) {
         vskb.bounce(bounce);
 
         if(!graph){
-            var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed]);
-            var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed]);
-            if(game_mode == "vs"){
-                vslist.splice(11, 0, new ListItem("Max Horizontal Distance", + +distance.max_x.toFixed(4)));
-                vslist.splice(11, 0, new ListItem("Max Vertical Distance", + +distance.max_y.toFixed(4)));
+            var trainingDistance;
+            var vsDistance;
+            if(game_mode == "training"){
+                vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+                trainingDistance = distance;
             }else{
-                traininglist.splice(11, 0, new ListItem("Max Horizontal Distance", + +distance.max_x.toFixed(4)));
-                traininglist.splice(11, 0, new ListItem("Max Vertical Distance", + +distance.max_y.toFixed(4)));
+                vsDistance = distance;
+                trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
             }
+            var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
+            var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed, vsDistance.max_x, vsDistance.max_y]);
             if (trainingkb.di_able) {
                 traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
             }

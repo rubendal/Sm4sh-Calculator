@@ -4,6 +4,10 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - On Results page maximum distance for training and vs modes is calculated instead of the one selected for the visualizer 
+* Added - Detect Mega Man's Fsmash
+* Fixed - Samus and Mii Gunner gravity values
+* Added - Ryu True specials
 * Added - Increased number of frames shown in launch visualizer, previously showed only hitstun frames, now shows hitstun + 20 frames after hitstun to show trajectory during actionable frames if target doesn't move, uses an attack that doesn't cancel momentum or uses an airdodge
 * Added - Launch visualizer marker that indicates hitstun end and increase KO marker size
 * Changed - Faster distance calculation when not showing visualizer
@@ -11,19 +15,6 @@ Web based Smash 4 knockback calculator
 * Changed - Sakurai angle for airborne opponents changed to 0.79 radians
 * Changed - Launch visualizer bouncing on surface checks target speed and verifies if it bounce or stops
 * Changed - Implemented maximum horizontal speed for moves with 0 and 180 degrees angle
-* Improved - Stage layout collision detection improved, will avoid additional calculations if target position isn't near, improving distance calculation performance
-* Added - Marker on launch visualizer that indicates when a move KO's the target
-* Launch visualizer merged with the calculator
-* Added - Stage, position, game mode and graph options to the new visualizer section
-* Added - Results are now divided by numeric results and the launch visualizer
-* Changed - Selected game mode will show maximum distance on the results affected by stage layout and target hit position
-* Added - Grounded meteors and surface bouncing will be detected and reflected on the calculator knockback modifier
-
-#### Launch visualizer updates
-* A lot of bug fixes...
-* Improved collision detection by detecting collision position and additional calculations to solve some results that made launch trajectory "pass-through" stage layout
-* Improved position precision when sliding through layout
-* Fixed inverse move angle X-axis making DI angle change calculation give wrong results
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something
@@ -118,6 +109,15 @@ Note: WBKB isn't supported due to being weight related
 Update: Removed X and Y component calculation since these don't represent distance launched, distance calculation is also affected by hitstun and other factors giving wrong results
 
 Planning to change application to calculate distance instead of knockback for Horizontal and Vertical Distance
+
+## TSV Generator
+http://rubendal.github.io/Sm4sh-Calculator/tsvgen.html
+
+Generate TSV files containing character, damage, knockback and distance launched data
+
+Use these generated data tables in another applications (R, Excel, and others) to create graphs or filter stuff
+
+Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/TSV-Generator
 
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
