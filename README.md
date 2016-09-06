@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Vectoring knockback multiplier
 * Changed - On Results page maximum distance for training and vs modes is calculated instead of the one selected for the visualizer 
 * Added - Detect Mega Man's Fsmash
 * Fixed - Samus and Mii Gunner gravity values
@@ -35,7 +36,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Sakurai Angle
 * DI angle
 * Knockback Horizontal and Vertical components
-* Gravity included in the vertical component
+* Gravity included in the vertical component (Not 100% accurate)
 * Hitstun
 * Hitstun cancel frames (Not 100% accurate)
 * Determine if the move can jab lock

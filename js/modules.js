@@ -73,6 +73,8 @@ app.controller('calculator', function ($scope) {
     $scope.stages = getStages();
     $scope.stage = null;
 
+    $scope.vectoring = "none";
+
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
         $scope.position_x = $scope.stage.center[0];
@@ -317,15 +319,15 @@ app.controller('calculator', function ($scope) {
         preDamage *= target.modifier.damage_taken;
 
         if (!wbkb) {
-            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
-            vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di, vectoring);
+            vskb = VSKB(target_percent + preDamage, base_damage, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di, vectoring);
             trainingkb.addModifier(attacker.modifier.kb_dealt);
             vskb.addModifier(attacker.modifier.kb_dealt);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         } else {
-            trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, di);
-            vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+            trainingkb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, di, vectoring);
+            vskb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di, vectoring);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         }
@@ -374,6 +376,20 @@ app.controller('calculator', function ($scope) {
             if (r != 1) {
                 traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
                 vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+            }
+            if (trainingkb.vectoring != 0) {
+                if(trainingkb.vectoring > 0){
+                    traininglist.splice(3, 0, new ListItem("Vectoring", "x1.095"));
+                }else{
+                    traininglist.splice(3, 0, new ListItem("Vectoring", "x0.9132"));
+                }
+            }
+            if (vskb.vectoring != 0) {
+                if(vskb.vectoring > 0){
+                    vslist.splice(3, 0, new ListItem("Vectoring", "x1.095"));
+                }else{
+                    vslist.splice(3, 0, new ListItem("Vectoring", "x0.9132"));
+                }
             }
             vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
             if (target.modifier.kb_received != 1) {
@@ -508,6 +524,18 @@ app.controller('calculator', function ($scope) {
         position = {"x":parseFloat($scope.position_x), "y":parseFloat($scope.position_y)};
         inverseX = $scope.inverseX;
         onSurface = $scope.surface;
+
+        switch($scope.vectoring){
+            case "none":
+                vectoring = 0;
+            break;
+            case "increase":
+                vectoring = 1;
+            break;
+            case "decrease":
+                vectoring = -1;
+            break;
+        }
 
         if($scope.noDI){
             di = -1;

@@ -676,7 +676,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di, vectoring) {
         this.base_kb = kb;
         this.kb = kb;
         this.original_angle = angle;
@@ -696,6 +696,10 @@ class Knockback {
         this.spike = false;
         this.di_change = 0;
         this.launch_speed = LaunchSpeed(kb);
+        this.vectoring = vectoring;
+        if(this.vectoring == undefined){
+            this.vectoring = 0;
+        }
         this.hitstun = Hitstun(this.base_kb, this.windbox);
         if (di !== undefined) {
             this.di = di;
@@ -703,6 +707,7 @@ class Knockback {
             this.di = 0;
         }
         this.calculate = function () {
+            this.kb = this.base_kb;
             if (this.original_angle == 361) {
                 this.base_angle = SakuraiAngle(this.kb, this.aerial);
             }
@@ -713,6 +718,19 @@ class Knockback {
                 if(this.di_able){
                     this.di_change = DI(this.di,this.angle);
                     this.angle += this.di_change;
+                }
+            }
+            //this.vectoring = Vectoring(this.di, this.angle);
+            if(!this.tumble){
+                this.vectoring = 0;
+            }
+            if(this.vectoring != 0 && (this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
+                if(this.vectoring == 1){
+                    this.kb *= 1.095;
+                }else{
+                    if(this.vectoring == -1){
+                        this.kb /= 1.095;
+                    }
                 }
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
@@ -743,13 +761,12 @@ class Knockback {
             this.hitstun = Hitstun(this.base_kb, false);
         };
         this.addModifier = function (modifier) {
-            this.kb *= modifier;
             this.base_kb *= modifier;
             this.calculate();
         };
         this.bounce = function (bounce) {
             if (bounce) {
-                this.kb *= 0.8;
+                this.base_kb *= 0.8;
                 this.calculate();
             }
         }
@@ -761,7 +778,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, vectoring){
         this.base_kb = kb;
         this.type = type;
         this.original_angle = angle;
@@ -790,6 +807,10 @@ class PercentFromKnockback{
         this.vs_percent = 0;
         this.timesInQueue = timesInQueue;
         this.ignoreStale = ignoreStale;
+        this.vectoring = vectoring;
+        if(this.vectoring == undefined){
+            this.vectoring = 0;
+        }
 
         this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
         this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
@@ -874,6 +895,17 @@ class PercentFromKnockback{
                     this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                 }
             }
+            if(this.vectoring != 0 && this.tumble){
+                if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
+                    if(this.vectoring == 1){
+                        this.kb /= 1.095;
+                    }else{
+                        if(this.vectoring == -1){
+                            this.kb *= 1.095;
+                        }
+                    }
+                }
+            }
 
             this.hitstun = Hitstun(this.kb, this.windbox);
 
@@ -892,6 +924,7 @@ class PercentFromKnockback{
                     this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                 }
             }
+            
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox) {
@@ -1271,3 +1304,5 @@ var graph = false;
 var position = {"x":0, "y":0};
 var inverseX = false;
 var onSurface = false;
+
+var vectoring = 0;
