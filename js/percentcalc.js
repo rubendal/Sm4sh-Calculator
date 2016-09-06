@@ -49,6 +49,8 @@ app.controller('calculator', function ($scope) {
     $scope.counterMult = 0;
     $scope.unblockable = false;
 
+    $scope.vectoring = "none";
+
     getMoveset(attacker, $scope);
     $scope.move = "0";
 
@@ -282,6 +284,18 @@ app.controller('calculator', function ($scope) {
         wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
+        switch($scope.vectoring){
+            case "none":
+                vectoring = 0;
+            break;
+            case "increase":
+                vectoring = 1;
+            break;
+            case "decrease":
+                vectoring = -1;
+            break;
+        }
+
         base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
@@ -296,7 +310,7 @@ app.controller('calculator', function ($scope) {
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, vectoring);
         kb.addModifier(attacker.modifier.kb_dealt);
         kb.addModifier(target.modifier.kb_received);
         kb.bounce(bounce);
