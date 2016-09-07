@@ -36,7 +36,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Sakurai Angle
 * DI angle
 * Knockback Horizontal and Vertical components
-* Gravity included in the vertical component (Not 100% accurate)
+* Gravity included in the vertical component
 * Hitstun
 * Hitstun cancel frames (Not 100% accurate)
 * Determine if the move can jab lock
