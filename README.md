@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Fixed - Improved distance calculation and launch visualizer can now show sliding off surfaces and multiple bouncing off on stage surfaces
 * Added - Vectoring knockback multiplier
 * Changed - On Results page maximum distance for training and vs modes is calculated instead of the one selected for the visualizer 
 * Added - Detect Mega Man's Fsmash
@@ -49,7 +50,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Max distance
 
 #### Launch Visualizer
-Note: Work in progress, stage layout collision detection might give weird results and bounced trajectories are not accurate and can only calculate one bounce per calculation
+Note: Work in progress, stage layout collision detection might give weird results and bounced trajectories are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 

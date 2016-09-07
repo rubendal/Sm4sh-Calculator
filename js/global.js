@@ -157,8 +157,6 @@ class Distance{
         var x_speed = LaunchSpeed(+x_kb.toFixed(6));
         var y_speed = LaunchSpeed(+y_kb.toFixed(6));
 
-        var x_a = 0.051 * Math.abs(Math.cos(angle * Math.PI / 180));
-        var y_a = 0.051 * Math.abs(Math.sin(angle * Math.PI / 180));
         if(this.inverseX){
             angle = InvertXAngle(angle);
         }
@@ -172,194 +170,152 @@ class Distance{
         }
         if(Math.cos(angle * Math.PI / 180) < 0){
             x_speed *= -1;
-            x_a *= -1;
         }
         if(Math.sin(angle * Math.PI / 180) < 0){
             y_speed *= -1;
-            y_a *= -1;
         }
         this.x = [this.position.x];
         this.y = [this.position.y];
+        var decay = {'x':0.051 * Math.cos(angle * Math.PI / 180),'y':0.051 * Math.sin(angle * Math.PI / 180)};
+        var character_position = {'x':position.x,'y':position.y};
+        var launch_speed = {'x':x_speed, 'y':y_speed};
+        var character_speed = {'x':0,'y':0};
         this.vertical_speed = [];
-        var xd = this.position.x;
-        var yd = this.position.y;
         var momentum = 1;
-        var prev_xd = xd;
-        var prev_yd = yd;
-        var xs = x_speed;
-        var ys = y_speed;
         var g = 0;
         var fg = 0;
         var sliding = false;
+        var bouncing = false;
         this.bounce_frame = -1;
         this.bounce_speed = 0;
         var limit = hitstun < 200 ? hitstun + 20 : 200;
         for(var i=0;i<limit;i++){
+            var next_x = character_position.x + launch_speed.x + character_speed.x;
+            var next_y = character_position.y + launch_speed.y + character_speed.y;
 
-
-            g += gravity;
-            
-            if(i!=0){
-                xs -= x_a;
-                ys -= y_a;
-            }        
-
-            if(this.bounce_frame != i-1){
-                fg = Math.min(g, fall_speed);
-                if(Math.sin(angle * Math.PI / 180) < 0){
-                    yd += Math.min(ys,0);
-                }else{
-                    yd += Math.max(ys,0);
-                }
-                if(!sliding){
-                    yd -= fg;
-                }
+            //Vertical direction
+            if(next_y > character_position.y){
+                momentum = 1;
+            }else if(next_y < character_position.y){
+                momentum = -1;
+            }else{
+                momentum = 0;
             }
 
-            if(sliding){
-                //Traction applied here
-                if(Math.cos(angle * Math.PI / 180) < 0){
-                    xs += traction;
-                }else{
-                    xs -= traction;
-                }
-            }    
+            //Reset sliding
+            sliding = false;
+            bouncing = false;
 
-            if(this.bounce_frame != i-1){
-                if(Math.cos(angle * Math.PI / 180) < 0){
-                    if(sliding){
-                        if(!this.tumble){
-                            xd += Math.min(xs,0);
-                        }
-                    }else{
-                        xd += Math.min(xs,0);
-                    }
-                    
-                }else{
-                    if(sliding){
-                        if(!this.tumble){
-                            xd += Math.max(xs,0);
-                        }
-                    }else{
-                        xd += Math.max(xs,0);
-                    }
-                    
-                }
-            }
-
+            //Stage detection
             if(this.stage == null && this.onSurface){
+                //No stage
                 if(yd < 0){
                     if(!this.tumble){
                         sliding = true;
-                        yd = 0;
+                        character_position.y = 0;
                         g=0;
-                        ys=0;
+                        launch_speed.y=0;
                     }else{
                         angle = InvertYAngle(angle);
-                        y_a *= -1;
-                        ys*=-1;
-                        yd=0;
+                        decay.y *= -1;
+                        launch_speed.y*=-1;
+                        character_position.y=0;
                         momentum = 0;
                         g=0;
                     }
                 }
             }else{
-                if(this.stage != null && !this.bounce){
+                if(this.stage != null && !bouncing){
                     //Calculate if some points between previous and current positions are inside a surface
-                    var n_angle = prev_yd == yd && prev_xd == xd ? angle : Math.atan2(yd - prev_yd, xd - prev_xd) * 180 / Math.PI;
-                    var p1 = [prev_xd + (xd - prev_xd)/5, prev_yd + (yd - prev_yd)/5];
-                    var p2 = [prev_xd + 3*(xd - prev_xd)/5, prev_yd + 3*(yd - prev_yd)/5];
+                    var n_angle = character_position.y == next_y && character_position.x == next_x ? angle : Math.atan2(next_y - character_position.y, next_x - character_position.x) * 180 / Math.PI;
+                    var p1 = [character_position.x + (next_x - character_position.x)/5, character_position.y + (next_y - character_position.y)/5];
+                    var p2 = [character_position.x + 3*(next_x - character_position.x)/5, character_position.y + 3*(next_y - character_position.y)/5];
                     var p1_inside = false;
                     var p2_inside = false;
                     var p_inside = false;
                     //Reducing cases, if Y position isn't on the surface Y range go to else
-                    if((this.stage.surfaceY[0] <= prev_yd || this.stage.surfaceY[0] <= yd) && (this.stage.surfaceY[1] >= prev_yd || this.stage.surfaceY[1] >= yd)){
+                    if((this.stage.surfaceY[0] <= character_position.y || this.stage.surfaceY[0] <= next_y) && (this.stage.surfaceY[1] >= character_position.y || this.stage.surfaceY[1] >= next_y)){
                         p1_inside = insideSurface(p1, this.stage.surface);
                         p2_inside = insideSurface(p2, this.stage.surface);
-                        p_inside = insideSurface([xd,yd], this.stage.surface);
+                        p_inside = insideSurface([next_x,next_y], this.stage.surface);
                     }
                     if(p1_inside || p2_inside || p_inside){
-                        var line = p1_inside ? closestLine([prev_xd, prev_yd], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([xd,yd], this.stage.surface);
+                        var line = p1_inside ? closestLine([character_position.x, character_position.y], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([next_x,next_y], this.stage.surface);
                         if(this.tumble){
-                            this.bounce = true;
+                            bouncing = true;
                             //Intersection point
-                            var point = p1_inside ? IntersectionPoint([[prev_xd, prev_yd],p1],line) : p2_inside ? IntersectionPoint([[prev_xd, prev_yd],p2],line)  : IntersectionPoint([[prev_xd, prev_yd],[xd,yd]],line);
+                            var point = p1_inside ? IntersectionPoint([[character_position.x, character_position.y],p1],line) : p2_inside ? IntersectionPoint([[character_position.x, character_position.y],p2],line)  : IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],line);
                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                            x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
-                            y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
-                            xs = Math.abs(xs);
-                            ys = Math.abs(ys);
+                            decay.x = 0.051 * Math.cos(t_angle * Math.PI / 180);
+                            decay.y = 0.051 * Math.sin(t_angle * Math.PI / 180);
+                            launch_speed.x = Math.abs(launch_speed.x);
+                            launch_speed.y = Math.abs(launch_speed.y);
                             if(Math.cos(t_angle * Math.PI / 180) < 0){
-                                xs *= -1;
-                                x_a *= -1;
+                                launch_speed.x *= -1;
                             }
                             if(Math.sin(t_angle * Math.PI / 180) < 0){
-                                ys *= -1;
-                                y_a *= -1;
+                                launch_speed.y *= -1;
                             }
                             if(point!=null){
-                                if(this.x.length > 0){
-                                    this.x[this.x.length-1] = point[0];
-                                    this.y[this.y.length-1] = point[1];
-                                }
-                                xd = point[0];
-                                yd = point[1];
-                                limit++;
+                                next_x = point[0];
+                                next_y = point[1];
                             }
-                            if(!insideSurface([xd + (xs),yd + (ys)], this.stage.surface)){
+                            if(!insideSurface([next_x, next_y], this.stage.surface)){
                                 angle = t_angle;
                             }else{
                                 angle = line_angle + 90;
-                                x_a = 0.051 * Math.abs(Math.cos(angle * Math.PI / 180));
-                                y_a = 0.051 * Math.abs(Math.sin(angle * Math.PI / 180));
-                                xs = Math.abs(xs);
-                                ys = Math.abs(ys);
+                                decay.x = 0.051 * Math.cos(angle * Math.PI / 180);
+                                decay.y = 0.051 * Math.sin(angle * Math.PI / 180);
+                                launch_speed.x = Math.abs(launch_speed.x);
+                                launch_speed.y = Math.abs(launch_speed.y);
                                 if(Math.cos(angle * Math.PI / 180) < 0){
-                                    xs *= -1;
-                                    x_a *= -1;
+                                    launch_speed.x *= -1;
                                 }
                                 if(Math.sin(angle * Math.PI / 180) < 0){
-                                    ys *= -1;
-                                    y_a *= -1;
+                                    launch_speed.y *= -1;
                                 }
                             }
                             momentum = 0;
                             g=0;
-                            this.bounce_speed = Math.abs(ys);
-                            ys *= 0.8;
-                            xs *= 0.8;
+                            this.bounce_speed = Math.abs(launch_speed.y + character_speed.y);
+                            launch_speed.x *= 0.8; //Knockback reduction applied
+                            launch_speed.y *= 0.8;
+                            character_speed.x = 0;
+                            character_speed.y = 0;
                             this.bounce_frame = i;
                         }else{
                             if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
                                 sliding = true;
                                 g=0;
-                                ys=0;
-                                var point = IntersectionPoint([[prev_xd, prev_yd],[xd, yd]],line);
+                                launch_speed.y=0;
+                                var point = IntersectionPoint([[character_position.x, character_position.y],[next_x, next_y]],line);
                                 if(point != null){
-                                    xd = point[0];
-                                    yd = point[1];
+                                    next_x = point[0];
+                                    next_y = point[1];
                                 }
                             }else{
-                                ys = 0;
+                                launch_speed.x = 0;
+                                launch_speed.y = 0;
+                                character_speed.x = 0;
+                                character_speed.y = 0;
                                 g=0;
-                                xs = 0;
                             }
                         }
                     }else{
                         //Platform intersection
                         if(this.stage.platforms !== undefined){
+                            //Platforms are ignored when launched upwards, but you can land on them when going downwards
                             if(momentum == -1){
                                 for(var j=0;j<this.stage.platforms.length;j++){
                                     var intersect = false;
                                     //Intersection code goes here
-                                    if((prev_yd >= this.stage.platforms[j].vertex[0][1] || prev_yd >= this.stage.platforms[j].vertex[1][1]) && 
-                                    (yd <= this.stage.platforms[j].vertex[0][1] || yd <= this.stage.platforms[j].vertex[1][1])){
-                                        
+                                    if((character_position.y >= this.stage.platforms[j].vertex[0][1] || character_position.y >= this.stage.platforms[j].vertex[1][1]) && 
+                                    (next_y <= this.stage.platforms[j].vertex[0][1] || next_y <= this.stage.platforms[j].vertex[1][1])){
                                     }else{
                                         continue;
                                     }
-                                    var point = IntersectionPoint([[prev_xd, prev_yd],[xd,yd]],this.stage.platforms[j].vertex);
+                                    var point = IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],this.stage.platforms[j].vertex);
                                     if(point == null){
                                         continue;
                                     }
@@ -367,46 +323,38 @@ class Distance{
                                     if(intersect){
                                         var line = this.stage.platforms[j].vertex; 
                                         if(this.tumble){
-                                            this.bounce = true;
-                                            this.bounce_speed = Math.abs(ys);
+                                            bouncing = true;
+                                            this.bounce_speed = Math.abs(launch_speed.y + character_speed.y);
                                             this.bounce_frame = i;
                                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
                                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                                            x_a = 0.051 * Math.abs(Math.cos(t_angle * Math.PI / 180));
-                                            y_a = 0.051 * Math.abs(Math.sin(t_angle * Math.PI / 180));
-                                            xs = Math.abs(xs);
-                                            ys = Math.abs(ys);
+                                            decay.x = 0.051 * Math.cos(t_angle * Math.PI / 180);
+                                            decay.y = 0.051 * Math.sin(t_angle * Math.PI / 180);
+                                            launch_speed.x = Math.abs(launch_speed.x);
+                                            launch_speed.y = Math.abs(launch_speed.y);
                                             if(Math.cos(t_angle * Math.PI / 180) < 0){
-                                                xs *= -1;
-                                                x_a *= -1;
+                                                launch_speed.x *= -1;
                                             }
                                             if(Math.sin(t_angle * Math.PI / 180) < 0){
-                                                ys *= -1;
-                                                y_a *= -1;
+                                                launch_speed.y *= -1;
                                             }
                                             angle = t_angle;
                                             momentum = 0;
                                             g=0;
-                                            if(this.x.length > 0){
-                                                this.x[this.x.length-1] = point[0];
-                                                this.y[this.y.length-1] = point[1];
-                                            }
-                                            xd = point[0];
-                                            yd = point[1];
-                                            limit++;
-                                            ys *= 0.8;
-                                            xs *= 0.8;
+                                            next_x = point[0];
+                                            next_y = point[1];
+                                            launch_speed.y *= 0.8;
+                                            launch_speed.x *= 0.8;
+                                            character_speed.x = 0;
+                                            character_speed.y = 0;
                                         }else{
                                             sliding = true;
                                             g=0;
-                                            ys=0;
-                                            if(this.x.length > 0){
-                                                this.x[this.x.length-1] = point[0];
-                                                this.y[this.y.length-1] = point[1];
-                                            }
-                                            xd = point[0];
-                                            yd = point[1];
-                                            limit++;
+                                            character_speed.x = 0;
+                                            character_speed.y = 0;
+                                            launch_speed.y = 0;
+                                            next_x = point[0];
+                                            next_y = point[1];
                                         }
                                         break;
                                     }
@@ -417,45 +365,76 @@ class Distance{
                     }
                 }
             }
-            
 
-            
+            //Apply decay
+            if(launch_speed.x != 0){
+                var x_dir = launch_speed.x / Math.abs(launch_speed.x);
+                launch_speed.x -= decay.x;
+                if(x_dir == -1 && launch_speed.x > 0){
+                    launch_speed.x = 0;
+                }else if(x_dir == 1 && launch_speed.x < 0){
+                    launch_speed.x = 0;
+                }
+            }
+            if(launch_speed.y != 0){
+                var y_dir = launch_speed.y / Math.abs(launch_speed.y);
+                launch_speed.y -= decay.y;
+                if(y_dir == -1 && launch_speed.y > 0){
+                    launch_speed.y = 0;
+                }else if(y_dir == 1 && launch_speed.y < 0){
+                    launch_speed.y = 0;
+                }
+            }
 
+            //Sliding on surface
+            if(sliding){
+                //Traction applied here
+                if(Math.cos(angle * Math.PI / 180) < 0){
+                    character_speed.x -= traction;
+                }else{
+                    character_speed.x = traction;
+                }
+                character_speed.y = 0;
+                launch_speed.y = 0;
+                g=gravity;
+            }
+
+            //Gravity
+            g -= gravity;
+            fg = Math.max(g, -fall_speed);
+            character_speed.y = fg;
+
+            character_position.x = next_x;
+            character_position.y = next_y;
+
+            this.x.push(+character_position.x.toFixed(4));
+            this.y.push(+character_position.y.toFixed(4));
             
+            //Maximum position during hitstun
             if(i<hitstun){
                 if(Math.cos(angle*Math.PI / 180) < 0){
-                    this.max_x = Math.min(this.max_x, xd);
+                    this.max_x = Math.min(this.max_x, character_position.x);
                 }else{
-                    this.max_x = Math.max(this.max_x, xd);
+                    this.max_x = Math.max(this.max_x, character_position.x);
                 }
                 if(Math.sin(angle * Math.PI / 180) <= 0){
-                    this.max_y = Math.min(this.max_y, yd);
+                    this.max_y = Math.min(this.max_y, character_position.y);
                 }else{
-                    this.max_y = Math.max(this.max_y, yd);
+                    this.max_y = Math.max(this.max_y, character_position.y);
                 }
             }
 
-            if(prev_yd > yd){
-                momentum = -1;
-            }else{
-                if(prev_yd > yd){
-                    momentum = 1;
-                }else{
-                    momentum = 0;
-                }
+            if(bouncing){
+                this.bounce = true;
             }
-            
-            prev_xd = xd;
-            prev_yd = yd;
 
-            this.x.push(+xd.toFixed(4));
-            this.y.push(+yd.toFixed(4));
-            
-            this.vertical_speed.push(+ys.toFixed(4));
+            this.vertical_speed.push(+(launch_speed.y + character_speed.y).toFixed(4));
 
             if(this.bounce_frame == i && this.bounce_speed < 1){
+                //Character will bounce and stay in that position for 25 frames
                 i = limit;
             }
+
 
         }
 
@@ -532,7 +511,7 @@ class Distance{
                 }
             }while(!change && i < this.x.length);
             if(xdata.length > 0){
-                data.push({'x':xdata, 'y':ydata, 'mode':'lines+markers', 'marker':{'color':color}, 'line':{'color':color}, 'name':color == 'blue' ? "Upward momentum" : "Downward momentum"});
+                data.push({'x':xdata, 'y':ydata, 'mode':'lines+markers', 'marker':{'color':color}, 'line':{'color':color}, 'name':color == 'blue' ? "" : ""});
             }
             switch(color){
                 case 'blue':
