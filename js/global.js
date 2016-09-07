@@ -689,8 +689,8 @@ class Knockback {
         this.can_jablock = false;
         this.di_able = false;
         this.fall_speed = fall_speed;
-        this.add_gravity_speed = (((this.gravity * 21.6) - 1.84) * 5);
-        this.add_gravity_kb = ((this.add_gravity_speed / 0.72) / 0.9);
+        this.add_gravity_speed = 5 * (this.gravity - 0.075);
+        this.add_gravity_kb = this.add_gravity_speed / 0.03;
         this.percent = percent;
         this.reeling = false;
         this.spike = false;
@@ -800,8 +800,8 @@ class PercentFromKnockback{
         this.tumble = false;
         this.can_jablock = false;
         this.di_able = false;
-        this.add_gravity_speed = (((this.gravity * 21.6) - 1.84) * 5);
-        this.add_gravity_kb = ((this.add_gravity_speed / 0.72) / 0.9);
+        this.add_gravity_speed = 5 * (this.gravity - 0.075);
+        this.add_gravity_kb = this.add_gravity_speed / 0.03;
         this.reeling = false;
         this.training_percent = 0;
         this.vs_percent = 0;
