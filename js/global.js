@@ -177,7 +177,7 @@ class Distance{
         this.x = [this.position.x];
         this.y = [this.position.y];
         var decay = {'x':0.051 * Math.cos(angle * Math.PI / 180),'y':0.051 * Math.sin(angle * Math.PI / 180)};
-        var character_position = {'x':position.x,'y':position.y};
+        var character_position = {'x':this.position.x,'y':this.position.y};
         var launch_speed = {'x':x_speed, 'y':y_speed};
         var character_speed = {'x':0,'y':0};
         this.vertical_speed = [];
@@ -1093,9 +1093,9 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
-        "",
-        "",
-        ""];
+        "Initial speed target will be launched units per frame",
+        "Horizontal distance travelled being launched after hitstun",
+        "Vertical distance travelled being launched after hitstun"];
     var hitstun = -1;
     for (var i = 0; i < attributes.length && i < values.length; i++) {
         if (attributes[i] == "Hitstun") {
