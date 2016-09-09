@@ -441,8 +441,8 @@ class Distance{
         this.graph_x = Math.abs(this.max_x);
         this.graph_y = Math.abs(this.max_y);
 
-        this.max_x = Math.abs(this.max_x);
-        this.max_y = Math.abs(this.max_y);
+        this.max_x = Math.abs(this.max_x - this.position.x);
+        this.max_y = Math.abs(this.max_y - this.position.y);
 
         if(!doPlot){
             this.data = [];

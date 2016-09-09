@@ -253,6 +253,11 @@
                     X:<input name="position_x" type="number" min="-500" max="500" step="1" ng-model="position_x" ng-change="update()" />
                     <br/>
                     Y:<input name="position_y" type="number" min="-500" max="500" step="1" ng-model="position_y" ng-change="update()" />
+                    <br/>
+                    Set position on spawn:
+                    <select name="spawn" ng-model="spawn" ng-change="setPositionSpawn()">
+                        <option ng-selected="$first" ng:repeat="s in spawns" ng-attr-value="{{s}}">{{s}}</option>
+                    </select>
                 </div>
                 <div id="graph_options">
                     Visualizer options

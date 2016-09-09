@@ -207,9 +207,15 @@
                     From <input type="number" min="0" max="998" step="0.5" ng-model="target_from" ng-change="update()"/> to <input type="number" min="0.5" max="999" step="0.5" ng-model="target_to" ng-change="update()"/> with step <input type="number" min="0.1" max="100" step="0.1" ng-model="target_step" ng-change="update()"/>
                 </div>
                 <br/>
-                <span>{{"Calculations: " + calculations + ", Maximum: 100000"}}</span>
+                <span>{{"Calculations: " + calculations + ", Maximum at a time: 100000"}}</span>
                 <br/>
                 <input type="button" value="{{status}}" ng-click="generate()"/>
+                <br/>
+                <span>{{"Stored calculations: " + stored}}</span>
+                <br/>
+                <input type="button" value="Download" ng-click="download()"/>
+                <br/>
+                <input type="button" value="Clear" ng-click="clear()"/>
             
             </div>
             

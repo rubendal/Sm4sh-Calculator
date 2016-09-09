@@ -3,6 +3,8 @@
 "kb_modifier","kb_multiplier","kb","kb_x","kb_y","launch_angle","hitstun","tumble","can_jab_lock",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
+var tsv_rows = [];
+
 class Row{
     constructor(attacker, target, attacker_percent, target_percent, move, damage, staleness, kb_multiplier, kb, distance){
         this.attacker = attacker;
@@ -100,6 +102,7 @@ app.controller('calculator', function ($scope) {
     $scope.changeCharacters(false, false);
 
     $scope.iterations = 1;
+    $scope.stored = 0;
 
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;
@@ -141,7 +144,7 @@ app.controller('calculator', function ($scope) {
     $scope.counterMult = 0;
     $scope.unblockable = false;
 
-    $scope.status = "Generate TSV";
+    $scope.status = "Calculate and store data";
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -420,16 +423,16 @@ app.controller('calculator', function ($scope) {
         var ikbmod = $scope.it_kb_mod ? 3 : 1;
         var imoves = $scope.it_moves ? ($scope.moveset.length > 1 ? $scope.moveset.length - 1 : 1) : 1;
         var itargets = $scope.it_targets ? names.length : 1;
-        var ipercent = $scope.it_percent ? Math.floor(((to - from)/step)) : 1;
-        var irage = $scope.it_rage ? Math.floor((at_to - at_from)/at_step) : 1;
+        var ipercent = $scope.it_percent ? Math.floor(((to - from)/step)) + 1 : 1;
+        var irage = $scope.it_rage ? Math.floor((at_to - at_from)/at_step) + 1 : 1;
         var calculations = (istale * ikbmod * (imoves-smashcount) * itargets * ipercent * irage) + (smashcount * 61 * istale * ikbmod * itargets * ipercent * irage);
 
         $scope.calculations = calculations;
 
         if($scope.calculations > 200000){
-            $scope.status = "Cannot Generate TSV";
+            $scope.status = "Cannot make calculations";
         }else{
-            $scope.status = "Generate TSV";
+            $scope.status = "Calculate and store data";
         }
 
     };
@@ -444,9 +447,6 @@ app.controller('calculator', function ($scope) {
     $scope.generate = function(){
 
         $scope.update();
-
-        var data = [];
-
         
         var at_from = parseFloat($scope.attacker_from);
         var at_to = parseFloat($scope.attacker_to);
@@ -474,6 +474,10 @@ app.controller('calculator', function ($scope) {
             window.alert("Amount of calculations to be used exceed maximum");
             return;
         }
+
+        if($scope.status != "Calculate and store data"){
+            return;
+        }
         
         if($scope.move == 0){
             move = new Move(0, "Custom", "Custom", base_damage, angle, bkb, kbg, wbkb, [], 0, -1, [], 0, 0, 0, 0);
@@ -483,7 +487,7 @@ app.controller('calculator', function ($scope) {
             move.base_damage = base_damage;
         }
 
-        $scope.status = "Generating...";
+        $scope.status = "Processing...";
         
 
         var calcDamage = function(){
@@ -510,7 +514,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
-            data.push(new Row(attacker,target,attacker_percent,target_percent,move,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale,r,kb,distance));
+            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale,r,kb,distance));
         }
 
         var funlist = [];
@@ -612,9 +616,26 @@ app.controller('calculator', function ($scope) {
             funlist[next](next);
         }
 
-        if(data.length > 0){
+        target = new Character(selectedChar);
+        $scope.status = "Calculate and store data";
+        $scope.stored = tsv_rows.length;
+    };
+
+    $scope.clear = function(){
+        if($scope.status != "Calculate and store data"){
+            return;
+        }
+        tsv_rows = [];
+        $scope.stored = tsv_rows.length;
+    }
+
+    $scope.download = function(){
+        if($scope.status != "Calculate and store data"){
+            return;
+        }
+        if(tsv_rows.length > 0){
             var tsv = "";
-            
+            $scope.status = "Saving...";
             for(var i=0;i<headers.length;i++){
                 tsv += headers[i];
                 if(i!=headers.length-1){
@@ -622,8 +643,8 @@ app.controller('calculator', function ($scope) {
                 }
             }
             tsv+="\n";
-            for(var i=0;i<data.length;i++){
-                var row = data[i].tsv();
+            for(var i=0;i<tsv_rows.length;i++){
+                var row = tsv_rows[i].tsv();
                 for(var j=0;j<row.length;j++){
                     tsv += row[j];
                     if(j!=row.length-1){
@@ -632,12 +653,11 @@ app.controller('calculator', function ($scope) {
                 }
                 tsv+="\n";
             }
-            $scope.status = "Saving...";
+            
             showSaveDialog(tsv);
+            $scope.status = "Calculate and store data";
         }
-        target = new Character(selectedChar);
-        $scope.status = "Generate TSV";
-    };
+    }
 
     $scope.tsv_options = function(){
         if($scope.it_rage){

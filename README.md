@@ -4,19 +4,13 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Stage spawn positions added
 * Fixed - Improved distance calculation and launch visualizer can now show sliding off surfaces and multiple bouncing off on stage surfaces
 * Added - Vectoring knockback multiplier
 * Changed - On Results page maximum distance for training and vs modes is calculated instead of the one selected for the visualizer 
 * Added - Detect Mega Man's Fsmash
 * Fixed - Samus and Mii Gunner gravity values
 * Added - Ryu True specials
-* Added - Increased number of frames shown in launch visualizer, previously showed only hitstun frames, now shows hitstun + 20 frames after hitstun to show trajectory during actionable frames if target doesn't move, uses an attack that doesn't cancel momentum or uses an airdodge
-* Added - Launch visualizer marker that indicates hitstun end and increase KO marker size
-* Changed - Faster distance calculation when not showing visualizer
-* Changed - DI angle changed from 10 degrees to 0.17 radians which is the one used in-game (https://twitter.com/LettuceUdon/status/766640794807603200)
-* Changed - Sakurai angle for airborne opponents changed to 0.79 radians
-* Changed - Launch visualizer bouncing on surface checks target speed and verifies if it bounce or stops
-* Changed - Implemented maximum horizontal speed for moves with 0 and 180 degrees angle
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something

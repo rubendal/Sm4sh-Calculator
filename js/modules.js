@@ -74,12 +74,31 @@ app.controller('calculator', function ($scope) {
     $scope.stage = null;
 
     $scope.vectoring = "none";
+    $scope.spawns = [];
 
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
         $scope.position_x = $scope.stage.center[0];
         $scope.position_y = $scope.stage.center[1];
+        $scope.spawns = ["Center"];
+        for(var i=0;i<$scope.stage.spawns.length;i++){
+            $scope.spawns.push(i+1);
+        }
+        $scope.spawn = "Center";
         $scope.update();
+    }
+
+    $scope.setPositionSpawn = function(){
+        if($scope.spawn != "Center"){
+            var i = parseFloat($scope.spawn) - 1;
+            $scope.position_x = $scope.stage.spawns[i][0];
+            $scope.position_y = $scope.stage.spawns[i][1];
+            $scope.update();
+        }else{
+            $scope.position_x = $scope.stage.center[0];
+            $scope.position_y = $scope.stage.center[1];
+            $scope.update();
+        }
     }
 
     $scope.checkSmashVisibility = function () {
