@@ -1,6 +1,6 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
 "move","base_damage","damage","staleness","staleness_multiplier","angle","bkb","kbg",
-"kb_modifier","kb_multiplier","kb","kb_x","kb_y","launch_angle","hitstun","tumble","can_jab_lock",
+"kb_modifier","kb_multiplier","kb","kb_x","kb_y","launch_angle","hitstun","tumble","can_jab_lock","vectoring_multiplier","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
 var tsv_rows = [];
@@ -27,12 +27,13 @@ class Row{
         this.rage = Rage(attacker_percent); 
         this.v_pos = this.distance.max_y * (Math.sin(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);
         this.h_pos = this.distance.max_x * (Math.cos(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);  
+        this.vectoring = this.kb.vectoring == 1 ? 1.095 : this.kb.vectoring == -1 ? 0.92 : 1;
 
         this.tsv = function(){
             return [this.attacker.name, this.attacker.modifier.name, this.attacker.display_name, this.target.display_name, this.target.modifier.name, this.target.display_name,
             this.attacker_percent, this.rage, this.target_percent,
             this.move.name, this.move.base_damage, this.damage, this.staleness, this.staleMult, this.move.angle, this.move.bkb, this.move.kbg,
-            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock,
+            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.vectoring, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }
     }
@@ -126,6 +127,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
+
+    $scope.vectoring = "none";
 
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -386,6 +389,19 @@ app.controller('calculator', function ($scope) {
         }else{
             di = parseFloat($scope.di);
         }
+
+        switch($scope.vectoring){
+            case "none":
+                vectoring = 0;
+            break;
+            case "increase":
+                vectoring = 1;
+            break;
+            case "decrease":
+                vectoring = -1;
+            break;
+        }
+
         luma_percent = parseFloat($scope.lumaPercent);
 
         unblockable = $scope.unblockable;
@@ -425,7 +441,8 @@ app.controller('calculator', function ($scope) {
         var itargets = $scope.it_targets ? names.length : 1;
         var ipercent = $scope.it_percent ? Math.floor(((to - from)/step)) + 1 : 1;
         var irage = $scope.it_rage ? Math.floor((at_to - at_from)/at_step) + 1 : 1;
-        var calculations = (istale * ikbmod * (imoves-smashcount) * itargets * ipercent * irage) + (smashcount * 61 * istale * ikbmod * itargets * ipercent * irage);
+        var ivectoring = $scope.it_vectoring ? 3 : 1;
+        var calculations = (istale * ikbmod * (imoves-smashcount) * itargets * ipercent * irage * ivectoring) + (smashcount * 61 * istale * ikbmod * itargets * ipercent * irage * ivectoring);
 
         $scope.calculations = calculations;
 
@@ -506,9 +523,9 @@ app.controller('calculator', function ($scope) {
         var addRow = function(){
             calcDamage();
             if(!wbkb){
-                kb = VSKB(target_percent + preDamage, bd, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+                kb = VSKB(target_percent + preDamage, bd, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di, vectoring);
             }else{
-                kb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+                kb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di, vectoring);
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
@@ -531,6 +548,17 @@ app.controller('calculator', function ($scope) {
                 r=0.85;
                 funlist[f-1](f-1);
                 r=1.2;
+                funlist[f-1](f-1);
+            });
+        }
+
+        if($scope.it_vectoring){
+            funlist.push(function(f){
+                vectoring = 0;
+                funlist[f-1](f-1);
+                vectoring = 1;
+                funlist[f-1](f-1);
+                vectoring = -1;
                 funlist[f-1](f-1);
             });
         }
