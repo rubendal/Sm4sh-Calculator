@@ -353,9 +353,9 @@ app.controller('calculator', function ($scope) {
 
         var distance;
         if(game_mode == "training"){
-            distance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }else{
-            distance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }
 
         if(stage != null){
@@ -372,14 +372,14 @@ app.controller('calculator', function ($scope) {
             var trainingDistance;
             var vsDistance;
             if(game_mode == "training"){
-                vsDistance = new Distance(vskb.kb, vskb.x, vskb.y, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+                vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
                 trainingDistance = distance;
             }else{
                 vsDistance = distance;
-                trainingDistance = new Distance(trainingkb.kb, trainingkb.x, trainingkb.y, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+                trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
             }
-            var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
-            var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.launch_speed, vsDistance.max_x, vsDistance.max_y]);
+            var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
+            var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vsDistance.max_x, vsDistance.max_y]);
             if (trainingkb.di_able) {
                 traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
             }
@@ -387,10 +387,10 @@ app.controller('calculator', function ($scope) {
                 vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
             }
             if (trainingkb.tumble) {
-                traininglist.splice(7, 0, new ListItem("Gravity KB", +trainingkb.add_gravity_kb.toFixed(4)));
+                traininglist.splice(12, 0, new ListItem("Gravity launch speed", +trainingkb.add_gravity_speed.toFixed(4)));
             }
             if (vskb.tumble) {
-                vslist.splice(7, 0, new ListItem("Gravity KB", +vskb.add_gravity_kb.toFixed(4)));
+                vslist.splice(12, 0, new ListItem("Gravity launch speed", +vskb.add_gravity_speed.toFixed(4)));
             }
             if (r != 1) {
                 traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
@@ -398,16 +398,16 @@ app.controller('calculator', function ($scope) {
             }
             if (trainingkb.vectoring != 0) {
                 if(trainingkb.vectoring > 0){
-                    traininglist.splice(3, 0, new ListItem("Vectoring", "x1.095"));
+                    traininglist.splice(11, 0, new ListItem("Vectoring", "x1.095"));
                 }else{
-                    traininglist.splice(3, 0, new ListItem("Vectoring", "x0.9132"));
+                    traininglist.splice(11, 0, new ListItem("Vectoring", "x0.92"));
                 }
             }
             if (vskb.vectoring != 0) {
                 if(vskb.vectoring > 0){
-                    vslist.splice(3, 0, new ListItem("Vectoring", "x1.095"));
+                    vslist.splice(11, 0, new ListItem("Vectoring", "x1.095"));
                 }else{
-                    vslist.splice(3, 0, new ListItem("Vectoring", "x0.9132"));
+                    vslist.splice(11, 0, new ListItem("Vectoring", "x0.92"));
                 }
             }
             vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));

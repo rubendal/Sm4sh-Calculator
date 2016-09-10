@@ -4,6 +4,8 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - Display horizontal and vertical launch speed instead of launch speed at launch direction
+* Changed - Vectoring and gravity affect launch speed instead of knockback
 * Added - Stage spawn positions added
 * Fixed - Improved distance calculation and launch visualizer can now show sliding off surfaces and multiple bouncing off on stage surfaces
 * Added - Vectoring knockback multiplier
@@ -31,7 +33,6 @@ If the API is not available or having issues you can fill move related data (Bas
 * Sakurai Angle
 * DI angle
 * Knockback Horizontal and Vertical components
-* Gravity included in the vertical component
 * Hitstun
 * Hitstun cancel frames (Not 100% accurate)
 * Determine if the move can jab lock
@@ -41,7 +42,9 @@ If the API is not available or having issues you can fill move related data (Bas
 * Luma knockback
 * When Reeling/Untechable spin animation could happen
 * Launch speed
-* Max distance
+* Gravity launch speed boost
+* Vectoring
+* Max distance when hitstun ends
 
 #### Launch Visualizer
 Note: Work in progress, stage layout collision detection might give weird results and bounced trajectories are not accurate

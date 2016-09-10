@@ -510,10 +510,10 @@ app.controller('calculator', function ($scope) {
             }else{
                 kb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
             }
-            distance = new Distance(kb.kb, kb.x, kb.y, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction);
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
+            distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction);
             tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale,r,kb,distance));
         }
 

@@ -115,10 +115,10 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_kb, y_kb, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
         this.kb = kb;
-        this.x_kb = x_kb;
-        this.y_kb = y_kb;
+        this.x_launch_speed = x_launch_speed;
+        this.y_launch_speed = y_launch_speed;
         this.hitstun = hitstun;
         this.angle = angle;
         this.gravity = gravity;
@@ -154,8 +154,8 @@ class Distance{
         this.max_x = this.position.x;
         this.max_y = this.position.y;
 
-        var x_speed = LaunchSpeed(+x_kb.toFixed(6));
-        var y_speed = LaunchSpeed(+y_kb.toFixed(6));
+        var x_speed = +this.x_launch_speed.toFixed(6);
+        var y_speed = +this.y_launch_speed.toFixed(6);
 
         if(this.inverseX){
             angle = InvertXAngle(angle);
@@ -676,6 +676,8 @@ class Knockback {
         this.di_change = 0;
         this.launch_speed = LaunchSpeed(kb);
         this.vectoring = vectoring;
+        this.horizontal_launch_speed = 0;
+        this.vertical_launch_speed = 0;
         if(this.vectoring == undefined){
             this.vectoring = 0;
         }
@@ -700,26 +702,15 @@ class Knockback {
                 }
             }
             //this.vectoring = Vectoring(this.di, this.angle);
-            if(!this.tumble){
-                this.vectoring = 0;
-            }
-            if(this.vectoring != 0 && (this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
-                if(this.vectoring == 1){
-                    this.kb *= 1.095;
-                }else{
-                    if(this.vectoring == -1){
-                        this.kb /= 1.095;
-                    }
-                }
-            }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
             }
+            /*
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
                 this.y += this.add_gravity_kb;
-            }
+            }*/
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox) {
@@ -737,6 +728,22 @@ class Knockback {
                 this.reeling = this.tumble && !this.windbox && this.percent >= 100;
             }
             this.launch_speed = LaunchSpeed(this.kb);
+            this.horizontal_launch_speed = LaunchSpeed(this.x);
+            this.vertical_launch_speed = LaunchSpeed(this.y);
+            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
+                this.vertical_launch_speed += this.add_gravity_speed;
+            }
+            if(this.vectoring != 0 && (this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
+                if(this.vectoring == 1){
+                    this.horizontal_launch_speed *= 1.095;
+                    this.vertical_launch_speed *= 1.095;
+                }else{
+                    if(this.vectoring == -1){
+                        this.horizontal_launch_speed *= 0.92;
+                    this.vertical_launch_speed *= 0.92;
+                    }
+                }
+            }
             this.hitstun = Hitstun(this.base_kb, false);
         };
         this.addModifier = function (modifier) {
@@ -745,8 +752,8 @@ class Knockback {
         };
         this.bounce = function (bounce) {
             if (bounce) {
-                this.base_kb *= 0.8;
-                this.calculate();
+                this.vertical_launch_speed *= 0.8;
+                this.horizontal_launch_speed *= 0.8;
             }
         }
         this.calculate();
@@ -874,17 +881,17 @@ class PercentFromKnockback{
                     this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                 }
             }
-            if(this.vectoring != 0 && this.tumble){
+            /*if(this.vectoring != 0 && this.tumble){
                 if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
                     if(this.vectoring == 1){
-                        this.kb /= 1.095;
-                    }else{
-                        if(this.vectoring == -1){
-                            this.kb *= 1.095;
-                        }
+                    this.kb *= 0.92;
+                }else{
+                    if(this.vectoring == -1){
+                        this.kb *= 1.095;
                     }
                 }
-            }
+                }
+            }*/
 
             this.hitstun = Hitstun(this.kb, this.windbox);
 
@@ -894,11 +901,11 @@ class PercentFromKnockback{
             }
             
             
-            if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
+            /*if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
                 this.add_gravity_kb = 0;
-            }
+            }*/
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y *= this.gravity_mult;
+                //this.y *= this.gravity_mult;
                 if(this.type == "y"){
                     this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                 }
@@ -1084,7 +1091,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Horizontal Launch Speed", "Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -1093,7 +1100,8 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
-        "Initial speed target will be launched units per frame",
+        "Initial horizontal speed target will be launched units per frame",
+        "Initial vertical speed target will be launched units per frame",
         "Horizontal distance travelled being launched after hitstun",
         "Vertical distance travelled being launched after hitstun"];
     var hitstun = -1;
