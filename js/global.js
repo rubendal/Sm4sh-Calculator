@@ -209,7 +209,7 @@ class Distance{
             //Stage detection
             if(this.stage == null && this.onSurface){
                 //No stage
-                if(yd < 0){
+                if(character_position.y < 0){
                     if(!this.tumble){
                         sliding = true;
                         character_position.y = 0;
