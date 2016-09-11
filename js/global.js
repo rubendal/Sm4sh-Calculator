@@ -669,7 +669,6 @@ class Knockback {
         this.di_able = false;
         this.fall_speed = fall_speed;
         this.add_gravity_speed = 5 * (this.gravity - 0.075);
-        this.add_gravity_kb = this.add_gravity_speed / 0.03;
         this.percent = percent;
         this.reeling = false;
         this.spike = false;
@@ -704,8 +703,12 @@ class Knockback {
             //this.vectoring = Vectoring(this.di, this.angle);
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
-                this.add_gravity_kb = 0;
+            this.add_gravity_speed = 5 * (this.gravity - 0.075);
+            if(!this.tumble){
+                this.add_gravity_speed = 0;
+            }
+            if (this.angle == 0 || this.angle == 180 ) {
+                this.add_gravity_speed = 0;
             }
             /*
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
@@ -733,7 +736,10 @@ class Knockback {
             if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
-            if(this.vectoring != 0 && (this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
+            if(!((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI))) || ((this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180))){
+                this.vectoring = 0;
+            }
+            if(this.vectoring != 0){
                 if(this.vectoring == 1){
                     this.horizontal_launch_speed *= 1.095;
                     this.vertical_launch_speed *= 1.095;
@@ -1056,7 +1062,7 @@ class ListItem {
     }
 
     static getTitle(attribute) {
-        var titles = [{ "attribute": "Gravity KB", "title": "KB added to Y component caused by gravity" },
+        var titles = [{ "attribute": "Gravity launch speed", "title": "Vertical launch speed increase caused by gravity when KB causes tumble" },
         { "attribute": "KB modifier", "title": "KB multiplier used when target is crouching or charging a smash attack" },
         { "attribute": "Rage", "title": "KB multiplier used on total KB based on attacker's percent " },
         { "attribute": "Aura", "title": "Lucario aura damage increase based on his percent" },
@@ -1091,7 +1097,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Horizontal Launch Speed", "Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Vectoring", "Horizontal Launch Speed", "Gravity launch speed" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -1100,7 +1106,9 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
+        "",
         "Initial horizontal speed target will be launched units per frame",
+        "",
         "Initial vertical speed target will be launched units per frame",
         "Horizontal distance travelled being launched after hitstun",
         "Vertical distance travelled being launched after hitstun"];
@@ -1117,7 +1125,27 @@ function List(values) {
                 continue;
             }
         }
-        list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i])); //.addStyle({'text-decoration':'line-through'})
+        if (attributes[i] == "Vectoring") {
+            if(values[i] == 0){
+                continue;
+            }
+            if(values[i] == 1){
+                values[i] = "x1.095";
+            }
+            if(values[i] == -1){
+                values[i] = "x0.92";
+            }
+        }
+        if(attributes[i] == "Gravity launch speed"){
+            if(values[i] == 0){
+                continue;
+            }
+        }
+        if(typeof(values[i]) == "string"){
+            list.push(new ListItem(attributes[i], values[i],titles[i]));
+        }else{
+            list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i])); //.addStyle({'text-decoration':'line-through'})
+        }
         if (attributes[i] == "Angle") {
             if (values[i] > 361) {
                 i += 2;
