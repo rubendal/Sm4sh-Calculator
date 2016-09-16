@@ -329,21 +329,21 @@ filter_app.controller('filter', function ($scope) {
                 $scope.sortedMoves = c.sort(function(a,b){
                     return a.character < b.character ? av :
                     a.character > b.character ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
             case "name":
                 $scope.sortedMoves = c.sort(function(a,b){
                     return a.move.name < b.move.name ? av :
                     a.move.name > b.move.name ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
             case "base_damage":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(isNaN(a.move.base_damage)){
                         if(isNaN(b.move.base_damage)){
-                            return 0;
+                            return a.move.compareById(b.move);
                         }else{
                             return av;
                         }
@@ -353,14 +353,14 @@ filter_app.controller('filter', function ($scope) {
                     }
                     return a.move.base_damage < b.move.base_damage ? av :
                     a.move.base_damage > b.move.base_damage ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
             case "angle":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.angle == "-"){
                         if(b.move.angle == "-"){
-                            return 0;
+                            return a.move.compareById(b.move);
                         }else{
                             return av;
                         }
@@ -370,14 +370,14 @@ filter_app.controller('filter', function ($scope) {
                     }
                     return a.move.angle < b.move.angle ? av :
                     a.move.angle > b.move.angle ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
             case "bkb":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.bkb == "-"){
                         if(b.move.bkb == "-"){
-                            return 0;
+                            return a.move.compareById(b.move);
                         }else{
                             return av;
                         }
@@ -387,14 +387,14 @@ filter_app.controller('filter', function ($scope) {
                     }
                     return a.move.bkb < b.move.bkb ? av :
                     a.move.bkb > b.move.bkb ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
             case "kbg":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.kbg == "-"){
                         if(b.move.kbg == "-"){
-                            return 0;
+                            return a.move.compareById(b.move);
                         }else{
                             return av;
                         }
@@ -404,7 +404,7 @@ filter_app.controller('filter', function ($scope) {
                     }
                     return a.move.kbg < b.move.kbg ? av :
                     a.move.kbg > b.move.kbg ? bv :
-                    0
+                    a.move.compareById(b.move);
                 });
             break;
         }

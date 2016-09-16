@@ -271,7 +271,7 @@ class MoveParser {
                             }
                         }
                     }
-                    this.moves.push(new Move(this.id, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s));
+                    this.moves.push(new Move(this.id, i, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -284,17 +284,17 @@ class MoveParser {
                 }
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
                     if (this.grab) {
-                        this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                     } else {
-                        this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(this.id, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+                    this.moves.push(new Move(this.id, 0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                 }
             }
 
         } else {
-            this.moves.push(new Move(this.id, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+            this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
         }
 
 
@@ -327,9 +327,10 @@ class MoveParser {
 var previousMove = null;
 
 class Move {
-    constructor(api_id, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage) {
+    constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage) {
         this.api_id = api_id;
         this.id = 0;
+        this.hitbox_no = hitbox_no;
         this.name = name;
         this.moveName = moveName;
         this.base_damage = base_damage;
@@ -355,6 +356,22 @@ class Move {
             return false;
         }
 
+        this.compareById = function(other){
+            if(this.api_id < other.api_id){
+                return -1;
+            }
+            if(this.api_id > other.api_id){
+                return 1;
+            }
+            if(this.hitbox_no < other.hitbox_no){
+                return -1;
+            }
+            if(this.hitbox_no > other.hitbox_no){
+                return 1;
+            }
+            return 0;
+        }
+
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
@@ -370,6 +387,7 @@ class Move {
         this.unblockable = this.grab || this.throw || this.commandGrab || (this.name.includes("Vision") && this.name.includes("Attack")) || this.name.includes("Witch Time") || this.name.includes("KO Punch") || this.name == "Focus Attack (Stage 3)" || this.name == "Reflect Barrier"; 
         this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)";
         this.multihit = /(Hit [0-9]+)/gi.test(this.name) || /(Hits [0-9]+\-[0-9]+)/gi.test(this.name) || this.name.includes("Final Hit") || this.rehitRate != 0;
+        this.spike = this.angle >= 230 && this.angle <= 310;
 
         this.invalidate = function () {
             this.valid = false;
@@ -415,6 +433,10 @@ class Move {
             this.type += ",ExtraShieldDamage";
         }
 
+        if(this.spike){
+            this.type += ",spike";
+        }
+
         if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){
             if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
                 this.faf = previousMove.faf;
@@ -446,7 +468,7 @@ function getMoveset(attacker, $scope) {
                             }
                         }
                     }
-                    moves.unshift(new Move(0,"Not selected",0,0,0,0,false,0,0,0).invalidate());
+                    moves.unshift(new Move(0, -1,"Not selected",0,0,0,0,false,0,0,0).invalidate());
                     
                     try{
                         $scope.$apply(function () {
@@ -456,21 +478,21 @@ function getMoveset(attacker, $scope) {
                         $scope.moveset = moves;
                     }
                 } else {
-                    $scope.moveset = [new Move(0, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+                    $scope.moveset = [new Move(0, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
                 }
             },
             function () {
                 //$scope.moveset = [new Move(0, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
             }, function () {
-                $scope.moveset = [new Move(0, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+                $scope.moveset = [new Move(0, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
             });
         } else {
-            $scope.moveset = [new Move(0, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+            $scope.moveset = [new Move(0, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
         }
     }, function () {
-        $scope.moveset = [new Move(0, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+        $scope.moveset = [new Move(0, -1, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
     }, function () {
-        $scope.moveset = [new Move(0, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+        $scope.moveset = [new Move(0, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
     });
     
 }

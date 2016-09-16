@@ -657,7 +657,10 @@ class Distance{
 class Knockback {
     constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di, vectoring) {
         this.base_kb = kb;
-        this.kb = kb;
+        if(this.base_kb > 2500){
+            //this.base_kb = 2500;
+        }
+        this.kb = this.base_kb;
         this.original_angle = angle;
         this.base_angle = angle;
         this.angle = angle;
@@ -772,6 +775,9 @@ class Knockback {
 class PercentFromKnockback{
     constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, vectoring){
         this.base_kb = kb;
+        if(this.base_kb > 2500){
+            //this.base_kb = 2500;
+        }
         this.type = type;
         this.original_angle = angle;
         this.base_angle = angle;
