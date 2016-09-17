@@ -465,7 +465,7 @@ app.controller('calculator', function ($scope) {
             if(!unblockable){
                 result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
                 if(!powershield){
-                    var s = (base_damage * 1.19) + (shieldDamage * 1.19);
+                    var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
                     result.shield.splice(0, 0, new ListItem("Shield Damage", +s.toFixed(4)));
                     result.shield.splice(1, 0, new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
                     result.shield.splice(2, 0, new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
