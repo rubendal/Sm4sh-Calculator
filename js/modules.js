@@ -360,13 +360,12 @@ app.controller('calculator', function ($scope) {
 
         if(stage != null){
             if(distance.bounce_speed >= 1){
-                $scope.kb_modifier_bounce = distance.bounce;
-                bounce = distance.bounce;
+                //$scope.kb_modifier_bounce = distance.bounce;
+                //bounce = distance.bounce;
             }
         }
 
-        trainingkb.bounce(bounce);
-        vskb.bounce(bounce);
+        
 
         if(!graph){
             var trainingDistance;
@@ -378,6 +377,8 @@ app.controller('calculator', function ($scope) {
                 vsDistance = distance;
                 trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
             }
+            trainingkb.bounce(bounce);
+            vskb.bounce(bounce);
             var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.vectoring, trainingkb.horizontal_launch_speed, +trainingkb.add_gravity_speed.toFixed(4), trainingkb.vertical_launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
             var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.vectoring, vskb.horizontal_launch_speed, +vskb.add_gravity_speed.toFixed(4), vskb.vertical_launch_speed, vsDistance.max_x, vsDistance.max_y]);
             if (trainingkb.di_able) {
