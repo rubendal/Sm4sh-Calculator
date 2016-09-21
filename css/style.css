@@ -13,6 +13,11 @@ body{
     margin-left:20px;
 }
 
+.icon{
+    width: 17px;
+    height: 17px;
+}
+
 input,select{
     font-family: Open Sans;
     border-radius:4px;
@@ -209,6 +214,13 @@ table,td,tr{
     clear:none;
     float:right;
     margin-right:20px;
+}
+
+#links{
+    clear:none;
+    float:right;
+    margin-right:20px;
+    line-height: 20px;
 }
 
 #header-cont h2{
