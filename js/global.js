@@ -25,39 +25,42 @@ function loadJSONPath(path) {
 }
 
 class Modifier {
-    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, shield) {
+    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, fall_speed, shield, air_friction, traction) {
         this.name = name;
         this.damage_dealt = damage_dealt;
         this.damage_taken = damage_taken;
         this.kb_dealt = kb_dealt;
         this.kb_received = kb_received;
         this.gravity = gravity;
+        this.fall_speed = fall_speed;
         this.shield = shield;
+        this.air_friction = air_friction;
+        this.traction = traction;
     }
 };
 
 var monado = [
-    new Modifier("Jump", 1, 1.22, 1, 1, 1.3, 1),
-    new Modifier("Speed", 0.8, 1, 1, 1, 1, 1),
-    new Modifier("Shield", 0.7, 0.67, 1, .78, 1, 1.5),
-    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 1, 1),
-    new Modifier("Smash", 0.5, 1, 1.18, 1.07, 1, 1)
+    new Modifier("Jump", 1, 1.22, 1, 1, 1.3, 1.22, 1, 1, 1),
+    new Modifier("Speed", 0.8, 1, 1, 1, 1, 1, 1, 1, 1.5),
+    new Modifier("Shield", 0.7, 0.67, 1, .78, 1, 1, 1.5, 1, 1),
+    new Modifier("Buster", 1.4, 1.13, 0.68, 1, 1, 1, 1, 1, 1),
+    new Modifier("Smash", 0.5, 1, 1.18, 1.07, 1, 1, 1, 1, 1)
 ];
 
 var decisive_monado = [
-    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 1.43, 1),
-    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 1.1, 1),
-    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 1, 1.5*1.1),
-    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 1, 1),
-    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, 1, 1)
+    new Modifier("Decisive Jump", 1, 1.22, 1, 1, 1.43, 1.342, 1, 1, 1),
+    new Modifier("Decisive Speed", 0.8, 1, 1, 1, 1.1, 1, 1, 1, 1.65),
+    new Modifier("Decisive Shield", .7, 0.603, 1, .702, 1, 1, 1.5*1.1, 1, 1),
+    new Modifier("Decisive Buster", 1.4 * 1.1, 1.13, 0.68, 1, 1, 1, 1, 1, 1),
+    new Modifier("Decisive Smash", 0.5, 1, 1.18 * 1.1, 1.07, 1, 1, 1, 1, 1)
 ];
 
 var hyper_monado = [
-    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 1.56, 1),
-    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 1.2, 1),
-    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 1, 1.5*1.2),
-    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 1, 1),
-    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, 1, 1)
+    new Modifier("Hyper Jump", 1, 1.22*1.2, 1, 1, 1.56, 1.464, 1, 1, 1),
+    new Modifier("Hyper Speed", 0.64, 1, 1, 1, 1.2, 1, 1, 1, 1.8),
+    new Modifier("Hyper Shield", 0.56, 0.536, 1, .624, 1, 1, 1.5*1.2, 1, 1),
+    new Modifier("Hyper Buster", 1.4 * 1.2, 1.13 * 1.2, 0.544, 1, 1, 1, 1, 1, 1),
+    new Modifier("Hyper Smash", 0.4, 1, 1.18 * 1.2, 1.07 * 1.2, 1, 1, 1, 1, 1)
 ];
 
 class Character {
@@ -67,7 +70,7 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("", 1, 1, 1, 1, 1, 1);
+        this.modifier = new Modifier("", 1, 1, 1, 1, 1, 1, 1, 1, 1);
         for (var i = 0; i < monado.length; i++) {
             if (name.includes("(" + decisive_monado[i].name + ")")) {
                 this.modifier = decisive_monado[i];
@@ -86,11 +89,11 @@ class Character {
             }
         }
         if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1, 1);
+            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
@@ -103,10 +106,10 @@ class Character {
         if (name != "Cloud (Limit Break)") {
             this.attributes = loadJSON(this.name);
         } else {
-            this.attributes = loadJSONPath("./Data/Cloud/attributes limit break.json");
+            this.attributes = loadJSONPath("./Data/Cloud/attributes.json");
             this.api_name = "Cloud";
             this.name = "Cloud";
-            this.modifier = new Modifier("Limit Break", 1, 1, 1, 1, 1, 1);
+            this.modifier = new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15);
         }
         
         
@@ -115,7 +118,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, gravity2, air_friction, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
         this.kb = kb;
         this.x_launch_speed = x_launch_speed;
         this.y_launch_speed = y_launch_speed;
@@ -134,6 +137,8 @@ class Distance{
         this.position = {"x":0, "y":0};
         this.bounce = false;
         this.doPlot = doPlot;
+        this.gravity2 = gravity2;
+        this.air_friction = air_friction;
         if(position !== undefined){
             this.position = position;
         }
@@ -154,8 +159,8 @@ class Distance{
         this.max_x = this.position.x;
         this.max_y = this.position.y;
 
-        var x_speed = +this.x_launch_speed.toFixed(6);
-        var y_speed = +this.y_launch_speed.toFixed(6);
+        var x_speed = +this.x_launch_speed.toFixed(8);
+        var y_speed = +this.y_launch_speed.toFixed(8);
 
         if(this.inverseX){
             angle = InvertXAngle(angle);
@@ -179,7 +184,8 @@ class Distance{
         var decay = {'x':0.051 * Math.cos(angle * Math.PI / 180),'y':0.051 * Math.sin(angle * Math.PI / 180)};
         var character_position = {'x':this.position.x,'y':this.position.y};
         var launch_speed = {'x':x_speed, 'y':y_speed};
-        var character_speed = {'x':0,'y':0};
+        var friction =  {'x':air_friction * Math.cos(angle * Math.PI / 180),'y':air_friction * Math.sin(angle * Math.PI / 180)};
+        var character_speed = {'x':0,'y':0 };
         this.vertical_speed = [];
         var momentum = 1;
         var g = 0;
@@ -366,6 +372,9 @@ class Distance{
                 }
             }
 
+            //Update friction
+            friction =  {'x':air_friction * Math.cos(angle * Math.PI / 180),'y':air_friction * Math.sin(angle * Math.PI / 180)};
+
             //Apply decay
             if(launch_speed.x != 0){
                 var x_dir = launch_speed.x / Math.abs(launch_speed.x);
@@ -397,12 +406,24 @@ class Distance{
                 character_speed.y = 0;
                 launch_speed.y = 0;
                 g=gravity;
+            }else{
+                /*if(launch_speed.x != 0){
+                    character_speed.x = -friction.x;
+                }else{
+                    character_speed.x = 0;
+                }*/
             }
 
             //Gravity
             g -= gravity;
+            //g -= gravity2;
             fg = Math.max(g, -fall_speed);
             character_speed.y = fg;
+            /*if(launch_speed.y != 0){
+                character_speed.y -= friction.y;
+            }else{
+                character_speed.y = fg;
+            }*/
 
             character_position.x = next_x;
             character_position.y = next_y;
@@ -736,7 +757,7 @@ class Knockback {
             this.launch_speed = LaunchSpeed(this.kb);
             this.horizontal_launch_speed = LaunchSpeed(this.x);
             this.vertical_launch_speed = LaunchSpeed(this.y);
-            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
+            if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
             if(!((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI))) || ((this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180))){
@@ -749,7 +770,7 @@ class Knockback {
                 }else{
                     if(this.vectoring == -1){
                         this.horizontal_launch_speed *= 0.92;
-                    this.vertical_launch_speed *= 0.92;
+                        this.vertical_launch_speed *= 0.92;
                     }
                 }
             }

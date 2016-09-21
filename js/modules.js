@@ -316,8 +316,8 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
-        $scope.target_fall_speed = target.attributes.fall_speed;
-        $scope.target_traction = target.attributes.traction;
+        $scope.target_fall_speed = target.attributes.fall_speed * target.modifier.fall_speed;
+        $scope.target_traction = target.attributes.traction * target.modifier.traction;
         $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
         $scope.lumaPercent = 0;
         $scope.update();
@@ -353,9 +353,9 @@ app.controller('calculator', function ($scope) {
 
         var distance;
         if(game_mode == "training"){
-            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }else{
-            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
         }
 
         if(stage != null){
@@ -371,11 +371,11 @@ app.controller('calculator', function ($scope) {
             var trainingDistance;
             var vsDistance;
             if(game_mode == "training"){
-                vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+                vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
                 trainingDistance = distance;
             }else{
                 vsDistance = distance;
-                trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+                trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
             }
             trainingkb.bounce(bounce);
             vskb.bounce(bounce);

@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Fixed - Jump Monado Art Fall speed multiplier 
 * Changed - Display horizontal and vertical launch speed instead of launch speed at launch direction
 * Changed - Vectoring and gravity affect launch speed instead of knockback
 * Added - Stage spawn positions added
