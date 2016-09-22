@@ -434,7 +434,15 @@ class Move {
         }
 
         if(this.spike){
-            this.type += ",spike";
+            this.type += ",Spike";
+        }
+
+        if(this.name.includes("True")){
+            this.type += ",RyuTrue";
+        }
+        
+        if((this.name.includes("Limit") && !this.name.includes("Limit Break")) || this.name.includes("Finishing Touch") ){
+            this.type += ",LimitBreak";
         }
 
         if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){

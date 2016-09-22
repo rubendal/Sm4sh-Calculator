@@ -1133,9 +1133,9 @@ function List(values) {
         "KB X component", "KB Y component, if KB causes tumble gravity KB is added",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
-        "",
+        "Launch speed multiplier caused by vectoring",
         "Initial horizontal speed target will be launched units per frame",
-        "",
+        "Additional vertical launch speed caused by gravity if attack causes tumble",
         "Initial vertical speed target will be launched units per frame",
         "Horizontal distance travelled being launched after hitstun",
         "Vertical distance travelled being launched after hitstun"];
