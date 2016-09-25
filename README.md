@@ -4,7 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
-* Fixed - Jump Monado Art Fall speed multiplier 
+* Fixed - Jump Monado Art Fall speed multiplier
 * Changed - Display horizontal and vertical launch speed instead of launch speed at launch direction
 * Changed - Vectoring and gravity affect launch speed instead of knockback
 * Added - Stage spawn positions added
@@ -45,10 +45,10 @@ If the API is not available or having issues you can fill move related data (Bas
 * Launch speed
 * Gravity launch speed boost
 * Vectoring
-* Max distance when hitstun ends
+* Max distance when hitstun ends (Not accurate, see Launch Visualizer)
 
 #### Launch Visualizer
-Note: Work in progress, stage layout collision detection might give weird results and bounced trajectories are not accurate
+Note: Work in progress, distance calculation is not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
@@ -62,7 +62,8 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 
 ### To Do
-* Improve Hitstun cancel frames formula
+* Improve or find in-game Hitstun cancel frames formula
+* Improve distance calculation
 
 ## Move Search
 http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
@@ -88,7 +89,7 @@ Filter moves by:
 * `-` == not
 * `"name"` == Move name is exactly the one between double quotes
 * `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage, weightdependentthrow, spike)
+* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage, weightdependentthrow, spike, ryutrue, limitbreak)
 
 
 #### Examples
@@ -107,8 +108,6 @@ Get target percent required to obtain certain knockback
 Note: WBKB isn't supported due to being weight related
 
 Update: Removed X and Y component calculation since these don't represent distance launched, distance calculation is also affected by hitstun and other factors giving wrong results
-
-Planning to change application to calculate distance instead of knockback for Horizontal and Vertical Distance
 
 ## TSV Generator
 http://rubendal.github.io/Sm4sh-Calculator/tsvgen.html
