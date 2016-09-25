@@ -1327,6 +1327,7 @@ var powershield = false;
 var is_projectile = false;
 
 var megaman_fsmash = false;
+var witch_time_smash_charge = false;
 var electric = "none";
 var crouch = "none";
 var is_smash = false;

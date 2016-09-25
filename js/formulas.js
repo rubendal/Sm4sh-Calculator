@@ -141,16 +141,22 @@ function Hitlag(base_damage, hitlag_mult, electric, crouch) {
     return h;
 }
 
-function ChargeSmash(base_damage, frames, megaman_fsmash) {
+function ChargeSmash(base_damage, frames, megaman_fsmash, witch_time) {
     if (megaman_fsmash) {
         return base_damage * (1 + (frames / 86));
+    }
+    if(witch_time){
+        return base_damage * (1 + (frames * 0.5 / 150));
     }
     return base_damage * (1 + (frames / 150));
 }
 
-function ChargeSmashMultiplier(frames, megaman_fsmash) {
+function ChargeSmashMultiplier(frames, megaman_fsmash, witch_time) {
     if (megaman_fsmash) {
         return (1 + (frames / 86));
+    }
+    if(witch_time){
+        return (1 + (frames * 0.5 / 150));
     }
     return (1 + (frames / 150));
 }

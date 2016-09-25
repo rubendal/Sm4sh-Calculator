@@ -35,7 +35,9 @@ app.controller('calculator', function ($scope) {
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
     $scope.megaman_fsmash = false;
+    $scope.witch_time_charge = false;
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+    $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
     $scope.wbkb = false;
     $scope.windbox = false;
@@ -57,6 +59,7 @@ app.controller('calculator', function ($scope) {
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
     }
 
     $scope.checkCounterVisibility = function () {
@@ -66,6 +69,7 @@ app.controller('calculator', function ($scope) {
     $scope.charging = function(){
         $scope.checkSmashVisibility();
         $scope.megaman_fsmash = false;
+        $scope.witch_time_charge = false;
         $scope.smashCharge = 0;
         charge_frames = 0;
 
@@ -76,6 +80,10 @@ app.controller('calculator', function ($scope) {
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
         if (attacker.name != "Mega Man") {
             $scope.megaman_fsmash = false;
+        }
+        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+        if(attacker.name != "Bayonetta"){
+            $scope.witch_time_charge = false;
         }
     }
 
@@ -277,6 +285,7 @@ app.controller('calculator', function ($scope) {
         ignoreStale = $scope.ignoreStale;
 
         megaman_fsmash = $scope.megaman_fsmash;
+        witch_time_smash_charge = $scope.witch_time_charge;
         electric = $scope.hitlag_modifier;
         crouch = $scope.kb_modifier;
 
@@ -296,7 +305,7 @@ app.controller('calculator', function ($scope) {
             break;
         }
 
-        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash);
+        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);
