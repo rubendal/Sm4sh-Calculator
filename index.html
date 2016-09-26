@@ -212,9 +212,21 @@
                     <br />
                     Hit frame:
                     <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
+                    <span>
+                        <input type="button" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()"/>
+                        <input type="button" value=">" ng-style="next_hf" ng-click="next_hit_frame()"/>
+                    </span>
                     <br />
-                    FAF:
+                    {{use_landing_lag == "no" ? "FAF" : "Landing frame"}}:
                     <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
+                    <span ng-style="is_aerial">
+                        <br/>
+                        <input type="radio" ng-model="use_landing_lag" value="no" ng-change="update_faf()"/> Use move FAF
+                        <br/>
+                        <input type="radio" ng-model="use_landing_lag" value="yes" ng-change="update_faf()"/> Use move ending lag
+                        <br/>
+                        <input type="radio" ng-model="use_landing_lag" value="autocancel" ng-change="update_faf()"/> Use move autocancel
+                    </span>
                     <br />
                     Shield
                     <br />

@@ -26,6 +26,8 @@ app.controller('calculator', function ($scope) {
     $scope.faf = 1;
     $scope.shieldDamage = 0;
 
+    $scope.hitbox_active_index = 0;
+
     $scope.preDamage = 0;
     $scope.di = 0;
     $scope.noDI = true;
@@ -48,6 +50,10 @@ app.controller('calculator', function ($scope) {
     $scope.witch_time_charge = false;
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+    $scope.is_aerial = { 'display': 'none' };
+    $scope.prev_hf = { 'display': 'none' };
+    $scope.next_hf = { 'display': 'none' };
+    $scope.selected_move = null;
     $scope.smashCharge = 0;
     $scope.wbkb = false;
     $scope.windbox = false;
@@ -123,6 +129,81 @@ app.controller('calculator', function ($scope) {
         $scope.updateAttackData();
     };
 
+    $scope.check_move = function(){
+        if($scope.selected_move == null){
+            $scope.is_aerial = { 'display': 'none' };
+            $scope.prev_hf = { 'display': 'none' };
+            $scope.next_hf = { 'display': 'none' };
+            $scope.use_landing_lag = "no";
+        }else{
+            $scope.hitbox_active_index = 0;
+            $scope.is_aerial = { 'display': $scope.selected_move.aerial ? 'initial' : 'none' };
+            $scope.prev_hf = { 'display': 'none' };
+            $scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
+            $scope.use_landing_lag = "no";
+        }
+        
+    }
+
+    $scope.prev_hit_frame = function(){
+        $scope.hitbox_active_index--;
+        if (!isNaN($scope.selected_move.hitboxActive[$scope.hitbox_active_index].start)) {
+            $scope.hit_frame = $scope.selected_move.hitboxActive[$scope.hitbox_active_index].start;
+        } else {
+            $scope.hit_frame = 0;
+        }
+        $scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
+        $scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length-1 ? 'inline' : 'none' };
+        $scope.update();
+    }
+
+    $scope.next_hit_frame = function(){
+        $scope.hitbox_active_index++;
+        if (!isNaN($scope.selected_move.hitboxActive[$scope.hitbox_active_index].start)) {
+            $scope.hit_frame = $scope.selected_move.hitboxActive[$scope.hitbox_active_index].start;
+        } else {
+            $scope.hit_frame = 0;
+        }
+        $scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
+        $scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length-1 ? 'inline' : 'none' };
+        $scope.update();
+    }
+
+    $scope.update_faf = function(){
+        landing_lag = 0;
+        switch($scope.use_landing_lag){
+            case "no":
+                $scope.faf = $scope.selected_move.faf;
+            break;
+            case "yes":
+                $scope.faf = $scope.hit_frame + 1;
+                landing_lag = $scope.selected_move.landingLag;
+            break;
+            case "autocancel":
+                var i = $scope.hit_frame;
+                var h = $scope.hit_frame+50;
+                var f = false;
+                for(i = $scope.hit_frame;i<h;i++){
+                    for(var x=0;x<$scope.selected_move.autoCancel.length;x++){
+                        if($scope.selected_move.autoCancel[x].eval(i)){
+                            f = true;
+                            break;
+                        }
+                    }
+                    if(f){
+                        break;
+                    }
+                }
+                if(f){
+                    $scope.faf = i;
+                }else{
+                    $scope.faf = NaN;
+                }
+            break;
+        }
+        $scope.update();
+    }
+
     $scope.check = function () {
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
         if (attacker.name != "Mega Man") {
@@ -166,7 +247,10 @@ app.controller('calculator', function ($scope) {
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
         $scope.unblockable = false;
+        $scope.hitbox_active_index = 0;
+        $scope.check_move(null);
         $scope.checkCounterVisibility();
+        $scope.selected_move = null;
         $scope.update();
     }
 
@@ -210,6 +294,8 @@ app.controller('calculator', function ($scope) {
             if ($scope.counterMult != 0) {
                 $scope.counterDamage();
             }
+            $scope.selected_move = attack;
+            $scope.check_move();
         } else {
             //console.debug(attack.name + " not valid");
         }
@@ -233,6 +319,7 @@ app.controller('calculator', function ($scope) {
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
                     $scope.unblockable = false;
+                    $scope.selected_move = null;
                     if($scope.angle < 360){
                         $scope.di = $scope.angle;
                     }
@@ -244,11 +331,14 @@ app.controller('calculator', function ($scope) {
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
                 $scope.unblockable=false;
+                $scope.selected_move = null;
                 if($scope.angle < 360){
                     $scope.di = $scope.angle;
                 }
             }
         }
+        
+        $scope.check();
         $scope.update();
     }
 
@@ -283,6 +373,7 @@ app.controller('calculator', function ($scope) {
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
                         $scope.unblockable = attack.unblockable;
+                        $scope.selected_move = attack;
                         detected = true;
                         return true;
                 } else {
@@ -308,6 +399,7 @@ app.controller('calculator', function ($scope) {
                             $scope.counterMult = attack.counterMult;
                             $scope.unblockable = attack.unblockable;
                             $scope.move = i.toString();
+                            $scope.selected_move = attack;
                             return true;
                     } else {
 
@@ -472,13 +564,12 @@ app.controller('calculator', function ($scope) {
 
             //Shield stuff
             if(!unblockable){
-                result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, faf, is_projectile, HitlagElectric(electric), powershield)]);
+                result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]);
                 if(!powershield){
                     var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
                     result.shield.splice(0, 0, new ListItem("Shield Damage", +s.toFixed(4)));
                     result.shield.splice(1, 0, new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
                     result.shield.splice(2, 0, new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-
                 }
             }else{
                 result.shield = ([new ListItem("Unblockable attack", "Yes")]);

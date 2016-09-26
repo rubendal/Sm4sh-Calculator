@@ -448,6 +448,14 @@ class Move {
         if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){
             if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
                 this.faf = previousMove.faf;
+                if(this.autoCancel.length==1){
+                    if(this.autoCancel[0].type == "empty"){
+                        this.autoCancel = previousMove.autoCancel;
+                    }
+                }
+                if(this.landingLag == "-" || isNaN(this.landingLag)){
+                    this.landingLag = previousMove.landingLag;
+                }
             }
         }
         previousMove = this;

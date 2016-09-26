@@ -1349,3 +1349,5 @@ var inverseX = false;
 var onSurface = false;
 
 var vectoring = 0;
+
+var landing_lag = 0;
