@@ -523,7 +523,7 @@ function getCharactersId(names, $scope) {
                 var name = character[i].name;
                 var color = character[i].colorTheme;
                 for (var n = 0; n < names.length; n++) {
-                    var api_name = names[n].toLowerCase().replace("and", "").replace("-", "").split(".").join("").split(" ").join("");
+                    var api_name = names[n].toLowerCase().replace("and", "").replace("-", "").replace("&","").split(".").join("").split(" ").join("");
                     if (name.toLowerCase() == api_name) {
                         name = names[n];
                         characters.push(new CharacterId(name, id, color));
