@@ -59,6 +59,8 @@ app.controller('calculator', function ($scope) {
     $scope.windbox = false;
     $scope.ignoreStale = false;
 
+    $scope.use_landing_lag = "no";
+
     $scope.section_main = { 'background': 'rgba(0, 0, 255, 0.3)' };
     $scope.section_attributes = { 'background': 'transparent' };
     $scope.section_visualizer = { 'background': 'transparent' };
