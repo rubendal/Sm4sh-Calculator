@@ -158,18 +158,16 @@
                 <br/>
                 Sort by:
                 <br/>
-                <input name="sort_by" type="radio" ng-model="sort_by" value="character" ng-change="sort()"/> Character
-                <input name="sort_by" type="radio" ng-model="sort_by" value="name" ng-change="sort()"/> Move name
-                <input name="sort_by" type="radio" ng-model="sort_by" value="base_damage" ng-change="sort()"/> Base damage
-                <input name="sort_by" type="radio" ng-model="sort_by" value="angle" ng-change="sort()"/> Angle
-                <input name="sort_by" type="radio" ng-model="sort_by" value="bkb" ng-change="sort()"/> BKB
-                <input name="sort_by" type="radio" ng-model="sort_by" value="kbg" ng-change="sort()"/> KBG
+                <select name="sort_by" ng-model="sort_by" ng-change="sort()">
+                    <option ng-selected="$first" ng:repeat="option in sort_options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
 
                 <br/>
                 Order by:
                 <br/>
-                <input name="order_by" type="radio" ng-model="order_by" value="asc" ng-change="sort()"/> Asc
-                <input name="order_by" type="radio" ng-model="order_by" value="desc" ng-change="sort()"/> Desc
+                <select name="order_by" ng-model="order_by" ng-change="sort()">
+                    <option ng-selected="$first" ng:repeat="option in order_options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
             </div>
 
         </div>

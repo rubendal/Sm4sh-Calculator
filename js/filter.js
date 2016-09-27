@@ -201,6 +201,8 @@ var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     $scope.name = "";
     $scope.options = ["any", "=", "<", "<=", ">", ">=", "between"];
+    $scope.sort_options = ["Character","Name","Base damage","Angle","BKB","KBG"];
+    $scope.order_options = ["Asc","Desc"];
     $scope.hitbox_start_cond = "any";
     $scope.hitbox_frame_cond = true;
     $scope.faf_cond = "any";
@@ -212,8 +214,8 @@ filter_app.controller('filter', function ($scope) {
     $scope.kbg_cond = "any";
     $scope.wbkb_any = true;
 
-    $scope.sort_by = "character";
-    $scope.order_by = "asc";
+    $scope.sort_by = "Character";
+    $scope.order_by = "Asc";
 
     $scope.updateStatus = function (status) {
         $scope.status = status;
@@ -321,26 +323,26 @@ filter_app.controller('filter', function ($scope) {
         }
         var av = -1;
         var bv = 1;
-        if($scope.order_by == "desc"){
+        if($scope.order_by == "Desc"){
             av = 1;
             bv = -1;
         }
         switch($scope.sort_by){
-            case "character":
+            case "Character":
                 $scope.sortedMoves = c.sort(function(a,b){
                     return a.character < b.character ? av :
                     a.character > b.character ? bv :
                     a.move.compareById(b.move);
                 });
             break;
-            case "name":
+            case "Name":
                 $scope.sortedMoves = c.sort(function(a,b){
                     return a.move.name < b.move.name ? av :
                     a.move.name > b.move.name ? bv :
                     a.move.compareById(b.move);
                 });
             break;
-            case "base_damage":
+            case "Base damage":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(isNaN(a.move.base_damage)){
                         if(isNaN(b.move.base_damage)){
@@ -357,7 +359,7 @@ filter_app.controller('filter', function ($scope) {
                     a.move.compareById(b.move);
                 });
             break;
-            case "angle":
+            case "Angle":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.angle == "-"){
                         if(b.move.angle == "-"){
@@ -374,7 +376,7 @@ filter_app.controller('filter', function ($scope) {
                     a.move.compareById(b.move);
                 });
             break;
-            case "bkb":
+            case "BKB":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.bkb == "-"){
                         if(b.move.bkb == "-"){
@@ -391,7 +393,7 @@ filter_app.controller('filter', function ($scope) {
                     a.move.compareById(b.move);
                 });
             break;
-            case "kbg":
+            case "KBG":
                 $scope.sortedMoves = c.sort(function(a,b){
                     if(a.move.kbg == "-"){
                         if(b.move.kbg == "-"){
