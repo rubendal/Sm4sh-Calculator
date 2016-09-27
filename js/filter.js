@@ -200,11 +200,12 @@ var characterListId = [];
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     $scope.name = "";
+    $scope.options = ["any", "=", "<", "<=", ">", ">=", "between"];
     $scope.hitbox_start_cond = "any";
     $scope.hitbox_frame_cond = true;
     $scope.faf_cond = "any";
     $scope.landing_lag_cond = "any";
-    $scope.autocancel_cond = "any";
+    $scope.autocancel_cond = true;
     $scope.base_damage_cond = "any";
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
@@ -445,7 +446,7 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
-                if($scope.autocancel_cond != "any"){
+                if(!$scope.autocancel_cond){
                     if(move.autoCancel.length < 0){
                         return;
                     }

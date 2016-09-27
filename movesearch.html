@@ -96,98 +96,61 @@
                 <br/>
                 Hitbox startup frame:
                 <input name="hit_start" type="number" min="0" max="300" step="1" ng-model="hitbox_start" ng-change="update()" />
-                
-                <input name="hit_start_cond" type="radio" value="=" ng-model="hitbox_start_cond" ng-change="update()"/>=
-                <input name="hit_start_cond" type="radio" value="<" ng-model="hitbox_start_cond" ng-change="update()" />&lt;
-                <input name="hit_start_cond" type="radio" value=">" ng-model="hitbox_start_cond" ng-change="update()" />&gt;
-                <input name="hit_start_cond" type="radio" value="<=" ng-model="hitbox_start_cond" ng-change="update()" />&lt;=
-                <input name="hit_start_cond" type="radio" value=">=" ng-model="hitbox_start_cond" ng-change="update()" />&gt;=
-                <input name="hit_start_cond" type="radio" value="between" ng-model="hitbox_start_cond" ng-change="update()" />between
+                <select name="hit_start_cond" ng-model="hitbox_start_cond"ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="hit_start2" type="number" min="0" max="300" step="1" ng-model="hitbox_start2" ng-change="update()" />
-                <input name="hit_start_cond" type="radio" value="any" ng-model="hitbox_start_cond" ng-change="update()" />Any
                 <br />
                 Hitbox active on frame:
                 <input name="hit_frame" type="number" min="0" max="300" step="1" ng-model="hitbox_frame" ng-change="update()" />
-
                 <input name="hit_frame_cond" type="checkbox" ng-model="hitbox_frame_cond" ng-change="update()" />Any
                 <br />
                 FAF:
                 <input name="faf" type="number" min="0" max="300" step="1" ng-model="faf" ng-change="update()" />
                 
-                <input name="faf_cond" type="radio" value="=" ng-model="faf_cond" ng-change="update()"/>=
-                <input name="faf_cond" type="radio" value="<" ng-model="faf_cond" ng-change="update()" />&lt;
-                <input name="faf_cond" type="radio" value=">" ng-model="faf_cond" ng-change="update()" />&gt;
-                <input name="faf_cond" type="radio" value="<=" ng-model="faf_cond" ng-change="update()" />&lt;=
-                <input name="faf_cond" type="radio" value=">=" ng-model="faf_cond" ng-change="update()" />&gt;=
-                <input name="faf_cond" type="radio" value="between" ng-model="faf_cond" ng-change="update()" />between
+                <select name="faf_cond" ng-model="faf_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="faf2" type="number" min="0" max="300" step="1" ng-model="faf2" ng-change="update()" />
-                <input name="faf_cond" type="radio" value="any" ng-model="faf_cond" ng-change="update()" />Any
                 <br />
                 Landing lag:
                 <input name="landing_lag" type="number" min="0" max="367" step="1" ng-model="landing_lag" ng-change="update()" />
-
-                <input name="landing_lag_cond" type="radio" value="=" ng-model="landing_lag_cond" ng-change="update()" />=
-                <input name="landing_lag_cond" type="radio" value="<" ng-model="landing_lag_cond" ng-change="update()" />&lt;
-                <input name="landing_lag_cond" type="radio" value=">" ng-model="landing_lag_cond" ng-change="update()" />&gt;
-                <input name="landing_lag_cond" type="radio" value="<=" ng-model="landing_lag_cond" ng-change="update()" />&lt;=
-                <input name="landing_lag_cond" type="radio" value=">=" ng-model="landing_lag_cond" ng-change="update()" />&gt;=
-                <input name="landing_lag_cond" type="radio" value="between" ng-model="landing_lag_cond" ng-change="update()" />between
+                <select name="landing_lag_cond" ng-model="landing_lag_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="landing_lag2" type="number" min="0" max="60" step="1" ng-model="landing_lag2" ng-change="update()" />
-                <input name="landing_lag_cond" type="radio" value="any" ng-model="landing_lag_cond" ng-change="update()" />Any
                 <br />
                 Autocancel:
                 <input name="autocancel" type="number" min="0" max="367" step="1" ng-model="autocancel" ng-change="update()" />
-
-                <input name="autocancel_cond" type="radio" value="=" ng-model="autocancel_cond" ng-change="update()" />=
-                <input name="autocancel_cond" type="radio" value="any" ng-model="autocancel_cond" ng-change="update()" />Any
+                <input name="autocancel_cond" type="checkbox" ng-model="autocancel_cond" ng-change="update()" />Any
                 <br />
                 Base damage:
                 <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="base_damage" ng-change="update()" />
-
-                <input name="base_damage_cond" type="radio" value="=" ng-model="base_damage_cond" ng-change="update()" />=
-                <input name="base_damage_cond" type="radio" value="<" ng-model="base_damage_cond" ng-change="update()" />&lt;
-                <input name="base_damage_cond" type="radio" value=">" ng-model="base_damage_cond" ng-change="update()" />&gt;
-                <input name="base_damage_cond" type="radio" value="<=" ng-model="base_damage_cond" ng-change="update()" />&lt;=
-                <input name="base_damage_cond" type="radio" value=">=" ng-model="base_damage_cond" ng-change="update()" />&gt;=
-                <input name="base_damage_cond" type="radio" value="between" ng-model="base_damage_cond" ng-change="update()" />between
+                <select name="base_damage_cond" ng-model="base_damage_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="base_damage2" type="number" min="0" max="999" step="0.5" ng-model="base_damage2" ng-change="update()" />
-                <input name="base_damage_cond" type="radio" value="any" ng-model="base_damage_cond" ng-change="update()" />Any
                 <br />
                 Angle:
                 <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
-
-                <input name="angle_cond" type="radio" value="=" ng-model="angle_cond" ng-change="update()" />=
-                <input name="angle_cond" type="radio" value="<" ng-model="angle_cond" ng-change="update()" />&lt;
-                <input name="angle_cond" type="radio" value=">" ng-model="angle_cond" ng-change="update()" />&gt;
-                <input name="angle_cond" type="radio" value="<=" ng-model="angle_cond" ng-change="update()" />&lt;=
-                <input name="angle_cond" type="radio" value=">=" ng-model="angle_cond" ng-change="update()" />&gt;=
-                <input name="angle_cond" type="radio" value="between" ng-model="angle_cond" ng-change="update()" />between
+                <select name="angle_cond" ng-model="angle_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="angle2" type="number" min="0" max="367" step="1" ng-model="angle2" ng-change="update()" />
-                <input name="angle_cond" type="radio" value="any" ng-model="angle_cond" ng-change="update()" />Any
                 <br />
                 BKB:
                 <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
-
-                <input name="bkb_cond" type="radio" value="=" ng-model="bkb_cond" ng-change="update()" />=
-                <input name="bkb_cond" type="radio" value="<" ng-model="bkb_cond" ng-change="update()" />&lt;
-                <input name="bkb_cond" type="radio" value=">" ng-model="bkb_cond" ng-change="update()" />&gt;
-                <input name="bkb_cond" type="radio" value="<=" ng-model="bkb_cond" ng-change="update()" />&lt;=
-                <input name="bkb_cond" type="radio" value=">=" ng-model="bkb_cond" ng-change="update()" />&gt;=
-                <input name="bkb_cond" type="radio" value="between" ng-model="bkb_cond" ng-change="update()" />between
+                <select name="bkb_cond" ng-model="bkb_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="bkb2" type="number" min="0" max="999" step="1" ng-model="bkb2" ng-change="update()" />
-                <input name="bkb_cond" type="radio" value="any" ng-model="bkb_cond" ng-change="update()" />Any
                 <br />
                 KBG:
                 <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
-
-                <input name="kbg_cond" type="radio" value="=" ng-model="kbg_cond" ng-change="update()" />=
-                <input name="kbg_cond" type="radio" value="<" ng-model="kbg_cond" ng-change="update()" />&lt;
-                <input name="kbg_cond" type="radio" value=">" ng-model="kbg_cond" ng-change="update()" />&gt;
-                <input name="kbg_cond" type="radio" value="<=" ng-model="kbg_cond" ng-change="update()" />&lt;=
-                <input name="kbg_cond" type="radio" value=">=" ng-model="kbg_cond" ng-change="update()" />&gt;=
-                <input name="kbg_cond" type="radio" value="between" ng-model="kbg_cond" ng-change="update()" />between
+                <select name="kbg_cond" ng-model="kbg_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
                 <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
-                <input name="kbg_cond" type="radio" value="any" ng-model="kbg_cond" ng-change="update()" />Any
                 <br />
                 <input name="wbkb" type="checkbox" ng-model="wbkb" ng-change="update()" /> Weight-based knockback
                 <input name="wbkb_cond" type="checkbox" ng-model="wbkb_any" ng-change="update()" />Any
