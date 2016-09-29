@@ -51,10 +51,17 @@ app.controller('calculator', function ($scope) {
     $scope.counterMult = 0;
     $scope.unblockable = false;
 
+    $scope.charge_min = 0;
+    $scope.charge_max = 60;
+    $scope.charge_special = false;
+    $scope.charge_data = null;
+    $scope.selected_move = null;
+
     $scope.vectoring = "none";
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
+    
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -87,6 +94,43 @@ app.controller('calculator', function ($scope) {
         }
     }
 
+    $scope.check_move = function(){
+        if($scope.selected_move == null){
+            $scope.charge_min = 0;
+            $scope.charge_max = 60;
+            $scope.charge_special = false;
+        }else{
+            if($scope.selected_move.chargeable){
+                if($scope.selected_move.charge != null){
+                    $scope.charge_data = $scope.selected_move.charge;
+                    $scope.smashCharge = $scope.charge_data.min;
+                    $scope.charge_min = $scope.charge_data.min;
+                    $scope.charge_max = $scope.charge_data.max;
+                    $scope.charge_special = true;
+                    $scope.is_smash = true;
+                    $scope.updateCharge();
+                    
+                }else{
+                    $scope.charge_data = null;
+                    $scope.charge_min = 0;
+                    $scope.smashCharge = 0;
+                    $scope.charge_max = 60;
+                    $scope.charge_special = false;
+                    $scope.is_smash = $scope.selected_move.smash_attack;
+                }
+            }else{
+                $scope.charge_data = null;
+                $scope.charge_min = 0;
+                $scope.smashCharge = 0;
+                $scope.charge_max = 60;
+                $scope.charge_special = false;
+                $scope.is_smash = $scope.selected_move.smash_attack;
+            }
+            $scope.checkSmashVisibility();
+        }
+        
+    }
+
     $scope.updateAttr = function () {
         attacker.modifier.damage_dealt = parseFloat($scope.attacker_damage_dealt);
         attacker.modifier.kb_dealt = parseFloat($scope.attacker_kb_dealt);
@@ -115,6 +159,7 @@ app.controller('calculator', function ($scope) {
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
         $scope.unblockable = false;
+        $scope.selected_move = null;
         $scope.checkCounterVisibility();
         $scope.update();
     }
@@ -153,6 +198,8 @@ app.controller('calculator', function ($scope) {
             if ($scope.counterMult != 0) {
                 $scope.counterDamage();
             }
+            $scope.selected_move = attack;
+            $scope.check_move();
         } else {
             //console.debug(attack.name + " not valid");
         }
@@ -175,6 +222,7 @@ app.controller('calculator', function ($scope) {
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
                     $scope.unblockable = false;
+                    $scope.selected_move = null;
                     if($scope.angle < 360){
                         $scope.di = $scope.angle;
                     }
@@ -186,6 +234,7 @@ app.controller('calculator', function ($scope) {
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
                 $scope.unblockable=false;
+                $scope.selected_move = null;
                 if($scope.angle < 360){
                     $scope.di = $scope.angle;
                 }
@@ -224,6 +273,8 @@ app.controller('calculator', function ($scope) {
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
                         $scope.unblockable = attack.unblockable;
+                        $scope.selected_move = attack;
+                        $scope.check_move();
                         detected = true;
                         return true;
                 } else {
@@ -247,6 +298,8 @@ app.controller('calculator', function ($scope) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
                             $scope.unblockable = attack.unblockable;
+                            $scope.selected_move = attack;
+                            $scope.check_move();
                             $scope.move = i.toString();
                             return true;
                     } else {
@@ -264,6 +317,13 @@ app.controller('calculator', function ($scope) {
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
         $scope.target_kb_received = target.modifier.kb_received;
+        $scope.update();
+    }
+
+    $scope.updateCharge = function(){
+        if($scope.charge_data != null){
+            $scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
+        }
         $scope.update();
     }
 
@@ -305,7 +365,9 @@ app.controller('calculator', function ($scope) {
             break;
         }
 
-        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+        if($scope.charge_data == null){
+            base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+        }
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);

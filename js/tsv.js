@@ -1,17 +1,19 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
-"move","base_damage","damage","staleness","staleness_multiplier","angle","bkb","kbg",
+"move","move_base_damage","charge_frames","base_damage","damage","staleness","staleness_multiplier","angle","bkb","kbg",
 "kb_modifier","kb_multiplier","kb","kb_x","kb_y","launch_angle","hitstun","tumble","can_jab_lock","vectoring_multiplier","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
 var tsv_rows = [];
 
 class Row{
-    constructor(attacker, target, attacker_percent, target_percent, move, damage, staleness, kb_multiplier, kb, distance){
+    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, kb_multiplier, kb, distance){
         this.attacker = attacker;
         this.target = target;
         this.attacker_percent = attacker_percent;
         this.target_percent = target_percent;
         this.move = move;
+        this.base_damage = base_damage;
+        this.charge_frames = charge_frames;
         this.damage = damage;
         this.staleness = staleness;
         this.staleMult = StaleNegation(this.staleness, this.staleness == -1);
@@ -32,7 +34,7 @@ class Row{
         this.tsv = function(){
             return [this.attacker.name, this.attacker.modifier.name, this.attacker.display_name, this.target.display_name, this.target.modifier.name, this.target.display_name,
             this.attacker_percent, this.rage, this.target_percent,
-            this.move.name, this.move.base_damage, this.damage, this.staleness, this.staleMult, this.move.angle, this.move.bkb, this.move.kbg,
+            this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.staleMult, this.move.angle, this.move.bkb, this.move.kbg,
             this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.vectoring, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }
@@ -161,6 +163,12 @@ app.controller('calculator', function ($scope) {
     $scope.target_to = 150;
     $scope.target_step = 1;
 
+    $scope.charge_min = 0;
+    $scope.charge_max = 60;
+    $scope.charge_special = false;
+    $scope.charge_data = null;
+    $scope.selected_move = null;
+
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -193,6 +201,43 @@ app.controller('calculator', function ($scope) {
         }
     }
 
+    $scope.check_move = function(){
+        if($scope.selected_move == null){
+            $scope.charge_min = 0;
+            $scope.charge_max = 60;
+            $scope.charge_special = false;
+        }else{
+            if($scope.selected_move.chargeable){
+                if($scope.selected_move.charge != null){
+                    $scope.charge_data = $scope.selected_move.charge;
+                    $scope.smashCharge = $scope.charge_data.min;
+                    $scope.charge_min = $scope.charge_data.min;
+                    $scope.charge_max = $scope.charge_data.max;
+                    $scope.charge_special = true;
+                    $scope.is_smash = true;
+                    $scope.updateCharge();
+                    
+                }else{
+                    $scope.charge_data = null;
+                    $scope.charge_min = 0;
+                    $scope.smashCharge = 0;
+                    $scope.charge_max = 60;
+                    $scope.charge_special = false;
+                    $scope.is_smash = $scope.selected_move.smash_attack;
+                }
+            }else{
+                $scope.charge_data = null;
+                $scope.charge_min = 0;
+                $scope.smashCharge = 0;
+                $scope.charge_max = 60;
+                $scope.charge_special = false;
+                $scope.is_smash = $scope.selected_move.smash_attack;
+            }
+            $scope.checkSmashVisibility();
+        }
+        
+    }
+
 
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
@@ -202,6 +247,7 @@ app.controller('calculator', function ($scope) {
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
         $scope.unblockable = false;
+        $scope.selected_move = null;
         $scope.checkCounterVisibility();
         $scope.update();
     }
@@ -246,6 +292,8 @@ app.controller('calculator', function ($scope) {
             if ($scope.counterMult != 0) {
                 $scope.counterDamage();
             }
+            $scope.selected_move = attack;
+            $scope.check_move();
         } else {
             //console.debug(attack.name + " not valid");
         }
@@ -269,6 +317,7 @@ app.controller('calculator', function ($scope) {
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
                     $scope.unblockable = false;
+                    $scope.selected_move = null;
                     if($scope.angle < 360){
                         $scope.di = $scope.angle;
                     }
@@ -280,6 +329,7 @@ app.controller('calculator', function ($scope) {
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
                 $scope.unblockable=false;
+                $scope.selected_move = null;
                 if($scope.angle < 360){
                     $scope.di = $scope.angle;
                 }
@@ -319,6 +369,8 @@ app.controller('calculator', function ($scope) {
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
                         $scope.unblockable = attack.unblockable;
+                        $scope.selected_move = attack;
+                            $scope.check_move();
                         detected = true;
                         return true;
                 } else {
@@ -343,6 +395,8 @@ app.controller('calculator', function ($scope) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
                             $scope.unblockable = attack.unblockable;
+                            $scope.selected_move = attack;
+                            $scope.check_move();
                             $scope.move = i.toString();
                             return true;
                     } else {
@@ -358,6 +412,13 @@ app.controller('calculator', function ($scope) {
         target = new Character($scope.targetValue);
         $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
         $scope.lumaPercent = 0;
+        $scope.update();
+    }
+
+    $scope.updateCharge = function(){
+        if($scope.charge_data != null){
+            $scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
+        }
         $scope.update();
     }
 
@@ -510,15 +571,20 @@ app.controller('calculator', function ($scope) {
             move.is_smash = is_smash;
         }else{ 
             move = $scope.moveset[$scope.move];
-            move.base_damage = base_damage;
+            if(move.charge == null){
+                move.base_damage = base_damage;
+            }
         }
 
         $scope.status = "Processing...";
         
 
         var calcDamage = function(){
-            bd = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
-            console.debug(megaman_fsmash);
+            if(move.charge == null){
+                bd = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+            }else{
+                bd = move.charge_damage(charge_frames);
+            }
             damage = bd;
             if (attacker.name == "Lucario") {
                 damage *= Aura(attacker_percent);
@@ -541,7 +607,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
             distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, target.attributes.gravity2, target.attributes.air_friction * target.modifier.air_friction, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
-            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale,r,kb,distance));
+            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale,r,kb,distance));
         }
 
         var funlist = [];
@@ -603,13 +669,20 @@ app.controller('calculator', function ($scope) {
 
         if($scope.it_charge){
             funlist.push(function(f){
-                if(is_smash){
-                    for(var i=0;i<=60;i++){
+                if(move.charge != null){
+                    for(var i=move.charge.min;i<=move.charge.max;i++){
                         charge_frames = i;
                         funlist[f-1](f-1);
                     }
                 }else{
-                    funlist[f-1](f-1);
+                    if(is_smash){
+                        for(var i=0;i<=60;i++){
+                            charge_frames = i;
+                            funlist[f-1](f-1);
+                        }
+                    }else{
+                        funlist[f-1](f-1);
+                    }
                 }
             });
         }

@@ -326,6 +326,40 @@ class MoveParser {
 
 var previousMove = null;
 
+class ChargeData{
+    constructor(names,min,max,formula){
+        this.names = names;
+        this.min = min;
+        this.max = max;
+        this.formula = formula;
+    }
+
+    static get(list, move_name){
+        for(var i=0;i<list.length;i++){
+            for(var j=0;j<list[i].names.length;j++){
+                if(move_name.includes(list[i].names[j])){
+                    return list[i];
+                }
+            }
+        }
+        return null;
+    }
+};
+
+var chargeMoves = [
+    new ChargeData(["Palutena's Bow (No Charge)","Palutena's Bow (No Charge, Aerial)"],1,60,function(base_damage, frames){
+        return 3.2 + (frames * 0.09);
+    }),
+    new ChargeData(["Silver Bow (No Charge)","Silver Bow (No Charge, Aerial)"],1,60,function(base_damage, frames){
+        return 4.2 + (frames * 0.1125);
+    }),
+    new ChargeData(["Flare Blade (Uncharged)"],0,239,function(base_damage, frames){
+        return 6 + (frames * 5 / 30);
+    }),
+    new ChargeData(["Shield Breaker (No Charge)"],0,60,function(base_damage, frames){
+        return base_damage * ((60-frames)/60 + (frames * 2.2 / 60));
+    })];
+
 class Move {
     constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage) {
         this.api_id = api_id;
@@ -388,6 +422,14 @@ class Move {
         this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)";
         this.multihit = /(Hit [0-9]+)/gi.test(this.name) || /(Hits [0-9]+\-[0-9]+)/gi.test(this.name) || this.name.includes("Final Hit") || this.rehitRate != 0;
         this.spike = this.angle >= 230 && this.angle <= 310;
+
+        this.charge = null;
+        if(this.chargeable){
+            this.charge = ChargeData.get(chargeMoves, this.name);
+            this.charge_damage = function(frames){
+                return +this.charge.formula(this.base_damage, frames).toFixed(4);
+            }
+        }
 
         this.invalidate = function () {
             this.valid = false;

@@ -86,6 +86,11 @@ app.controller('calculator', function ($scope) {
     $scope.vectoring = "none";
     $scope.spawns = [];
 
+    $scope.charge_min = 0;
+    $scope.charge_max = 60;
+    $scope.charge_special = false;
+    $scope.charge_data = null;
+
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
         $scope.position_x = $scope.stage.center[0];
@@ -137,12 +142,43 @@ app.controller('calculator', function ($scope) {
             $scope.prev_hf = { 'display': 'none' };
             $scope.next_hf = { 'display': 'none' };
             $scope.use_landing_lag = "no";
+            $scope.charge_min = 0;
+            $scope.charge_max = 60;
+            $scope.charge_special = false;
         }else{
             $scope.hitbox_active_index = 0;
             $scope.is_aerial = { 'display': $scope.selected_move.aerial ? 'initial' : 'none' };
             $scope.prev_hf = { 'display': 'none' };
             $scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
             $scope.use_landing_lag = "no";
+
+            if($scope.selected_move.chargeable){
+                if($scope.selected_move.charge != null){
+                    $scope.charge_data = $scope.selected_move.charge;
+                    $scope.smashCharge = $scope.charge_data.min;
+                    $scope.charge_min = $scope.charge_data.min;
+                    $scope.charge_max = $scope.charge_data.max;
+                    $scope.charge_special = true;
+                    $scope.is_smash = true;
+                    $scope.updateCharge();
+                    
+                }else{
+                    $scope.charge_data = null;
+                    $scope.charge_min = 0;
+                    $scope.smashCharge = 0;
+                    $scope.charge_max = 60;
+                    $scope.charge_special = false;
+                    $scope.is_smash = $scope.selected_move.smash_attack;
+                }
+            }else{
+                $scope.charge_data = null;
+                $scope.charge_min = 0;
+                $scope.smashCharge = 0;
+                $scope.charge_max = 60;
+                $scope.charge_special = false;
+                $scope.is_smash = $scope.selected_move.smash_attack;
+            }
+            $scope.checkSmashVisibility();
         }
         
     }
@@ -376,6 +412,7 @@ app.controller('calculator', function ($scope) {
                         $scope.counterMult = attack.counterMult;
                         $scope.unblockable = attack.unblockable;
                         $scope.selected_move = attack;
+                        $scope.check_move();
                         detected = true;
                         return true;
                 } else {
@@ -402,6 +439,7 @@ app.controller('calculator', function ($scope) {
                             $scope.unblockable = attack.unblockable;
                             $scope.move = i.toString();
                             $scope.selected_move = attack;
+                            $scope.check_move();
                             return true;
                     } else {
 
@@ -428,7 +466,9 @@ app.controller('calculator', function ($scope) {
     $scope.calculate = function (){
         var result = { 'training': [], 'vs': [], 'shield': [] };
 
-        base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+        if($scope.charge_data == null){
+            base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+        }
         var damage = base_damage;
         if (attacker.name == "Lucario") {
             damage *= Aura(attacker_percent);
@@ -506,7 +546,7 @@ app.controller('calculator', function ($scope) {
                 traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
                 vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
             }
-            if (is_smash) {
+            if (is_smash && $scope.charge_data == null) {
                 traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
                 vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
             }
@@ -587,6 +627,13 @@ app.controller('calculator', function ($scope) {
 
         return result;
     };
+
+    $scope.updateCharge = function(){
+        if($scope.charge_data != null){
+            $scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
+        }
+        $scope.update();
+    }
 
     $scope.update = function () {
         $scope.check();

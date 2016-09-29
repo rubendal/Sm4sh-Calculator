@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas
 * Added - Calculate aerials FAF using landing lag or autocancel
 * Fixed - Jump Monado Art Fall speed multiplier
 * Changed - Display horizontal and vertical launch speed instead of launch speed at launch direction
