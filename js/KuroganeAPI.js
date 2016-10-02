@@ -358,6 +358,9 @@ var chargeMoves = [
     }),
     new ChargeData(["Shield Breaker (No Charge)"],0,60,function(base_damage, frames){
         return base_damage * ((60-frames)/60 + (frames * 2.2 / 60));
+    }),
+    new ChargeData(["Eruption"],0,119,function(base_damage, frames){
+        return 10 + (frames * 4 / 30);
     })];
 
 class Move {
@@ -409,7 +412,7 @@ class Move {
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
-        this.chargeable = name.includes("No Charge") || name.includes("Uncharged");
+        this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged"));
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");
