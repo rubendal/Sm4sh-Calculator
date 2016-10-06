@@ -117,6 +117,13 @@
                     <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                 </select>
             </div>
+            <div ng-style="is_lucario">
+                    Stock difference:
+                    <select ng-model="stock_dif" ng-change="update()">
+                        <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                    </select>
+                    <br/>
+            </div>
             KB:
             <input type="number" style="width:6em;" name="kb" ng-model="kb" min="0" max="2500" step="0.5" ng-change="update()"/>
             <!--<input type="radio" name="kbType" ng-model="kbType" ng-attr-value="total" ng-change="update()" />Total KB

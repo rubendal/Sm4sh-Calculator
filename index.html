@@ -128,6 +128,13 @@
                     %
                 </div>
             </div>
+            <div ng-style="is_lucario">
+                    Stock difference:
+                    <select ng-model="stock_dif" ng-change="update()">
+                        <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                    </select>
+                    <br/>
+            </div>
             <a href="http://kuroganehammer.com/Smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
             <br />
             Attack:

@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - [Lucario's Aura stock difference multipliers](https://twitter.com/KuroganeHammer/status/784017200721965057)
 * Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas
 * Added - Calculate aerials FAF using landing lag or autocancel
 * Fixed - Jump Monado Art Fall speed multiplier

@@ -59,6 +59,10 @@ app.controller('calculator', function ($scope) {
 
     $scope.vectoring = "none";
 
+    $scope.stock_dif = "0";
+    $scope.stock_values = ["-2","-1","0","+1","+2"];
+    $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+
     getMoveset(attacker, $scope);
     $scope.move = "0";
     
@@ -161,6 +165,8 @@ app.controller('calculator', function ($scope) {
         $scope.unblockable = false;
         $scope.selected_move = null;
         $scope.checkCounterVisibility();
+        $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+        $scope.stock_dif = "0";
         $scope.update();
     }
 
@@ -353,6 +359,8 @@ app.controller('calculator', function ($scope) {
         wbkb = $scope.wbkb;
         windbox = $scope.windbox;
 
+        stock_dif = $scope.stock_dif;
+
         switch($scope.vectoring){
             case "none":
                 vectoring = 0;
@@ -370,8 +378,8 @@ app.controller('calculator', function ($scope) {
         }
         var damage = base_damage;
         if (attacker.name == "Lucario") {
-            damage *= Aura(attacker_percent);
-            preDamage *= Aura(attacker_percent);
+            damage *= Aura(attacker_percent, stock_dif);
+            preDamage *= Aura(attacker_percent, stock_dif);
         }
         damage *= attacker.modifier.damage_dealt;
         damage *= target.modifier.damage_taken;

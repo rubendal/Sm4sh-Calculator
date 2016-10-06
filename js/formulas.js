@@ -12,14 +12,51 @@ function Rage(percent) {
     return 1 + (percent - 35) * (1.15 - 1) / (150 - 35);
 }
 
-function Aura(percent) {
+function Aura(percent, stock_dif) {
+    if(stock_dif == undefined){
+        stock_dif = "0";
+    }
+    var aura = 0;
     if (percent <= 70) {
-        return (66 + ((17.0 / 35.0) * percent)) / 100;
+        aura = (66 + ((17.0 / 35.0) * percent)) / 100;
+    }else if (percent <= 190) {
+        aura = (100 + ((7.0 / 12.0) * (percent - 70))) / 100;
+    }else{
+        aura = 1.7;
     }
-    if (percent <= 190) {
-        return (100 + ((7.0 / 12.0) * (percent - 70))) / 100;
+    //Stock difference data by KuroganeHammer,https://twitter.com/KuroganeHammer/status/784017200721965057
+    var m = 1;
+    var min = 0.6;
+    var max = 1.7;
+    switch(stock_dif){
+        case "-2":
+            m = 1.3333;
+            min = 0.88;
+            max = 1.8;
+        break;
+        case "-1":
+            m = 1.142;
+            min = 0.753;
+            max = 1.8;
+        break;
+        case "0":
+            return aura;
+        case "+1":
+            m = 0.8888;
+            max = 1.51;
+        break;
+        case "+2":
+            m = 0.8;
+            max = 1.36;
+        break;
     }
-    return 1.7;
+    aura *= m;
+    if(aura < min){
+        aura = min;
+    }else if(aura > max){
+        aura = max;
+    }
+    return aura;
 }
 
 function StaleNegation(timesInQueue, ignoreStale) {

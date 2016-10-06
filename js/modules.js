@@ -50,6 +50,7 @@ app.controller('calculator', function ($scope) {
     $scope.witch_time_charge = false;
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+    $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
     $scope.is_aerial = { 'display': 'none' };
     $scope.prev_hf = { 'display': 'none' };
     $scope.next_hf = { 'display': 'none' };
@@ -90,6 +91,9 @@ app.controller('calculator', function ($scope) {
     $scope.charge_max = 60;
     $scope.charge_special = false;
     $scope.charge_data = null;
+
+    $scope.stock_dif = "0";
+    $scope.stock_values = ["-2","-1","0","+1","+2"];
 
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
@@ -289,6 +293,8 @@ app.controller('calculator', function ($scope) {
         $scope.check_move(null);
         $scope.checkCounterVisibility();
         $scope.selected_move = null;
+        $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+        $scope.stock_dif = "0";
         $scope.update();
     }
 
@@ -471,8 +477,8 @@ app.controller('calculator', function ($scope) {
         }
         var damage = base_damage;
         if (attacker.name == "Lucario") {
-            damage *= Aura(attacker_percent);
-            preDamage *= Aura(attacker_percent);
+            damage *= Aura(attacker_percent, stock_dif);
+            preDamage *= Aura(attacker_percent, stock_dif);
         }
         damage *= attacker.modifier.damage_dealt;
         damage *= target.modifier.damage_taken;
@@ -543,8 +549,8 @@ app.controller('calculator', function ($scope) {
                 vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
             }
             if (attacker.name == "Lucario") {
-                traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent).toFixed(4)));
+                traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif).toFixed(4)));
+                vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif).toFixed(4)));
             }
             if (is_smash && $scope.charge_data == null) {
                 traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
@@ -675,6 +681,8 @@ app.controller('calculator', function ($scope) {
         position = {"x":parseFloat($scope.position_x), "y":parseFloat($scope.position_y)};
         inverseX = $scope.inverseX;
         onSurface = $scope.surface;
+
+        stock_dif = $scope.stock_dif;
 
         switch($scope.vectoring){
             case "none":
