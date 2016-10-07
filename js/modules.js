@@ -94,6 +94,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
+    $scope.formats = ["Singles", "Doubles"];
+    $scope.format = "Singles";
 
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
@@ -476,8 +478,8 @@ app.controller('calculator', function ($scope) {
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
         if (attacker.name == "Lucario") {
-            base_damage *= Aura(attacker_percent, stock_dif);
-            preDamage *= Aura(attacker_percent, stock_dif);
+            base_damage *= Aura(attacker_percent, stock_dif, game_format);
+            preDamage *= Aura(attacker_percent, stock_dif, game_format);
         }
         var damage = base_damage;
         damage *= attacker.modifier.damage_dealt;
@@ -549,8 +551,8 @@ app.controller('calculator', function ($scope) {
                 vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
             }
             if (attacker.name == "Lucario") {
-                traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif).toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif).toFixed(4)));
+                traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
+                vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
             }
             if (is_smash && $scope.charge_data == null) {
                 traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
@@ -683,6 +685,7 @@ app.controller('calculator', function ($scope) {
         onSurface = $scope.surface;
 
         stock_dif = $scope.stock_dif;
+        game_format = $scope.format;
 
         switch($scope.vectoring){
             case "none":

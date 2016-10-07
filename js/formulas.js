@@ -12,9 +12,12 @@ function Rage(percent) {
     return 1 + (percent - 35) * (1.15 - 1) / (150 - 35);
 }
 
-function Aura(percent, stock_dif) {
+function Aura(percent, stock_dif, game_format) {
     if(stock_dif == undefined){
         stock_dif = "0";
+    }
+    if(game_format == undefined){
+        game_format = "Singles";
     }
     var aura = 0;
     if (percent <= 70) {
@@ -24,31 +27,55 @@ function Aura(percent, stock_dif) {
     }else{
         aura = 1.7;
     }
-    //Stock difference data by KuroganeHammer,https://twitter.com/KuroganeHammer/status/784017200721965057
+    //Stock difference data by KuroganeHammer, @A2E_smash and @Rmenaut, https://twitter.com/KuroganeHammer/status/784017200721965057, for Doubles https://twitter.com/KuroganeHammer/status/784372918331383808
     var m = 1;
     var min = 0.6;
     var max = 1.7;
-    switch(stock_dif){
-        case "-2":
-            m = 1.3333;
-            min = 0.88;
-            max = 1.8;
-        break;
-        case "-1":
-            m = 1.142;
-            min = 0.753;
-            max = 1.8;
-        break;
-        case "0":
-            return aura;
-        case "+1":
-            m = 0.8888;
-            max = 1.51;
-        break;
-        case "+2":
-            m = 0.8;
-            max = 1.36;
-        break;
+    if(stock_dif == "0"){
+        return aura;
+    }
+    if(game_format == "Singles"){
+        switch(stock_dif){
+            case "-2":
+                m = 1.3333;
+                min = 0.88;
+                max = 1.8;
+            break;
+            case "-1":
+                m = 1.142;
+                min = 0.753;
+                max = 1.8;
+            break;
+            case "+1":
+                m = 0.8888;
+                max = 1.51;
+            break;
+            case "+2":
+                m = 0.8;
+                max = 1.36;
+            break;
+        }
+    }else{
+        switch(stock_dif){
+            case "-2":
+                m = 2;
+                min = 1.32;
+                max = 1.8;
+            break;
+            case "-1":
+                m = 1.3333;
+                min = 0.88;
+                max = 1.8;
+            break;
+            case "+1":
+                m = 0.8;
+                max = 1.36;
+            break;
+            case "+2":
+                m = 0.6333;
+                max = 1.076;
+            break;
+        }
     }
     aura *= m;
     if(aura < min){

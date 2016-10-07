@@ -62,6 +62,8 @@ app.controller('calculator', function ($scope) {
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
     $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+    $scope.formats = ["Singles", "Doubles"];
+    $scope.format = "Singles";
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -360,6 +362,7 @@ app.controller('calculator', function ($scope) {
         windbox = $scope.windbox;
 
         stock_dif = $scope.stock_dif;
+        game_format = $scope.format;
 
         switch($scope.vectoring){
             case "none":
@@ -377,8 +380,8 @@ app.controller('calculator', function ($scope) {
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
         if (attacker.name == "Lucario") {
-            base_damage *= Aura(attacker_percent, stock_dif);
-            preDamage *= Aura(attacker_percent, stock_dif);
+            base_damage *= Aura(attacker_percent, stock_dif, game_format);
+            preDamage *= Aura(attacker_percent, stock_dif, game_format);
         }
         var damage = base_damage;
         

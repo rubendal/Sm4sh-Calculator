@@ -160,6 +160,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
+    $scope.formats = ["Singles", "Doubles"];
+    $scope.format = "Singles";
 
     $scope.status = "Calculate and store data";
 
@@ -468,6 +470,7 @@ app.controller('calculator', function ($scope) {
         windbox = $scope.windbox;
 
         stock_dif = $scope.stock_dif;
+        game_format = $scope.format;
 
         if($scope.noDI){
             di = -1;
@@ -602,8 +605,8 @@ app.controller('calculator', function ($scope) {
                 bd = move.charge_damage(charge_frames);
             }
             if (attacker.name == "Lucario") {
-                bd *= Aura(attacker_percent, stock_dif);
-                preDamage *= Aura(attacker_percent, stock_dif);
+                bd *= Aura(attacker_percent, stock_dif, game_format);
+                preDamage *= Aura(attacker_percent, stock_dif, game_format);
             }
             damage = bd;
             damage *= attacker.modifier.damage_dealt;
