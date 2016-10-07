@@ -475,11 +475,11 @@ app.controller('calculator', function ($scope) {
         if($scope.charge_data == null){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
-        var damage = base_damage;
         if (attacker.name == "Lucario") {
-            damage *= Aura(attacker_percent, stock_dif);
+            base_damage *= Aura(attacker_percent, stock_dif);
             preDamage *= Aura(attacker_percent, stock_dif);
         }
+        var damage = base_damage;
         damage *= attacker.modifier.damage_dealt;
         damage *= target.modifier.damage_taken;
         preDamage *= attacker.modifier.damage_dealt;

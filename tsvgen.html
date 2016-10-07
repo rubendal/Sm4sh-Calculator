@@ -115,6 +115,13 @@
                     %
                 </div>
             </div>
+            <div ng-style="is_lucario">
+                    Stock difference:
+                    <select ng-model="stock_dif" ng-change="update()">
+                        <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                    </select>
+                    <br/>
+            </div>
             <a href="http://kuroganehammer.com/smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
             <br />
             Attack:
@@ -232,6 +239,10 @@
                 <input type="checkbox" name="iterate_vectoring" ng-model="it_vectoring" ng-change="update()" /> Use all vectoring multipliers
                 <br/>
                 <input type="checkbox" name="iterate_attacker_percent" ng-model="it_rage" ng-change="tsv_options()" /> Iterate attacker percent
+                <span ng-style="is_lucario">
+                    </br>
+                    <input type="checkbox" name="iterate_stock_dif" ng-model="it_stock_dif" ng-change="tsv_options()" /> Iterate stock difference
+                </span>
                 <div ng-style="itRage_style">
                     From <input type="number" min="0" max="998" step="0.5" ng-model="attacker_from" ng-change="update()"/> to <input type="number" min="0.5" max="999" step="0.5" ng-model="attacker_to" ng-change="update()"/> with step <input type="number" min="0.1" max="115" step="0.1" ng-model="attacker_step" ng-change="update()"/>
                 </div>
