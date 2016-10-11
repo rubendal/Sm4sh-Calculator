@@ -19,8 +19,8 @@ class Row{
         this.aura = aura;
         this.stock_dif = stock_dif;
         if(this.attacker.name != "Lucario"){
-            this.aura = NaN;
-            this.stock_dif = NaN;
+            this.aura = "";
+            this.stock_dif = "";
         }
         this.staleMult = StaleNegation(this.staleness, this.staleness == -1);
         this.kb_multiplier = kb_multiplier;
@@ -29,8 +29,10 @@ class Row{
         this.kb.calculate();
         this.distance = distance;
         if(this.kb.angle > 361){
-            this.distance.max_x = NaN;
-            this.distance.max_y = NaN;
+            this.distance.max_x = "";
+            this.distance.max_y = "";
+            this.h_pos = "";
+            this.v_pos = "";
         }
         this.rage = Rage(attacker_percent); 
         this.v_pos = this.distance.max_y * (Math.sin(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);
@@ -521,6 +523,7 @@ app.controller('calculator', function ($scope) {
                 smashcount++;
             }
         });
+
 
         smashcount = $scope.it_moves ? ($scope.it_charge ? smashcount : 0) : $scope.it_charge && is_smash ? 1 : 0;
         var istale = $scope.it_stale ? 10 : 1;

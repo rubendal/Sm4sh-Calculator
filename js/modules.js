@@ -82,7 +82,9 @@ app.controller('calculator', function ($scope) {
     $scope.position_y = 0;
 
     $scope.stages = getStages();
+    $scope.stages.unshift({"stage":"No stage"});
     $scope.stage = null;
+    $scope.stageValue = {"stage":"No stage"};
 
     $scope.vectoring = "none";
     $scope.spawns = [];
@@ -99,6 +101,13 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
+        if($scope.stage.stage == "No stage"){
+            $scope.stage = null;
+            $scope.spawns = [];
+            $scope.spawn = "";
+            $scope.update();
+            return;
+        }
         $scope.position_x = $scope.stage.center[0];
         $scope.position_y = $scope.stage.center[1];
         $scope.spawns = ["Center"];

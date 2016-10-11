@@ -27,7 +27,8 @@ function Aura(percent, stock_dif, game_format) {
     }else{
         aura = 1.7;
     }
-    //Stock difference data by KuroganeHammer, @A2E_smash and @Rmenaut, https://twitter.com/KuroganeHammer/status/784017200721965057, for Doubles https://twitter.com/KuroganeHammer/status/784372918331383808
+    //Stock difference data by KuroganeHammer, @A2E_smash and @Rmenaut, https://twitter.com/KuroganeHammer/status/784017200721965057
+    //For Doubles https://twitter.com/KuroganeHammer/status/784372918331383808
     var m = 1;
     var min = 0.6;
     var max = 1.7;

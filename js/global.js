@@ -215,17 +215,21 @@ class Distance{
             //Stage detection
             if(this.stage == null && this.onSurface){
                 //No stage
-                if(character_position.y < 0){
+                if(next_y < 0){
                     if(!this.tumble){
                         sliding = true;
                         character_position.y = 0;
+                        next_y=0;
                         g=0;
+                        character_speed.y = 0;
                         launch_speed.y=0;
                     }else{
                         angle = InvertYAngle(angle);
                         decay.y *= -1;
                         launch_speed.y*=-1;
-                        character_position.y=0;
+                        character_position.y = 0;
+                        character_speed.y = 0;
+                        next_y=0;
                         momentum = 0;
                         g=0;
                     }
