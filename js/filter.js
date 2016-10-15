@@ -104,6 +104,57 @@ class CharacterId {
     }
 };
 
+class RegexMap{
+    constructor(reg, character){
+        this.reg = reg;
+        this.character = character.toLowerCase();
+    }
+};
+
+//Regexp on top have higher priority and will apply the next ones
+var additionalNames = [
+    new RegexMap(/mr(\.)?( )?game( )?\&( )?watch/gi,"Mr. Game And Watch"),
+    new RegexMap(/toot( |-)?toot/gi,"character:g&w & dthrow + character:g&w & uair +"),
+    new RegexMap(/g( )?\&( )?w/gi,"Mr. Game And Watch"),
+    new RegexMap(/rosalina( )?\&( )?luma/gi,"Rosalina And Luma"),
+    new RegexMap(/rosalina/gi,"Rosalina And Luma"),
+    new RegexMap(/zss/gi,"Zero Suit Samus"),
+    new RegexMap(/ddd/gi,"King Dedede"),
+    new RegexMap(/dh/gi,"Duck Hunt"),
+    new RegexMap(/ding( |-)?dong/gi,"character:dk & Uthrow (Cargo) + character:dk & uair +"),
+    new RegexMap(/not( )?top( )?5/gi,"character:mario"),
+    new RegexMap(/dk/gi,"Donkey Kong"),
+    new RegexMap(/puff/gi,"Jigglypuff"),
+    new RegexMap(/dr( )?mario/gi,"Dr. Mario"),
+    new RegexMap(/bowser( )?jr/gi,"Bowser Jr."),
+    new RegexMap(/5\.99/gi,"character:bayonetta,character:cloud,character:ryu"),
+    new RegexMap(/4\.99/gi,"character:corrin"),
+    new RegexMap(/3\.99/gi,"character:mewtwo,character:lucas,character:roy"),
+    new RegexMap(/character:pocket/gi,"character:cloud"),
+    new RegexMap(/our( )?boy/gi,"Roy"),
+    new RegexMap(/(i(')?m( )?really( )?feeling( )?it)|(monado( )?boy(s|z))|(feelin(')?( )?it)/gi,"character:Shulk"),
+    new RegexMap(/alph/gi,"Olimar"),
+    new RegexMap(/hoo( |-)?hah(!)?/gi,"character:diddy kong & dthrow + character:diddy kong & uair +"),
+    new RegexMap(/harambe/gi,"donkey kong"),
+    new RegexMap(/wft/gi,"Wii Fit Trainer"),
+    new RegexMap(/instapin/gi,"character:corrin & dragon lunge +"),
+    new RegexMap(/sanic/gi,"Sonic"),
+    new RegexMap(/gotta( )?go( )?fast/gi,"character:sonic"),
+    new RegexMap(/fiyur/gi,"character:fox & Fire Fox +"),
+    new RegexMap(/genkai( )?wo( )?koeru/gi,"type:limitbreak"),
+    new RegexMap(/lemons/gi,"character:mega man & type:jab + character:mega man & nair + character:mega man & ftilt +"),
+    new RegexMap(/koo( |-)?pah(!)?/gi,"character:bowser & uthrow + character:bowser & uair +"),
+    new RegexMap(/monado( )?purge/gi,"character:shulk & uthrow + character:shulk & uair +"),
+    new RegexMap(/knee/gi,"character:captain falcon & fair +"),
+    new RegexMap(/character:kamui/gi,"character:corrin"),
+    new RegexMap(/character:reflet/gi,"character:robin"),
+    new RegexMap(/character:koopa/gi,"character:bowser"),
+    new RegexMap(/nine/gi,"judge 9"),
+    new RegexMap(/checkmate/gi,"character:robin & dthrow + character:robin & uair +"),
+    new RegexMap(/beep( |-)?boop/gi,"character:r.o.b & dthrow + character:r.o.b & uair +"),
+    new RegexMap(/(dlc)|(pay( )?(2|to)( )?win)/gi,"character:mewtwo,character:lucas,character:roy,character:ryu,character:cloud,character:corrin,character:bayonetta")
+];
+
 class Condition {
     constructor(condition) {
         this.condition = condition.toLowerCase();
@@ -149,7 +200,9 @@ class Condition {
 
 class NameFilter {
     constructor(name) {
-        this.name = name.toLowerCase().replace(/\&/gi, ",&");
+        this.name = name.toLowerCase();
+        this.empty = this.name.trim() == "";
+        this.name = this.name.replace(/\&/gi, ",&");
         var conditions = this.name.split(",");
         this.OrConditions = [];
         this.AndConditions = [];
@@ -213,9 +266,16 @@ filter_app.controller('filter', function ($scope) {
     $scope.bkb_cond = "any";
     $scope.kbg_cond = "any";
     $scope.wbkb_any = true;
+    $scope.data_style = {'display':'none'};
+    $scope.data_style_hidden = {'display':'initial'};  
 
     $scope.sort_by = "Character";
     $scope.order_by = "Asc";
+
+    $scope.show_data = function(v){
+        $scope.data_style = {'display': v ? 'initial' : 'none'}; 
+        $scope.data_style_hidden = {'display':v ? 'none' : 'initial'}; 
+    }
 
     $scope.updateStatus = function (status) {
         $scope.status = status;
@@ -434,8 +494,18 @@ filter_app.controller('filter', function ($scope) {
         var bkb2 = parseFloat($scope.bkb2);
         var kbg = parseFloat($scope.kbg);
         var kbg2 = parseFloat($scope.kbg2);
-        var nameConditions = new NameFilter($scope.name);
+        var n = $scope.name;
+        for(var x = 0;x < additionalNames.length;x++){
+            if(additionalNames[x].reg.test(n)){
+                n = n.replace(additionalNames[x].reg, additionalNames[x].character.toLowerCase());
+            }
+        }
 
+        var nc = n.split("+");
+        var conditions = [];
+        for(var ni = 0; ni < nc.length; ni++){
+            conditions.push(new NameFilter(nc[ni]));
+        }
         $scope.moves.forEach(function (move, index) {
             if ($scope.compare($scope.base_damage_cond, move.base_damage, base_damage, base_damage2) &&
                 $scope.compare($scope.landing_lag_cond, move.landingLag, landing_lag, landing_lag2) && 
@@ -463,7 +533,21 @@ filter_app.controller('filter', function ($scope) {
                         return;
                     }
                 }
-                if (!nameConditions.check(move)) {
+                var cond_check = false;
+                for(var ni=0;ni<conditions.length;ni++){
+                    if(ni==0 && conditions[ni].empty && conditions.length){
+                        cond_check = true;
+                        continue;
+                    }
+                    if(conditions[ni].empty){
+                        continue;
+                    }
+                    cond_check = cond_check | conditions[ni].check(move);
+                    /*if (!nameConditions.check(move)) {
+                        return;
+                    }*/
+                }
+                if(!cond_check){
                     return;
                 }
                 for (var i = 0; i < move.hitboxActive.length; i++) {
