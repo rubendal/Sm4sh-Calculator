@@ -157,7 +157,7 @@
                 <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> {{charge_special ? "Chargeable" : "Smash attack"}}
                 <span ng-style="is_smash_visibility">
                     <br />
-                    Charging frames: <input name="charge" type="number" min="{{charge_min}}" max="{{charge_max}}" step="1" ng-model="smashCharge" ng-change="updateCharge()" />
+                    {{charging_frames_type}}: <input name="charge" type="number" min="{{charge_min}}" max="{{charge_max}}" step="1" ng-model="smashCharge" ng-change="updateCharge()" />
                     <span ng-style="is_megaman">
                         <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
                     </span>

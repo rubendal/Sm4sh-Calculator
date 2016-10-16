@@ -25,6 +25,7 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = 0;
     $scope.faf = 1;
     $scope.shieldDamage = 0;
+    $scope.charging_frames_type = "Charging frames";
 
     $scope.hitbox_active_index = 0;
 
@@ -160,13 +161,13 @@ app.controller('calculator', function ($scope) {
             $scope.charge_min = 0;
             $scope.charge_max = 60;
             $scope.charge_special = false;
+            $scope.charging_frames_type = "Charging frames";
         }else{
             $scope.hitbox_active_index = 0;
             $scope.is_aerial = { 'display': $scope.selected_move.aerial ? 'initial' : 'none' };
             $scope.prev_hf = { 'display': 'none' };
             $scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
             $scope.use_landing_lag = "no";
-
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
                     $scope.charge_data = $scope.selected_move.charge;
@@ -175,6 +176,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = $scope.charge_data.max;
                     $scope.charge_special = true;
                     $scope.is_smash = true;
+                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
                     $scope.updateCharge();
                     
                 }else{
@@ -184,6 +186,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = 60;
                     $scope.charge_special = false;
                     $scope.is_smash = $scope.selected_move.smash_attack;
+                    $scope.charging_frames_type = "Charging frames";
                 }
             }else{
                 $scope.charge_data = null;
@@ -192,6 +195,7 @@ app.controller('calculator', function ($scope) {
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
+                $scope.charging_frames_type = "Charging frames";
             }
             $scope.checkSmashVisibility();
         }

@@ -361,6 +361,18 @@ var chargeMoves = [
     }),
     new ChargeData(["Eruption"],0,119,function(base_damage, frames){
         return 10 + (frames * 4 / 30);
+    }),
+    new ChargeData(["Giant Punch (Uncharged"],0,9,function(base_damage, frames){
+        if(frames == 1){
+            frames = 0;
+        }
+        return base_damage + (2*(frames-1));
+    }),
+    new ChargeData(["Charge Shot"],0,115,function(base_damage, frames){
+        return base_damage + (frames/116 * 22);
+    }),
+    new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"],0,105,function(base_damage, frames){
+        return 5 + (((frames+15)/120)* .32 * 100);
     })];
 
 class Move {
@@ -412,7 +424,7 @@ class Move {
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
-        this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged"));
+        this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot";
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");
