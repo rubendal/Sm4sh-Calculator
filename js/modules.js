@@ -622,21 +622,29 @@ app.controller('calculator', function ($scope) {
                 }
             }
 
+            if (!unblockable) {
+                if (!powershield) {
+                    var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+                    traininglist.push(new ListItem("Shield Damage", +s.toFixed(4)));
+                    traininglist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
+                    traininglist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
+                    damage /= target.modifier.damage_taken;
+                    s = (StaleDamage(damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+                    vslist.push(new ListItem("Shield Damage", +s.toFixed(4)));
+                    vslist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
+                    vslist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
+                }
+                traininglist = traininglist.concat(ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
+                vslist = vslist.concat(ShieldList([ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric)), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
+            } else {
+                traininglist.push(new ListItem("Unblockable attack", "Yes"));
+                vslist.push(new ListItem("Unblockable attack", "Yes"));
+            }
+
             result.training = traininglist;
             result.vs = vslist;
 
-            //Shield stuff
-            if(!unblockable){
-                result.shield = ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]);
-                if(!powershield){
-                    var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-                    result.shield.splice(0, 0, new ListItem("Shield Damage", +s.toFixed(4)));
-                    result.shield.splice(1, 0, new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
-                    result.shield.splice(2, 0, new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-                }
-            }else{
-                result.shield = ([new ListItem("Unblockable attack", "Yes")]);
-            }
+            
         }else{
             var max_x = distance.graph_x + 10;
             var max_y = distance.graph_y + 10;

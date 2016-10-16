@@ -110,12 +110,6 @@ input[type=number]{
     font-size: 16px;
 }
 
-#shieldresults{
-    position: absolute;
-    left:300px;
-    top:0;
-}
-
 .select-link{
     color:blue;
 }
