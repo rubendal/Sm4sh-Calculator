@@ -117,6 +117,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;
+    $scope.attackerName = attacker.name;
+    $scope.attacker_icon = attacker.icon;
+    $scope.target_icon = target.icon;
     $scope.baseDamage = base_damage;
     $scope.angle = angle;
     $scope.in_air = in_air;
@@ -255,6 +258,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
+        $scope.attacker_icon = attacker.icon;
+        $scope.attackerName = attacker.name;
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -427,6 +432,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
+        $scope.target_icon = target.icon;
         $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
         $scope.lumaPercent = 0;
         $scope.update();
@@ -813,6 +819,10 @@ app.controller('calculator', function ($scope) {
         $scope.itRage_style = {'display' : $scope.it_rage ? 'block' : 'none'};
         $scope.itTarget_style = {'display' : $scope.it_percent ? 'block' : 'none'};
         $scope.update();
+    }
+
+    $scope.collapse = function (id) {
+        $("#" + id).collapse('toggle');
     }
 
     $scope.tsv_options();

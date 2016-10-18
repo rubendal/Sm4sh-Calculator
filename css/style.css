@@ -1,12 +1,12 @@
-﻿@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+﻿/*@import url(https://fonts.googleapis.com/css?family=Open+Sans);*/
 
 body{
   position: relative;
   margin: 0;
   padding-bottom: 160px;
   min-height: 100%;
-  font-family: Open Sans;
-  background:#F0F0F0;
+  /*font-family: Open Sans;*/
+  background:#FCFCFF;
 }
 
 #content{
@@ -14,15 +14,20 @@ body{
 }
 
 .icon{
-    width: 17px;
-    height: 17px;
+    width: 19px;
+    height: 19px;
+}
+
+.stock-icon{
+    width: 30px;
+    height: 30px;
 }
 
 input,select{
-    font-family: Open Sans;
     border-radius:4px;
     padding: 1px 1px;
     margin-bottom: 1px;
+    font-size: 13px;
 }
 
 input[type=number]{
@@ -33,44 +38,17 @@ input[type=number]{
     position:relative;
     margin-top:10px;
     margin-left:10px;
-    font-size: 15px;
-}
-
-#section{
-    position:relative;
-    margin-top:10px;
-    margin-left:10px;
-}
-
-#section_res{
-    position:absolute;
-    top:-43px;
-    left:550px;
-}
-
-.section-table-content{
-    padding:5px;
-    text-align:center;
-    width:167px;
-}
-
-.section-table{
-    width:500px;
-}
-
-.section-table-content-res{
-    padding:5px;
-    text-align:center;
-    width:500px;
-}
-
-.section-table-res{
-    width:1000px;
+    font-size: 14px;
 }
 
 #main{
     position:relative;
     display:block;
+}
+
+#results{
+    font-size: 15px;
+    color:black;
 }
 
 #attributes{
@@ -84,38 +62,77 @@ input[type=number]{
 }
 
 #data{
-    display: block;
+    
 }
 
 #training{
+    position: relative;
+    float:left;
+}
+
+#data_pos{
     position: absolute;
     top:0;
-    left:550px;
+    left:730px;
 }
 
 #vs{
-    position: absolute;
-    top:0;
-    left:850px;
-    width:600px;
+    position: relative;
+    float:right;
 }
 
-#graph{
-    position: absolute;
-    top:0;
-    left:550px;
+#visualizer{
+    position: relative;
+    margin-top:15px;
+    margin-left:30px;
 }
 
-#results{
-    font-size: 16px;
+.header-link{
+    color:white;
+}
+
+.header-link:hover{
+    color:white;
 }
 
 .select-link{
     color:blue;
 }
 
+.cur-link{
+    color:white;
+    cursor:pointer;
+}
+
+.header-group{
+    width:700px;
+    padding:5px;
+
+}
+
+.group{
+    width:700px;
+    margin-top:-12px;
+}
+
+.header-res{
+    width:700px;
+    padding:5px;
+}
+
+.group-res{
+    width:700px;
+    margin-top:-12px;
+}
+
 .hide-link{
-    color:black;
+    color:white;
+    font-style:normal;
+    text-decoration: none;
+}
+
+.hide-link:hover{
+    color:white;
     font-style:normal;
     text-decoration: none;
 }
@@ -167,7 +184,13 @@ table,td,tr{
     height:auto;
     text-align: left;
     display: inline-block;
-    background:#cfcfcf;
+    background:#AAAAAA;
+    background:#222222 linear-gradient(to bottom right, rgba(234, 22, 22, 0.2), rgba(0, 0, 255, 0.2));
+    color: white;
+}
+
+.header a{
+    /*color: black;*/
 }
 
 .footer{
@@ -240,20 +263,33 @@ table,td,tr{
     padding:2px;
 }
 
-#attacker-attr{
+.pos-left{
     position:relative;
     top:0;
-    padding-bottom:30px;
+    float:left;
 }
 
-#target-attr{
-    position:absolute;
+.pos-right{
+    position:relative;
     top:0;
-    left:300px;
+    float:right;
 }
 
 #filter{
     position: relative;
     top:0;
     left:auto;
+}
+
+.pos-attr{
+    left:-50px;
+}
+
+.pos-mod{
+    left:-120px;
+}
+
+.button{
+    padding: .3rem .3rem;
+    font-size:13px;
 }

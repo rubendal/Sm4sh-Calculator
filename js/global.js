@@ -24,6 +24,11 @@ function loadJSONPath(path) {
     return json;
 }
 
+var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
+var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
+var KHcharacters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
+var gameNames = ["mario", "luigi", "peach", "koopa", "yoshi", "rosetta", "koopajr", "wario", "donkey", "diddy", "gamewatch", "littlemac", "link", "zelda", "sheik", "ganon", "toonlink", "samus", "szerosuit", "pit", "palutena", "marth", "ike", "reflet", "duckhunt", "kirby", "dedede", "metaknight", "fox", "falco", "pikachu", "lizardon", "lucario", "purin", "gekkouga", "robot", "ness", "captain", "murabito", "pikmin", "wiifit", "shulk", "drmario", "pitb", "lucina", "pacman", "rockman", "sonic", "mewtwo", "lucas", "roy", "ryu", "cloud", "kamui", "bayonetta","miifighter","miiswordsman","miigunner"];
+
 class Modifier {
     constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, fall_speed, shield, air_friction, traction) {
         this.name = name;
@@ -88,12 +93,12 @@ class Character {
                 break;
             }
         }
-        if (name.includes("(Deep Breathing (Fastest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1);
+        if (name.includes("(Fast Deep Breathing)")) {
+            this.modifier = new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
-        if (name.includes("(Deep Breathing (Slowest))")) {
-            this.modifier = new Modifier("Deep Breathing (Fastest)", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1);
+        if (name.includes("(Slow Deep Breathing)")) {
+            this.modifier = new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1);
             this.name = "Wii Fit Trainer";
         }
         if(this.name == null){
@@ -103,6 +108,7 @@ class Character {
         if (name == "Game And Watch") {
             this.api_name = "Mrgamewatch";
         }
+        
         if (name != "Cloud (Limit Break)") {
             this.attributes = loadJSON(this.name);
         } else {
@@ -111,6 +117,8 @@ class Character {
             this.name = "Cloud";
             this.modifier = new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15);
         }
+
+        this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_01.png";
         
         
     }
@@ -1199,9 +1207,6 @@ function getStages(){
     return loadJSONPath("./Data/Stages/stagedata.json");
 }
 
-var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
-var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
-var KHcharacters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
 
 var attacker = new Character("Bayonetta");
 var target = new Character("Bayonetta");
@@ -1230,10 +1235,10 @@ for (var i = 0; i < monado.length; i++) {
     names.push("Kirby (" + monado[i].name + ")");
 }
 
-characters.push("Wii Fit Trainer (Deep Breathing (Fastest))");
-characters.push("Wii Fit Trainer (Deep Breathing (Slowest))");
-names.push("Wii Fit Trainer (Deep Breathing (Fastest))");
-names.push("Wii Fit Trainer (Deep Breathing (Slowest))");
+characters.push("Wii Fit Trainer (Fast Deep Breathing)");
+characters.push("Wii Fit Trainer (Slow Deep Breathing)");
+names.push("Wii Fit Trainer (Fast Deep Breathing)");
+names.push("Wii Fit Trainer (Slow Deep Breathing)");
 
 characters.push("Cloud (Limit Break)");
 names.push("Cloud (Limit Break)");
@@ -1262,10 +1267,10 @@ function resetCharacterList(varIncluded, customMonado){
             names.push("Kirby (" + monado[i].name + ")");
         }
 
-        characters.push("Wii Fit Trainer (Deep Breathing (Fastest))");
-        characters.push("Wii Fit Trainer (Deep Breathing (Slowest))");
-        names.push("Wii Fit Trainer (Deep Breathing (Fastest))");
-        names.push("Wii Fit Trainer (Deep Breathing (Slowest))");
+        characters.push("Wii Fit Trainer (Fast Deep Breathing)");
+        characters.push("Wii Fit Trainer (Slow Deep Breathing)");
+        names.push("Wii Fit Trainer (Fast Deep Breathing)");
+        names.push("Wii Fit Trainer (Slow Deep Breathing)");
     }
 
     sorted_characters();
@@ -1274,7 +1279,7 @@ function resetCharacterList(varIncluded, customMonado){
 function sorted_characters() {
     var list = [];
     for (var i = 0; i < characters.length; i++) {
-        list.push({ 'character': characters[i], 'name': names[i] });
+        list.push({ 'character': characters[i], 'name': names[i], 'game': gameNames[i] });
     }
     list.sort(function (a, b) {
         return ((a.name < b.name) ? -1 : ((a.name == b.name) ? 0 : 1));
@@ -1282,6 +1287,7 @@ function sorted_characters() {
     for (var i = 0; i < list.length; i++) {
         characters[i] = list[i].character;
         names[i] = list[i].name;
+        gameNames[i] = list[i].game;
     }
 }
 

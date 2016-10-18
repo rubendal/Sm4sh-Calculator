@@ -5,10 +5,13 @@ app.controller('calculator', function ($scope) {
     $scope.attacker_characters = anames;
     $scope.characters = names;
     $scope.attackerValue = attacker.name;
+    $scope.attackerName = attacker.name;
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;
+    $scope.attacker_icon = attacker.icon;
+    $scope.target_icon = target.icon;
     $scope.baseDamage = base_damage;
     $scope.angle = angle;
     $scope.in_air = in_air;
@@ -75,7 +78,7 @@ app.controller('calculator', function ($scope) {
     $scope.move = "0";
 
     $scope.game_mode = game_mode;
-    $scope.res_mode = "calc";
+    $scope.show_graph = false;
 
     $scope.inverseX = false;
     $scope.surface = false;
@@ -285,17 +288,10 @@ app.controller('calculator', function ($scope) {
         $scope.update();
     }
 
-    $scope.show = function (section) {
-        $scope.main_style = { 'display': section == "main" ? 'block' : 'none' };
-        $scope.attributes_style = { 'display': section == "attributes" ? 'block' : 'none' };
-        $scope.visualizer_style = { 'display': section == "visualizer" ? 'block' : 'none' };
-        $scope.section_main = { 'background': section == "main" ? 'rgba(0, 0, 255, 0.3)': 'transparent' };
-        $scope.section_attributes = { 'background': section == "attributes" ? 'rgba(0, 0, 255, 0.3)' : 'transparent' };
-        $scope.section_visualizer = { 'background': section == "visualizer" ? 'rgba(0, 0, 255, 0.3)' : 'transparent' };
-    }
-
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
+        $scope.attackerName = attacker.name;
+        $scope.attacker_icon = attacker.icon;
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -473,6 +469,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
+        $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
@@ -529,123 +526,119 @@ app.controller('calculator', function ($scope) {
         }
 
         
+        var trainingDistance;
+        var vsDistance;
+        if (game_mode == "training") {
+            vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            trainingDistance = distance;
+        } else {
+            vsDistance = distance;
+            trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+        }
+        trainingkb.bounce(bounce);
+        vskb.bounce(bounce);
+        var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.vectoring, trainingkb.horizontal_launch_speed, +trainingkb.add_gravity_speed.toFixed(4), trainingkb.vertical_launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
+        var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.vectoring, vskb.horizontal_launch_speed, +vskb.add_gravity_speed.toFixed(4), vskb.vertical_launch_speed, vsDistance.max_x, vsDistance.max_y]);
+        if (trainingkb.di_able) {
+            traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
+        }
+        if (vskb.di_able) {
+            vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
+        }
+        if (r != 1) {
+            traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+            vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
+        }
+        vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
+        if (target.modifier.kb_received != 1) {
+            traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+            vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
+        }
+        if (attacker.modifier.kb_dealt != 1) {
+            traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+            vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+        }
+        if (attacker.name == "Lucario") {
+            traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
+        }
+        if (is_smash && $scope.charge_data == null) {
+            traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
+        }
+        if (target.modifier.damage_taken != 1) {
+            traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
+        }
+        if (attacker.modifier.damage_dealt != 1) {
+            traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+            vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+        }
+        if (preDamage != 0) {
+            traininglist.splice(0, 0, new ListItem("Before launch damage", "+" + +preDamage.toFixed(4) + "%"));
+            vslist.splice(0, 0, new ListItem("Before launch damage", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
+        }
+        if (!ignoreStale) {
+            vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
+        }
 
-        if(!graph){
-            var trainingDistance;
-            var vsDistance;
-            if(game_mode == "training"){
-                vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
-                trainingDistance = distance;
-            }else{
-                vsDistance = distance;
-                trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, target.attributes.gravity2, target.attributes.air_friction, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
-            }
-            trainingkb.bounce(bounce);
-            vskb.bounce(bounce);
-            var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), AirdodgeCancel(trainingkb.base_kb, windbox), AerialCancel(trainingkb.base_kb, windbox), trainingkb.vectoring, trainingkb.horizontal_launch_speed, +trainingkb.add_gravity_speed.toFixed(4), trainingkb.vertical_launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
-            var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, 1, 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), AirdodgeCancel(vskb.base_kb, windbox), AerialCancel(vskb.base_kb, windbox), vskb.vectoring, vskb.horizontal_launch_speed, +vskb.add_gravity_speed.toFixed(4), vskb.vertical_launch_speed, vsDistance.max_x, vsDistance.max_y]);
-            if (trainingkb.di_able) {
-                traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
-            }
-            if (vskb.di_able) {
-                vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
-            }
-            if (r != 1) {
-                traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-                vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
-            }
-            vslist.splice(3, 0, new ListItem("Rage", "x" + +Rage(attacker_percent).toFixed(4)));
-            if (target.modifier.kb_received != 1) {
-                traininglist.splice(3, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-                vslist.splice(4, 0, new ListItem("KB received", "x" + +target.modifier.kb_received.toFixed(4)));
-            }
-            if (attacker.modifier.kb_dealt != 1) {
-                traininglist.splice(3, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-                vslist.splice(4, 0, new ListItem("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-            }
-            if (attacker.name == "Lucario") {
-                traininglist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
-            }
-            if (is_smash && $scope.charge_data == null) {
-                traininglist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
-            }
-            if (target.modifier.damage_taken != 1) {
-                traininglist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4)));
-            }
-            if (attacker.modifier.damage_dealt != 1) {
-                traininglist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-                vslist.splice(0, 0, new ListItem("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-            }
-            if (preDamage != 0) {
-                traininglist.splice(0, 0, new ListItem("Before launch damage", "+" + +preDamage.toFixed(4) + "%"));
-                vslist.splice(0, 0, new ListItem("Before launch damage", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
-            }
-            if(!ignoreStale){
-                vslist.splice(0, 0, new ListItem("Stale-move negation", "x" + +StaleNegation(stale, ignoreStale).toFixed(4)));
-            }
+        traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
+        vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
+        if (trainingkb.reeling) {
+            traininglist.push(new ListItem("Reeling/Spin animation", "30%"));
+        }
+        if (vskb.reeling) {
+            vslist.push(new ListItem("Reeling/Spin animation", "30%"));
+        }
+        traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
+        vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
 
-            traininglist.push(new ListItem("Tumble", trainingkb.tumble ? "Yes" : "No"));
-            vslist.push(new ListItem("Tumble", vskb.tumble ? "Yes" : "No"));
-            if (trainingkb.reeling) {
-                traininglist.push(new ListItem("Reeling/Spin animation", "30%"));
-            }
-            if (vskb.reeling) {
-                vslist.push(new ListItem("Reeling/Spin animation", "30%"));
-            }
-            traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
-            vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
-
-            if (target.name == "Rosalina And Luma") {
-                if (!wbkb) {
-                    var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
-                    var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
-                    luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
-                    luma_vskb.addModifier(attacker.modifier.kb_dealt);
-                    luma_trainingkb.addModifier(target.modifier.kb_received);
-                    luma_vskb.addModifier(target.modifier.kb_received);
-                    traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
-                    traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
-                    vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
-                    vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
-                } else {
-                    var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
-                    var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15+luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
-                    luma_vskb.addModifier(target.modifier.kb_received);
-                    luma_vskb.addModifier(target.modifier.kb_received);
-                    traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
-                    traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
-                    vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
-                    vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
-                }
-            }
-
-            if (!unblockable) {
-                if (!powershield) {
-                    var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-                    traininglist.push(new ListItem("Shield Damage", +s.toFixed(4)));
-                    traininglist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
-                    traininglist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-                    damage /= target.modifier.damage_taken;
-                    s = (StaleDamage(damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-                    vslist.push(new ListItem("Shield Damage", +s.toFixed(4)));
-                    vslist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
-                    vslist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-                }
-                traininglist = traininglist.concat(ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
-                vslist = vslist.concat(ShieldList([ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric)), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
+        if (target.name == "Rosalina And Luma") {
+            if (!wbkb) {
+                var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
+                var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+                luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
+                luma_vskb.addModifier(attacker.modifier.kb_dealt);
+                luma_trainingkb.addModifier(target.modifier.kb_received);
+                luma_vskb.addModifier(target.modifier.kb_received);
+                traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
+                traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
+                vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
+                vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
             } else {
-                traininglist.push(new ListItem("Unblockable attack", "Yes"));
-                vslist.push(new ListItem("Unblockable attack", "Yes"));
+                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
+                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+                luma_vskb.addModifier(target.modifier.kb_received);
+                luma_vskb.addModifier(target.modifier.kb_received);
+                traininglist.push(new ListItem("Luma KB", +luma_trainingkb.kb.toFixed(4)));
+                traininglist.push(new ListItem("Luma launched", luma_trainingkb.tumble ? "Yes" : "No"));
+                vslist.push(new ListItem("Luma KB", +luma_vskb.kb.toFixed(4)));
+                vslist.push(new ListItem("Luma launched", luma_vskb.tumble ? "Yes" : "No"));
             }
+        }
 
-            result.training = traininglist;
-            result.vs = vslist;
+        if (!unblockable) {
+            if (!powershield) {
+                var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+                traininglist.push(new ListItem("Shield Damage", +s.toFixed(4)));
+                traininglist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
+                traininglist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
+                damage /= target.modifier.damage_taken;
+                s = (StaleDamage(damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+                vslist.push(new ListItem("Shield Damage", +s.toFixed(4)));
+                vslist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
+                vslist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
+            }
+            traininglist = traininglist.concat(ShieldList([ShieldStun(damage, is_projectile, powershield), ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
+            vslist = vslist.concat(ShieldList([ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric)), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)]));
+        } else {
+            traininglist.push(new ListItem("Unblockable attack", "Yes"));
+            vslist.push(new ListItem("Unblockable attack", "Yes"));
+        }
 
-            
-        }else{
+        result.training = traininglist;
+        result.vs = vslist;
+        if(graph){
             var max_x = distance.graph_x + 10;
             var max_y = distance.graph_y + 10;
             max_x = max_y = Math.max(max_x, max_y);
@@ -700,7 +693,7 @@ app.controller('calculator', function ($scope) {
 
         game_mode = $scope.game_mode;
         stage = $scope.stage;
-        graph = $scope.res_mode == "vis";
+        graph = $scope.show_graph;
         position = {"x":parseFloat($scope.position_x), "y":parseFloat($scope.position_y)};
         inverseX = $scope.inverseX;
         onSurface = $scope.surface;
@@ -740,16 +733,16 @@ app.controller('calculator', function ($scope) {
 
     };
 
-    $scope.showres = function (section) {
-        $scope.res_mode = section;
-        $scope.calc_style = { 'display': section == "calc" ? 'block' : 'none' };
-        $scope.graph_style = { 'display': section == "vis" ? 'block' : 'none' };
-        $scope.section_calculation = { 'background': section == "calc" ? 'rgba(0, 0, 255, 0.3)': 'transparent' };
-        $scope.section_graph = { 'background': section == "vis" ? 'rgba(0, 0, 255, 0.3)' : 'transparent' };
-        $scope.update();
+    $scope.check_graph = function () {
+        $scope.show_graph = !$scope.show_graph;
+        if ($scope.show_graph) {
+            $scope.update();
+        }
     }
 
-    $scope.showres($scope.res_mode);
+    $scope.collapse = function (id) {
+        $("#" + id).collapse('toggle');
+    }
 
-    //$scope.update();
+    $scope.update();
 });

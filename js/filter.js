@@ -579,5 +579,9 @@ filter_app.controller('filter', function ($scope) {
         $scope.noResults = $scope.filteredMoves.length;
         $scope.sort();
     }
+
+    $scope.collapse = function (id) {
+        $("#" + id).collapse('toggle');
+    }
 });
 

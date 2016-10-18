@@ -5,6 +5,9 @@ app.controller('calculator', function ($scope) {
     $scope.attacker_characters = anames;
     $scope.characters = names;
     $scope.attackerValue = attacker.name;
+    $scope.attacker_icon = attacker.icon;
+    $scope.target_icon = target.icon;
+    $scope.attackerName = attacker.name;
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
     $scope.attackerPercent = attacker_percent;
@@ -57,6 +60,8 @@ app.controller('calculator', function ($scope) {
     $scope.charge_data = null;
     $scope.selected_move = null;
 
+    $scope.st_jab_lock = { "display": "none" };
+
     $scope.vectoring = "none";
 
     $scope.stock_dif = "0";
@@ -98,6 +103,8 @@ app.controller('calculator', function ($scope) {
         if(attacker.name != "Bayonetta"){
             $scope.witch_time_charge = false;
         }
+        var a = parseFloat($scope.angle);
+        $scope.st_jab_lock = { "display": a == 361 || (a >= 230 && a <= 310) ? 'initial' : 'none' };
     }
 
     $scope.check_move = function(){
@@ -157,6 +164,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
+        $scope.attacker_icon = attacker.icon;
+        $scope.attackerName = attacker.name;
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -321,6 +330,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
+        $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
         $scope.target_damage_taken = target.modifier.damage_taken;
@@ -443,6 +453,25 @@ app.controller('calculator', function ($scope) {
 
 
     };
+
+    $scope.get_jablock = function(){
+        var a = parseFloat($scope.angle);
+        if(a==361){
+            $scope.kb = 59.9999;
+        }else{
+            $scope.kb = 80;
+        }
+        $scope.update();
+    };
+
+    $scope.get_tumble = function(){
+        $scope.kb = 80.0001;
+        $scope.update();
+    };
+
+    $scope.collapse = function (id) {
+        $("#" + id).collapse('toggle');
+    }
 
     $scope.update();
 });

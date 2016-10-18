@@ -16,10 +16,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
     <script src="js/filter.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/style-small.css" media="screen and (max-width: 1199px) and (min-width: 600px)" />
-    <link rel="stylesheet" type="text/css" href="css/style-small-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Move Search</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
@@ -47,10 +50,10 @@
                     <table class="header-table">
                         <tr class="header-table">
                             <td class="header-table">
-                                <a class="select-link" href="./index.html">Calculator</a>
+                                <a class="header-link" href="./index.html">Calculator</a>
                             </td>
                             <td class="header-table">
-                                <a class="select-link" href="./percentcalc.html">Percentage Calculator</a>
+                                <a class="header-link" href="./percentcalc.html">Percentage Calculator</a>
                             </td>
                         </tr>
                     </table>
@@ -63,16 +66,17 @@
             </span>-->
             <span id="links">
                 <span>
-                    <a href="https://twitter.com/Ruben_dal" target="_blank" class="select-link">
+                    <a href="https://twitter.com/Ruben_dal" target="_blank" class="header-link">
                         <img class="icon" src="./img/t-icon.png" />
                         @Ruben_dal
                     </a>
                     <br/>
-                    <a href="https://github.com/rubendal/Sm4sh-Calculator/wiki" target="_blank" class="select-link">
+                    <a href="https://github.com/rubendal/Sm4sh-Calculator/wiki" target="_blank" class="header-link">
                         <img class="icon" src="./img/icon.png" />
                         Wiki
                     </a>
                 </span>
+            </span>
         </div>
 
     </div>
@@ -94,16 +98,16 @@
                 Name:
                 <input name="name" type="text" ng-model="name" ng-change="update()" style="width:42em;" />
                 <br/>
-                <span ng-style="data_style_hidden">
-                    <a href="" class="select-link" ng-click="show_data(true)">Show additional filters</a>
-                    <br/>
-                </span>
-                <span ng-style="data_style">
-                    <a href="" class="select-link" ng-click="show_data(false)">Hide additional filters</a>
-                    <br/>
+                <br />
+                <a class="select-link cur-link" ng-click="collapse('filters')">
+                    <div class="card header-group" style="background:rgba(0, 0, 159, 0.75)">
+                        <span class="cur-link">Filters</span>
+                    </div>
+                </a>
+                <div id="filters" class="card-block collapse in group">
                     Hitbox startup frame:
                     <input name="hit_start" type="number" min="0" max="300" step="1" ng-model="hitbox_start" ng-change="update()" />
-                    <select name="hit_start_cond" ng-model="hitbox_start_cond"ng-change="update()">
+                    <select name="hit_start_cond" ng-model="hitbox_start_cond" ng-change="update()">
                         <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
                     </select>
                     <input name="hit_start2" type="number" min="0" max="300" step="1" ng-model="hitbox_start2" ng-change="update()" />
@@ -114,7 +118,7 @@
                     <br />
                     FAF:
                     <input name="faf" type="number" min="0" max="300" step="1" ng-model="faf" ng-change="update()" />
-                    
+
                     <select name="faf_cond" ng-model="faf_cond" ng-change="update()">
                         <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
                     </select>
@@ -162,20 +166,27 @@
                     <input name="wbkb" type="checkbox" ng-model="wbkb" ng-change="update()" /> Weight-based knockback
                     <input name="wbkb_cond" type="checkbox" ng-model="wbkb_any" ng-change="update()" />Any
 
-                    <br/>
-                </span>
-                Sort by:
-                <br/>
-                <select name="sort_by" ng-model="sort_by" ng-change="sort()">
-                    <option ng-selected="$first" ng:repeat="option in sort_options" ng-attr-value="{{option}}">{{option}}</option>
-                </select>
+                    <br />
+                </div>
+                <a class="select-link cur-link" ng-click="collapse('sort')">
+                    <div class="card header-res" style="background:rgba(5, 117, 65, 0.75)">
+                        <span class="cur-link">Sorting</span>
+                    </div>
+                </a>
+                <div id="sort" class="card-block collapse group">
+                    Sort by:
+                    <br />
+                    <select name="sort_by" ng-model="sort_by" ng-change="sort()">
+                        <option ng-selected="$first" ng:repeat="option in sort_options" ng-attr-value="{{option}}">{{option}}</option>
+                    </select>
 
-                <br/>
-                Order by:
-                <br/>
-                <select name="order_by" ng-model="order_by" ng-change="sort()">
-                    <option ng-selected="$first" ng:repeat="option in order_options" ng-attr-value="{{option}}">{{option}}</option>
-                </select>
+                    <br />
+                    Order by:
+                    <br />
+                    <select name="order_by" ng-model="order_by" ng-change="sort()">
+                        <option ng-selected="$first" ng:repeat="option in order_options" ng-attr-value="{{option}}">{{option}}</option>
+                    </select>
+                </div>
             </div>
 
         </div>

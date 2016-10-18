@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - New design
 * Added - [Lucario's Aura stock difference multipliers](https://twitter.com/KuroganeHammer/status/784017200721965057)
 * Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas
 * Added - Calculate aerials FAF using landing lag or autocancel
@@ -51,7 +52,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Max distance when hitstun ends (Not accurate, see Launch Visualizer)
 
 #### Launch Visualizer
-Note: Work in progress, distance calculation is not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
+Note: Work in progress, this is not a combo calculator, distance calculation is not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
@@ -85,23 +86,7 @@ Filter moves by:
 * BKB/WBKB
 * KBG
 
-### Name filter format
-* Case insensitive
-* `,` == or
-* `&` == and
-* `-` == not
-* `"name"` == Move name is exactly the one between double quotes
-* `character:name` == filter by character
-* `type:movetype` == filter by type (jab, tilt, dashattack, smash, aerial, grab, throw, taunt, special, counter, commandgrab, unblockable, windbox, multihit, extrashielddamage, weightdependentthrow, spike, ryutrue, limitbreak)
-
-
-#### Examples
-* ftilt & up (Ftilt AND up: all ftilts capable of being angled up)
-* up,down & fsmash (up OR down AND fsmash: all fsmash angled up or down)
-* rapid jab,-finisher (rapid jab NOT finisher: all rapid jabs without finisher hitbox)
-* counter,-attack,-late,-hit,witch time,substitute,vision,toad (All counter moves counter frames)
-* character:pit,character:dark pit,& type:smash (Pit and Dark Pit smash attacks)
-* type:dashattack (All dash attacks)
+Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/Move-Search
 
 ## Percentage Calculator
 http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html

@@ -17,11 +17,13 @@
     <script src="js/KuroganeAPI.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="js/modules.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/style-1200.css" media="screen and (max-width: 1500px) and (min-width: 1200px)"/>
-    <link rel="stylesheet" type="text/css" href="css/style-small.css" media="screen and (max-width: 1199px) and (min-width: 600px)" />
-    <link rel="stylesheet" type="text/css" href="css/style-small-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
+    <link rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator</title>
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.5"/>
@@ -49,10 +51,10 @@
                     <table class="header-table">
                         <tr class="header-table">
                             <td class="header-table">
-                                <a class="select-link" href="./movesearch.html">Move search</a>
+                                <a class="header-link" href="./movesearch.html">Move search</a>
                             </td>
                             <td class="header-table">
-                                <a class="select-link" href="./percentcalc.html">Percentage Calculator</a>
+                                <a class="header-link" href="./percentcalc.html">Percentage Calculator</a>
                             </td>
                         </tr>
                     </table>
@@ -65,12 +67,12 @@
             </span>-->
             <span id="links">
                 <span>
-                    <a href="https://twitter.com/Ruben_dal" target="_blank" class="select-link">
+                    <a href="https://twitter.com/Ruben_dal" target="_blank" class="header-link">
                         <img class="icon" src="./img/t-icon.png" />
                         @Ruben_dal
                     </a>
                     <br/>
-                    <a href="https://github.com/rubendal/Sm4sh-Calculator/wiki" target="_blank" class="select-link">
+                    <a href="https://github.com/rubendal/Sm4sh-Calculator/wiki" target="_blank" class="header-link">
                         <img class="icon" src="./img/icon.png" />
                         Wiki
                     </a>
@@ -88,272 +90,335 @@
         </div>
     </div>-->
 
-    <div id="section">
-        <table class="section-table">
-            <tr class="section-table-content">
-                <td class="section-table-content" ng-click="show('main')" ng-style="section_main">
-                    <a class="select-link" href="">Data</a>
-                </td>
-                <td class="section-table-content" ng-click="show('attributes')" ng-style="section_attributes">
-                    <a class="select-link" href="">Attributes</a>
-                </td>
-                <td class="section-table-content" ng-click="show('visualizer')" ng-style="section_visualizer">
-                    <a class="select-link" href="">Stage/Position</a>
-                </td>
-            </tr>
-        </table>
-    </div>
-
     <div name="calculator" id="calculator">
 
-        <div id="main" ng-style="main_style">
-            <div>
-                Attacker:
-                <select name="attackerSelect" ng-model="attackerValue" ng-change="updateAttacker()">
-                    <option ng-selected="$first" ng:repeat="character in attacker_characters" ng-attr-value="{{character}}">{{character}}</option>
-                </select>
-                <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
-                %
-            </div>
-            <div>
-                Target:
-                <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
-                    <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
-                </select>
-                <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()"/>
-                %
-                <div ng-style="lumaclass">
-                    Luma
-                    <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />
-                    %
+        
+        <div id="main">
+            <a class="select-link cur-link" ng-click="collapse('characters')">
+                <div class="card header-group" style="background:rgba(0, 0, 159, 0.75)">
+                    <span class="cur-link">Characters</span>
+                </div>
+            </a>
+            <div id="characters" class="card-block collapse in group">
+                <div id="characters_data">
+                    <div>
+                        <div>
+                            <img ng-src="{{attacker_icon}}" class="stock-icon" />Attacker:
+                            <select name="attackerSelect" ng-model="attackerValue" ng-change="updateAttacker()">
+                                <option ng-selected="$first" ng:repeat="character in attacker_characters" ng-attr-value="{{character}}">{{character}}</option>
+                            </select>
+                            <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
+                            %
+                        </div>
+                        <div>
+                            <img ng-src="{{target_icon}}" class="stock-icon" />Target:
+                            <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
+                                <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
+                            </select>
+                            <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
+                            %
+                            <div ng-style="lumaclass">
+                                Luma
+                                <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />
+                                %
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div ng-style="is_lucario">
-                    Stock difference:
-                    <select ng-model="stock_dif" ng-change="update()">
-                        <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
-                    </select>
-                    Game mode:
-                    <select ng-model="format" ng-change="update()">
-                        <option ng:repeat="value in formats" ng-attr-value="{{value}}">{{value}}</option>
-                    </select>
-                    <br/>
-            </div>
-            <a href="http://kuroganehammer.com/Smash4/{{encodedAttackerValue}}" target="_blank">{{attackerValue}} frame data</a>
-            <br />
-            Attack:
-            <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
-                <option ng-selected="$first" ng:repeat="move in moveset" ng-attr-value="{{move.id}}">{{move.name}}</option>
-            </select>
-            <br />
-            <div>
-                <div ng-style="counterStyle">
-                    Countered attack base damage:
-                    <input name="countered_base_damage" type="number" min="0" max="999" step="0.5" ng-model="counteredDamage" ng-change="counterDamage()" />
-                    <span>{{"x" + counterMult}}</span>
+            <a class="select-link cur-link" ng-click="collapse('characterAttributes')">
+                <div class="card header-group" style="background:rgba(22, 101, 4, 0.75)">
+                    <span class="cur-link">Character attributes</span>
                 </div>
-                Base damage:
-                <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> {{charge_special ? "Chargeable" : "Smash attack"}}
-                <span ng-style="is_smash_visibility">
-                    <br />
-                    {{charging_frames_type}}: <input name="charge" type="number" min="{{charge_min}}" max="{{charge_max}}" step="1" ng-model="smashCharge" ng-change="updateCharge()" />
-                    <span ng-style="is_megaman">
-                        <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
-                    </span>
-                    <span ng-style="is_bayonetta">
-                        <input type="checkbox" ng-model="witch_time_charge" ng-change="update()" />Witch Time active when charging
-                    </span>
-                </span>
-                <br />
-                Hitlag multiplier:
-                <input name="hitlag_multiplier" type="number" min="0" max="3" step="0.05" ng-model="hitlag" ng-change="update()" />
-                <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
-                <br />
-                Angle:
-                <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
-                <br />
-                {{wbkb ? "WBKB" : "BKB"}}:
-                <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="wbkb" ng-change="updateAttackData()" /> WBKB
-                <br />
-                KBG:
-                <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
-                <input type="checkbox" ng-model="windbox" ng-change="updateAttackData()" /> Windbox/Flinchless
-                <br />
-                Times in Queue:
-                <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
-                <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
-                <br />
-                Extra Shield Damage:
-                <input name="shield_damage" type="number" min="0" max="50" step="1" ng-model="shieldDamage" ng-change="updateAttackData()" />
-                <br />
-                Target DI angle:
-                <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
-                <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI
-                <br />
-                Vectoring
-                <br />
-                <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="none" ng-change="update()" />None
-                <br />
-                <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="increase" ng-change="update()" />Vectoring at launch angle
-                <br />
-                <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="decrease" ng-change="update()" />Vectoring at opposite direction
-                <div id="kb_modifiers">
-                    KB modifiers
-                    <br />
-                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()" />None
-                    <br />
-                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
-                    <br />
-                    <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Interrupted charged smash attack
-                    <br />
-                    <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
+            </a>
+            <div id="characterAttributes" class="card-block collapse group">
+                    <div class="pos-left">
+                        Attacker
+                        <br />
+                        Damage dealt: x
+                        <input name="attacker_damage_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_damage_dealt" ng-change="updateAttr()" />
+                        <br />
+                        KB dealt: x
+                        <input name="attacker_kb_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
+                        <br />
+                        <div ng-style="is_lucario">
+                            Stock difference:
+                            <select ng-model="stock_dif" ng-change="update()">
+                                <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                            </select>
+                            <br />
+                        </div>
+                    </div>
+                    <div class="pos-right pos-attr">
+                        Target
+                        <br />
+                        Weight:
+                        <input name="target_weight" type="number" min="0" max="999" step="1" ng-model="target_weight" ng-change="updateAttr()" />
+                        <br />
+                        Gravity:
+                        <input name="target_gravity" type="number" min="0" max="10" step="0.001" ng-model="target_gravity" ng-change="updateAttr()" />
+                        <br />
+                        Fall speed:
+                        <input name="target_fall_speed" type="number" min="0" max="10" step="0.001" ng-model="target_fall_speed" ng-change="updateAttr()" />
+                        <br />
+                        Damage received: x
+                        <input name="target_damage_taken" type="number" min="0" max="100" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
+                        <br />
+                        KB received: x
+                        <input name="target_kb_received" type="number" min="0" max="100" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
+                        <br />
+                        Traction:
+                        <input name="target_traction" type="number" min="0" max="1" step="0.001" ng-model="target_traction" ng-change="updateAttr()" style="width:5em;" />
+                        <br />
+                    </div>
                 </div>
-                <div id="hitlag_modifiers">
-                    Hitlag modifiers
-                    <br />
-                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
-                    <br />
-                    <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
-                </div>
-                <div id="shield">
-                    Shield stun and advantage
-                    <br />
-                    Hit frame:
-                    <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
-                    <span>
-                        <input type="button" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()"/>
-                        <input type="button" value=">" ng-style="next_hf" ng-click="next_hit_frame()"/>
-                    </span>
-                    <br />
-                    {{use_landing_lag == "no" ? "FAF" : "Landing frame"}}:
-                    <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
-                    <span ng-style="is_aerial">
-                        <br/>
-                        <input type="radio" ng-model="use_landing_lag" value="no" ng-change="update_faf()"/> Use move FAF
-                        <br/>
-                        <input type="radio" ng-model="use_landing_lag" value="yes" ng-change="update_faf()"/> Use move landing lag
-                        <br/>
-                        <input type="radio" ng-model="use_landing_lag" value="autocancel" ng-change="update_faf()"/> Use move autocancel
-                    </span>
-                    <br />
-                    Shield
-                    <br />
-                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal
-                    <br />
-                    <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
-                </div>
-            </div>
-            
-        </div>
 
-        <div id="attributes" ng-style="attributes_style">
-            <div id="attacker-attr">
-                Attacker
-                <br />
-                Damage dealt: x
-                <input name="attacker_damage_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_damage_dealt" ng-change="updateAttr()" />
-                <br />
-                KB dealt: x
-                <input name="attacker_kb_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
-                <br />
+            <a class="select-link cur-link" ng-click="collapse('attack')">
+                <div class="card header-group" style="background:rgba(199, 0, 0, 0.75)">
+                    <span class="cur-link">Attack</span>
+                </div>
+            </a>
+            <div id="attack" class="card-block collapse in group">
+                <div id="attack_data">
+                    <div class="pos-left">
+                        Attack:
+                        <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
+                            <option ng-selected="$first" ng:repeat="move in moveset" ng-attr-value="{{move.id}}">{{move.name}}</option>
+                        </select>
+                        <br />
+                        <a class="select-link" href="http://kuroganehammer.com/Smash4/{{encodedAttackerValue}}" target="_blank">{{attackerName}} frame data</a>
+                        <br />
+                        <div ng-style="counterStyle">
+                            Countered attack base damage:
+                            <input name="countered_base_damage" type="number" min="0" max="999" step="0.5" ng-model="counteredDamage" ng-change="counterDamage()" />
+                            <span>{{"x" + counterMult}}</span>
+                        </div>
+                        Base damage:
+                        <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="baseDamage" ng-change="updateAttackData()" />
+                        
+                        <span ng-style="is_smash_visibility">
+                            <br />
+                            {{charging_frames_type}}: <input name="charge" type="number" min="{{charge_min}}" max="{{charge_max}}" step="1" ng-model="smashCharge" ng-change="updateCharge()" />
+                        </span>
+                        <br />
+                        Hitlag multiplier:
+                        <input name="hitlag_multiplier" type="number" min="0" max="3" step="0.05" ng-model="hitlag" ng-change="update()" />
+                        <br />
+                        Angle:
+                        <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="updateAttackData()" />
+                        <br />
+                        {{wbkb ? "WBKB" : "BKB"}}:
+                        <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="updateAttackData()" />
+                        <br />
+                        KBG:
+                        <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
+                        <br />
+                        Times in Queue:
+                        <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
+                        <br />
+                        Extra Shield Damage:
+                        <input name="shield_damage" type="number" min="0" max="50" step="1" ng-model="shieldDamage" ng-change="updateAttackData()" />
+                    </div>
+                    <div class="pos-right">
+                        <br />
+                        <br />
+                        <input type="checkbox" ng-model="is_smash" ng-change="charging()" /> {{charge_special ? "Chargeable" : "Smash attack"}}
+                        <br/>
+                        <span ng-style="is_smash_visibility">
+                            <span ng-style="is_megaman">
+                                <input type="checkbox" ng-model="megaman_fsmash" ng-change="update()" />Fsmash
+                                <br />
+                            </span>
+                            <span ng-style="is_bayonetta">
+                                <input type="checkbox" ng-model="witch_time_charge" ng-change="update()" />Witch Time active when charging
+                                <br/>
+                            </span>
+                        </span>
+                        <input type="checkbox" ng-model="is_projectile" ng-change="update()" /> Projectile
+                        <br />
+                        <input type="checkbox" ng-model="in_air" ng-change="updateAttackData()" /> Target in air (Used in Sakurai angle)
+                        <br />
+                        <input type="checkbox" ng-model="wbkb" ng-change="updateAttackData()" /> WBKB
+                        <br />
+                        <input type="checkbox" ng-model="windbox" ng-change="updateAttackData()" /> Windbox/Flinchless
+                        <br />
+                        <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
+                    </div>
+                </div>
             </div>
-            <div id="target-attr">
-                Target
-                <br />
-                Weight:
-                <input name="target_weight" type="number" min="0" max="999" step="1" ng-model="target_weight" ng-change="updateAttr()" />
-                <br />
-                Gravity:
-                <input name="target_gravity" type="number" min="0" max="10" step="0.001" ng-model="target_gravity" ng-change="updateAttr()" />
-                <br />
-                Fall speed:
-                <input name="target_fall_speed" type="number" min="0" max="10" step="0.001" ng-model="target_fall_speed" ng-change="updateAttr()" />
-                <br />
-                Damage received: x
-                <input name="target_damage_taken" type="number" min="0" max="100" step="0.01" ng-model="target_damage_taken" ng-change="updateAttr()" />
-                <br />
-                KB received: x
-                <input name="target_kb_received" type="number" min="0" max="100" step="0.01" ng-model="target_kb_received" ng-change="updateAttr()" />
-                <br />
-                Traction:
-                <input name="target_traction" type="number" min="0" max="1" step="0.001" ng-model="target_traction" ng-change="updateAttr()" style="width:5em;" />
-                <br />
+
+            <a class="select-link cur-link" ng-click="collapse('modifiers')">
+                <div class="card header-group" style="background:rgba(219, 147, 0, 0.75)">
+                    <span class="cur-link">Modifiers</span>
+                </div>
+            </a>
+            <div id="modifiers" class="card-block collapse group">
+                <div id="attack_options">
+                    <div class="pos-left">
+                        Vectoring
+                        <br />
+                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="none" ng-change="update()" />None
+                        <br />
+                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="increase" ng-change="update()" />Vectoring at launch angle
+                        <br />
+                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="decrease" ng-change="update()" />Vectoring at opposite direction
+                        <br/>
+                        <br />
+                        <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
+                        <br />
+                        <br />
+                        Target DI angle:
+                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
+                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI                        
+                    </div>
+                    <div class="pos-right">
+                        <div id="kb_modifiers">
+                            KB modifiers
+                            <br />
+                            <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="none" ng-change="update()" />None
+                            <br />
+                            <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
+                            <br />
+                            <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Interrupted charged smash attack
+                        </div>
+                        <br/>
+                        <div id="hitlag_modifiers">
+                            Hitlag modifiers
+                            <br />
+                            <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
+                            <br />
+                            <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div id="visualizer-settings" ng-style="visualizer_style">
+
+            <a class="select-link cur-link" ng-click="collapse('shield')">
+                <div class="card header-group" style="background:rgba(225, 194, 9, 0.75)">
+                    <span class="cur-link">Shield/Hit frame/FAF</span>
+                </div>
+            </a>
+            <div id="shield" class="card-block collapse group">
+                <div id="shield_data">
+                    <div class="pos-left">
+                        Hit frame:
+                        <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
+                        <span>
+                            <input type="button" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()" />
+                            <input type="button" value=">" ng-style="next_hf" ng-click="next_hit_frame()" />
+                        </span>
+                        <br />
+                        {{use_landing_lag == "no" ? "FAF" : "Landing frame"}}:
+                        <input name="faf" type="number" min="0" max="1000" step="1" ng-model="faf" ng-change="update()" />
+                        <span ng-style="is_aerial">
+                            <br />
+                            <input type="radio" ng-model="use_landing_lag" value="no" ng-change="update_faf()" /> Use move FAF
+                            <br />
+                            <input type="radio" ng-model="use_landing_lag" value="yes" ng-change="update_faf()" /> Use move landing lag
+                            <br />
+                            <input type="radio" ng-model="use_landing_lag" value="autocancel" ng-change="update_faf()" /> Use move autocancel
+                        </span>
+                    </div>
+                    <div class="pos-right pos-mod">
+                        <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="normal" ng-change="update()" />Normal shield
+                        <br />
+                        <input type="radio" name="shieldMod" ng-model="shield" ng-attr-value="power" ng-change="update()" />Powershield
+                        <br />
+                    </div>
+                </div>
+            </div>
+
+            <a class="select-link cur-link" ng-click="collapse('visualizerSettings')">
+                <div class="card header-group" style="background:rgba(73, 0, 73, 0.75)">
+                    <span class="cur-link">Visualizer settings/Game mode</span>
+                </div>
+            </a>
+            <div id="visualizerSettings" class="card-block collapse group">
                 <div id="stage">
-                    Game mode
-                    <br/>
-                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="training" ng-change="update()" />Training mode
-                    <br />
-                    <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="vs" ng-change="update()" />Vs mode
-                    <br />
-                    Stage:
-                    <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
-                        <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
-                    </select>
-                    <br/>
-                    Target position when hit
-                    <br/>
-                    X:<input name="position_x" type="number" min="-500" max="500" step="1" ng-model="position_x" ng-change="update()" />
-                    <br/>
-                    Y:<input name="position_y" type="number" min="-500" max="500" step="1" ng-model="position_y" ng-change="update()" />
-                    <br/>
-                    Set position on spawn:
-                    <select name="spawn" ng-model="spawn" ng-change="setPositionSpawn()">
-                        <option ng-selected="$first" ng:repeat="s in spawns" ng-attr-value="{{s}}">{{s}}</option>
-                    </select>
+                    <div class="pos-left">
+                        Stage:
+                        <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
+                            <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
+                        </select>
+                        <br />
+                        Set position on spawn:
+                        <select name="spawn" ng-model="spawn" ng-change="setPositionSpawn()">
+                            <option ng-selected="$first" ng:repeat="s in spawns" ng-attr-value="{{s}}">{{s}}</option>
+                        </select>
+                        <br/>
+                        Target position when hit
+                        <br />
+                        X:<input name="position_x" type="number" min="-500" max="500" step="1" ng-model="position_x" ng-change="update()" />
+                        <br />
+                        Y:<input name="position_y" type="number" min="-500" max="500" step="1" ng-model="position_y" ng-change="update()" />
+                        <br />
+                        <div id="graph_options">
+                            <br />
+                            <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="update()" />Invert move angle horizontally
+                            <br />
+                            <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
+                        </div>
+                    </div>
+                    <div class="pos-right pos-mod">
+                        Game mode
+                        <br />
+                        <span ng-style="is_lucario">
+                            <select ng-model="format" ng-change="update()">
+                                <option ng:repeat="value in formats" ng-attr-value="{{value}}">{{value}}</option>
+                            </select>
+                            <br />
+                        </span>
+                        <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="training" ng-change="update()" />Training mode
+                        <br />
+                        <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="vs" ng-change="update()" />Vs mode
+                        <br />
+                    </div>
                 </div>
-                <div id="graph_options">
-                    Visualizer options
-                    <br/>
-                    <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="update()" />Invert move angle horizontally
-                    <br/>
-                    <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
-                </div>
-        </div>
-        <div id="section_res">
-            <table class="section-table-res">
-                <tr class="section-table-content-res">
-                    <td class="section-table-content-res" ng-click="showres('calc')" ng-style="section_calculation">
-                        <a class="select-link" href="">Results</a>
-                    </td>
-                    <td class="section-table-content-res" ng-click="showres('vis')" ng-style="section_graph">
-                        <a class="select-link" href="">Visualizer</a>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="results">
-            <div id="data" ng-style="calc_style">
-                <div id="training">
-                    Training Mode
-                    <br />
-                    <table>
-                        <tr ng-repeat="x in training">
-                            <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
-                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div id="vs">
-                    Vs Mode
-                    <br />
-                    <table>
-                        <tr ng-repeat="x in vs">
-                            <td class="attribute"  title="{{x.title}}">{{ x.attribute }}</td>
-                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                        </tr>
-                    </table>
-                </div>
+                
             </div>
-            <div id="graph" ng-style="graph_style">
-                <div id="res_graph" style="width:500px;height:500px;" class="plot">
 
+        </div>
+
+        <div id="results">
+            <div id="data_pos">
+                <a class="select-link cur-link" ng-click="collapse('data')">
+                    <div class="card header-res" style="background:rgba(7, 2, 70, 0.75)">
+                        <span class="cur-link">Results</span>
+                    </div>
+                </a>
+                <div id="data" class="card-block collapse in group-res">
+                    <div id="training">
+                        Training Mode
+                        <br />
+                        <table>
+                            <tr ng-repeat="x in training">
+                                <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                                <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="vs">
+                        Vs Mode
+                        <br />
+                        <table>
+                            <tr ng-repeat="x in vs">
+                                <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                                <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <a class="select-link cur-link" ng-click="collapse('visualizer');check_graph();">
+                    <div class="card header-res" style="background:rgba(5, 117, 65, 0.75)">
+                        <span class="cur-link">Visualizer</span>
+                    </div>
+                </a>
+                <div id="visualizer" class="card-block collapse group-res">
+                    <div id="res_graph" style="width:500px;height:500px;" class="plot">
+
+                    </div>
                 </div>
             </div>
             
