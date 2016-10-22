@@ -138,8 +138,6 @@
                             <select name="targetSelect" ng-model="targetValue" ng-change="updateTarget()">
                                 <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                             </select>
-                            <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
-                            %
                         </div>
                     </div>
                 </div>
