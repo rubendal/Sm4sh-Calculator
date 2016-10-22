@@ -72,6 +72,8 @@ app.controller('calculator', function ($scope) {
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
+
+    $scope.charging_frames_type = "Charging frames";
     
 
     $scope.checkSmashVisibility = function () {
@@ -112,6 +114,7 @@ app.controller('calculator', function ($scope) {
             $scope.charge_min = 0;
             $scope.charge_max = 60;
             $scope.charge_special = false;
+            $scope.charging_frames_type = "Charging frames";
         }else{
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
@@ -121,6 +124,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = $scope.charge_data.max;
                     $scope.charge_special = true;
                     $scope.is_smash = true;
+                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
                     $scope.updateCharge();
                     
                 }else{
@@ -130,6 +134,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = 60;
                     $scope.charge_special = false;
                     $scope.is_smash = $scope.selected_move.smash_attack;
+                    $scope.charging_frames_type = "Charging frames";
                 }
             }else{
                 $scope.charge_data = null;
@@ -138,6 +143,7 @@ app.controller('calculator', function ($scope) {
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
+                $scope.charging_frames_type = "Charging frames";
             }
             $scope.checkSmashVisibility();
         }
