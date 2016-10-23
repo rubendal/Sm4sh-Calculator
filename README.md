@@ -49,7 +49,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Launch speed
 * Gravity launch speed boost
 * Vectoring
-* Max distance when hitstun ends (Not accurate, see Launch Visualizer)
+* Max distance when hitstun ends
 
 #### Launch Visualizer
 Note: Work in progress, this is not a combo calculator, distance calculation is not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
@@ -91,11 +91,7 @@ Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wi
 ## Percentage Calculator
 http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
 
-Get target percent required to obtain certain knockback
-
-Note: WBKB isn't supported due to being weight related
-
-Update: Removed X and Y component calculation since these don't represent distance launched, distance calculation is also affected by hitstun and other factors giving wrong results
+Get target percent required to obtain certain knockback, on WBKB moves calculate the minimum rage to reach specified knockback
 
 ## TSV Generator
 http://rubendal.github.io/Sm4sh-Calculator/tsvgen.html

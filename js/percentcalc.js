@@ -410,13 +410,24 @@ app.controller('calculator', function ($scope) {
         var type = $scope.kbType;
 
         var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, vectoring);
-        kb.addModifier(attacker.modifier.kb_dealt);
+        if (!kb.wbkb) {
+            kb.addModifier(attacker.modifier.kb_dealt);
+        }
         kb.addModifier(target.modifier.kb_received);
         kb.bounce(bounce);
         var results = {'training':[], 'vs':[]};
         if(kb.wbkb){
-            results.training.push(new ListItem("WBKB not supported", ""));
-            results.vs.push(new ListItem("WBKB not supported", ""));
+            results.training = [];
+            if (kb.rage_needed != -1) {
+                results.vs.push(new ListItem("Rage multiplier", kb.rage_needed));
+                results.vs.push(new ListItem("Attacker percent", kb.vs_percent));
+            } else {
+                if (kb.vs_percent == -1) {
+                    results.vs.push(new ListItem("Cannot reach KB higher than", (kb.wbkb_kb * 1.15).toFixed(4)));
+                } else {
+                    results.vs.push(new ListItem("WBKB KB is higher than ",+kb.wbkb_kb.toFixed(4)));
+                }
+            }
         }else{
             var t = kb.training_percent != -1 ? new ListItem("Required Percent", +kb.training_percent.toFixed(4)) : new ListItem("Impossible", "");
             var v = kb.vs_percent != -1 ? new ListItem("Required Percent", +kb.vs_percent.toFixed(4)) : new ListItem("Impossible", "");

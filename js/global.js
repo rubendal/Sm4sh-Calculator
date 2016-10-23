@@ -839,6 +839,8 @@ class PercentFromKnockback{
         this.timesInQueue = timesInQueue;
         this.ignoreStale = ignoreStale;
         this.vectoring = vectoring;
+        this.wbkb_kb = -1;
+        this.wbkb_modifier = 1;
         if(this.vectoring == undefined){
             this.vectoring = 0;
         }
@@ -869,201 +871,230 @@ class PercentFromKnockback{
         }
 
 
-
-        this.calculate = function () {
-            
-            if(!this.wbkb){
-                if(this.type == "total"){
-                    this.kb = this.base_kb;
+        if (!this.wbkb) {
+            this.calculate = function () {
+                if (!this.wbkb) {
+                    if (this.type == "total") {
+                        this.kb = this.base_kb;
+                    }
+                    if (this.type == "x") {
+                        this.x = this.base_kb;
+                    }
+                    if (this.type == "y") {
+                        this.y = this.base_kb;
+                    }
                 }
-                if(this.type == "x"){
-                    this.x = this.base_kb;
+
+
+                if (this.original_angle == 361) {
+                    this.base_angle = SakuraiAngle(this.kb, this.aerial);
                 }
-                if(this.type == "y"){
-                    this.y = this.base_kb;
-                }
-            }
+                this.angle = this.base_angle;
 
-
-            if (this.original_angle == 361) {
-                this.base_angle = SakuraiAngle(this.kb, this.aerial);
-            }
-            this.angle = this.base_angle;
-
-            if (this.original_angle == 361 && !this.aerial && type != "total") {
-                //Find the original kb and get the angle
-                var angle_found = false;
-                for(var temp_kb = 59.999; temp_kb < 88; temp_kb+=0.001){
-                    var temp_angle = SakuraiAngle(temp_kb,this.aerial);
-                    var temp_var = 0;
-                    if(this.type == "x"){
-                        temp_var = Math.abs(temp_kb * Math.cos(temp_angle * Math.PI / 180));
-                        if(temp_var >= this.x){
-                            this.angle = temp_angle;
-                            angle_found = true;
-                            break;
+                if (this.original_angle == 361 && !this.aerial && type != "total") {
+                    //Find the original kb and get the angle
+                    var angle_found = false;
+                    for (var temp_kb = 59.999; temp_kb < 88; temp_kb += 0.001) {
+                        var temp_angle = SakuraiAngle(temp_kb, this.aerial);
+                        var temp_var = 0;
+                        if (this.type == "x") {
+                            temp_var = Math.abs(temp_kb * Math.cos(temp_angle * Math.PI / 180));
+                            if (temp_var >= this.x) {
+                                this.angle = temp_angle;
+                                angle_found = true;
+                                break;
+                            }
+                        }
+                        if (this.type == "y") {
+                            temp_var = Math.abs(temp_kb * Math.sin(temp_angle * Math.PI / 180));
+                            if (temp_var >= this.y) {
+                                this.angle = temp_angle;
+                                angle_found = true;
+                                break;
+                            }
                         }
                     }
-                    if(this.type == "y"){
-                        temp_var = Math.abs(temp_kb * Math.sin(temp_angle * Math.PI / 180));
-                        if(temp_var >= this.y){
-                            this.angle = temp_angle;
-                            angle_found = true;
-                            break;
+                    if (!angle_found) {
+                        this.angle = SakuraiAngle(88, this.aerial);
+                    }
+                }
+
+                if (!this.wbkb) {
+                    if (this.type == "x") {
+                        this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
+                    }
+                    if (this.type == "y") {
+                        this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
+                    }
+                }
+                /*if(this.vectoring != 0 && this.tumble){
+                    if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
+                        if(this.vectoring == 1){
+                        this.kb *= 0.92;
+                    }else{
+                        if(this.vectoring == -1){
+                            this.kb *= 1.095;
                         }
                     }
-                }
-                if(!angle_found){
-                    this.angle = SakuraiAngle(88,this.aerial);
-                }
-            }
+                    }
+                }*/
 
-            if(!this.wbkb){
-                if(this.type == "x"){
-                    this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
+                this.hitstun = Hitstun(this.kb, this.windbox);
+
+                if (this.base_angle != 0 && this.base_angle != 180) {
+                    this.tumble = this.kb > 80 && !windbox;
+                    this.di_able = this.tumble;
                 }
-                if(this.type == "y"){
-                    this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
-                }
-            }
-            /*if(this.vectoring != 0 && this.tumble){
-                if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
-                    if(this.vectoring == 1){
-                    this.kb *= 0.92;
-                }else{
-                    if(this.vectoring == -1){
-                        this.kb *= 1.095;
+
+
+                /*if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
+                    this.add_gravity_kb = 0;
+                }*/
+                if (this.kb > 80 && (this.angle != 0 && this.angle != 180)) {
+                    //this.y *= this.gravity_mult;
+                    if (this.type == "y") {
+                        this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                     }
                 }
+
+                this.can_jablock = false;
+                if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
+                    if (this.kb != 0 && !this.windbox) {
+                        this.can_jablock = true;
+                    }
                 }
-            }*/
-
-            this.hitstun = Hitstun(this.kb, this.windbox);
-
-            if (this.base_angle != 0 && this.base_angle != 180) {
-                this.tumble = this.kb > 80 && !windbox;
-                this.di_able = this.tumble;
-            }
-            
-            
-            /*if (this.angle == 0 || this.angle == 180  || (this.angle >= 181 && this.angle < 360)) {
-                this.add_gravity_kb = 0;
-            }*/
-            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                //this.y *= this.gravity_mult;
-                if(this.type == "y"){
-                    this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
+                if (this.angle >= 240 && this.angle <= 300) {
+                    if (this.kb != 0 && !this.windbox) {
+                        this.can_jablock = !this.tumble;
+                    }
                 }
-            }
-            
-            this.can_jablock = false;
-            if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
-                if (this.kb != 0 && !this.windbox) {
-                    this.can_jablock = true;
+                if (this.angle <= 70 || this.angle >= 110) {
+                    this.reeling = this.tumble && !this.windbox && this.percent >= 100;
+
                 }
-            }
-            if (this.angle >= 240 && this.angle <= 300) {
-                if (this.kb != 0 && !this.windbox) {
-                    this.can_jablock = !this.tumble;
+
+                this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
+                this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
+
+                if (this.training_percent < 0) {
+                    this.training_percent = 0;
                 }
-            }
-            if (this.angle <= 70 || this.angle >= 110) {
-                this.reeling = this.tumble && !this.windbox && this.percent >= 100;
+                if (this.training_percent > 999 || isNaN(this.training_percent)) {
+                    this.training_percent = -1;
+                }
+                if (this.vs_percent < 0) {
+                    this.vs_percent = 0;
+                }
+                if (this.vs_percent > 999 || isNaN(this.vs_percent)) {
+                    this.vs_percent = -1;
+                }
 
-            }
+                if (this.di_able && this.type != "total") {
+                    var di_angles = [];
+                    for (var i = 0; i < 360; i++) {
+                        var di = DI(i, this.angle);
+                        var angle = this.angle + DI(i, this.angle);
+                        var kb = this.base_kb;
+                        if (this.type == "x") {
+                            kb = Math.abs(kb / Math.cos(angle * Math.PI / 180));
+                        }
+                        if (this.type == "y") {
+                            kb -= this.add_gravity_kb;
+                            kb = Math.abs(kb / Math.sin(angle * Math.PI / 180));
+                        }
+                        var hitstun = Hitstun(kb, this.windbox);
+                        var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
+                        var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
+                        di_angles.push({ 'angle': i, 'training': training, 'vs': vs, 'hitstun': hitstun });
+                    }
+                    di_angles.sort(function (a, b) {
+                        return a.training < b.training ? 1 :
+                        a.training > b.training ? -1 :
+                        0
+                    });
+                    this.best_di.angle_training = di_angles[0].angle;
+                    this.best_di.training = di_angles[0].training;
+                    this.best_di.hitstun = di_angles[0].hitstun;
+                    this.best_di.hitstun_dif = this.hitstun - di_angles[0].hitstun;
+                    this.worst_di.angle_training = di_angles[di_angles.length - 1].angle;
+                    this.worst_di.training = di_angles[di_angles.length - 1].training;
+                    this.worst_di.hitstun = di_angles[di_angles.length - 1].hitstun;
+                    this.worst_di.hitstun_dif = this.hitstun - di_angles[di_angles.length - 1].hitstun;
+                    di_angles.sort(function (a, b) {
+                        return a.vs < b.vs ? 1 :
+                        a.vs > b.vs ? -1 :
+                        0
+                    });
+                    this.best_di.angle_vs = di_angles[0].angle;
+                    this.best_di.vs = di_angles[0].vs;
+                    this.worst_di.angle_vs = di_angles[di_angles.length - 1].angle;
+                    this.worst_di.vs = di_angles[di_angles.length - 1].vs;
+                    if (this.best_di.training < 0) {
+                        this.best_di.training = 0;
+                    }
+                    if (this.best_di.training > 999 || isNaN(this.best_di.training)) {
+                        this.best_di.training = -1;
+                    }
+                    if (this.best_di.vs < 0) {
+                        this.best_di.vs = 0;
+                    }
+                    if (this.best_di.vs > 999 || isNaN(this.best_di.vs)) {
+                        this.best_di.vs = -1;
+                    }
+                    if (this.worst_di.training < 0) {
+                        this.worst_di.training = 0;
+                    }
+                    if (this.worst_di.training > 999 || isNaN(this.worst_di.training)) {
+                        this.worst_di.training = -1;
+                    }
+                    if (this.worst_di.vs < 0) {
+                        this.worst_di.vs = 0;
+                    }
+                    if (this.worst_di.vs > 999 || isNaN(this.worst_di.vs)) {
+                        this.worst_di.vs = -1;
+                    }
+                }
 
-            this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-            this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
-
-            if(this.training_percent < 0){
-                this.training_percent = 0;
-            }   
-            if(this.training_percent > 999 || isNaN(this.training_percent)){
-                this.training_percent = -1;
-            }
-            if(this.vs_percent < 0){
+            };
+        } else {
+            this.calculate = function () {
+                this.kb = this.base_kb * this.wbkb_modifier;
+                this.rage_needed = -1;
                 this.vs_percent = 0;
-            }   
-            if(this.vs_percent > 999 || isNaN(this.vs_percent)){
-                this.vs_percent = -1;
-            }
-
-            if(this.di_able && this.type != "total"){
-                var di_angles = [];
-                for(var i = 0; i < 360; i++){
-                    var di = DI(i, this.angle);
-                    var angle = this.angle + DI(i,this.angle);
-                    var kb = this.base_kb;
-                    if(this.type == "x"){
-                        kb = Math.abs(kb / Math.cos(angle * Math.PI / 180));
+                var wbkb = WeightBasedKB(this.weight, this.bkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.vectoring);
+                wbkb.addModifier(this.wbkb_modifier);
+                this.wbkb_kb = wbkb.kb;
+                if (this.kb <= this.wbkb_kb) {
+                    this.training_percent = 0;
+                }
+                if (this.kb > this.wbkb_kb) {
+                    this.training_percent = -1;
+                }
+                var rage = this.kb / this.wbkb_kb;
+                if (rage >= 1 && rage <= 1.15) {
+                    this.vs_percent = (5 / 3) * ((460 * rage) - 439);
+                    this.vs_percent = +this.vs_percent.toFixed(4);
+                    this.rage_needed = +rage.toFixed(4);
+                } else {
+                    if (this.kb <= this.wbkb_kb) {
+                        this.vs_percent = 0;
                     }
-                    if(this.type == "y"){
-                        kb -= this.add_gravity_kb;
-                        kb = Math.abs(kb / Math.sin(angle * Math.PI / 180));
+                    if (this.kb > this.wbkb_kb) {
+                        this.vs_percent = -1;
                     }
-                    var hitstun = Hitstun(kb, this.windbox);
-                    var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-                    var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
-                    di_angles.push({'angle':i,'training':training,'vs':vs, 'hitstun':hitstun});
-                }
-                di_angles.sort(function(a,b){
-                    return a.training < b.training ? 1 :
-                    a.training > b.training ? -1 :
-                    0
-                });
-                this.best_di.angle_training = di_angles[0].angle;
-                this.best_di.training = di_angles[0].training;
-                this.best_di.hitstun = di_angles[0].hitstun;
-                this.best_di.hitstun_dif = this.hitstun - di_angles[0].hitstun;
-                this.worst_di.angle_training = di_angles[di_angles.length-1].angle;
-                this.worst_di.training = di_angles[di_angles.length-1].training;
-                this.worst_di.hitstun = di_angles[di_angles.length-1].hitstun;
-                this.worst_di.hitstun_dif = this.hitstun - di_angles[di_angles.length-1].hitstun;
-                di_angles.sort(function(a,b){
-                    return a.vs < b.vs ? 1 :
-                    a.vs > b.vs ? -1 :
-                    0
-                });
-                this.best_di.angle_vs = di_angles[0].angle;
-                this.best_di.vs = di_angles[0].vs;
-                this.worst_di.angle_vs = di_angles[di_angles.length-1].angle;
-                this.worst_di.vs = di_angles[di_angles.length-1].vs;
-                if(this.best_di.training < 0){
-                    this.best_di.training = 0;
-                }
-                if(this.best_di.training > 999 || isNaN(this.best_di.training)){
-                    this.best_di.training = -1;
-                }
-                if(this.best_di.vs < 0){
-                    this.best_di.vs = 0;
-                }
-                if(this.best_di.vs > 999 || isNaN(this.best_di.vs)){
-                    this.best_di.vs = -1;
-                }
-                if(this.worst_di.training < 0){
-                    this.worst_di.training = 0;
-                }
-                if(this.worst_di.training > 999 || isNaN(this.worst_di.training)){
-                    this.worst_di.training = -1;
-                }
-                if(this.worst_di.vs < 0){
-                    this.worst_di.vs = 0;
-                }
-                if(this.worst_di.vs > 999 || isNaN(this.worst_di.vs)){
-                    this.worst_di.vs = -1;
                 }
             }
-
-        };
+        }
         this.addModifier = function (modifier) {
             this.kb /= modifier;
             this.base_kb /= modifier;
             this.add_gravity_kb /= modifier;
+            this.wbkb_modifier *= modifier;
             this.calculate();
         };
         this.bounce = function (bounce) {
             if (bounce) {
-                this.kb /= 0.8;
+                //this.kb /= 0.8;
                 this.calculate();
             }
         }
