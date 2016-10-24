@@ -109,6 +109,13 @@
                             </select>
                             <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
                             %
+                            <div id="attacker-mod-sel" ng-style="attacker_mod">
+                                <br />
+                                <select name="attackerMod" ng-model="attackerMod" ng-change="updateAttackerMod()">
+                                    <option ng-selected="$first" ng:repeat="mod in attackerModifiers" ng-attr-value="{{mod.name}}">{{mod.name}}</option>
+                                </select>
+                                <br/>
+                            </div>
                         </div>
                         <div>
                             <img ng-src="{{target_icon}}" class="stock-icon" />Target:
@@ -117,6 +124,12 @@
                             </select>
                             <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
                             %
+                            <div id="target-mod-sel" ng-style="target_mod">
+                                <br />
+                                <select name="targetMod" ng-model="targetMod" ng-change="updateTargetMod()">
+                                    <option ng-selected="$first" ng:repeat="mod in targetModifiers" ng-attr-value="{{mod.name}}">{{mod.name}}</option>
+                                </select>
+                            </div>
                             <div ng-style="lumaclass">
                                 Luma
                                 <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />

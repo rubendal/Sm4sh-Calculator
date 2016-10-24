@@ -1,13 +1,13 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
-    var anames = names.slice();
-    anames.splice(anames.indexOf("Cloud (Limit Break)"), 1);
-    $scope.attacker_characters = anames;
+    $scope.attacker_characters = names;
     $scope.characters = names;
     $scope.attackerValue = attacker.name;
     $scope.attackerName = attacker.name;
+    $scope.attackerModifiers = attacker.modifiers;
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
+    $scope.targetModifiers = target.modifiers;
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;
     $scope.attacker_icon = attacker.icon;
@@ -38,6 +38,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
+
+    $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
+    $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
 
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
@@ -291,7 +294,13 @@ app.controller('calculator', function ($scope) {
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
         $scope.attackerName = attacker.name;
+        $scope.attackerMod = "Normal";
+        $scope.attackerModifiers = attacker.modifiers;
+        if (attacker.name == "Cloud") {
+            $scope.attackerModifiers = [];
+        }
         $scope.attacker_icon = attacker.icon;
+        $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -307,6 +316,34 @@ app.controller('calculator', function ($scope) {
         $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
         $scope.stock_dif = "0";
         $scope.update();
+    }
+
+    $scope.updateAttackerMod = function () {
+        var mod = attacker.getModifier($scope.attackerMod);
+        if (mod != null) {
+            attacker.modifier = mod;
+            attacker.updateIcon();
+            $scope.attacker_icon = attacker.icon;
+            $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
+            $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
+            $scope.update();
+        }
+    }
+
+    $scope.updateTargetMod = function () {
+        var mod = target.getModifier($scope.targetMod);
+        if (mod != null) {
+            target.modifier = mod;
+            target.updateIcon();
+            $scope.target_icon = target.icon;
+            $scope.target_weight = target.attributes.weight;
+            $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
+            $scope.target_damage_taken = target.modifier.damage_taken;
+            $scope.target_kb_received = target.modifier.kb_received;
+            $scope.target_fall_speed = target.attributes.fall_speed * target.modifier.fall_speed;
+            $scope.target_traction = target.attributes.traction * target.modifier.traction;
+            $scope.update();
+        }
     }
 
     $scope.updateAttack = function () {
@@ -469,6 +506,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
+        $scope.targetMod = "Normal";
+        $scope.targetModifiers = target.modifiers;
+        $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
         $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;

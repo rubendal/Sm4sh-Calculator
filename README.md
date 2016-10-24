@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - Character attribute modifiers (Monado Arts, Limit Break, Deep Breathing) are now selected in a different location instead of all being in the character selection inputs
 * Changed - New design
 * Added - [Lucario's Aura stock difference multipliers](https://twitter.com/KuroganeHammer/status/784017200721965057)
 * Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas

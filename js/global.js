@@ -75,49 +75,63 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("", 1, 1, 1, 1, 1, 1, 1, 1, 1);
-        for (var i = 0; i < monado.length; i++) {
-            if (name.includes("(" + decisive_monado[i].name + ")")) {
-                this.modifier = decisive_monado[i];
-                this.name = name.split(" ")[0];
-                break;
-            }
-            if (name.includes("(" + hyper_monado[i].name + ")")) {
-                this.modifier = hyper_monado[i];
-                this.name = name.split(" ")[0];
-                break;
-            }
-            if (name.includes("(" + monado[i].name + ")")) {
-                this.modifier = monado[i];
-                this.name = name.split(" ")[0];
-                break;
-            }
-        }
-        if (name.includes("(Fast Deep Breathing)")) {
-            this.modifier = new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1);
-            this.name = "Wii Fit Trainer";
-        }
-        if (name.includes("(Slow Deep Breathing)")) {
-            this.modifier = new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1);
-            this.name = "Wii Fit Trainer";
-        }
-        if(this.name == null){
+        this.modifier = new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        this.modifiers = [];
+        if (this.name == null) {
             this.name = name;
         }
+        if (this.name == "Shulk") {
+            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+            this.modifiers = this.modifiers.concat(monado);
+            this.modifiers = this.modifiers.concat(decisive_monado);
+            this.modifiers = this.modifiers.concat(hyper_monado);
+        } else if (this.name == "Kirby") {
+            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+            this.modifiers = this.modifiers.concat(monado);
+        } else if (this.name == "Wii Fit Trainer") {
+            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1), new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1)];
+
+        } else if (this.name == "Cloud") {
+            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15)];
+        }
+
+        this.getModifier = function(name){
+            for(var i=0;i<this.modifiers.length;i++){
+                if(this.modifiers[i].name == name){
+                    return this.modifiers[i];
+                }
+            }
+            return null;
+        }
+
+        this.updateIcon = function () {
+            if (this.modifier.name != "Normal") {
+                //Custom icons
+                if (this.modifier.name == "Limit Break") {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_limit_01.png";
+                } else if (this.modifier.name.includes("Deep Breathing")) {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_db_01.png";
+                } else if(this.modifier.name.includes("Jump")){
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_jump_01.png";
+                } else if (this.modifier.name.includes("Speed")) {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_speed_01.png";
+                } else if (this.modifier.name.includes("Shield")) {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_shield_01.png";
+                } else if (this.modifier.name.includes("Buster")) {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_buster_01.png";
+                } else if (this.modifier.name.includes("Smash")) {
+                    this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_smash_01.png";
+                }
+            } else {
+                this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_01.png";
+            }
+        }
+        
         this.api_name = this.name;
         if (name == "Game And Watch") {
             this.api_name = "Mrgamewatch";
         }
-        
-        if (name != "Cloud (Limit Break)") {
-            this.attributes = loadJSON(this.name);
-        } else {
-            this.attributes = loadJSONPath("./Data/Cloud/attributes.json");
-            this.api_name = "Cloud";
-            this.name = "Cloud";
-            this.modifier = new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15);
-        }
-
+        this.attributes = loadJSON(this.name);
         this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_01.png";
         
         
@@ -1255,54 +1269,9 @@ var hitlag = 1;
 
 var charge_frames = 0;
 
-for (var i = 0; i < monado.length; i++) {
-    characters.push("Shulk (" + monado[i].name + ")");
-    characters.push("Shulk (" + decisive_monado[i].name + ")");
-    characters.push("Shulk (" + hyper_monado[i].name + ")");
-    characters.push("Kirby (" + monado[i].name + ")");
-    names.push("Shulk (" + monado[i].name + ")");
-    names.push("Shulk (" + decisive_monado[i].name + ")");
-    names.push("Shulk (" + hyper_monado[i].name + ")");
-    names.push("Kirby (" + monado[i].name + ")");
-}
-
-characters.push("Wii Fit Trainer (Fast Deep Breathing)");
-characters.push("Wii Fit Trainer (Slow Deep Breathing)");
-names.push("Wii Fit Trainer (Fast Deep Breathing)");
-names.push("Wii Fit Trainer (Slow Deep Breathing)");
-
-characters.push("Cloud (Limit Break)");
-names.push("Cloud (Limit Break)");
-
 function resetCharacterList(varIncluded, customMonado){
     characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
     names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
-
-    if(varIncluded){
-
-        characters.push("Cloud (Limit Break)");
-        names.push("Cloud (Limit Break)");
-
-        for (var i = 0; i < monado.length; i++) {
-            characters.push("Shulk (" + monado[i].name + ")");
-            if(customMonado){
-                characters.push("Shulk (" + decisive_monado[i].name + ")");
-                characters.push("Shulk (" + hyper_monado[i].name + ")");
-            }
-            characters.push("Kirby (" + monado[i].name + ")");
-            names.push("Shulk (" + monado[i].name + ")");
-            if(customMonado){
-                names.push("Shulk (" + decisive_monado[i].name + ")");
-                names.push("Shulk (" + hyper_monado[i].name + ")");
-            }
-            names.push("Kirby (" + monado[i].name + ")");
-        }
-
-        characters.push("Wii Fit Trainer (Fast Deep Breathing)");
-        characters.push("Wii Fit Trainer (Slow Deep Breathing)");
-        names.push("Wii Fit Trainer (Fast Deep Breathing)");
-        names.push("Wii Fit Trainer (Slow Deep Breathing)");
-    }
 
     sorted_characters();
 }
@@ -1393,4 +1362,3 @@ var vectoring = 0;
 
 var landing_lag = 0;
 var stock_dif = "0";
-var game_format = "Singles";

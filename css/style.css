@@ -255,6 +255,14 @@ table,td,tr{
     margin-left:5px;
 }
 
+#attacker-mod-sel{
+    margin-left:88px;
+}
+
+#target-mod-sel{
+    margin-left:75px;
+}
+
 .attribute{
     padding:2px;
 }
