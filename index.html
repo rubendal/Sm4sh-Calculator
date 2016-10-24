@@ -198,6 +198,9 @@
                         <select id="moveset" ng-model="move" ng-change="updateAttack()" ng-style="moveset_style">
                             <option ng-selected="$first" ng:repeat="move in moveset" ng-attr-value="{{move.id}}">{{move.name}}</option>
                         </select>
+                        <span ng-style="{'display': usingHttp ? 'none' : 'initial'}">
+                            <a class="select-link" href="https://github.com/rubendal/Sm4sh-Calculator#kh-api-and-https" target="_blank">?</a>
+                        </span>
                         <br />
                         <a class="select-link" href="http://kuroganehammer.com/Smash4/{{encodedAttackerValue}}" target="_blank">{{attackerName}} frame data</a>
                         <br />

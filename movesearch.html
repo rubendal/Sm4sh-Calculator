@@ -89,7 +89,12 @@
         </div>
     </div>-->
 
-    <span ng-style="loading">{{status}}</span>
+    <span ng-style="loading">
+        {{status}}
+        <span ng-style="{'display': usingHttp ? 'none' : 'initial'}">
+            <a class="select-link" href="https://github.com/rubendal/Sm4sh-Calculator#kh-api-and-https" target="_blank">?</a>
+        </span>
+    </span> 
 
     <div name="calculator" id="calculator" ng-style="filter_interface">
 

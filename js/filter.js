@@ -252,6 +252,7 @@ var characterListId = [];
 
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
+    $scope.usingHttp = inhttp;
     $scope.name = "";
     $scope.options = ["any", "=", "<", "<=", ">", ">=", "between"];
     $scope.sort_options = ["Character","Name","Base damage","Angle","BKB","KBG"];

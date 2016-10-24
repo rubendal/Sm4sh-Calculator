@@ -1,5 +1,6 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
+    $scope.usingHttp = inhttp;
     $scope.attacker_characters = names;
     $scope.characters = names;
     $scope.attackerValue = attacker.name;
