@@ -29,6 +29,8 @@ function getWebProtocol() {
     return p.replace(":", "");
 }
 
+
+
 var inhttp = getWebProtocol() == "http";
 
 var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
@@ -102,7 +104,10 @@ class Character {
             this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15)];
         }
 
-        this.getModifier = function(name){
+        this.getModifier = function (name) {
+            if (this.modifiers.length == 0) {
+                return new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1);
+            }
             for(var i=0;i<this.modifiers.length;i++){
                 if(this.modifiers[i].name == name){
                     return this.modifiers[i];

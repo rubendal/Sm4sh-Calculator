@@ -546,6 +546,7 @@ function getMoveset(attacker, $scope) {
                     try{
                         $scope.$apply(function () {
                             $scope.moveset = moves;
+                            $scope.detectAttack();
                         });
                     } catch (err) {
                         $scope.moveset = moves;

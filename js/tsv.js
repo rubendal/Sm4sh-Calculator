@@ -108,6 +108,7 @@ app.controller('calculator', function ($scope) {
     $scope.attackerValue = attacker.name;
     $scope.attackerName = attacker.name;
     $scope.attackerModifiers = attacker.modifiers;
+    $scope.attackerMod = "Normal";
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
     $scope.targetValue = target.name;
     $scope.targetModifiers = target.modifiers;
@@ -122,6 +123,7 @@ app.controller('calculator', function ($scope) {
     $scope.attacker_icon = attacker.icon;
     $scope.target_icon = target.icon;
     $scope.targetModifiers = target.modifiers;
+    $scope.targetMod = "Normal";
     $scope.baseDamage = base_damage;
     $scope.angle = angle;
     $scope.in_air = in_air;
@@ -819,6 +821,7 @@ app.controller('calculator', function ($scope) {
         }
 
         target = selectedChar;
+        
         target.modifier = target.getModifier(selectedMod);
         $scope.targetModifiers = target.modifiers;
         $scope.targetMod = selectedMod;
