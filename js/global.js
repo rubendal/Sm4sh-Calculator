@@ -433,6 +433,13 @@ function mapParams($scope) {
     if (param) {
         $scope.unblockable = param == 1;
     }
+    param = Parameter.get(get_params, "stage");
+    if (param) {
+        if (!checkUndefined($scope.stageName)) {
+            $scope.stageName = param;
+            $scope.getStage();
+        }
+    }
     param = Parameter.get(get_params, "positionX");
     if (param) {
         if (!checkUndefined($scope.position_x)) {
@@ -456,13 +463,6 @@ function mapParams($scope) {
     param = Parameter.get(get_params, "visGameMode");
     if (param) {
         $scope.game_mode = param;
-    }
-    param = Parameter.get(get_params, "stage");
-    if (param) {
-        if (!checkUndefined($scope.stageName)) {
-            $scope.stageName = param;
-            $scope.getStage();
-        }
     }
     param = Parameter.get(get_params, "visInverse");
     if (param) {
