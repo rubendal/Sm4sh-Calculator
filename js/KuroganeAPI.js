@@ -545,11 +545,20 @@ function getMoveset(attacker, $scope) {
                     
                     try{
                         $scope.$apply(function () {
+                            if ($scope.attackerName != moves[1].character) {
+                                //If this is a previous request ignore it and do not overwrite current move list
+                                return;
+                            }
                             $scope.moveset = moves;
                             $scope.detectAttack();
+                            
                         });
                     } catch (err) {
+                        if ($scope.attackerName != moves[0].character) {
+                            return;
+                        }
                         $scope.moveset = moves;
+                        $scope.detectAttack();
                     }
                 } else {
                     $scope.moveset = [new Move(0, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];

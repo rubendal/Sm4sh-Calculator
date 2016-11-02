@@ -29,7 +29,465 @@ function getWebProtocol() {
     return p.replace(":", "");
 }
 
+class Parameter {
+    constructor(param, value) {
+        this.param = param;
+        this.value = value;
+    }
 
+    static get(list,p) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].param == p) {
+                return list[i].value;
+            }
+        }
+        return undefined;
+    }
+};
+
+function getParameters() {
+    var params = window.location.search;
+    var list = [];
+    params.replace(/([^?=&]+)(=([^&]*))?/gi, function (a, b, c, d) {
+        list.push(new Parameter(b, decodeURI(d)));
+    });
+    return list;
+    
+}
+
+//Parameters and default values
+var paramsList = [
+    new Parameter("attacker", null),
+    new Parameter("attackerModifier", "Normal"),
+    new Parameter("attackerPercent", "0"),
+    new Parameter("target", null),
+    new Parameter("targetModifier", "Normal"),
+    new Parameter("targetPercent", "0"),
+    new Parameter("lumaPercent", "0"),
+    new Parameter("baseDamage", "0"),
+    new Parameter("angle", "361"),
+    new Parameter("aerial", "0"),
+    new Parameter("bkb", "0"),
+    new Parameter("kbg", "0"),
+    new Parameter("wbkb", "0"),
+    new Parameter("smashAttack", "0"),
+    new Parameter("windbox", "0"),
+    new Parameter("shieldDamage", "0"),
+    new Parameter("hitlag", "1"),
+    new Parameter("staleness", "0"),
+    new Parameter("preDamage", "0"),
+    new Parameter("chargeFrames", "0"),
+    new Parameter("hitFrame", "1"),
+    new Parameter("faf", "2"),
+    new Parameter("kbModifier", "none"),
+    new Parameter("electric", "0"),
+    new Parameter("vectoring", "none"),
+    new Parameter("bounce", "0"),
+    new Parameter("projectile", "0"),
+    new Parameter("witchTime", "0"),
+    new Parameter("megamanFsmash", "0"),
+    new Parameter("shield", "normal"),
+    new Parameter("DI", "0"),
+    new Parameter("noDI", "1"),
+    new Parameter("unblockable", "0"),
+    new Parameter("counteredDamage", "0"),
+    new Parameter("counterMult", "0"),
+    new Parameter("stockDif", "0"),
+    new Parameter("gameMode", "Singles"),
+    new Parameter("stage", ""),
+    new Parameter("positionX", "0"),
+    new Parameter("positionY", "0"),
+    new Parameter("visInverse", "0"),
+    new Parameter("visSurface", "0"),
+    new Parameter("visGameMode","vs"),
+    new Parameter("KB", "0"),
+    new Parameter("chargeable","0")
+];
+
+function checkUndefined(value) {
+    return value == undefined;
+};
+
+function boolToString(value) {
+    return value ? "1" : "0";
+}
+
+function buildParams($scope) {
+    var params = [];
+    if (paramsList[0].value != $scope.attackerValue) {
+        params.push(new Parameter(paramsList[0].param, $scope.attackerValue));
+    }
+    if (paramsList[1].value != $scope.attackerMod) {
+        params.push(new Parameter(paramsList[1].param, $scope.attackerMod));
+    }
+    if (paramsList[2].value != $scope.attacker_percent) {
+        params.push(new Parameter(paramsList[2].param, $scope.attacker_percent));
+    }
+    if (paramsList[3].value != $scope.targetValue) {
+        params.push(new Parameter(paramsList[3].param, $scope.targetValue));
+    }
+    if (paramsList[4].value != $scope.targetMod) {
+        params.push(new Parameter(paramsList[4].param, $scope.targetMod));
+    }
+    if (paramsList[5].value != $scope.target_percent) {
+        params.push(new Parameter(paramsList[5].param, $scope.target_percent));
+    }
+    if (paramsList[6].value != $scope.luma_percent) {
+        params.push(new Parameter(paramsList[6].param, $scope.luma_percent));
+    }
+    if (paramsList[7].value != $scope.baseDamage) {
+        params.push(new Parameter(paramsList[7].param, $scope.baseDamage));
+    }
+    if (paramsList[8].value != $scope.angle) {
+        params.push(new Parameter(paramsList[8].param, $scope.angle));
+    }
+    if (paramsList[9].value != boolToString($scope.aerial)) {
+        params.push(new Parameter(paramsList[9].param, boolToString($scope.aerial)));
+    }
+    if (paramsList[10].value != $scope.bkb) {
+        params.push(new Parameter(paramsList[10].param, $scope.bkb));
+    }
+    if (paramsList[11].value != $scope.kbg) {
+        params.push(new Parameter(paramsList[11].param, $scope.kbg));
+    }
+    if (paramsList[12].value != boolToString($scope.wbkb)) {
+        params.push(new Parameter(paramsList[12].param, boolToString($scope.wbkb)));
+    }
+    if (paramsList[13].value != boolToString($scope.is_smash)) {
+        params.push(new Parameter(paramsList[13].param, boolToString($scope.is_smash)));
+    }
+    if (paramsList[14].value != boolToString($scope.windbox)) {
+        params.push(new Parameter(paramsList[14].param, boolToString($scope.windbox)));
+    }
+    if ($scope.app != "kbcalculator") {
+        if (paramsList[15].value != $scope.shieldDamage) {
+            params.push(new Parameter(paramsList[15].param, $scope.shieldDamage));
+        }
+        if (paramsList[16].value != $scope.hitlag) {
+            params.push(new Parameter(paramsList[16].param, $scope.hitlag));
+        }
+    }
+    if (paramsList[17].value != $scope.stale) {
+        params.push(new Parameter(paramsList[17].param, $scope.stale));
+    }
+    if (paramsList[18].value != $scope.preDamage) {
+        params.push(new Parameter(paramsList[18].param, $scope.preDamage));
+    }
+    if (paramsList[19].value != $scope.smashCharge) {
+        params.push(new Parameter(paramsList[19].param, $scope.smashCharge));
+    }
+    if (paramsList[22].value != $scope.kb_modifier) {
+        params.push(new Parameter(paramsList[22].param, $scope.kb_modifier));
+    }
+    if ($scope.app != "kbcalculator") {
+        if (paramsList[23].value != boolToString($scope.hitlag_modifier == "electric")) {
+            params.push(new Parameter(paramsList[23].param, boolToString($scope.hitlag_modifier == "electric")));
+        }
+    }
+    if (paramsList[24].value != $scope.vectoring) {
+        params.push(new Parameter(paramsList[24].param, $scope.vectoring));
+    }
+    if (paramsList[25].value != boolToString($scope.kb_modifier_bounce)) {
+        params.push(new Parameter(paramsList[25].param, boolToString($scope.kb_modifier_bounce)));
+    }
+    if (paramsList[26].value != boolToString($scope.is_projectile)) {
+        params.push(new Parameter(paramsList[26].param, boolToString($scope.is_projectile)));
+    }
+    if (paramsList[27].value != boolToString($scope.witch_time_charge)) {
+        params.push(new Parameter(paramsList[27].param, boolToString($scope.witch_time_charge)));
+    }
+    if (paramsList[28].value != boolToString($scope.megaman_fsmash)) {
+        params.push(new Parameter(paramsList[28].param, boolToString($scope.megaman_fsmash)));
+    }
+    if (paramsList[30].value != $scope.di) {
+        params.push(new Parameter(paramsList[30].param, $scope.di));
+    }
+    if (paramsList[31].value != boolToString($scope.noDI)) {
+        params.push(new Parameter(paramsList[31].param, boolToString($scope.noDI)));
+    }
+    if ($scope.app != "kbcalculator") {
+        if (paramsList[20].value != $scope.hit_frame) {
+            params.push(new Parameter(paramsList[20].param, $scope.hit_frame));
+        }
+        if (paramsList[21].value != $scope.faf) {
+            params.push(new Parameter(paramsList[21].param, $scope.faf));
+        }
+        if (paramsList[29].value != $scope.shield) {
+            params.push(new Parameter(paramsList[29].param, $scope.shield));
+        }
+    }
+    if (paramsList[32].value != boolToString($scope.unblockable)) {
+        params.push(new Parameter(paramsList[32].param, boolToString($scope.unblockable)));
+    }
+    if (paramsList[33].value != $scope.counteredDamage) {
+        params.push(new Parameter(paramsList[33].param, $scope.counteredDamage));
+    }
+    if (paramsList[34].value != $scope.counterMult) {
+        params.push(new Parameter(paramsList[34].param, $scope.counterMult));
+    }
+    if (paramsList[35].value != $scope.stock_dif) {
+        params.push(new Parameter(paramsList[35].param, $scope.stock_dif));
+    }
+    if (paramsList[36].value != $scope.format) {
+        params.push(new Parameter(paramsList[36].param, $scope.format));
+    }
+    if (paramsList[44].value != boolToString($scope.charge_special)) {
+        params.push(new Parameter(paramsList[44].param, boolToString($scope.charge_special)));
+    }
+    if ($scope.app == "calculator") {
+        if (paramsList[37].value != $scope.stageName) {
+            params.push(new Parameter(paramsList[37].param, $scope.stageName));
+        }
+        if (paramsList[38].value != $scope.position_x) {
+            params.push(new Parameter(paramsList[38].param, $scope.position_x));
+        }
+        if (paramsList[39].value != $scope.position_y) {
+            params.push(new Parameter(paramsList[39].param, $scope.position_y));
+        }
+        if (paramsList[40].value != boolToString($scope.inverseX)) {
+            params.push(new Parameter(paramsList[40].param, boolToString($scope.inverseX)));
+        }
+        if (paramsList[41].value != boolToString($scope.surface)) {
+            params.push(new Parameter(paramsList[41].param, boolToString($scope.surface)));
+        }
+        if (paramsList[42].value != $scope.game_mode) {
+            params.push(new Parameter(paramsList[42].param, $scope.game_mode));
+        }
+    } else if ($scope.app == "kbcalculator") {
+        if (paramsList[43].value != $scope.kb) {
+            params.push(new Parameter(paramsList[43].param, $scope.kb));
+        }
+    }
+    return params;
+}
+
+function buildURL($scope) {
+    var url = window.location.href;
+    url = url.replace(window.location.search, "") + "?";
+    var p = "";
+    var params = buildParams($scope);
+    for (var i = 0; i < params.length; i++) {
+        if (i != 0) {
+            p += "&";
+        }
+        p += params[i].param + "=" + encodeURI(params[i].value);
+    }
+    return url + p;
+}
+
+var get_params = getParameters();
+
+function mapParams($scope) {
+    //Calculators
+    var param = Parameter.get(get_params, "attacker");
+    if (param) {
+        $scope.attackerValue = param;
+        $scope.updateAttacker();
+    }
+    param = Parameter.get(get_params, "attackerModifier");
+    if (param) {
+        $scope.attackerMod = param;
+        $scope.updateAttackerMod();
+    }
+    param = Parameter.get(get_params, "target");
+    if (param) {
+        $scope.targetValue = param;
+        $scope.updateTarget();
+    }
+    param = Parameter.get(get_params, "targetModifier");
+    if (param) {
+        $scope.targetMod = param;
+        $scope.updateTargetMod();
+    }
+    param = Parameter.get(get_params, "attackerPercent");
+    if (param) {
+        $scope.attackerPercent = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "targetPercent");
+    if (param) {
+        $scope.targetPercent = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "lumaPercent");
+    if (param) {
+        $scope.luma_percent = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "baseDamage");
+    if (param) {
+        $scope.baseDamage = parseFloat(param);
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "angle");
+    if (param) {
+        $scope.angle = parseFloat(param);
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "aerial");
+    if (param) {
+        $scope.in_air = param == "1";
+    }
+    param = Parameter.get(get_params, "bkb");
+    if (param) {
+        $scope.bkb = parseFloat(param);
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "wbkb");
+    if (param) {
+        $scope.wbkb = param == "1";
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "smashAttack");
+    if (param) {
+        $scope.is_smash = param == "1";
+        $scope.updateAttackData();
+        $scope.checkSmashVisibility();
+    }
+    param = Parameter.get(get_params, "windbox");
+    if (param) {
+        $scope.windbox = param == "1";
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "kbg");
+    if (param) {
+        $scope.kbg = parseFloat(param);
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "shieldDamage");
+    if (param) {
+        $scope.shieldDamage = parseFloat(param);
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "staleness");
+    if (param) {
+        $scope.stale = param;
+    }
+    param = Parameter.get(get_params, "hitlag");
+    if (param) {
+        $scope.hitlag = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "preDamage");
+    if (param) {
+        $scope.preDamage = param;
+        $scope.updateAttackData();
+    }
+    param = Parameter.get(get_params, "hitFrame");
+    if (param) {
+        $scope.hit_frame = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "faf");
+    if (param) {
+        $scope.faf = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "electric");
+    if (param) {
+        $scope.hitlag_modifier = param == "1" ? "electric" : "none";
+    }
+    param = Parameter.get(get_params, "kbModifier");
+    if (param) {
+        $scope.kb_modifier = param;
+    }
+    param = Parameter.get(get_params, "vectoring");
+    if (param) {
+        $scope.vectoring = param;
+    }
+    param = Parameter.get(get_params, "bounce");
+    if (param) {
+        $scope.kb_modifier_bounce = param == "1";
+    }
+    param = Parameter.get(get_params, "witchTime");
+    if (param) {
+        $scope.witch_time_charge = param == "1";
+    }
+    param = Parameter.get(get_params, "megamanFsmash");
+    if (param) {
+        $scope.megaman_fsmash = param == "1";
+    }
+    param = Parameter.get(get_params, "chargeable");
+    if (param) {
+        $scope.charge_special = param == "1";
+    }
+    param = Parameter.get(get_params, "projectile");
+    if (param) {
+        $scope.is_projectile = param == "1";
+    }
+    param = Parameter.get(get_params, "shield");
+    if (param) {
+        $scope.shield = param;
+    }
+    param = Parameter.get(get_params, "DI");
+    if (param) {
+        $scope.di = parseFloat(param);
+    }
+    param = Parameter.get(get_params, "noDI");
+    if (param) {
+        $scope.noDI = param == 1;
+    }
+    param = Parameter.get(get_params, "counteredDamage");
+    if (param) {
+        $scope.counteredDamage = param;
+    }
+    param = Parameter.get(get_params, "counterMult");
+    if (param) {
+        $scope.counterMult = param;
+    }
+    param = Parameter.get(get_params, "unblockable");
+    if (param) {
+        $scope.unblockable = param == 1;
+    }
+    param = Parameter.get(get_params, "positionX");
+    if (param) {
+        if (!checkUndefined($scope.position_x)) {
+            $scope.position_x = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "positionY");
+    if (param) {
+        if (!checkUndefined($scope.position_y)) {
+            $scope.position_y = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "stockDif");
+    if (param) {
+        $scope.stock_dif = param;
+    }
+    param = Parameter.get(get_params, "gameMode");
+    if (param) {
+        $scope.format = param;
+    }
+    param = Parameter.get(get_params, "visGameMode");
+    if (param) {
+        $scope.game_mode = param;
+    }
+    param = Parameter.get(get_params, "stage");
+    if (param) {
+        if (!checkUndefined($scope.stageName)) {
+            $scope.stageName = param;
+            $scope.getStage();
+        }
+    }
+    param = Parameter.get(get_params, "visInverse");
+    if (param) {
+        if (!checkUndefined($scope.inverseX)) {
+            $scope.inverseX = param == 1;
+        }
+    }
+    param = Parameter.get(get_params, "visSurface");
+    if (param) {
+        if ($scope.surface != undefined) {
+            $scope.surface = param == 1;
+        }
+    }
+    param = Parameter.get(get_params, "KB");
+    if (param) {
+        if ($scope.kb != undefined) {
+            $scope.kb = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "chargeFrames");
+    if (param) {
+        $scope.smashCharge = parseFloat(param);
+        $scope.updateCharge();
+    }
+}
 
 var inhttp = getWebProtocol() == "http";
 
@@ -1271,11 +1729,11 @@ var target = new Character("Bayonetta");
 
 var attacker_percent = 0;
 var target_percent = 0;
-var base_damage = 2.5;
-var angle = 361;
+var base_damage = 1.5;
+var angle = 55;
 var in_air = false;
-var bkb = 15;
-var kbg = 100;
+var bkb = 45;
+var kbg = 25;
 var stale = 0;
 var hitlag = 1;
 
@@ -1339,8 +1797,8 @@ function HitlagElectric(value) {
     return 1;
 }
 
-var hitframe = 0;
-var faf = 1;
+var hitframe = 9;
+var faf = 26;
 
 var bounce = false;
 var ignoreStale = false;
@@ -1356,7 +1814,7 @@ var is_smash = false;
 
 var wbkb = false;
 var windbox = false;
-var di = 0;
+var di = 55;
 var luma_percent = 0;
 
 var shieldDamage = 0;

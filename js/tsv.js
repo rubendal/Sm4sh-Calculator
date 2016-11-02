@@ -102,6 +102,8 @@ function showSaveDialog(data){
 
 var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
+    $scope.app = 'tsvgen';
+    $scope.sharing_url = "";
     $scope.usingHttp = inhttp;
     $scope.attacker_characters = names;
     $scope.characters = names;
@@ -134,12 +136,12 @@ app.controller('calculator', function ($scope) {
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
     $scope.shield = "normal";
-    $scope.hit_frame = 0;
-    $scope.faf = 1;
+    $scope.hit_frame = hitframe;
+    $scope.faf = faf;
     $scope.shieldDamage = 0;
 
     $scope.preDamage = 0;
-    $scope.di = 0;
+    $scope.di = di;
     $scope.noDI = true;
 
     $scope.lumaPercent = 0;
@@ -177,6 +179,11 @@ app.controller('calculator', function ($scope) {
 
     $scope.status = "Calculate and store data";
     $scope.charging_frames_type = "Charging frames";
+
+    $scope.charge_frames = 0;
+    $scope.attacker_percent = 0;
+    $scope.target_percent = 0;
+    $scope.luma_percent = 0;
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -236,9 +243,13 @@ app.controller('calculator', function ($scope) {
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
                     $scope.charge_data = $scope.selected_move.charge;
-                    $scope.smashCharge = $scope.charge_data.min;
                     $scope.charge_min = $scope.charge_data.min;
                     $scope.charge_max = $scope.charge_data.max;
+                    if ($scope.smashCharge < $scope.charge_data.min) {
+                        $scope.smashCharge = $scope.charge_data.min;
+                    } else if ($scope.smashCharge > $scope.charge_data.max) {
+                        $scope.smashCharge = $scope.charge_data.max;
+                    }
                     $scope.charge_special = true;
                     $scope.is_smash = true;
                     $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
@@ -256,7 +267,7 @@ app.controller('calculator', function ($scope) {
             }else{
                 $scope.charge_data = null;
                 $scope.charge_min = 0;
-                $scope.smashCharge = 0;
+                //$scope.smashCharge = 0;
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
@@ -416,6 +427,10 @@ app.controller('calculator', function ($scope) {
         var detected = false;
         for (var i = 1; i < $scope.moveset.length; i++) {
             attack = $scope.moveset[i];
+            if (attack.character != $scope.attackerValue) {
+                //Using another character moveset
+                return false;
+            }
             if (attack.valid) {
                 if ($scope.angle == attack.angle &&
                     $scope.baseDamage == attack.base_damage &&
@@ -591,6 +606,8 @@ app.controller('calculator', function ($scope) {
         }else{
             $scope.status = "Calculate and store data";
         }
+
+        $scope.sharing_url = buildURL($scope);
 
     };
 
@@ -884,6 +901,8 @@ app.controller('calculator', function ($scope) {
     $scope.collapse = function (id) {
         $("#" + id).collapse('toggle');
     }
+
+    mapParams($scope);
 
     $scope.tsv_options();
 });

@@ -4,24 +4,17 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - URL Sharing
+* Changed - Improved move detection, also chargeable specials can be detected
+* Probably fixed - Move list loading bug, when changing characters sometimes previous character moves were loaded
 * Changed - Character attribute modifiers (Monado Arts, Limit Break, Deep Breathing) are now selected in a different location instead of all being in the character selection inputs
 * Changed - New design
 * Added - [Lucario's Aura stock difference multipliers](https://twitter.com/KuroganeHammer/status/784017200721965057)
 * Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas
 * Added - Calculate aerials FAF using landing lag or autocancel
-* Fixed - Jump Monado Art Fall speed multiplier
-* Changed - Display horizontal and vertical launch speed instead of launch speed at launch direction
-* Changed - Vectoring and gravity affect launch speed instead of knockback
-* Added - Stage spawn positions added
-* Fixed - Improved distance calculation and launch visualizer can now show sliding off surfaces and multiple bouncing off on stage surfaces
-* Added - Vectoring knockback multiplier
-* Changed - On Results page maximum distance for training and vs modes is calculated instead of the one selected for the visualizer 
-* Added - Detect Mega Man's Fsmash
-* Fixed - Samus and Mii Gunner gravity values
-* Added - Ryu True specials
 
 ### KH API and HTTPS
-To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for attack list, some attacks might have missing data, these will show empty inputs since the API isn't complete or the website doesn't have them, also it could have wrong data so double check with the website
+To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for move list, switching the url to http will solve this issue
 
 ### How to use it
 Just input your data, the calculator will update the results when you change something

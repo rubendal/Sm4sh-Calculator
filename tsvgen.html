@@ -298,6 +298,15 @@
                     </div>
                 </div>
             </div>
+
+            <a class="select-link cur-link" ng-click="collapse('sharing')">
+                <div class="card header-group" style="background:rgba(31, 12, 14, 0.75)">
+                    <span class="cur-link">Share</span>
+                </div>
+            </a>
+            <div id="sharing" class="card-block collapse group">
+                Copy this URL <input id="shareurl" style="width:650px;" readonly type="text" ng-model="sharing_url" onclick="this.select();" />
+            </div>
             
         </div>
 

@@ -1,5 +1,7 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
+    $scope.app = 'calculator';
+    $scope.sharing_url = "";
     $scope.usingHttp = inhttp;
     $scope.attacker_characters = names;
     $scope.characters = names;
@@ -26,19 +28,26 @@ app.controller('calculator', function ($scope) {
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
     $scope.shield = "normal";
-    $scope.hit_frame = 0;
-    $scope.faf = 1;
+    $scope.hit_frame = hitframe;
+    $scope.faf = faf;
     $scope.shieldDamage = 0;
     $scope.charging_frames_type = "Charging frames";
 
     $scope.hitbox_active_index = 0;
 
     $scope.preDamage = 0;
-    $scope.di = 0;
+    $scope.di = di;
     $scope.noDI = true;
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
+
+    $scope.attackerMod = "Normal";
+    $scope.targetMod = "Normal";
+    $scope.charge_frames = 0;
+    $scope.attacker_percent = 0;
+    $scope.target_percent = 0;
+    $scope.luma_percent = 0;
 
     $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
     $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
@@ -107,8 +116,21 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
+    $scope.stageName = "";
+
+    $scope.getStage = function () {
+        for (var i = 0; i < $scope.stages.length; i++) {
+            if ($scope.stages[i].stage == $scope.stageName) {
+                $scope.stageValue = JSON.stringify($scope.stages[i]);
+                $scope.updateStage();
+                return;
+            }
+        }
+    }
+
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
+        $scope.stageName = $scope.stage.stage;
         if($scope.stage.stage == "No stage"){
             $scope.stage = null;
             $scope.spawns = [];
@@ -178,9 +200,13 @@ app.controller('calculator', function ($scope) {
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
                     $scope.charge_data = $scope.selected_move.charge;
-                    $scope.smashCharge = $scope.charge_data.min;
                     $scope.charge_min = $scope.charge_data.min;
                     $scope.charge_max = $scope.charge_data.max;
+                    if ($scope.smashCharge < $scope.charge_data.min) {
+                        $scope.smashCharge = $scope.charge_data.min;
+                    } else if ($scope.smashCharge > $scope.charge_data.max) {
+                        $scope.smashCharge = $scope.charge_data.max;
+                    }
                     $scope.charge_special = true;
                     $scope.is_smash = true;
                     $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
@@ -198,7 +224,7 @@ app.controller('calculator', function ($scope) {
             }else{
                 $scope.charge_data = null;
                 $scope.charge_min = 0;
-                $scope.smashCharge = 0;
+                //$scope.smashCharge = 0;
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
@@ -453,6 +479,10 @@ app.controller('calculator', function ($scope) {
         var detected = false;
         for (var i = 1; i < $scope.moveset.length; i++) {
             attack = $scope.moveset[i];
+            if (attack.character != $scope.attackerValue) {
+                //Using another character moveset
+                return false;
+            }
             if (attack.valid) {
                 if ($scope.angle == attack.angle &&
                     $scope.baseDamage == attack.base_damage &&
@@ -485,7 +515,7 @@ app.controller('calculator', function ($scope) {
                         $scope.bkb == attack.bkb &&
                         $scope.kbg == attack.kbg &&
                         $scope.wbkb == attack.wbkb &&
-                        $scope.is_smash == attack.smash_attack &&
+                        $scope.is_smash == (attack.smash_attack || attack.chargeable) &&
                         $scope.windbox == attack.windbox &&
                         $scope.shieldDamage == attack.shieldDamage &&
                         (attack.chargeable || attack.counterMult != 0)) {
@@ -525,7 +555,7 @@ app.controller('calculator', function ($scope) {
     $scope.calculate = function (){
         var result = { 'training': [], 'vs': [], 'shield': [] };
 
-        if($scope.charge_data == null){
+        if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
         if (attacker.name == "Lucario") {
@@ -771,7 +801,7 @@ app.controller('calculator', function ($scope) {
         $scope.vs = results.vs;
         $scope.shield_advantage = results.shield;
 
-
+        $scope.sharing_url = buildURL($scope);
     };
 
     $scope.check_graph = function () {
@@ -784,6 +814,8 @@ app.controller('calculator', function ($scope) {
     $scope.collapse = function (id) {
         $("#" + id).collapse('toggle');
     }
+
+    mapParams($scope);
 
     $scope.update();
 });
