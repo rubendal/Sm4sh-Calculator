@@ -120,8 +120,8 @@ function buildParams($scope) {
     if (paramsList[1].value != $scope.attackerMod) {
         params.push(new Parameter(paramsList[1].param, $scope.attackerMod));
     }
-    if (paramsList[2].value != $scope.attacker_percent) {
-        params.push(new Parameter(paramsList[2].param, $scope.attacker_percent));
+    if (paramsList[2].value != $scope.attackerPercent) {
+        params.push(new Parameter(paramsList[2].param, $scope.attackerPercent));
     }
     if (paramsList[3].value != $scope.targetValue) {
         params.push(new Parameter(paramsList[3].param, $scope.targetValue));
@@ -129,11 +129,11 @@ function buildParams($scope) {
     if (paramsList[4].value != $scope.targetMod) {
         params.push(new Parameter(paramsList[4].param, $scope.targetMod));
     }
-    if (paramsList[5].value != $scope.target_percent) {
-        params.push(new Parameter(paramsList[5].param, $scope.target_percent));
+    if (paramsList[5].value != $scope.targetPercent) {
+        params.push(new Parameter(paramsList[5].param, $scope.targetPercent));
     }
-    if (paramsList[6].value != $scope.luma_percent) {
-        params.push(new Parameter(paramsList[6].param, $scope.luma_percent));
+    if (paramsList[6].value != $scope.lumaPercent) {
+        params.push(new Parameter(paramsList[6].param, $scope.lumaPercent));
     }
     if (paramsList[7].value != $scope.baseDamage) {
         params.push(new Parameter(paramsList[7].param, $scope.baseDamage));
@@ -309,7 +309,7 @@ function mapParams($scope) {
     }
     param = Parameter.get(get_params, "lumaPercent");
     if (param) {
-        $scope.luma_percent = parseFloat(param);
+        $scope.lumaPercent = parseFloat(param);
     }
     param = Parameter.get(get_params, "baseDamage");
     if (param) {
