@@ -49,7 +49,7 @@ function getParameters() {
     var params = window.location.search;
     var list = [];
     params.replace(/([^?=&]+)(=([^&]*))?/gi, function (a, b, c, d) {
-        list.push(new Parameter(b, decodeURI(d)));
+        list.push(new Parameter(b, decodeURI(d.replace("%26","&"))));
     });
     return list;
     
@@ -270,7 +270,9 @@ function buildURL($scope) {
         if (i != 0) {
             p += "&";
         }
-        p += params[i].param + "=" + encodeURI(params[i].value);
+        var u = encodeURI(params[i].value);
+        u = u.replace("&","%26");
+        p += params[i].param + "=" + u;
     }
     return url + p;
 }
