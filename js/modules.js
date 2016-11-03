@@ -547,7 +547,7 @@ app.controller('calculator', function ($scope) {
         $scope.target_kb_received = target.modifier.kb_received;
         $scope.target_fall_speed = target.attributes.fall_speed * target.modifier.fall_speed;
         $scope.target_traction = target.attributes.traction * target.modifier.traction;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
+        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none" };
         $scope.lumaPercent = 0;
         $scope.update();
     }

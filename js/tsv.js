@@ -489,7 +489,7 @@ app.controller('calculator', function ($scope) {
         $scope.targetModifiers = target.modifiers;
         $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
         $scope.target_icon = target.icon;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none", "margin-left": "292px" };
+        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none" };
         $scope.lumaPercent = 0;
         $scope.update();
     }

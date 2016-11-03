@@ -76,6 +76,11 @@ input[type=number]{
     left:730px;
 }
 
+.luma{
+    margin-left:175px;
+    color:black;
+}
+
 #vs{
     position: relative;
     float:right;

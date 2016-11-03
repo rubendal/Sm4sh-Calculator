@@ -132,7 +132,7 @@
                                     <option ng-selected="$first" ng:repeat="mod in targetModifiers" ng-attr-value="{{mod.name}}">{{mod.name}}</option>
                                 </select>
                             </div>
-                            <div ng-style="lumaclass">
+                            <div ng-style="lumaclass" class="luma">
                                 Luma
                                 <input name="luma_target_percent" type="number" min="0" max="50" step="0.5" ng-model="lumaPercent" ng-change="update()" />
                                 %
