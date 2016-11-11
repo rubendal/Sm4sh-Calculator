@@ -977,8 +977,9 @@ class Distance{
         var color = "blue";
         var dir = 1;
         var data = [];
-        var airdodge = AirdodgeCancel(kb, false);
-        var aerial = AerialCancel(kb, false);
+        var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
+        var airdodge = hc.airdodge;
+        var aerial = hc.aerial;
         for(var i = 0; i < this.x.length; i++){
             var xdata = [];
             var ydata = [];

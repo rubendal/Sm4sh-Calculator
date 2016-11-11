@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Hitstun cancel calculation process
 * Added - URL Sharing
 * Changed - Improved move detection, also chargeable specials can be detected
 * Probably fixed - Move list loading bug, when changing characters sometimes previous character moves were loaded
@@ -34,7 +35,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * DI angle
 * Knockback Horizontal and Vertical components
 * Hitstun
-* Hitstun cancel frames (Not 100% accurate)
+* Hitstun cancel frames
 * Determine if the move can jab lock
 * Shield stun
 * Shield Hitlag

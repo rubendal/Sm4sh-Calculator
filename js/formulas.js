@@ -151,47 +151,54 @@ function FirstActionableFrame(kb, windbox) {
     return hitstun + 1;
 }
 
-function AerialCancel(kb, windbox) {
+function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox) {
+    var res = { 'airdodge': 0, 'aerial': 0 };
+    if (windbox) {
+        return res;
+    }
     var hitstun = Hitstun(kb, windbox);
-    if (hitstun < 46) {
-        return FirstActionableFrame(kb);
+    var res = { 'airdodge': hitstun + 1, 'aerial': hitstun + 1 };
+    var airdodge = false;
+    var aerial = false;
+    var launch_speed = { 'x': launch_speed_x, 'y': launch_speed_y };
+    var decay = { 'x': 0.051 * Math.cos(angle * Math.PI / 180), 'y': 0.051 * Math.sin(angle * Math.PI / 180) };
+    for (var i = 0; i < hitstun; i++) {
+        if (launch_speed.x != 0) {
+            var x_dir = launch_speed.x / Math.abs(launch_speed.x);
+            launch_speed.x -= decay.x;
+            if (x_dir == -1 && launch_speed.x > 0) {
+                launch_speed.x = 0;
+            } else if (x_dir == 1 && launch_speed.x < 0) {
+                launch_speed.x = 0;
+            }
+        }
+        if (launch_speed.y != 0) {
+            var y_dir = launch_speed.y / Math.abs(launch_speed.y);
+            launch_speed.y -= decay.y;
+            if (y_dir == -1 && launch_speed.y > 0) {
+                launch_speed.y = 0;
+            } else if (y_dir == 1 && launch_speed.y < 0) {
+                launch_speed.y = 0;
+            }
+        }
+        var lc = Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2));
+        if (lc < 2.5 && !airdodge) {
+            airdodge = true;
+            res.airdodge = Math.max(i + 1, 41);
+        }
+        if (lc < 2 && !aerial) {
+            aerial = true;
+            res.aerial = Math.max(i + 1, 46);
+        }
     }
-    if (hitstun >= 46 && hitstun < 55) {
-        return 46;
-    }
-    if (kb >= 180) {
-        return FirstActionableFrame(kb);
-    }
-    var percent = 1 - ((hitstun - 41) / (70 - 41));
-    if (percent > .09) {
-        percent = .09;
-    }
-    var res = Math.floor(hitstun - (hitstun * percent));
-    if (res < 46) {
-        return 46;
-    }
-    return res;
-}
 
-function AirdodgeCancel(kb, windbox) {
-    var hitstun = Hitstun(kb, windbox);
-    if (hitstun < 41) {
-        return FirstActionableFrame(kb);
+    if (res.airdodge > hitstun) {
+        res.airdodge = hitstun + 1;
     }
-    if (hitstun >= 41 && hitstun < 59) {
-        return 41;
+    if (res.aerial > hitstun) {
+        res.aerial = hitstun + 1;
     }
-    if (kb >= 230) {
-        return FirstActionableFrame(kb);
-    }
-    var percent = 1 - ((hitstun - 41) / (90 - 41));
-    if (percent > .15) {
-        percent = .15;
-    }
-    var res = Math.floor(hitstun - (hitstun * percent));
-    if (res < 41) {
-        return 41;
-    }
+    
     return res;
 }
 
