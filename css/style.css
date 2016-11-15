@@ -306,3 +306,7 @@ table,td,tr{
     padding: .3rem .3rem;
     font-size:13px;
 }
+
+.auraParam{
+    margin-left:30px;
+}

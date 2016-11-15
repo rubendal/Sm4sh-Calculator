@@ -111,6 +111,23 @@
                             </select>
                             <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
                             %
+                            <div ng-style="is_lucario">
+                                <br />
+                                <span class="auraParam">
+                                    Stock difference:
+                                    <select ng-model="stock_dif" ng-change="update()">
+                                        <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                                    </select>
+                                </span>
+                                <br />
+                                <span class="auraParam">
+                                    Game mode:
+                                    <select ng-model="format" ng-change="update()">
+                                        <option ng:repeat="value in formats" ng-attr-value="{{value}}">{{value}}</option>
+                                    </select>
+                                </span>
+                                    <br />
+</div>
                             <div id="attacker-mod-sel" ng-style="attacker_mod">
                                 <br />
                                 <select name="attackerMod" ng-model="attackerMod" ng-change="updateAttackerMod()">

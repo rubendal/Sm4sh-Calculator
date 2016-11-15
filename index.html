@@ -109,6 +109,14 @@
                             </select>
                             <input name="attacker_percent" type="number" min="0" max="999" step="0.5" ng-model="attackerPercent" ng-change="update()" />
                             %
+                            <div ng-style="is_lucario" class="auraParam">
+                                <br/>
+                                Stock difference:
+                                <select ng-model="stock_dif" ng-change="update()">
+                                    <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
+                                </select>
+                                <br />
+                            </div>
                             <div id="attacker-mod-sel" ng-style="attacker_mod">
                                 <br />
                                 <select name="attackerMod" ng-model="attackerMod" ng-change="updateAttackerMod()">
@@ -154,13 +162,7 @@
                         KB dealt: x
                         <input name="attacker_kb_dealt" type="number" min="0" max="100" step="0.01" ng-model="attacker_kb_dealt" ng-change="updateAttr()" />
                         <br />
-                        <div ng-style="is_lucario">
-                            Stock difference:
-                            <select ng-model="stock_dif" ng-change="update()">
-                                <option ng:repeat="value in stock_values" ng-attr-value="{{value}}">{{value}}</option>
-                            </select>
-                            <br />
-                        </div>
+                        
                     </div>
                     <div class="pos-right pos-attr">
                         Target
