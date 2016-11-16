@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Hit Advantage
 * Added - Hitstun cancel calculation process
 * Added - URL Sharing
 * Changed - Improved move detection, also chargeable specials can be detected

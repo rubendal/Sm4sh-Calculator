@@ -290,6 +290,10 @@ function LaunchSpeed(kb){
     return kb * 0.03;
 }
 
+function HitAdvantage(hitstun, hitframe, faf) {
+    return hitstun - (faf - hitframe);
+}
+
 //Launch visualizer formulas
 
 function InvertXAngle(angle){

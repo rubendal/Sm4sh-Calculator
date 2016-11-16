@@ -1606,8 +1606,8 @@ class ListItem {
             this.addStyle({ 'color': 'red' });
             this.value = "Invalid data";
         } else {
-            if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag" || attribute == "Shield stun" || attribute == "Shield Hitlag" || attribute == "Shield Advantage") {
-                this.value = value + " frames";
+            if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag" || attribute == "Shield stun" || attribute == "Shield Hitlag" || attribute == "Shield Advantage" || attribute == "Hit Advantage") {
+                this.value = value + (value == 1 ? " frame" : " frames");
             } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
                 this.value = "Frame " + value;
             } else {
@@ -1633,7 +1633,7 @@ class ListItem {
         { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80 and angle isn't 0 or 180" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
         { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
-        { "attribute": "DI angle", "title": "Angle affected by DI" },
+        { "attribute": "Launch angle", "title": "Angle the target is launched affected by DI" },
         { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
         { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" },
         { "attribute": "Shield Damage", "title": "Damage done to target shield, (damage + SD) * 1.19" },
@@ -1642,7 +1642,8 @@ class ListItem {
         { "attribute": "Shield stun", "title": "Amount of frames target target cannot do any action after shielding an attack" },
         { "attribute": "Shield Hitlag", "title": "Amount of frames target suffers hitlag while shielding" },
         { "attribute": "Shield Advantage", "title": "" },
-        { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" }];
+        { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" },
+        { "attribute": "Hit Advantage", "title": "" }];
         for (var i = 0; i < titles.length; i++) {
             if (attribute == titles[i].attribute) {
                 return titles[i].title;

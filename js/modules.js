@@ -613,10 +613,10 @@ app.controller('calculator', function ($scope) {
         var traininglist = List([damage, Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), trainingkb.kb, trainingkb.base_angle, trainingkb.x, trainingkb.y, Hitstun(trainingkb.base_kb, windbox), FirstActionableFrame(trainingkb.base_kb, windbox), t_hc.airdodge, t_hc.aerial, trainingkb.vectoring, trainingkb.horizontal_launch_speed, +trainingkb.add_gravity_speed.toFixed(4), trainingkb.vertical_launch_speed, trainingDistance.max_x, trainingDistance.max_y]);
         var vslist = List([StaleDamage(damage, stale, ignoreStale), Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), vskb.kb, vskb.base_angle, vskb.x, vskb.y, Hitstun(vskb.base_kb, windbox), FirstActionableFrame(vskb.base_kb, windbox), v_hc.airdodge, v_hc.aerial, vskb.vectoring, vskb.horizontal_launch_speed, +vskb.add_gravity_speed.toFixed(4), vskb.vertical_launch_speed, vsDistance.max_x, vsDistance.max_y]);
         if (trainingkb.di_able) {
-            traininglist.splice(5, 0, new ListItem("DI angle", + +trainingkb.angle.toFixed(4)));
+            traininglist.splice(5, 0, new ListItem("Launch angle", + +trainingkb.angle.toFixed(4)));
         }
         if (vskb.di_able) {
-            vslist.splice(5, 0, new ListItem("DI angle", + +vskb.angle.toFixed(4)));
+            vslist.splice(5, 0, new ListItem("Launch angle", + +vskb.angle.toFixed(4)));
         }
         if (r != 1) {
             traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
@@ -665,6 +665,9 @@ app.controller('calculator', function ($scope) {
         }
         traininglist.push(new ListItem("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No"));
         vslist.push(new ListItem("Can Jab lock", vskb.can_jablock ? "Yes" : "No"));
+
+        traininglist.push(new ListItem("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf)));
+        vslist.push(new ListItem("Hit Advantage", HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf)));
 
         if (target.name == "Rosalina And Luma") {
             if (!wbkb) {
