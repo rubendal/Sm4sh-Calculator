@@ -1637,7 +1637,7 @@ class ListItem {
         { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
         { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" },
         { "attribute": "Shield Damage", "title": "Damage done to target shield, (damage + SD) * 1.19" },
-        { "attribute": "Full HP shield", "title": "Maximum HP target shield has, can only be increased using Monado Shield" },
+        { "attribute": "Full HP shield", "title": "Maximum HP target shield has, can only be increased using Shield Monado Art" },
         { "attribute": "Shield Break", "title": "" },
         { "attribute": "Shield stun", "title": "Amount of frames target target cannot do any action after shielding an attack" },
         { "attribute": "Shield Hitlag", "title": "Amount of frames target suffers hitlag while shielding" },
