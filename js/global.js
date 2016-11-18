@@ -1259,7 +1259,7 @@ class Knockback {
             if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
-            if(!((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI))) || ((this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180))){
+            if((this.angle > (1.1 * 180 / Math.PI) && this.angle < InvertXAngle((1.1 * 180 / Math.PI))) || this.angle == 0 || this.angle == 180){
                 this.vectoring = 0;
             }
             if(this.vectoring != 0){
