@@ -1,5 +1,5 @@
-﻿function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, di, vectoring) {
-    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, percent + damage,di, vectoring);
+﻿function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, di) {
+    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, percent + damage,di);
 }
 
 function Rage(percent) {
@@ -130,13 +130,13 @@ function SakuraiAngle(kb, aerial) {
     return (kb - 60) / 0.7;
 }
 
-function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, di, vectoring) {
+function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, di) {
     var s = StaleNegation(timesInQueue, ignoreStale);
-    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, percent + (damage*s),di,vectoring);
+    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, percent + (damage*s),di);
 }
 
-function WeightBasedKB(weight, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, di, vectoring) {
-    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, target_percent + damage,di, vectoring);
+function WeightBasedKB(weight, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, di) {
+    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, target_percent + damage,di);
 }
 
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {
@@ -273,17 +273,20 @@ function DI(angle, move_angle){
     return (0.17 * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
 }
 
-function Vectoring(angle, launch_angle){
+function Vectoring(angle, launch_angle) {
     if(angle == -1){
-        return 0;
+        return 1;
     }
-    if((launch_angle >= 0 && launch_angle <= (1.1 * 180 / Math.PI)) || (launch_angle >= InvertXAngle((1.1 * 180 / Math.PI)) && launch_angle <= 180)){
-        if(Math.cos(angle * Math.PI / 180) >= 0){
-            return 1;
-        }
-        return -1;
+    if (launch_angle == 0 || launch_angle == 180) {
+        return 1;
     }
-    return 0;
+    if (launch_angle >= 65 && launch_angle <= 115) {
+        return 1;
+    }
+    if (launch_angle >= 245 && launch_angle <= 295) {
+        return 1;
+    }
+    return 0.92 + ((180 * Math.abs(Math.cos(((angle - launch_angle)/2) * Math.PI / 180)))) * ((1.095 - 0.92) / (180));
 }
 
 function LaunchSpeed(kb){

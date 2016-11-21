@@ -273,21 +273,14 @@
             <div id="modifiers" class="card-block collapse group">
                 <div id="attack_options">
                     <div class="pos-left">
-                        Vectoring
-                        <br />
-                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="none" ng-change="update()" />None
-                        <br />
-                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="increase" ng-change="update()" />Vectoring at launch angle
-                        <br />
-                        <input type="radio" name="vectoring" ng-model="vectoring" ng-attr-value="decrease" ng-change="update()" />Vectoring at opposite direction
+                        Target DI/Vectoring angle:
+                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
+                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI     
                         <br/>
                         <br />
                         <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
                         <br />
-                        <br />
-                        Target DI angle:
-                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
-                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI                        
+                        <br />      
                     </div>
                     <div class="pos-right">
                         <div id="kb_modifiers">

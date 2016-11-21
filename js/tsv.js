@@ -51,7 +51,7 @@ class Row{
         this.rage = Rage(attacker_percent); 
         this.v_pos = this.distance.max_y * (Math.sin(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);
         this.h_pos = this.distance.max_x * (Math.cos(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);  
-        this.vectoring = this.kb.vectoring == 1 ? 1.095 : this.kb.vectoring == -1 ? 0.92 : 1;
+        this.vectoring = this.kb.vectoring;
 
         this.tsv = function(){
             return [this.attacker.name, this.attackerMod, this.attacker_display, this.target.name, this.targetMod, this.target_display,
@@ -149,8 +149,6 @@ app.controller('calculator', function ($scope) {
 
     $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
     $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
-
-    $scope.vectoring = "none";
 
     $scope.is_smash = false;
     $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -542,18 +540,6 @@ app.controller('calculator', function ($scope) {
             di = parseFloat($scope.di);
         }
 
-        switch($scope.vectoring){
-            case "none":
-                vectoring = 0;
-            break;
-            case "increase":
-                vectoring = 1;
-            break;
-            case "decrease":
-                vectoring = -1;
-            break;
-        }
-
         luma_percent = parseFloat($scope.lumaPercent);
 
         unblockable = $scope.unblockable;
@@ -595,9 +581,8 @@ app.controller('calculator', function ($scope) {
         var itargets = $scope.it_targets ? names.length : 1;
         var ipercent = $scope.it_percent ? Math.floor(((to - from)/step)) + 1 : 1;
         var irage = $scope.it_rage ? Math.floor((at_to - at_from)/at_step) + 1 : 1;
-        var ivectoring = $scope.it_vectoring ? 3 : 1;
         var istocks = $scope.it_stock_dif ? 5 : 1;
-        var calculations = (istale * ikbmod * (imoves - smashcount) * (itargets + imod) * ipercent * irage * ivectoring * istocks) + (smashcount * 61 * istale * ikbmod * (itargets + imod) * ipercent * irage * ivectoring * istocks);
+        var calculations = (istale * ikbmod * (imoves - smashcount) * (itargets + imod) * ipercent * irage * istocks) + (smashcount * 61 * istale * ikbmod * (itargets + imod) * ipercent * irage * istocks);
 
         $scope.calculations = calculations;
 
@@ -687,9 +672,9 @@ app.controller('calculator', function ($scope) {
         var addRow = function(){
             calcDamage();
             if(!wbkb){
-                kb = VSKB(target_percent + preDamage, bd, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di, vectoring);
+                kb = VSKB(target_percent + preDamage, bd, damage, target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
             }else{
-                kb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di, vectoring);
+                kb = WeightBasedKB(target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
@@ -715,18 +700,7 @@ app.controller('calculator', function ($scope) {
                 funlist[f-1](f-1);
             });
         }
-
-        if($scope.it_vectoring){
-            funlist.push(function(f){
-                vectoring = 0;
-                funlist[f-1](f-1);
-                vectoring = 1;
-                funlist[f-1](f-1);
-                vectoring = -1;
-                funlist[f-1](f-1);
-            });
-        }
-        
+    
         if($scope.it_rage){
             funlist.push(function(f){
                 for(attacker_percent=at_from;attacker_percent<=at_to;attacker_percent+=at_step){

@@ -184,9 +184,6 @@ function buildParams($scope) {
             params.push(new Parameter(paramsList[23].param, boolToString($scope.hitlag_modifier == "electric")));
         }
     }
-    if (paramsList[24].value != $scope.vectoring) {
-        params.push(new Parameter(paramsList[24].param, $scope.vectoring));
-    }
     if (paramsList[25].value != boolToString($scope.kb_modifier_bounce)) {
         params.push(new Parameter(paramsList[25].param, boolToString($scope.kb_modifier_bounce)));
     }
@@ -1175,7 +1172,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di, vectoring) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di) {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1201,13 +1198,13 @@ class Knockback {
         this.horizontal_launch_speed = 0;
         this.vertical_launch_speed = 0;
         if(this.vectoring == undefined){
-            this.vectoring = 0;
+            this.vectoring = 1;
         }
         this.hitstun = Hitstun(this.base_kb, this.windbox);
         if (di !== undefined) {
             this.di = di;
         } else {
-            this.di = 0;
+            this.di = -1;
         }
         this.calculate = function () {
             this.kb = this.base_kb;
@@ -1223,7 +1220,6 @@ class Knockback {
                     this.angle += this.di_change;
                 }
             }
-            //this.vectoring = Vectoring(this.di, this.angle);
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             this.add_gravity_speed = 5 * (this.gravity - 0.075);
@@ -1259,20 +1255,9 @@ class Knockback {
             if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
-            if((this.angle > (1.1 * 180 / Math.PI) && this.angle < InvertXAngle((1.1 * 180 / Math.PI))) || this.angle == 0 || this.angle == 180){
-                this.vectoring = 0;
-            }
-            if(this.vectoring != 0){
-                if(this.vectoring == 1){
-                    this.horizontal_launch_speed *= 1.095;
-                    this.vertical_launch_speed *= 1.095;
-                }else{
-                    if(this.vectoring == -1){
-                        this.horizontal_launch_speed *= 0.92;
-                        this.vertical_launch_speed *= 0.92;
-                    }
-                }
-            }
+            this.vectoring = Vectoring(this.di, this.angle);
+            this.horizontal_launch_speed *= this.vectoring;
+            this.vertical_launch_speed *= this.vectoring;
             this.hitstun = Hitstun(this.base_kb, false);
         };
         this.addModifier = function (modifier) {
@@ -1684,15 +1669,10 @@ function List(values) {
             }
         }
         if (attributes[i] == "Vectoring") {
-            if(values[i] == 0){
+            if(values[i] == 1){
                 continue;
             }
-            if(values[i] == 1){
-                values[i] = "x1.095";
-            }
-            if(values[i] == -1){
-                values[i] = "x0.92";
-            }
+            values[i] = "x" + +values[i].toFixed(4);
         }
         if(attributes[i] == "Gravity launch speed"){
             if(values[i] == 0){

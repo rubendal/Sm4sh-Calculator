@@ -4,6 +4,7 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Changed - Vectoring is now calculated with DI
 * Added - Hit Advantage
 * Added - Hitstun cancel calculation process
 * Added - URL Sharing
