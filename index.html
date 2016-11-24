@@ -369,6 +369,12 @@
                             <br />
                             <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
                         </div>
+                        <br/>
+                        <div>
+                            <input type="button" class="btn button" value="Store distance calculation" ng-click="storeDistanceCalculation()" ng-disabled="!show_graph" />
+                            <br/>
+                            <input type="button" class="btn button" value="Clear list" ng-click="clearVisualizerList()" ng-disabled="!show_graph" />
+                        </div>
                     </div>
                     <div class="pos-right pos-mod">
                         Game mode

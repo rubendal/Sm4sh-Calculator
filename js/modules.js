@@ -117,6 +117,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.stageName = "";
 
+    $scope.currentPlot = {};
+    $scope.visList = [];
+
     $scope.getStage = function () {
         for (var i = 0; i < $scope.stages.length; i++) {
             if ($scope.stages[i].stage == $scope.stageName) {
@@ -718,8 +721,16 @@ app.controller('calculator', function ($scope) {
             var max_y = distance.graph_y + 10;
             max_x = max_y = Math.max(max_x, max_y);
             max_x = max_y = Math.max(max_x, max_y);
+            $scope.currentPlot = distance.plot;
             var data = distance.plot;
-            Plotly.newPlot('res_graph', data, {'xaxis':{'range': [-max_x, max_x],'showgrid': false,'zeroline': true, 'showline': false}, 'yaxis':{'range': [-max_y, max_y],'showgrid': false,'zeroline': true, 'showline': false}, 'showlegend':false, 'margin': {'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0  }},{'displayModeBar': false});
+            for (var p = 0; p < $scope.visList.length; p++) {
+                for (var pl = 0; pl < $scope.visList[p].length; pl++) {
+                    if ($scope.visList[p][pl].calcValue == "Launch" ) {
+                        data.push($scope.visList[p][pl]);
+                    }
+                }
+            }
+            Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
         }
 
         return result;
@@ -805,6 +816,18 @@ app.controller('calculator', function ($scope) {
 
     $scope.collapse = function (id) {
         $("#" + id).collapse('toggle');
+    }
+
+    $scope.storeDistanceCalculation = function () {
+        for (var pl = 0; pl < $scope.currentPlot.length; pl++) {
+            $scope.currentPlot[pl].opacity = 0.5;
+        }
+        $scope.visList.push($scope.currentPlot);
+    }
+
+    $scope.clearVisualizerList = function () {
+        $scope.visList = [];
+        $scope.update();
     }
 
     mapParams($scope);
