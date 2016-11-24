@@ -73,7 +73,11 @@
                 this.move.base_damage_print += " (SD +" + this.move.shieldDamage + ")";
             }
         }
-        this.move.wbkb_print = this.move.wbkb ? "Yes" : "No";
+        if (this.move.wbkb) {
+            this.move.bkb_print = "W: " + this.move.bkb;
+        } else {
+            this.move.bkb_print = this.move.bkb;
+        }
 
     }
 };
@@ -253,8 +257,10 @@ var characterListId = [];
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     $scope.usingHttp = inhttp;
+    $scope.app = 'movesearch';
     $scope.name = "";
     $scope.options = ["any", "=", "<", "<=", ">", ">=", "between"];
+    $scope.woptions = ["BKB/WBKB", "BKB", "WBKB"];
     $scope.sort_options = ["Character","Name","Base damage","Angle","BKB","KBG"];
     $scope.order_options = ["Asc","Desc"];
     $scope.hitbox_start_cond = "any";
@@ -266,7 +272,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.angle_cond = "any";
     $scope.bkb_cond = "any";
     $scope.kbg_cond = "any";
-    $scope.wbkb_any = true;
+    $scope.wbkb_cond = "BKB/WBKB";
     $scope.data_style = {'display':'none'};
     $scope.data_style_hidden = {'display':'initial'};  
 
@@ -514,8 +520,11 @@ filter_app.controller('filter', function ($scope) {
                 $scope.compare($scope.bkb_cond, move.bkb, bkb, bkb2) &&
                 $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2) &&
                 $scope.compare($scope.faf_cond, move.faf, faf, faf2)) {
-                if (!$scope.wbkb_any) {
-                    if (move.wbkb != $scope.wbkb) {
+                if ($scope.wbkb_cond != "BKB/WBKB") {
+                    if (move.wbkb && $scope.wbkb_cond == "BKB") {
+                        return;
+                    }
+                    if (!move.wbkb && $scope.wbkb_cond == "WBKB") {
                         return;
                     }
                 }

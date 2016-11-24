@@ -44,7 +44,7 @@
             <div id="header-text">
                 <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#move-search" target="_blank" title="Github repository"><h2>Sm4sh Calculator - Move Search</h2></a>
                 <br />
-                <span class="description"></span>
+                <span class="description">Search and filter moves from KuroganeHammer.com</span>
                 <br />
                 <div class="header-links">
                     <table class="header-table">
@@ -154,7 +154,9 @@
                     </select>
                     <input name="angle2" type="number" min="0" max="367" step="1" ng-model="angle2" ng-change="update()" />
                     <br />
-                    BKB:
+                    <select name="wbkb_cond" ng-model="wbkb_cond" ng-change="update()">
+                        <option ng-selected="$first" ng:repeat="option in woptions" ng-attr-value="{{option}}">{{option}}</option>
+                    </select>
                     <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
                     <select name="bkb_cond" ng-model="bkb_cond" ng-change="update()">
                         <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
@@ -167,9 +169,6 @@
                         <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
                     </select>
                     <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
-                    <br />
-                    <input name="wbkb" type="checkbox" ng-model="wbkb" ng-change="update()" /> Weight-based knockback
-                    <input name="wbkb_cond" type="checkbox" ng-model="wbkb_any" ng-change="update()" />Any
 
                     <br />
                 </div>
@@ -213,9 +212,8 @@
                         <td>Autocancel</td>
                         <td>Base damage</td>
                         <td>Angle</td>
-                        <td>BKB</td>
+                        <td>BKB/WBKB</td>
                         <td>KBG</td>
-                        <td>Weight-based knockback</td>
                     </tr>
                     <tr ng-repeat="x in sortedMoves track by $index">
                         <td class="attribute" ng-style="{'background':x.color}">{{ x.character }}</td>
@@ -226,9 +224,8 @@
                         <td class="value">{{ x.move.autoCancel_print}}</td>
                         <td class="value">{{ x.move.base_damage_print }}</td>
                         <td class="value">{{ x.move.angle }}</td>
-                        <td class="value">{{ x.move.bkb }}</td>
+                        <td class="value">{{ x.move.bkb_print }}</td>
                         <td class="value">{{ x.move.kbg }}</td>
-                        <td class="value">{{ x.move.wbkb_print }}</td>
                     </tr>
                 </table>
             </div>
