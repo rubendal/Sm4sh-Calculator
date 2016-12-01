@@ -277,16 +277,17 @@ function Vectoring(angle, launch_angle) {
     if(angle == -1){
         return 1;
     }
-    if (launch_angle == 0 || launch_angle == 180) {
-        return 1;
-    }
     if (launch_angle >= 65 && launch_angle <= 115) {
         return 1;
     }
     if (launch_angle >= 245 && launch_angle <= 295) {
         return 1;
     }
-    return 0.92 + ((180 * Math.abs(Math.cos(((angle - launch_angle)/2) * Math.PI / 180)))) * ((1.095 - 0.92) / (180));
+    if (angle >= 0 && angle <= 180) {
+        return 1 + ((1.095 - 1) * Math.sin(angle * Math.PI / 180));
+    }
+    return 1 - ((1 - 0.92) * Math.sin(angle * Math.PI / 180));
+    
 }
 
 function LaunchSpeed(kb){

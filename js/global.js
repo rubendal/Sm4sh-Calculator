@@ -1255,7 +1255,11 @@ class Knockback {
             if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
-            this.vectoring = Vectoring(this.di, this.angle);
+            if (this.tumble) {
+                this.vectoring = Vectoring(this.di, this.angle);
+            } else {
+                this.vectoring = 1;
+            }
             this.horizontal_launch_speed *= this.vectoring;
             this.vertical_launch_speed *= this.vectoring;
             this.hitstun = Hitstun(this.base_kb, false);
