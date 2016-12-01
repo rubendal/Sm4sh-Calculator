@@ -286,7 +286,7 @@ function Vectoring(angle, launch_angle) {
     if (angle >= 0 && angle <= 180) {
         return 1 + ((1.095 - 1) * Math.sin(angle * Math.PI / 180));
     }
-    return 1 - ((1 - 0.92) * Math.sin(angle * Math.PI / 180));
+    return 1 + ((1 - 0.92) * Math.sin(angle * Math.PI / 180));
     
 }
 
