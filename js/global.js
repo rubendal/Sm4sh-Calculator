@@ -24,6 +24,37 @@ function loadJSONPath(path) {
     return json;
 }
 
+var defaultParameters = {
+    di: 0.17,
+    vectoring_max: 1.095,
+    vectoring_min: 0.92,
+    decay: 0.051,
+    gravity: {
+        mult: 5,
+        constant: 0.075
+    },
+    bounce: 0.8,
+    crouch_cancelling: 0.85,
+    crouch_hitlag: 0.67,
+    interrupted_smash: 1.2,
+    hitstun: 0.4,
+    launch_speed: 0.03,
+    hitlag: {
+        mult: 0.3846154,
+        constant: 5
+    },
+    hitstunCancel: {
+        frames: {
+            aerial: 45,
+            airdodge: 40
+        },
+        launchSpeed: {
+            aerial: 2,
+            airdodge: 2.5
+        }
+    }
+};
+
 function getWebProtocol() {
     var p = document.location.protocol;
     return p.replace(":", "");
@@ -101,7 +132,21 @@ var paramsList = [
     new Parameter("visSurface", "0"),
     new Parameter("visGameMode","vs"),
     new Parameter("KB", "0"),
-    new Parameter("chargeable","0")
+    new Parameter("chargeable", "0"),
+    new Parameter("pDI", defaultParameters.di.toString()),
+    new Parameter("pMinVectoring", defaultParameters.vectoring_min.toString()),
+    new Parameter("pMaxVectoring", defaultParameters.vectoring_max.toString()),
+    new Parameter("pHitstun", defaultParameters.hitstun),
+    new Parameter("pDecay", defaultParameters.decay),
+    new Parameter("pLaunchSpeed", defaultParameters.launch_speed),
+    new Parameter("pGMult", defaultParameters.gravity.mult),
+    new Parameter("pGConst", defaultParameters.gravity.constant),
+    new Parameter("pHitlagMult", defaultParameters.hitlag.mult),
+    new Parameter("pHitlagConst", defaultParameters.hitlag.constant),
+    new Parameter("pHCdodgef", defaultParameters.hitstunCancel.frames.airdodge),
+    new Parameter("pHCdodgem", defaultParameters.hitstunCancel.launchSpeed.airdodge),
+    new Parameter("pHCaerialf", defaultParameters.hitstunCancel.frames.aerial),
+    new Parameter("pHCaerialm", defaultParameters.hitstunCancel.launchSpeed.aerial)
 ];
 
 function checkUndefined(value) {
@@ -231,6 +276,7 @@ function buildParams($scope) {
     if (paramsList[44].value != boolToString($scope.charge_special)) {
         params.push(new Parameter(paramsList[44].param, boolToString($scope.charge_special)));
     }
+
     if ($scope.app == "calculator") {
         if (paramsList[37].value != $scope.stageName) {
             params.push(new Parameter(paramsList[37].param, $scope.stageName));
@@ -249,6 +295,48 @@ function buildParams($scope) {
         }
         if (paramsList[42].value != $scope.game_mode) {
             params.push(new Parameter(paramsList[42].param, $scope.game_mode));
+        }
+        if (paramsList[45].value != $scope.params.di) {
+            params.push(new Parameter(paramsList[45].param, $scope.params.di));
+        }
+        if (paramsList[46].value != $scope.params.vectoring_min) {
+            params.push(new Parameter(paramsList[46].param, $scope.params.vectoring_min));
+        }
+        if (paramsList[47].value != $scope.params.vectoring_max) {
+            params.push(new Parameter(paramsList[47].param, $scope.params.vectoring_max));
+        }
+        if (paramsList[48].value != $scope.params.hitstun) {
+            params.push(new Parameter(paramsList[48].param, $scope.params.hitstun));
+        }
+        if (paramsList[49].value != $scope.params.decay) {
+            params.push(new Parameter(paramsList[49].param, $scope.params.decay));
+        }
+        if (paramsList[50].value != $scope.params.launch_speed) {
+            params.push(new Parameter(paramsList[50].param, $scope.params.launch_speed));
+        }
+        if (paramsList[51].value != $scope.params.gravity.mult) {
+            params.push(new Parameter(paramsList[51].param, $scope.params.gravity.mult));
+        }
+        if (paramsList[52].value != $scope.params.gravity.constant) {
+            params.push(new Parameter(paramsList[52].param, $scope.params.gravity.constant));
+        }
+        if (paramsList[53].value != $scope.params.hitlag.mult) {
+            params.push(new Parameter(paramsList[53].param, $scope.params.hitlag.mult));
+        }
+        if (paramsList[54].value != $scope.params.hitlag.constant) {
+            params.push(new Parameter(paramsList[54].param, $scope.params.hitlag.constant));
+        }
+        if (paramsList[55].value != $scope.params.hitstunCancel.frames.airdodge) {
+            params.push(new Parameter(paramsList[55].param, $scope.params.hitstunCancel.frames.airdodge));
+        }
+        if (paramsList[56].value != $scope.params.hitstunCancel.launchSpeed.airdodge) {
+            params.push(new Parameter(paramsList[56].param, $scope.params.hitstunCancel.launchSpeed.airdodge));
+        }
+        if (paramsList[57].value != $scope.params.hitstunCancel.frames.aerial) {
+            params.push(new Parameter(paramsList[57].param, $scope.params.hitstunCancel.frames.aerial));
+        }
+        if (paramsList[58].value != $scope.params.hitstunCancel.launchSpeed.aerial) {
+            params.push(new Parameter(paramsList[58].param, $scope.params.hitstunCancel.launchSpeed.aerial));
         }
     } else if ($scope.app == "kbcalculator") {
         if (paramsList[43].value != $scope.kb) {
@@ -475,6 +563,90 @@ function mapParams($scope) {
             $scope.surface = param == 1;
         }
     }
+    param = Parameter.get(get_params, "pDI");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.di = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pHitstun");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitstun = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pMinVectoring");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.vectoring_min = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pMaxVectoring");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.vectoring_max = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pDecay");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.decay = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pLaunchSpeed");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.launch_speed = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pGMult");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.gravity.mult = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pGConst");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.gravity.constant = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pHitlagMult");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitlag.mult = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pHitlagConst");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitlag.constant = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pHCdodgef");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitstunCancel.frames.airdodge = Math.floor(parseFloat(param));
+        }
+    }
+    param = Parameter.get(get_params, "pHCdodgem");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitstunCancel.launchSpeed.airdodge = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pHCaerialf");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitstunCancel.frames.airdodge = Math.floor(parseFloat(param));
+        }
+    }
+    param = Parameter.get(get_params, "pHCaerialm");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.hitstunCancel.launchSpeed.airdodge = parseFloat(param);
+        }
+    }
     param = Parameter.get(get_params, "KB");
     if (param) {
         if ($scope.kb != undefined) {
@@ -672,7 +844,7 @@ class Distance{
         }
         this.x = [this.position.x];
         this.y = [this.position.y];
-        var decay = {'x':0.051 * Math.cos(angle * Math.PI / 180),'y':0.051 * Math.sin(angle * Math.PI / 180)};
+        var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
         var character_position = {'x':this.position.x,'y':this.position.y};
         var launch_speed = {'x':x_speed, 'y':y_speed};
         var friction =  {'x':air_friction * Math.cos(angle * Math.PI / 180),'y':air_friction * Math.sin(angle * Math.PI / 180)};
@@ -748,8 +920,8 @@ class Distance{
                             var point = p1_inside ? IntersectionPoint([[character_position.x, character_position.y],p1],line) : p2_inside ? IntersectionPoint([[character_position.x, character_position.y],p2],line)  : IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],line);
                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                            decay.x = 0.051 * Math.cos(t_angle * Math.PI / 180);
-                            decay.y = 0.051 * Math.sin(t_angle * Math.PI / 180);
+                            decay.x = parameters.decay * Math.cos(t_angle * Math.PI / 180);
+                            decay.y = parameters.decay * Math.sin(t_angle * Math.PI / 180);
                             launch_speed.x = Math.abs(launch_speed.x);
                             launch_speed.y = Math.abs(launch_speed.y);
                             if(Math.cos(t_angle * Math.PI / 180) < 0){
@@ -766,8 +938,8 @@ class Distance{
                                 angle = t_angle;
                             }else{
                                 angle = line_angle + 90;
-                                decay.x = 0.051 * Math.cos(angle * Math.PI / 180);
-                                decay.y = 0.051 * Math.sin(angle * Math.PI / 180);
+                                decay.x = parameters.decay * Math.cos(angle * Math.PI / 180);
+                                decay.y = parameters.decay * Math.sin(angle * Math.PI / 180);
                                 launch_speed.x = Math.abs(launch_speed.x);
                                 launch_speed.y = Math.abs(launch_speed.y);
                                 if(Math.cos(angle * Math.PI / 180) < 0){
@@ -829,8 +1001,8 @@ class Distance{
                                             this.bounce_frame = i;
                                             var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
                                             var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                                            decay.x = 0.051 * Math.cos(t_angle * Math.PI / 180);
-                                            decay.y = 0.051 * Math.sin(t_angle * Math.PI / 180);
+                                            decay.x = parameters.decay * Math.cos(t_angle * Math.PI / 180);
+                                            decay.y = parameters.decay * Math.sin(t_angle * Math.PI / 180);
                                             launch_speed.x = Math.abs(launch_speed.x);
                                             launch_speed.y = Math.abs(launch_speed.y);
                                             if(Math.cos(t_angle * Math.PI / 180) < 0){
@@ -1188,7 +1360,7 @@ class Knockback {
         this.can_jablock = false;
         this.di_able = false;
         this.fall_speed = fall_speed;
-        this.add_gravity_speed = 5 * (this.gravity - 0.075);
+        this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
         this.percent = percent;
         this.reeling = false;
         this.spike = false;
@@ -1222,7 +1394,7 @@ class Knockback {
             }
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            this.add_gravity_speed = 5 * (this.gravity - 0.075);
+            this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
             if(!this.tumble){
                 this.add_gravity_speed = 0;
             }
@@ -1270,8 +1442,8 @@ class Knockback {
         };
         this.bounce = function (bounce) {
             if (bounce) {
-                this.vertical_launch_speed *= 0.8;
-                this.horizontal_launch_speed *= 0.8;
+                this.vertical_launch_speed *= parameters.bounce;
+                this.horizontal_launch_speed *= parameters.bounce;
             }
         }
         this.calculate();
@@ -1756,11 +1928,11 @@ var r = 1;
 function KBModifier(value) {
     switch (value) {
         case "crouch":
-            return  0.85;
+            return parameters.crouch_cancelling;
         case "grounded":
             return 1; //0.8 applied after hitstun
         case "charging":
-            return 1.2;
+            return parameters.interrupted_smash;
         case "none":
             return 1;
     }
@@ -1770,7 +1942,7 @@ function KBModifier(value) {
 function HitlagCrouch(value) {
     switch (value) {
         case "crouch":
-            return 0.67;
+            return parameters.crouch_hitlag;
     }
     return 1;
 }

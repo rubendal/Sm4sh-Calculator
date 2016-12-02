@@ -4,6 +4,8 @@ Web based Smash 4 knockback calculator
 ## Calculator
 
 ### Recent Changes
+* Added - Parameter editing (for modders and researchers)
+* Changed - Using new vectoring formula obtained with new discoveries
 * Changed - Vectoring is now calculated with DI
 * Added - Hit Advantage
 * Added - Hitstun cancel calculation process
@@ -12,9 +14,6 @@ Web based Smash 4 knockback calculator
 * Probably fixed - Move list loading bug, when changing characters sometimes previous character moves were loaded
 * Changed - Character attribute modifiers (Monado Arts, Limit Break, Deep Breathing) are now selected in a different location instead of all being in the character selection inputs
 * Changed - New design
-* Added - [Lucario's Aura stock difference multipliers](https://twitter.com/KuroganeHammer/status/784017200721965057)
-* Added - Palutena's/Silver Bow, Flare Blade and Shield Breaker damage formulas
-* Added - Calculate aerials FAF using landing lag or autocancel
 
 ### KH API and HTTPS
 To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for move list, switching the url to http will solve this issue
@@ -50,7 +49,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Max distance when hitstun ends
 
 #### Launch Visualizer
-Note: Work in progress, this is not a combo calculator, distance calculation is not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
+Note: Work in progress, this is not a combo calculator, distance calculation may not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
@@ -62,10 +61,6 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * Move angle can be inverted horizontally to visualize launching opponents to the left
 * X-axis can represent a surface to show traction and bouncing effects when no stage is selected
 * Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
-
-### To Do
-* Improve or find in-game Hitstun cancel frames formula
-* Improve distance calculation
 
 ## Move Search
 http://rubendal.github.io/Sm4sh-Calculator/movesearch.html

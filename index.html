@@ -403,6 +403,70 @@
                 Copy this URL <input id="shareurl" style="width:650px;" readonly type="text" ng-model="sharing_url" onclick="this.select();" />
             </div>
 
+            <a class="select-link cur-link" ng-click="collapse('params')">
+                <div class="card header-group" style="background:rgba(12, 4, 39, 0.75)">
+                    <span class="cur-link">Parameters</span>
+                </div>
+            </a>
+            <div id="params" class="card-block collapse group">
+                This section is to modify game parameters, do not use unless you are modding the game
+                <br/>
+                <br/>
+                <div class="pos-left">
+                    DI <input name="param_di" type="number" min="0" max="999" step="0.01" ng-model="params.di" ng-change="updateParameters()" />
+                    <br />
+                    Hitstun constant <input name="param_hitstun" type="number" min="0" max="999" step="0.01" ng-model="params.hitstun" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                    <br />
+                    Vectoring
+                    <br />
+                    Min multiplier <input name="param_min_vectoring" type="number" min="0" max="999" step="0.01" ng-model="params.vectoring_min" ng-change="updateParameters()" />
+                    <br />
+                    Max multiplier <input name="param_max_vectoring" type="number" min="0" max="999" step="0.01" ng-model="params.vectoring_max" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                    Launch speed
+                    <br />
+                    Multiplier <input name="param_launch_speed" type="number" min="0" max="999" step="0.01" ng-model="params.launch_speed" ng-change="updateParameters()" />
+                    <br />
+                    Decay <input name="param_decay" type="number" min="0" max="999" step="0.01" ng-model="params.decay" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                    Gravity launch speed influence
+                    <br />
+                    Multiplier <input name="param_gravity_mult" type="number" min="0" max="999" step="0.01" ng-model="params.gravity.mult" ng-change="updateParameters()" />
+                    <br />
+                    Constant <input name="param_gravity_const" type="number" min="0" max="999" step="0.01" ng-model="params.gravity.constant" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                </div>
+                <div class="pos-right">
+                    Hitlag
+                    <br />
+                    Multiplier <input name="param_hitlag_mult" type="number" min="0" max="999" step="0.01" ng-model="params.hitlag.mult" ng-change="updateParameters()" />
+                    <br />
+                    Constant <input name="param_hitlag_const" type="number" min="0" max="999" step="0.01" ng-model="params.hitlag.constant" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                    Airdodge hitstun cancel
+                    <br />
+                    Frames <input name="param_airdodge_cancel_frames" type="number" min="0" max="999" step="1" ng-model="params.hitstunCancel.frames.airdodge" ng-change="updateParameters()" />
+                    <br />
+                    Max launch speed <input name="param_airdodge_cancel_ls" type="number" min="0" max="999" step="0.01" ng-model="params.hitstunCancel.launchSpeed.airdodge" ng-change="updateParameters()" />
+                    <br />
+                    <br />
+                    Aerial hitstun cancel
+                    <br />
+                    Frames <input name="param_aerial_cancel_frames" type="number" min="0" max="999" step="1" ng-model="params.hitstunCancel.frames.aerial" ng-change="updateParameters()" />
+                    <br />
+                    Max launch speed <input name="param_aerial_cancel_ls" type="number" min="0" max="999" step="0.01" ng-model="params.hitstunCancel.launchSpeed.aerial" ng-change="updateParameters()" />
+                    <br />
+                </div>
+                
+                
+            </div>
+
             </div>
 
         <div id="results">

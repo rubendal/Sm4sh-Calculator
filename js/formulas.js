@@ -1,4 +1,35 @@
-﻿function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, di) {
+﻿var parameters = {
+    di: 0.17,
+    vectoring_max: 1.095,
+    vectoring_min: 0.92,
+    decay: 0.051,
+    gravity:{
+        mult: 5,
+        constant: 0.075
+    },
+    bounce: 0.8,
+    crouch_cancelling: 0.85,
+    crouch_hitlag: 0.67,
+    interrupted_smash: 1.2,
+    hitstun: 0.4,
+    launch_speed: 0.03,
+    hitlag: {
+        mult: 0.3846154,
+        constant: 5
+    },
+    hitstunCancel: {
+        frames: {
+            aerial: 45,
+            airdodge: 40
+        },
+        launchSpeed: {
+            aerial: 2,
+            airdodge: 2.5
+        }
+    }
+};
+
+function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, di) {
     return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, percent + damage,di);
 }
 
@@ -110,7 +141,7 @@ function Hitstun(kb, windbox) {
     if (windbox) {
         return 0;
     }
-    var hitstun = Math.floor(kb * 0.4) - 1;
+    var hitstun = Math.floor(kb * parameters.hitstun) - 1;
     if (hitstun < 0) {
         return 0;
     }
@@ -161,7 +192,7 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox) {
     var airdodge = false;
     var aerial = false;
     var launch_speed = { 'x': launch_speed_x, 'y': launch_speed_y };
-    var decay = { 'x': 0.051 * Math.cos(angle * Math.PI / 180), 'y': 0.051 * Math.sin(angle * Math.PI / 180) };
+    var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
     for (var i = 0; i < hitstun; i++) {
         if (launch_speed.x != 0) {
             var x_dir = launch_speed.x / Math.abs(launch_speed.x);
@@ -182,13 +213,13 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox) {
             }
         }
         var lc = Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2));
-        if (lc < 2.5 && !airdodge) {
+        if (lc < parameters.hitstunCancel.launchSpeed.airdodge && !airdodge) {
             airdodge = true;
-            res.airdodge = Math.max(i + 1, 41);
+            res.airdodge = Math.max(i + 1, parameters.hitstunCancel.frames.airdodge + 1);
         }
-        if (lc < 2 && !aerial) {
+        if (lc < parameters.hitstunCancel.launchSpeed.aerial && !aerial) {
             aerial = true;
-            res.aerial = Math.max(i + 1, 46);
+            res.aerial = Math.max(i + 1, parameters.hitstunCancel.frames.aerial + 1);
         }
     }
 
@@ -203,7 +234,7 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox) {
 }
 
 function Hitlag(base_damage, hitlag_mult, electric, crouch) {
-    var h = Math.floor((((base_damage / 2.6 + 5) * electric) * hitlag_mult) * crouch) - 1;
+    var h = Math.floor((((base_damage * parameters.hitlag.mult + parameters.hitlag.constant) * electric) * hitlag_mult) * crouch) - 1;
     if (h > 30) {
         return 30;
     }
@@ -270,7 +301,7 @@ function DI(angle, move_angle){
         return 0;
     }
     //Value was 10, however in params is 0.17 in radians, https://twitter.com/LettuceUdon/status/766640794807603200
-    return (0.17 * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
+    return (parameters.di * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
 }
 
 function Vectoring(angle, launch_angle) {
@@ -284,14 +315,14 @@ function Vectoring(angle, launch_angle) {
         return 1;
     }
     if (angle >= 0 && angle <= 180) {
-        return 1 + ((1.095 - 1) * Math.sin(angle * Math.PI / 180));
+        return 1 + ((parameters.vectoring_max - 1) * Math.sin(angle * Math.PI / 180));
     }
-    return 1 + ((1 - 0.92) * Math.sin(angle * Math.PI / 180));
+    return 1 + ((1 - parameters.vectoring_min) * Math.sin(angle * Math.PI / 180));
     
 }
 
 function LaunchSpeed(kb){
-    return kb * 0.03;
+    return kb * parameters.launch_speed;
 }
 
 function HitAdvantage(hitstun, hitframe, faf) {

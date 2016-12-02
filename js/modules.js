@@ -120,6 +120,8 @@ app.controller('calculator', function ($scope) {
     $scope.currentPlot = {};
     $scope.visList = [];
 
+    $scope.params = parameters;
+
     $scope.getStage = function () {
         for (var i = 0; i < $scope.stages.length; i++) {
             if ($scope.stages[i].stage == $scope.stageName) {
@@ -827,6 +829,13 @@ app.controller('calculator', function ($scope) {
 
     $scope.clearVisualizerList = function () {
         $scope.visList = [];
+        $scope.update();
+    }
+
+    $scope.updateParameters = function () {
+        parameters = $scope.params;
+        parameters.hitstunCancel.frames.airdodge = Math.floor(parameters.hitstunCancel.frames.airdodge);
+        parameters.hitstunCancel.frames.aerial = Math.floor(parameters.hitstunCancel.frames.aerial);
         $scope.update();
     }
 
