@@ -722,7 +722,10 @@ class Character {
         } else if (this.name == "Kirby") {
             this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
             this.modifiers = this.modifiers.concat(monado);
-        } else if (this.name == "Wii Fit Trainer") {
+        } else if (this.name == "Bowser Jr") {
+            this.modifiers = [new Modifier("Clown Kart", 1, 0.88, 1, 1, 1, 1, 1, 1, 1), new Modifier("Body", 1, 1.15, 1, 1, 1, 1, 1, 1, 1)];
+            this.modifier = this.modifiers[0];
+        }else if (this.name == "Wii Fit Trainer") {
             this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1), new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1)];
 
         } else if (this.name == "Cloud") {
