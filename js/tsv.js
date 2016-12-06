@@ -283,7 +283,7 @@ app.controller('calculator', function ($scope) {
         $scope.attackerName = attacker.name;
         $scope.attackerMod = "Normal";
         $scope.attackerModifiers = attacker.modifiers;
-        if (attacker.name == "Cloud") {
+        if (attacker.name == "Cloud" || attacker.name == "Bowser Jr") {
             $scope.attackerModifiers = [];
         }
         $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
@@ -485,6 +485,9 @@ app.controller('calculator', function ($scope) {
         target = new Character($scope.targetValue);
         $scope.targetMod = "Normal";
         $scope.targetModifiers = target.modifiers;
+        if (target.name == "Bowser Jr") {
+            $scope.targetMod = "Clown Kart";
+        }
         $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
         $scope.target_icon = target.icon;
         $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none" };
