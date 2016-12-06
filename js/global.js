@@ -472,10 +472,6 @@ function mapParams($scope) {
     if (param) {
         $scope.kb_modifier = param;
     }
-    param = Parameter.get(get_params, "vectoring");
-    if (param) {
-        $scope.vectoring = param;
-    }
     param = Parameter.get(get_params, "bounce");
     if (param) {
         $scope.kb_modifier_bounce = param == "1";
@@ -781,7 +777,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, gravity2, air_friction, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
         this.kb = kb;
         this.x_launch_speed = x_launch_speed;
         this.y_launch_speed = y_launch_speed;
@@ -800,8 +796,7 @@ class Distance{
         this.position = {"x":0, "y":0};
         this.bounce = false;
         this.doPlot = doPlot;
-        this.gravity2 = gravity2;
-        this.air_friction = air_friction;
+        
         if(position !== undefined){
             this.position = position;
         }
@@ -847,7 +842,6 @@ class Distance{
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
         var character_position = {'x':this.position.x,'y':this.position.y};
         var launch_speed = {'x':x_speed, 'y':y_speed};
-        var friction =  {'x':air_friction * Math.cos(angle * Math.PI / 180),'y':air_friction * Math.sin(angle * Math.PI / 180)};
         var character_speed = {'x':0,'y':0 };
         this.vertical_speed = [];
         var momentum = 1;
@@ -1039,8 +1033,6 @@ class Distance{
                 }
             }
 
-            //Update friction
-            friction =  {'x':air_friction * Math.cos(angle * Math.PI / 180),'y':air_friction * Math.sin(angle * Math.PI / 180)};
 
             //Apply decay
             if(launch_speed.x != 0){
@@ -1083,14 +1075,8 @@ class Distance{
 
             //Gravity
             g -= gravity;
-            //g -= gravity2;
             fg = Math.max(g, -fall_speed);
             character_speed.y = fg;
-            /*if(launch_speed.y != 0){
-                character_speed.y -= friction.y;
-            }else{
-                character_speed.y = fg;
-            }*/
 
             character_position.x = next_x;
             character_position.y = next_y;
@@ -1214,6 +1200,12 @@ class Distance{
 
         if(hitstun < this.x.length){
             data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': 'brown', 'size': 14 }, 'name': "Hitstun end" });
+        }
+
+        if (faf >= 0) {
+            if (faf < this.x.length) {
+                data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': '#0066FF', 'size': 14 }, 'name': "Attacker FAF" });
+            }
         }
 
         var adxdata = [];
