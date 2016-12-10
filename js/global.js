@@ -780,7 +780,7 @@ class Character {
 };
 
 class Distance{
-    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
         this.x_launch_speed = x_launch_speed;
         this.y_launch_speed = y_launch_speed;
@@ -799,6 +799,10 @@ class Distance{
         this.position = {"x":0, "y":0};
         this.bounce = false;
         this.doPlot = doPlot;
+        this.extraFrames = 20;
+        if (extraFrames !== undefined) {
+            this.extraFrames = extraFrames;
+        }
         
         if(position !== undefined){
             this.position = position;
@@ -854,7 +858,7 @@ class Distance{
         var bouncing = false;
         this.bounce_frame = -1;
         this.bounce_speed = 0;
-        var limit = hitstun < 200 ? hitstun + 20 : 200;
+        var limit = hitstun < 200 ? hitstun + this.extraFrames : 200;
         for(var i=0;i<limit;i++){
             var next_x = character_position.x + launch_speed.x + character_speed.x;
             var next_y = character_position.y + launch_speed.y + character_speed.y;
@@ -1295,36 +1299,17 @@ class Distance{
 
             var ko = false;
 
-            //Calculate if KO in vertical blast zones
-            for(var i=0;i<=hitstun;i++){
+            //Calculate if KO in blast zones
+            for(var i=0;i<=hitstun && !ko;i++){
                 if(this.y[i] >= this.stage.blast_zones[2] + 10 || this.y[i] <= this.stage.blast_zones[3] - 10){
                     break;
                 }
-                if(this.y[i] >= this.stage.blast_zones[2]){
-                    if(this.kb >= 80){
-                        data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-                        ko = true;
-                        break;
-                    }
-                }else{
-                    if(this.y[i] <= this.stage.blast_zones[3]){
-                        data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-                        ko = true;
-                        break;
-                    }
+                if (this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1] || this.y[i] >= this.stage.blast_zones[2] || this.y[i] <= this.stage.blast_zones[3]) {
+                    data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+                    ko = true;
+                    break;
                 }
 
-            }
-
-            if(!ko){
-
-                //Calculate if KO in horizontal blast zones
-                for(var i=0;i<=hitstun;i++){
-                    if(this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1]){
-                        data.push({'calcValue':"KO" , 'x':[this.x[i]], 'y':[this.y[i]], 'mode':'markers', 'marker':{'color':'red', size: 15}, 'name':"KO"});
-                        break;
-                    }
-                }
             }
 
             this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);

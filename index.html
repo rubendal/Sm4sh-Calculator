@@ -369,7 +369,10 @@
                             <br />
                             <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
                         </div>
-                        <br/>
+                        <br />
+                        Display <input name="extra_frames" type="number" min="0" max="200" step="1" ng-model="extra_vis_frames" ng-change="update()" /> additional actionable frames
+                        <br />
+                        <br />
                         <div>
                             <input type="button" class="btn button" value="Store distance calculation" ng-click="storeDistanceCalculation()" ng-disabled="!show_graph" />
                             <br/>
@@ -388,7 +391,7 @@
                         <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="training" ng-change="update()" />Training mode
                         <br />
                         <input type="radio" name="mode" ng-model="game_mode" ng-attr-value="vs" ng-change="update()" />Vs mode
-                        <br />
+                        <br />                        
                     </div>
                 </div>
                 

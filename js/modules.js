@@ -97,6 +97,7 @@ app.controller('calculator', function ($scope) {
     $scope.surface = false;
     $scope.position_x = 0;
     $scope.position_y = 0;
+    $scope.extra_vis_frames = 20;
 
     $scope.stages = getStages();
     $scope.stages.unshift({"stage":"No stage"});
@@ -591,9 +592,9 @@ app.controller('calculator', function ($scope) {
 
         var distance;
         if(game_mode == "training"){
-            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
         }else{
-            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
         }
 
         if(stage != null){
@@ -607,11 +608,11 @@ app.controller('calculator', function ($scope) {
         var trainingDistance;
         var vsDistance;
         if (game_mode == "training") {
-            vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
             trainingDistance = distance;
         } else {
             vsDistance = distance;
-            trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph);
+            trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "yes" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed, target.attributes.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
         }
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
