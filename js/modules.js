@@ -707,8 +707,7 @@ app.controller('calculator', function ($scope) {
                 traininglist.push(new ListItem("Shield Damage", +s.toFixed(4)));
                 traininglist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
                 traininglist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
-                damage /= target.modifier.damage_taken;
-                s = (StaleDamage(damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+                s = (StaleDamage(base_damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
                 vslist.push(new ListItem("Shield Damage", +s.toFixed(4)));
                 vslist.push(new ListItem("Full HP shield", +(50 * target.modifier.shield).toFixed(4)));
                 vslist.push(new ListItem("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No"));
