@@ -1,9 +1,8 @@
 ## Sm4sh Calculator
 Web based Smash 4 knockback calculator
 
-## Calculator
-
 ### Recent Changes
+* Added - Set weight to 100 flag for moves that make the opponent have 100 weight like paralyzers and Finishing Touch
 * Added - Parameter editing (for modders and researchers)
 * Changed - Using new vectoring formula obtained with new discoveries
 * Changed - Vectoring is now calculated with DI

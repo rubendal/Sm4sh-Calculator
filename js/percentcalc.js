@@ -31,6 +31,8 @@ app.controller('calculator', function ($scope) {
     $scope.di = di;
     $scope.noDI = true;
 
+    $scope.set_weight = false;
+
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
     $scope.target_weight = target.attributes.weight;
@@ -466,10 +468,12 @@ app.controller('calculator', function ($scope) {
         preDamage *= attacker.modifier.damage_dealt;
         preDamage *= target.modifier.damage_taken;
 
+        set_weight = $scope.set_weight;
+
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, vectoring);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, vectoring);
         if (!kb.wbkb) {
             kb.addModifier(attacker.modifier.kb_dealt);
         }

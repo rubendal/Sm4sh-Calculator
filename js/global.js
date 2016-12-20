@@ -1972,3 +1972,5 @@ var vectoring = 0;
 
 var landing_lag = 0;
 var stock_dif = "0";
+
+var set_weight = false;
