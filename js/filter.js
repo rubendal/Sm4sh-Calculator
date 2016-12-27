@@ -593,5 +593,12 @@ filter_app.controller('filter', function ($scope) {
     $scope.collapse = function (id) {
         $("#" + id).collapse('toggle');
     }
+
+    $scope.theme = "Normal";
+    $scope.themes = styleList;
+
+    $scope.changeTheme = function () {
+        changeStyle($scope.theme);
+    }
 });
 

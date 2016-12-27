@@ -146,7 +146,17 @@ var paramsList = [
     new Parameter("pHCdodgef", defaultParameters.hitstunCancel.frames.airdodge),
     new Parameter("pHCdodgem", defaultParameters.hitstunCancel.launchSpeed.airdodge),
     new Parameter("pHCaerialf", defaultParameters.hitstunCancel.frames.aerial),
-    new Parameter("pHCaerialm", defaultParameters.hitstunCancel.launchSpeed.aerial)
+    new Parameter("pHCaerialm", defaultParameters.hitstunCancel.launchSpeed.aerial),
+    new Parameter("damageDealt", "1"),
+    new Parameter("kbDealt", "1"),
+    new Parameter("weight", "84"),
+    new Parameter("gravity", "0.12"),
+    new Parameter("fallSpeed", "1.77"),
+    new Parameter("damageReceived", "1"),
+    new Parameter("kbReceived", "1"),
+    new Parameter("traction", "0.055"),
+    new Parameter("setWeight", "0"),
+    new Parameter("theme","Normal")
 ];
 
 function checkUndefined(value) {
@@ -276,7 +286,36 @@ function buildParams($scope) {
     if (paramsList[44].value != boolToString($scope.charge_special)) {
         params.push(new Parameter(paramsList[44].param, boolToString($scope.charge_special)));
     }
-
+    if (paramsList[59].value != $scope.attacker_damage_dealt) {
+        params.push(new Parameter(paramsList[59].param, $scope.attacker_damage_dealt));
+    }
+    if (paramsList[60].value != $scope.attacker_kb_dealt) {
+        params.push(new Parameter(paramsList[60].param, $scope.attacker_kb_dealt));
+    }
+    if (paramsList[61].value != $scope.target_weight) {
+        params.push(new Parameter(paramsList[61].param, $scope.target_weight));
+    }
+    if (paramsList[62].value != $scope.target_gravity) {
+        params.push(new Parameter(paramsList[62].param, $scope.target_gravity));
+    }
+    if (paramsList[63].value != $scope.target_fall_speed) {
+        params.push(new Parameter(paramsList[63].param, $scope.target_fall_speed));
+    }
+    if (paramsList[64].value != $scope.target_damage_taken) {
+        params.push(new Parameter(paramsList[64].param, $scope.target_damage_taken));
+    }
+    if (paramsList[65].value != $scope.target_kb_received) {
+        params.push(new Parameter(paramsList[65].param, $scope.target_kb_received));
+    }
+    if (paramsList[66].value != $scope.target_traction) {
+        params.push(new Parameter(paramsList[66].param, $scope.target_traction));
+    }
+    if (paramsList[67].value != boolToString($scope.set_weight)) {
+        params.push(new Parameter(paramsList[67].param, boolToString($scope.set_weight)));
+    }
+    if (paramsList[68].value != $scope.theme) {
+        params.push(new Parameter(paramsList[68].param, $scope.theme));
+    }
     if ($scope.app == "calculator") {
         if (paramsList[37].value != $scope.stageName) {
             params.push(new Parameter(paramsList[37].param, $scope.stageName));
@@ -643,6 +682,65 @@ function mapParams($scope) {
             $scope.params.hitstunCancel.launchSpeed.airdodge = parseFloat(param);
         }
     }
+    param = Parameter.get(get_params, "damageDealt");
+    if (param) {
+        if ($scope.attacker_damage_dealt != undefined) {
+            $scope.attacker_damage_dealt = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "kbDealt");
+    if (param) {
+        if ($scope.attacker_kb_dealt != undefined) {
+            $scope.attacker_kb_dealt = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "damageReceived");
+    if (param) {
+        if ($scope.target_damage_taken != undefined) {
+            $scope.target_damage_taken = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "kbReceived");
+    if (param) {
+        if ($scope.target_kb_received != undefined) {
+            $scope.target_kb_received = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "weight");
+    if (param) {
+        if ($scope.target_weight != undefined) {
+            $scope.target_weight = Math.floor(parseFloat(param));
+        }
+    }
+    param = Parameter.get(get_params, "gravity");
+    if (param) {
+        if ($scope.target_gravity != undefined) {
+            $scope.target_gravity = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "fallSpeed");
+    if (param) {
+        if ($scope.target_fall_speed != undefined) {
+            $scope.target_fall_speed = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "traction");
+    if (param) {
+        if ($scope.target_traction != undefined) {
+            $scope.target_traction = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "setWeight");
+    if (param) {
+        if ($scope.set_weight != undefined) {
+            $scope.set_weight = param == 1;
+        }
+    }
+    param = Parameter.get(get_params, "theme");
+    if (param) {
+        $scope.theme = param;
+        $scope.changeTheme();
+    }
     param = Parameter.get(get_params, "KB");
     if (param) {
         if ($scope.kb != undefined) {
@@ -654,6 +752,39 @@ function mapParams($scope) {
         $scope.smashCharge = parseFloat(param);
         $scope.updateCharge();
     }
+}
+
+class Style {
+    constructor(name, main, style2, style3, style4) {
+        this.name = name;
+        this.main = main;
+        this.style2 = style2;
+        this.style3 = style3;
+        this.style4 = style4;
+    }
+};
+
+var defaultStyle = new Style("Normal", "css/style.css", "css/style-1400.css", "css/style-1280.css", "css/style-600.css");
+
+var styleList = loadJSONPath("./css/themes.json");
+
+function changeStyle(style) {
+    for(var i=0;i<styleList.length;i++){
+        if (styleList[i].name == style) {
+            $("#mainStyle").attr("href", styleList[i].main);
+            if (styleList[i].style2) {
+                $("#style2").attr("href", styleList[i].style2);
+            }
+            if (styleList[i].style3) {
+                $("#style3").attr("href", styleList[i].style3);
+            }
+            if (styleList[i].style4) {
+                $("#style4").attr("href", styleList[i].style4);
+            }
+            return;
+        }
+    }
+    
 }
 
 var inhttp = getWebProtocol() == "http";

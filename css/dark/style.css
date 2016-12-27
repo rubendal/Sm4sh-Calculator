@@ -3,7 +3,8 @@
   margin: 0;
   padding-bottom: 160px;
   min-height: 100%;
-  background:#FCFCFF;
+  background:#212121;
+  color:white;
 }
 
 #content{
@@ -45,7 +46,7 @@ input[type=number]{
 
 #results{
     font-size: 15px;
-    color:black;
+    color:white;
 }
 
 #attributes{
@@ -139,7 +140,7 @@ input[type=number]{
 }
 
 table,td,tr{
-    border:1px solid black;
+    border:1px solid white;
     padding:1px;
     border-collapse: collapse;
 }
@@ -230,12 +231,13 @@ table,td,tr{
     margin-right:20px;
 }
 
-#links {
-    clear: none;
-    float: right;
-    margin-right: 20px;
+#links{
+    clear:none;
+    float:right;
+    margin-right:20px;
     line-height: 20px;
 }
+
 
 #theme{
     clear:right;

@@ -883,6 +883,13 @@ app.controller('calculator', function ($scope) {
         $("#" + id).collapse('toggle');
     }
 
+    $scope.theme = "Normal";
+    $scope.themes = styleList;
+
+    $scope.changeTheme = function () {
+        changeStyle($scope.theme);
+    }
+
     mapParams($scope);
 
     $scope.tsv_options();

@@ -1,0 +1,13 @@
+﻿[
+  {
+    "name": "Normal",
+    "main": "css/style.css",
+    "style2": "css/style-1400.css",
+    "style3": "css/style-1280.css",
+    "style4": "css/style-600.css"
+  },
+  {
+    "name": "Dark",
+    "main": "css/dark/style.css"
+  }
+]
