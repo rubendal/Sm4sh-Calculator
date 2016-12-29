@@ -754,19 +754,18 @@ function mapParams($scope) {
     }
 }
 
-class Style {
-    constructor(name, main, style2, style3, style4) {
-        this.name = name;
-        this.main = main;
-        this.style2 = style2;
-        this.style3 = style3;
-        this.style4 = style4;
-    }
-};
-
-var defaultStyle = new Style("Normal", "css/style.css", "css/style-1400.css", "css/style-1280.css", "css/style-600.css");
-
 var styleList = loadJSONPath("./css/themes.json");
+
+var defaultStyle = styleList[0];
+
+function checkAndChangeMedia(id, style) {
+    if (style == undefined) {
+        return;
+    }
+    if ($(id).attr("media") != style) {
+        $(id).attr("media", style);
+    }
+}
 
 function changeStyle(style) {
     for(var i=0;i<styleList.length;i++){
@@ -774,12 +773,24 @@ function changeStyle(style) {
             $("#mainStyle").attr("href", styleList[i].main);
             if (styleList[i].style2) {
                 $("#style2").attr("href", styleList[i].style2);
+                checkAndChangeMedia("#style2", styleList[i].media2);
+            } else {
+                $("#style2").attr("href", defaultStyle.style2);
+                checkAndChangeMedia("#style2", defaultStyle.media2);
             }
             if (styleList[i].style3) {
                 $("#style3").attr("href", styleList[i].style3);
+                checkAndChangeMedia("#style3", styleList[i].media3);
+            } else {
+                $("#style3").attr("href", defaultStyle.style3);
+                checkAndChangeMedia("#style3", defaultStyle.media3);
             }
             if (styleList[i].style4) {
                 $("#style4").attr("href", styleList[i].style4);
+                checkAndChangeMedia("#style4", styleList[i].media4);
+            } else {
+                $("#style4").attr("href", defaultStyle.style4);
+                checkAndChangeMedia("#style4", defaultStyle.media4);
             }
             return;
         }
