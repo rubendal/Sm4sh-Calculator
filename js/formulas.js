@@ -300,7 +300,7 @@ function DI(angle, move_angle){
     if(angle == -1){
         return 0;
     }
-    //Value was 10, however in params is 0.17 in radians, https://twitter.com/LettuceUdon/status/766640794807603200
+    //Value was 10, however in params is 0.17 in radians, https://twitter.com/Meshima_/status/766640794807603200
     return (parameters.di * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
 }
 

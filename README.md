@@ -48,7 +48,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Max distance when hitstun ends
 
 #### Launch Visualizer
-Note: Work in progress, this is not a combo calculator, distance calculation may not accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate
+Note: Work in progress, this is not a combo calculator, distance calculation may not be accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate, hurtboxes not included so KO percents are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
@@ -101,4 +101,4 @@ You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/is
 * [@KuroganeHammer](https://twitter.com/KuroganeHammer) [frame data repository](http://kuroganehammer.com/Smash4)
 * [FrannHammer (KuroganeHammer API)](https://github.com/Frannsoft/FrannHammer)
 * [ssbwiki.com](http://www.ssbwiki.com)
-* [Meshima's](https://twitter.com/LettuceUdon) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
+* [Meshima's](https://twitter.com/Meshima_) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
