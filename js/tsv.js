@@ -1,6 +1,6 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
 "move","move_base_damage","charge_frames","base_damage","damage","staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg",
-"kb_modifier","kb_multiplier","kb","kb_x","kb_y","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","horizontal_launch_speed","vertical_launch_speed",
+"kb_modifier","kb_multiplier","kb","kb_x","kb_y","di_lsi_angle","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
 var tsv_rows = [];
@@ -57,7 +57,7 @@ class Row{
             return [this.attacker.name, this.attackerMod, this.attacker_display, this.target.name, this.targetMod, this.target_display,
             this.attacker_percent, this.rage, this.target_percent,
             this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg,
-            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
+            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.di, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }
     }
@@ -589,7 +589,8 @@ app.controller('calculator', function ($scope) {
         var ipercent = $scope.it_percent ? Math.floor(((to - from)/step)) + 1 : 1;
         var irage = $scope.it_rage ? Math.floor((at_to - at_from)/at_step) + 1 : 1;
         var istocks = $scope.it_stock_dif ? 5 : 1;
-        var calculations = (istale * ikbmod * (imoves - smashcount) * (itargets + imod) * ipercent * irage * istocks) + (smashcount * 61 * istale * ikbmod * (itargets + imod) * ipercent * irage * istocks);
+        var idi = $scope.it_di ? 361 : 1;
+        var calculations = (istale * ikbmod * (imoves - smashcount) * (itargets + imod) * ipercent * irage * istocks * idi) + (smashcount * 61 * istale * ikbmod * (itargets + imod) * ipercent * irage * istocks * idi);
 
         $scope.calculations = calculations;
 
@@ -696,6 +697,15 @@ app.controller('calculator', function ($scope) {
         funlist.push(function(f){
             addRow();
         });
+
+        if ($scope.it_di) {
+            funlist.push(function (f) {
+                for (var i = -1; i < 360; i++) {
+                    di = i;
+                    funlist[f - 1](f - 1);
+                }
+            });
+        }
 
         if($scope.it_kb_mod){
             funlist.push(function(f){
