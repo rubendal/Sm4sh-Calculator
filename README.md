@@ -4,8 +4,8 @@ Web based Smash 4 knockback calculator
 ### Recent Changes
 * Added - Set weight to 100 flag for moves that make the opponent have 100 weight like paralyzers and Finishing Touch
 * Added - Parameter editing (for modders and researchers)
-* Changed - Using new vectoring formula obtained with new discoveries
-* Changed - Vectoring is now calculated with DI
+* Changed - Using new LSI formula obtained with new discoveries
+* Changed - LSI is now calculated with DI
 * Added - Hit Advantage
 * Added - Hitstun cancel calculation process
 * Added - URL Sharing
@@ -44,7 +44,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * When Reeling/Untechable spin animation could happen
 * Launch speed
 * Gravity launch speed boost
-* Vectoring
+* LSI
 * Max distance when hitstun ends
 
 #### Launch Visualizer

@@ -1,7 +1,7 @@
 ﻿var parameters = {
     di: 0.17,
-    vectoring_max: 1.095,
-    vectoring_min: 0.92,
+    lsi_max: 1.095,
+    lsi_min: 0.92,
     decay: 0.051,
     gravity:{
         mult: 5,
@@ -304,7 +304,7 @@ function DI(angle, move_angle){
     return (parameters.di * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
 }
 
-function Vectoring(angle, launch_angle) {
+function LSI(angle, launch_angle) {
     if(angle == -1){
         return 1;
     }
@@ -315,9 +315,9 @@ function Vectoring(angle, launch_angle) {
         return 1;
     }
     if (angle >= 0 && angle <= 180) {
-        return 1 + ((parameters.vectoring_max - 1) * Math.sin(angle * Math.PI / 180));
+        return 1 + ((parameters.lsi_max - 1) * Math.sin(angle * Math.PI / 180));
     }
-    return 1 + ((1 - parameters.vectoring_min) * Math.sin(angle * Math.PI / 180));
+    return 1 + ((1 - parameters.lsi_min) * Math.sin(angle * Math.PI / 180));
     
 }
 

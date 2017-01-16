@@ -70,8 +70,6 @@ app.controller('calculator', function ($scope) {
 
     $scope.st_jab_lock = { "display": "none" };
 
-    $scope.vectoring = "none";
-
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
     $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
@@ -442,17 +440,6 @@ app.controller('calculator', function ($scope) {
         stock_dif = $scope.stock_dif;
         game_format = $scope.format;
 
-        switch($scope.vectoring){
-            case "none":
-                vectoring = 0;
-            break;
-            case "increase":
-                vectoring = 1;
-            break;
-            case "decrease":
-                vectoring = -1;
-            break;
-        }
 
         if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
@@ -473,7 +460,7 @@ app.controller('calculator', function ($scope) {
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, vectoring);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
         if (!kb.wbkb) {
             kb.addModifier(attacker.modifier.kb_dealt);
         }

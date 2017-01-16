@@ -26,8 +26,8 @@ function loadJSONPath(path) {
 
 var defaultParameters = {
     di: 0.17,
-    vectoring_max: 1.095,
-    vectoring_min: 0.92,
+    lsi_max: 1.095,
+    lsi_min: 0.92,
     decay: 0.051,
     gravity: {
         mult: 5,
@@ -112,7 +112,7 @@ var paramsList = [
     new Parameter("faf", "26"),
     new Parameter("kbModifier", "none"),
     new Parameter("electric", "0"),
-    new Parameter("vectoring", "none"),
+    new Parameter("lsi", "none"),
     new Parameter("bounce", "0"),
     new Parameter("projectile", "0"),
     new Parameter("witchTime", "0"),
@@ -134,8 +134,8 @@ var paramsList = [
     new Parameter("KB", "0"),
     new Parameter("chargeable", "0"),
     new Parameter("pDI", defaultParameters.di.toString()),
-    new Parameter("pMinVectoring", defaultParameters.vectoring_min.toString()),
-    new Parameter("pMaxVectoring", defaultParameters.vectoring_max.toString()),
+    new Parameter("pMinLSI", defaultParameters.lsi_min.toString()),
+    new Parameter("pMaxLSI", defaultParameters.lsi_max.toString()),
     new Parameter("pHitstun", defaultParameters.hitstun),
     new Parameter("pDecay", defaultParameters.decay),
     new Parameter("pLaunchSpeed", defaultParameters.launch_speed),
@@ -338,11 +338,11 @@ function buildParams($scope) {
         if (paramsList[45].value != $scope.params.di) {
             params.push(new Parameter(paramsList[45].param, $scope.params.di));
         }
-        if (paramsList[46].value != $scope.params.vectoring_min) {
-            params.push(new Parameter(paramsList[46].param, $scope.params.vectoring_min));
+        if (paramsList[46].value != $scope.params.lsi_min) {
+            params.push(new Parameter(paramsList[46].param, $scope.params.lsi_min));
         }
-        if (paramsList[47].value != $scope.params.vectoring_max) {
-            params.push(new Parameter(paramsList[47].param, $scope.params.vectoring_max));
+        if (paramsList[47].value != $scope.params.lsi_max) {
+            params.push(new Parameter(paramsList[47].param, $scope.params.lsi_max));
         }
         if (paramsList[48].value != $scope.params.hitstun) {
             params.push(new Parameter(paramsList[48].param, $scope.params.hitstun));
@@ -390,10 +390,15 @@ function buildURL($scope) {
     url = url.replace(window.location.search, "") + "?";
     var p = "";
     var params = buildParams($scope);
+    var andIns = false;
     for (var i = 0; i < params.length; i++) {
-        if (i != 0) {
+        if (params[i].value === undefined) {
+            continue;
+        }
+        if (andIns) {
             p += "&";
         }
+        andIns = true;
         var u = encodeURI(params[i].value);
         u = u.replace("&","%26");
         p += params[i].param + "=" + u;
@@ -610,16 +615,16 @@ function mapParams($scope) {
             $scope.params.hitstun = parseFloat(param);
         }
     }
-    param = Parameter.get(get_params, "pMinVectoring");
+    param = Parameter.get(get_params, "pMinLSI");
     if (param) {
         if ($scope.params != undefined) {
-            $scope.params.vectoring_min = parseFloat(param);
+            $scope.params.lsi_min = parseFloat(param);
         }
     }
-    param = Parameter.get(get_params, "pMaxVectoring");
+    param = Parameter.get(get_params, "pMaxLSI");
     if (param) {
         if ($scope.params != undefined) {
-            $scope.params.vectoring_max = parseFloat(param);
+            $scope.params.lsi_max = parseFloat(param);
         }
     }
     param = Parameter.get(get_params, "pDecay");
@@ -1488,11 +1493,11 @@ class Knockback {
         this.spike = false;
         this.di_change = 0;
         this.launch_speed = LaunchSpeed(kb);
-        this.vectoring = vectoring;
+        this.lsi = lsi;
         this.horizontal_launch_speed = 0;
         this.vertical_launch_speed = 0;
-        if(this.vectoring == undefined){
-            this.vectoring = 1;
+        if(this.lsi == undefined){
+            this.lsi = 1;
         }
         this.hitstun = Hitstun(this.base_kb, this.windbox);
         if (di !== undefined) {
@@ -1550,12 +1555,12 @@ class Knockback {
                 this.vertical_launch_speed += this.add_gravity_speed;
             }
             if (this.tumble) {
-                this.vectoring = Vectoring(this.di, this.angle);
+                this.lsi = LSI(this.di, this.angle);
             } else {
-                this.vectoring = 1;
+                this.lsi = 1;
             }
-            this.horizontal_launch_speed *= this.vectoring;
-            this.vertical_launch_speed *= this.vectoring;
+            this.horizontal_launch_speed *= this.lsi;
+            this.vertical_launch_speed *= this.lsi;
             this.hitstun = Hitstun(this.base_kb, false);
         };
         this.addModifier = function (modifier) {
@@ -1576,7 +1581,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, vectoring){
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1608,12 +1613,12 @@ class PercentFromKnockback{
         this.vs_percent = 0;
         this.timesInQueue = timesInQueue;
         this.ignoreStale = ignoreStale;
-        this.vectoring = vectoring;
+        this.lsi = lsi;
         this.wbkb_kb = -1;
         this.wbkb_modifier = 1;
-        if(this.vectoring == undefined){
-            this.vectoring = 0;
-        }
+        /*if(this.lsi == undefined){
+            this.lsi = 0;
+        }*/
 
         this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
         this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
@@ -1697,12 +1702,12 @@ class PercentFromKnockback{
                         this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                     }
                 }
-                /*if(this.vectoring != 0 && this.tumble){
+                /*if(this.lsi != 0 && this.tumble){
                     if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
-                        if(this.vectoring == 1){
+                        if(this.lsi == 1){
                         this.kb *= 0.92;
                     }else{
-                        if(this.vectoring == -1){
+                        if(this.lsi == -1){
                             this.kb *= 1.095;
                         }
                     }
@@ -1831,7 +1836,7 @@ class PercentFromKnockback{
                 this.kb = this.base_kb * this.wbkb_modifier;
                 this.rage_needed = -1;
                 this.vs_percent = 0;
-                var wbkb = WeightBasedKB(this.weight, this.bkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.vectoring);
+                var wbkb = WeightBasedKB(this.weight, this.bkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.lsi);
                 wbkb.addModifier(this.wbkb_modifier);
                 this.wbkb_kb = wbkb.kb;
                 if (this.kb <= this.wbkb_kb) {
@@ -1938,7 +1943,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "Vectoring", "Horizontal Launch Speed", "Gravity launch speed" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity launch speed" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
@@ -1947,7 +1952,7 @@ function List(values) {
         "KB X component", "KB Y component",
         "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
         "Frame target can cancel hitstun by using an aerial",
-        "Launch speed multiplier caused by vectoring",
+        "Launch speed multiplier caused by LSI",
         "Initial horizontal speed target will be launched",
         "Additional vertical launch speed caused by gravity if attack causes tumble",
         "Initial vertical speed target will be launched",
@@ -1966,7 +1971,7 @@ function List(values) {
                 continue;
             }
         }
-        if (attributes[i] == "Vectoring") {
+        if (attributes[i] == "LSI") {
             if(values[i] == 1){
                 continue;
             }
@@ -2110,7 +2115,7 @@ var position = {"x":0, "y":0};
 var inverseX = false;
 var onSurface = false;
 
-var vectoring = 0;
+var lsi = 0;
 
 var landing_lag = 0;
 var stock_dif = "0";

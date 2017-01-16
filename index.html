@@ -281,7 +281,7 @@
             <div id="modifiers" class="card-block collapse group">
                 <div id="attack_options">
                     <div class="pos-left">
-                        Target DI/Vectoring angle:
+                        Target DI/LSI angle:
                         <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
                         <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI     
                         <br/>
@@ -430,11 +430,11 @@
                     <br />
                     <br />
                     <br />
-                    Vectoring
+                    LSI
                     <br />
-                    Min multiplier <input name="param_min_vectoring" type="number" min="0" max="999" step="0.01" ng-model="params.vectoring_min" ng-change="updateParameters()" />
+                    Min multiplier <input name="param_min_lsi" type="number" min="0" max="999" step="0.01" ng-model="params.lsi_min" ng-change="updateParameters()" />
                     <br />
-                    Max multiplier <input name="param_max_vectoring" type="number" min="0" max="999" step="0.01" ng-model="params.vectoring_max" ng-change="updateParameters()" />
+                    Max multiplier <input name="param_max_lsi" type="number" min="0" max="999" step="0.01" ng-model="params.lsi_max" ng-change="updateParameters()" />
                     <br />
                     <br />
                     Launch speed
