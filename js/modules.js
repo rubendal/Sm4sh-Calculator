@@ -628,6 +628,12 @@ app.controller('calculator', function ($scope) {
         if (vskb.di_able) {
             vslist.splice(5, 0, new ListItem("Launch angle", + +vskb.angle.toFixed(4)));
         }
+        if (trainingkb.di_able) {
+            traininglist.splice(5, 0, new ListItem("Angle with DI", + +trainingkb.angle_with_di.toFixed(4)));
+        }
+        if (vskb.di_able) {
+            vslist.splice(5, 0, new ListItem("Angle with DI", + +vskb.angle_with_di.toFixed(4)));
+        }
         if (r != 1) {
             traininglist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));
             vslist.splice(3, 0, new ListItem("KB modifier", "x" + +r.toFixed(4)));

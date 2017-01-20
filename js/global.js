@@ -1479,6 +1479,7 @@ class Knockback {
         this.kb = this.base_kb;
         this.original_angle = angle;
         this.base_angle = angle;
+        this.angle_with_di = angle;
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
@@ -1519,6 +1520,7 @@ class Knockback {
                     this.angle += this.di_change;
                 }
             }
+            this.angle_with_di = this.angle;
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
@@ -1551,8 +1553,11 @@ class Knockback {
             this.launch_speed = LaunchSpeed(this.kb);
             this.horizontal_launch_speed = LaunchSpeed(this.x);
             this.vertical_launch_speed = LaunchSpeed(this.y);
+            
             if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
+                //Gravity boost changes launch angle
+                this.angle = Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed) * 180 / Math.PI;
             }
             if (this.tumble) {
                 this.lsi = LSI(this.di, this.angle);
@@ -1921,7 +1926,8 @@ class ListItem {
         { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80 and angle isn't 0 or 180" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
         { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
-        { "attribute": "Launch angle", "title": "Angle the target is launched affected by DI" },
+        { "attribute": "Angle with DI", "title": "Angle the target is launched affected by DI" },
+        { "attribute": "Launch angle", "title": "Angle the target is launched with gravity boost" },
         { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
         { "attribute": "Luma launched", "title": "If Luma KB > 80 it will be launched" },
         { "attribute": "Shield Damage", "title": "Damage done to target shield, (damage + SD) * 1.19" },

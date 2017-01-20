@@ -308,10 +308,10 @@ function LSI(angle, launch_angle) {
     if(angle == -1){
         return 1;
     }
-    if (launch_angle >= 65 && launch_angle <= 115) {
+    if (launch_angle > 65 && launch_angle < 115) {
         return 1;
     }
-    if (launch_angle >= 245 && launch_angle <= 295) {
+    if (launch_angle > 245 && launch_angle < 295) {
         return 1;
     }
     if (angle >= 0 && angle <= 180) {
