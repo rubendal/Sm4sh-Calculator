@@ -947,6 +947,7 @@ class Distance{
         this.bounce = false;
         this.doPlot = doPlot;
         this.extraFrames = 20;
+        this.finalPosition = position;
         if (extraFrames !== undefined) {
             this.extraFrames = extraFrames;
         }
@@ -1250,6 +1251,10 @@ class Distance{
                 }else{
                     this.max_y = Math.max(this.max_y, character_position.y);
                 }
+            }
+
+            if (i == hitstun) {
+                this.finalPosition = { "x": character_position.x, "y": character_position.y };
             }
 
             if(bouncing){

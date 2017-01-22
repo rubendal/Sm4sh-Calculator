@@ -49,8 +49,8 @@ class Row{
             this.v_pos = "";
         }
         this.rage = Rage(attacker_percent); 
-        this.v_pos = this.distance.max_y * (Math.sin(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);
-        this.h_pos = this.distance.max_x * (Math.cos(this.kb.angle * Math.PI / 180) < 0 ? -1 : 1);  
+        this.v_pos = distance.finalPosition.y;
+        this.h_pos = distance.finalPosition.x;  
         this.lsi = this.kb.lsi;
 
         this.tsv = function(){
@@ -677,7 +677,7 @@ app.controller('calculator', function ($scope) {
             preDamage *= target.modifier.damage_taken;
         }
 
-        var addRow = function(){
+        var addRow = function () {
             calcDamage();
             if(!wbkb){
                 kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
@@ -687,7 +687,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
-            distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, target.attributes.gravity2, target.attributes.air_friction * target.modifier.air_friction, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
+            distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
             tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb,distance));
         }
 
