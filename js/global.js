@@ -1917,7 +1917,7 @@ class ListItem {
     }
 
     static getTitle(attribute) {
-        var titles = [{ "attribute": "Gravity launch speed", "title": "Vertical launch speed increase caused by gravity when KB causes tumble" },
+        var titles = [{ "attribute": "Gravity boost", "title": "Vertical launch speed increase caused by gravity when KB causes tumble" },
         { "attribute": "KB modifier", "title": "KB multiplier used when target is crouching or charging a smash attack" },
         { "attribute": "Rage", "title": "KB multiplier used on total KB based on attacker's percent " },
         { "attribute": "Aura", "title": "Lucario aura damage increase based on his percent/stock difference" },
@@ -1954,7 +1954,7 @@ class ListItem {
 
 function List(values) {
     var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity launch speed" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity boost" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
     var titles = ["Damage dealt to the target",
         "Amount of frames attacker is in hitlag",
         "Amount of frames the target can SDI",
