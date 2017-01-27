@@ -88,7 +88,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.charging_frames_type = "Charging frames";
 
-    
+    $scope.launch_rate = launch_rate;
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -440,6 +440,7 @@ app.controller('calculator', function ($scope) {
         stock_dif = $scope.stock_dif;
         game_format = $scope.format;
 
+        launch_rate = parseFloat($scope.launch_rate);
 
         if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
@@ -460,7 +461,7 @@ app.controller('calculator', function ($scope) {
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox);
+        var kb = new PercentFromKnockback(kb, type, base_damage, damage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, launch_rate);
         if (!kb.wbkb) {
             kb.addModifier(attacker.modifier.kb_dealt);
         }

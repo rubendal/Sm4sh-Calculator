@@ -303,6 +303,9 @@
                             <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Interrupted charged smash attack
                         </div>
                         <br />
+                        <br />
+                        Launch Rate:
+                        <input name="launch_rate" type="number" min="0.5" max="2" step="0.1" ng-model="launch_rate" ng-change="update()" />
                     </div>
                 </div>
             </div>

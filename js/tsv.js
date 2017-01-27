@@ -201,6 +201,7 @@ app.controller('calculator', function ($scope) {
     $scope.charge_data = null;
     $scope.selected_move = null;
 
+    $scope.launch_rate = launch_rate;
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -539,6 +540,8 @@ app.controller('calculator', function ($scope) {
         stock_dif = $scope.stock_dif;
         game_format = $scope.format;
 
+        launch_rate = parseFloat($scope.launch_rate);
+
         if($scope.noDI){
             di = -1;
         }else{
@@ -680,9 +683,9 @@ app.controller('calculator', function ($scope) {
         var addRow = function () {
             calcDamage();
             if(!wbkb){
-                kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+                kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di, launch_rate);
             }else{
-                kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+                kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di, launch_rate);
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);

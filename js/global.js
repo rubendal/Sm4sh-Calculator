@@ -156,7 +156,8 @@ var paramsList = [
     new Parameter("kbReceived", "1"),
     new Parameter("traction", "0.055"),
     new Parameter("setWeight", "0"),
-    new Parameter("theme","Normal")
+    new Parameter("theme", "Normal"),
+    new Parameter("launchRate","1")
 ];
 
 function checkUndefined(value) {
@@ -315,6 +316,9 @@ function buildParams($scope) {
     }
     if (paramsList[68].value != $scope.theme) {
         params.push(new Parameter(paramsList[68].param, $scope.theme));
+    }
+    if (paramsList[69].value != $scope.theme) {
+        params.push(new Parameter(paramsList[69].param, $scope.launch_rate));
     }
     if ($scope.app == "calculator") {
         if (paramsList[37].value != $scope.stageName) {
@@ -757,6 +761,12 @@ function mapParams($scope) {
         $scope.smashCharge = parseFloat(param);
         $scope.updateCharge();
     }
+    param = Parameter.get(get_params, "launchRate");
+    if (param) {
+        if ($scope.launch_rate != undefined) {
+            $scope.launch_rate = parseFloat(param);
+        }
+    }
 }
 
 var styleList = loadJSONPath("./css/themes.json");
@@ -997,7 +1007,7 @@ class Distance{
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
         var character_position = {'x':this.position.x,'y':this.position.y};
         var launch_speed = {'x':x_speed, 'y':y_speed};
-        var character_speed = {'x':0,'y':0 };
+        var character_speed = { 'x': 0, 'y': 0 };
         this.vertical_speed = [];
         var momentum = 1;
         var g = 0;
@@ -1476,7 +1486,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di, launch_rate) {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1502,6 +1512,10 @@ class Knockback {
         this.lsi = lsi;
         this.horizontal_launch_speed = 0;
         this.vertical_launch_speed = 0;
+        this.launch_rate = launch_rate;
+        if (this.launch_rate == undefined) {
+            this.launch_rate = 1;
+        }
         if(this.lsi == undefined){
             this.lsi = 1;
         }
@@ -1512,7 +1526,7 @@ class Knockback {
             this.di = -1;
         }
         this.calculate = function () {
-            this.kb = this.base_kb;
+            this.kb = this.base_kb * this.launch_rate;
             if (this.original_angle == 361) {
                 this.base_angle = SakuraiAngle(this.kb, this.aerial);
             }
@@ -1591,7 +1605,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox){
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, launch_rate){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1626,6 +1640,10 @@ class PercentFromKnockback{
         this.lsi = lsi;
         this.wbkb_kb = -1;
         this.wbkb_modifier = 1;
+        this.launch_rate = launch_rate;
+        if (this.launch_rate == undefined) {
+            this.launch_rate = 1;
+        }
         /*if(this.lsi == undefined){
             this.lsi = 0;
         }*/
@@ -1639,7 +1657,7 @@ class PercentFromKnockback{
         }
         this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, timesInQueue, ignoreStale){
             var s = StaleNegation(timesInQueue, ignoreStale);
-            r = r * Rage(attacker_percent);
+            r = r * Rage(attacker_percent) * this.launch_rate;
             return (500 * kb * (weight+100)- (r * (kbg * (7 * damage * s * (3 * base_damage * s+7 * base_damage+20)+90 * (weight+100))+ 500 * bkb * (weight+100))))/(7 * kbg * r * (base_damage * (3 *s +7)+20));
         }
 
@@ -1942,7 +1960,8 @@ class ListItem {
         { "attribute": "Shield Hitlag", "title": "Amount of frames target suffers hitlag while shielding" },
         { "attribute": "Shield Advantage", "title": "" },
         { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" },
-        { "attribute": "Hit Advantage", "title": "" }];
+        { "attribute": "Hit Advantage", "title": "" },
+        { "attribute": "Launch rate", "title": "KB multiplier set in the VS mode rules" }];
         for (var i = 0; i < titles.length; i++) {
             if (attribute == titles[i].attribute) {
                 return titles[i].title;
@@ -2132,3 +2151,5 @@ var landing_lag = 0;
 var stock_dif = "0";
 
 var set_weight = false;
+
+var launch_rate = 1;
