@@ -1436,6 +1436,23 @@ class Distance{
 
             data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Blast zone" });
 
+            //Stage Camera bounds
+            adxdata = [];
+            adydata = [];
+            adxdata.push(this.stage.camera[0]);
+            adxdata.push(this.stage.camera[1]);
+            adxdata.push(this.stage.camera[1]);
+            adxdata.push(this.stage.camera[0]);
+            adxdata.push(this.stage.camera[0]);
+
+            adydata.push(this.stage.camera[2]);
+            adydata.push(this.stage.camera[2]);
+            adydata.push(this.stage.camera[3]);
+            adydata.push(this.stage.camera[3]);
+            adydata.push(this.stage.camera[2]);
+
+            data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
+
             //Stage surface
             adxdata = [];
             adydata = [];
