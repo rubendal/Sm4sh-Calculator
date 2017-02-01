@@ -104,7 +104,7 @@ app.controller('calculator', function ($scope) {
     $scope.stages = getStages();
     $scope.stages.unshift({"stage":"No stage"});
     $scope.stage = null;
-    $scope.stageValue = {"stage":"No stage"};
+    $scope.stageValue = JSON.stringify($scope.stages[0]);
 
     $scope.spawns = [];
 

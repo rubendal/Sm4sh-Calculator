@@ -1248,6 +1248,10 @@ class Distance{
 
             this.x.push(+character_position.x.toFixed(4));
             this.y.push(+character_position.y.toFixed(4));
+
+            //Recalculate angle and decay
+            //angle = Math.atan2(launch_speed.y, launch_speed.x) * 180 / Math.PI;
+            //decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
             
             //Maximum position during hitstun
             if(i<hitstun){

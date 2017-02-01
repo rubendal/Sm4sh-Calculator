@@ -96,6 +96,13 @@ Use these generated data tables in another applications (R, Excel, and others) t
 
 Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/TSV-Generator
 
+## Hitbox Script Viewer
+http://rubendal.github.io/Sm4sh-Calculator/scripts.html
+
+View character scripts that contain hitbox/throw data
+
+All game.bin scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and filtered to check if they contained hitboxes or throw specifiers/appliers
+
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 
@@ -104,3 +111,4 @@ You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/is
 * [FrannHammer (KuroganeHammer API)](https://github.com/Frannsoft/FrannHammer)
 * [ssbwiki.com](http://www.ssbwiki.com)
 * [Meshima's](https://twitter.com/Meshima_) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
+* [Sammi Husky's](https://twitter.com/sammihusky) [Sm4sh Tools](https://github.com/Sammi-Husky/Sm4sh-Tools)
