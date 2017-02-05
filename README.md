@@ -96,12 +96,12 @@ Use these generated data tables in another applications (R, Excel, and others) t
 
 Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/TSV-Generator
 
-## Hitbox Script Viewer
+## Script Viewer
 http://rubendal.github.io/Sm4sh-Calculator/scripts.html
 
 View character scripts that contain hitbox/throw data
 
-All game.bin scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and filtered to check if they contained hitboxes or throw specifiers/appliers
+All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files if they have a game.bin script with a flag for those that contain hitboxes
 
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback

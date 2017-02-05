@@ -36,10 +36,39 @@ function getScripts(char) {
     return json;
 };
 
+function filter() {
+    if (!onlyHitboxes) {
+        return scripts;
+    }
+    var list = [];
+    for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].hitbox) {
+            list.push(scripts[i]);
+        }
+    }
+    return list;
+};
+
+function getTypes(s) {
+    var types = ["Game"];
+    var sc = JSON.parse(s);
+    if (sc.expression != null) {
+        types.push("Expression");
+    }
+    if (sc.effect != null) {
+        types.push("Effect");
+    }
+    if (sc.sound != null) {
+        types.push("Sound");
+    }
+    return types;
+};
+
 var character = "Bayonetta";
 var gamename = getCharGameName(character);
 var scripts = getScripts(gamename);
 var script = scripts[0];
+var onlyHitboxes = true;
 
 var app = angular.module('scripts', []);
 app.controller('scripts', function ($scope) {
@@ -48,13 +77,20 @@ app.controller('scripts', function ($scope) {
     $scope.characters = names;
     $scope.character = character;
 
-    $scope.script = JSON.stringify(scripts[0]);
-    $scope.scripts = scripts;
+    $scope.scripts = filter();
+    $scope.script = JSON.stringify($scope.scripts[0]);
+
+    $scope.onlyHitboxes = onlyHitboxes;
+
+    $scope.types = getTypes($scope.script);
+    $scope.type = $scope.types[0];
 
     $scope.code = script.script;
 
     $scope.updateScript = function () {
         script = JSON.parse($scope.script);
+        $scope.types = getTypes($scope.script);
+        $scope.type = $scope.types[0];
         $scope.code = script.script;
     };
 
@@ -62,11 +98,39 @@ app.controller('scripts', function ($scope) {
         character = $scope.character;
         gamename = getCharGameName(character);
         scripts = getScripts(gamename);
-        $scope.scripts = scripts;
+        onlyHitboxes = $scope.onlyHitboxes;
+        $scope.scripts = filter();
         $scope.script = JSON.stringify($scope.scripts[0]);
+        $scope.types = getTypes($scope.script);
+        $scope.type = $scope.types[0];
         $scope.updateScript();
     };
 
+    $scope.updateFilter = function () {
+        onlyHitboxes = $scope.onlyHitboxes;
+        scripts = getScripts(gamename);
+        $scope.scripts = filter();
+        $scope.script = JSON.stringify($scope.scripts[0]);
+        $scope.types = getTypes($scope.script);
+        $scope.type = $scope.types[0];
+        $scope.updateScript();
+    };
 
+    $scope.updateType = function () {
+        switch ($scope.type) {
+            case "Game":
+                $scope.code = script.script;
+                break;
+            case "Expression":
+                $scope.code = script.expression;
+                break;
+            case "Effect":
+                $scope.code = script.effect;
+                break;
+            case "Sound":
+                $scope.code = script.sound;
+                break;
+        }
+    }
 
 });
