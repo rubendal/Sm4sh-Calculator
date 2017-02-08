@@ -2028,7 +2028,7 @@ function List(values) {
             }
             values[i] = "x" + +values[i].toFixed(4);
         }
-        if(attributes[i] == "Gravity launch speed"){
+        if(attributes[i] == "Gravity boost"){
             if(values[i] == 0){
                 continue;
             }
