@@ -131,6 +131,8 @@ app.controller('scripts', function ($scope) {
                 $scope.code = script.sound;
                 break;
         }
-    }
+    };
+
+    $scope.updateCharacter();
 
 });
