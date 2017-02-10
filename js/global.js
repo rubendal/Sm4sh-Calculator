@@ -1554,20 +1554,20 @@ class Knockback {
             this.angle = this.base_angle;
             if (this.base_angle != 0 && this.base_angle != 180) {
                 this.tumble = this.kb > 80 && !windbox;
-                this.di_able = this.tumble;
-                if(this.di_able){
-                    this.di_change = DI(this.di,this.angle);
-                    this.angle += this.di_change;
-                }
+            }
+            if ((this.base_angle == 0 || this.base_angle == 180) && this.aerial) {
+                this.tumble = this.kb > 80 && !windbox;
+            }
+            this.di_able = this.tumble;
+            if (this.di_able) {
+                this.di_change = DI(this.di, this.angle);
+                this.angle += this.di_change;
             }
             this.angle_with_di = this.angle;
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
             if(!this.tumble){
-                this.add_gravity_speed = 0;
-            }
-            if (this.angle == 0 || this.angle == 180 ) {
                 this.add_gravity_speed = 0;
             }
             /*
