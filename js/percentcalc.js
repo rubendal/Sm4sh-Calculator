@@ -22,8 +22,8 @@ app.controller('calculator', function ($scope) {
     $scope.kbg = kbg;
     $scope.stale = stale;
     $scope.kb_modifier = "none";
-    $scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    //$scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    //$scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     $scope.kb = 0;
     $scope.kbType = "total";
 
@@ -467,25 +467,21 @@ app.controller('calculator', function ($scope) {
         }
         kb.addModifier(target.modifier.kb_received);
         kb.bounce(bounce);
-        var results = {'training':[], 'vs':[]};
+        var resultsList = [];
         if(kb.wbkb){
-            results.training = [];
             if (kb.rage_needed != -1) {
-                results.vs.push(new ListItem("Rage multiplier", kb.rage_needed));
-                results.vs.push(new ListItem("Attacker percent", kb.vs_percent));
+                resultsList.push(new Result("Rage multiplier", 0, kb.rage_needed, true));
+                resultsList.push(new Result("Attacker percent", 0, kb.vs_percent, true));
             } else {
                 if (kb.vs_percent == -1) {
-                    results.vs.push(new ListItem("Cannot reach KB higher than", (kb.wbkb_kb * 1.15).toFixed(4)));
+                    resultsList.push(new Result("Cannot reach KB higher than",0, (kb.wbkb_kb * 1.15).toFixed(4),true));
                 } else {
-                    results.vs.push(new ListItem("WBKB KB is higher than ",+kb.wbkb_kb.toFixed(4)));
+                    resultsList.push(new Result("WBKB KB is higher than ", 0, +kb.wbkb_kb.toFixed(4),true));
                 }
             }
         }else{
-            var t = kb.training_percent != -1 ? new ListItem("Required Percent", +kb.training_percent.toFixed(4)) : new ListItem("Impossible", "");
-            var v = kb.vs_percent != -1 ? new ListItem("Required Percent", +kb.vs_percent.toFixed(4)) : new ListItem("Impossible", "");
 
-            results.training.push(t);
-            results.vs.push(v);
+            resultsList.push(new Result("Required Percent", kb.training_percent != -1 ? +kb.training_percent.toFixed(4) : "Impossible", kb.vs_percent != -1 ? +kb.vs_percent.toFixed(4) : "Impossible"));
 
             if(kb.type != "total"){
                 if(kb.training_percent != -1){
@@ -517,8 +513,7 @@ app.controller('calculator', function ($scope) {
         
 
 
-        $scope.training = results.training;
-        $scope.vs = results.vs;
+        $scope.results = new ResultList(resultsList);
 
         $scope.sharing_url = buildURL($scope);
     };

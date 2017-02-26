@@ -326,8 +326,23 @@
             </div>
 
         <div id="results">
+            <table class="result-table">
+                <tr>
+                    <td class="attribute"></td>
+                    <td class="value">Training mode</td>
+                    <td class="value"></td>
+                    <td class="value">Vs mode</td>
+                </tr>
+                <tr ng-repeat="x in results.list" ng-class-even="'value-even'">
+                    <td class="attribute" title="{{x.title}}">{{ x.name }}</td>
+                    <td class="value" title="{{x.title}}" ng-style="{{x.style}}">{{ x.val1 }}</td>
+                    <td class="value" title="{{x.title}}" ng-style="{{x.style}}">{{ x.valc }}</td>
+                    <td class="value" title="{{x.title}}" ng-style="{{x.style}}">{{ x.val2}}</td>
+                </tr>
+            </table>
             <div id="data_pos" style="width:500px;">
-                <div id="training">
+                
+                <!--<div id="training">
                     Training Mode
                     <br />
                     <table>
@@ -347,7 +362,7 @@
                             <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
                         </tr>
                     </table>
-                </div>
+                </div>-->
 
             </div>
         </div>
