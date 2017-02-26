@@ -1990,6 +1990,11 @@ class Result {
         this.hidevs = false;
         this.style = "";
 
+        this.addStyle = function (style) {
+            this.style = style;
+            return this;
+        }
+
         if (hidetraining != undefined) {
             this.hidetraining = hidetraining;
         }
@@ -2035,10 +2040,7 @@ class Result {
             this.vs = +this.vs.toFixed(4);
         }
 
-        this.addStyle = function (style) {
-            this.style = style;
-            return this;
-        }
+        
     }
 
     
