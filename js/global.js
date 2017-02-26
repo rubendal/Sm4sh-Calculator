@@ -1926,37 +1926,25 @@ class PercentFromKnockback{
     }
 };
 
-class ListItem {
-    constructor(attribute, value, title) {
-        this.attribute = attribute;
-        this.addStyle = function (style) {
-            this.style = style;
-            return this;
-        }
-        if (title !== undefined) {
-            this.title = title;
-        } else {
-            this.title = ListItem.getTitle(this.attribute);
-        }
-        this.style = "";
-        if (typeof value === "number" && isNaN(value)) {
-            this.addStyle({ 'color': 'red' });
-            this.value = "Invalid data";
-        } else {
-            if (attribute == "Hitstun" || attribute == "Attacker Hitlag" || attribute == "Target Hitlag" || attribute == "Shield stun" || attribute == "Shield Hitlag" || attribute == "Shield Advantage" || attribute == "Hit Advantage") {
-                this.value = value + (value == 1 ? " frame" : " frames");
-            } else if (attribute == "Airdodge hitstun cancel" || attribute == "Aerial hitstun cancel" || attribute == "First Actionable Frame") {
-                this.value = "Frame " + value;
-            } else {
-                this.value = value;
-            }
-        }
-
-        
-    }
-
-    static getTitle(attribute) {
-        var titles = [{ "attribute": "Gravity boost", "title": "Vertical launch speed increase caused by gravity when KB causes tumble" },
+function getTitle(attribute) {
+    var titles = [
+        { "attribute": "Damage", "title": "Damage dealt to the target" },
+        { "attribute": "Attacker Hitlag", "title": "Amount of frames attacker is in hitlag" },
+        { "attribute": "Target Hitlag", "title": "Amount of frames the target can SDI" },
+        { "attribute": "Total KB", "title": "Total KB dealt" },
+        { "attribute": "Angle", "title": "Angle target is launched without DI" },
+        { "attribute": "X", "title": "KB X component" },
+        { "attribute": "Y", "title": "KB Y component" },
+        { "attribute": "Hitstun", "title": "Hitstun target gets while being launched" },
+        { "attribute": "First Actionable Frame", "title": "Frame the target can do any action" },
+        { "attribute": "Airdodge hitstun cancel", "title": "Frame target can cancel hitstun by airdodging" },
+        { "attribute": "Aerial hitstun cancel", "title": "Frame target can cancel hitstun by using an aerial" },
+        { "attribute": "LSI", "title": "Launch speed multiplier caused by LSI" },
+        { "attribute": "Horizontal Launch Speed", "title": "Initial horizontal speed target will be launched" },
+        { "attribute": "Vertical Launch Speed", "title": "Initial vertical speed target will be launched" },
+        { "attribute": "Max Horizontal Distance", "title": "Horizontal distance travelled being launched after hitstun" },
+        { "attribute": "Max Vertical Distance", "title": "Vertical distance travelled being launched after hitstun" },
+        { "attribute": "Gravity boost", "title": "Vertical launch speed increase caused by gravity when KB causes tumble" },
         { "attribute": "KB modifier", "title": "KB multiplier used when target is crouching or charging a smash attack" },
         { "attribute": "Rage", "title": "KB multiplier used on total KB based on attacker's percent " },
         { "attribute": "Aura", "title": "Lucario aura damage increase based on his percent/stock difference" },
@@ -1983,36 +1971,126 @@ class ListItem {
         { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" },
         { "attribute": "Hit Advantage", "title": "" },
         { "attribute": "Launch rate", "title": "KB multiplier set in the VS mode rules" }];
-        for (var i = 0; i < titles.length; i++) {
-            if (attribute == titles[i].attribute) {
-                return titles[i].title;
+    for (var i = 0; i < titles.length; i++) {
+        if (attribute == titles[i].attribute) {
+            return titles[i].title;
+        }
+    }
+    return "";
+};
+
+
+class Result {
+    constructor(name, training, vs, hidetraining, hidevs) {
+        this.name = name;
+        this.title = getTitle(name);
+        this.training = training;
+        this.vs = vs;
+        this.hidetraining = false;
+        this.hidevs = false;
+        this.style = "";
+
+        if (hidetraining != undefined) {
+            this.hidetraining = hidetraining;
+        }
+        if (hidevs != undefined) {
+            this.hidevs = hidevs;
+        }
+
+        if (typeof training === "number" && isNaN(training)) {
+            this.addStyle({ 'color': 'red' });
+            this.training = "Invalid data";
+        } else {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage") {
+                this.training = training + (training == 1 ? " frame" : " frames");
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
+                this.training = "Frame " + training;
+            } else {
+                this.training = training;
             }
         }
-        return "";
+
+        if (typeof vs === "number" && isNaN(vs)) {
+            this.addStyle({ 'color': 'red' });
+            this.vs = "Invalid data";
+        } else {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage") {
+                this.vs = vs + (vs == 1 ? " frame" : " frames");
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
+                this.vs = "Frame " + vs;
+            } else {
+                this.vs = vs;
+            }
+        }
+
+        if (typeof (this.training) == "string") {
+            this.training = this.training;
+        } else {
+            this.training = +this.training.toFixed(4);
+        }
+
+        if (typeof (this.vs) == "string") {
+            this.vs = this.vs;
+        } else {
+            this.vs = +this.vs.toFixed(4);
+        }
+
+        this.addStyle = function (style) {
+            this.style = style;
+            return this;
+        }
+    }
+
+    
+};
+
+class ResultRow {
+    constructor(name, title, style, v1, v2, h1, h2) {
+        this.name = name;
+        this.title = title;
+        this.val1 = v1;
+        this.val2 = v2;
+        this.h1 = h1;
+        this.h2 = h2;
+        this.style = style;
+        this.onlyOne = v1 == v2 && !h1 && !h2;
+        this.valc = this.onlyOne ? this.val1 : "";
+        if (h1 || this.onlyOne) {
+            this.val1 = "";
+        }
+        if (h2 || this.onlyOne) {
+            this.val2 = "";
+        }
+        
     }
 };
 
-function List(values) {
+class ResultList {
+    constructor(resultList, firstvs) {
+        this.resultList = resultList;
+        this.firstvs = firstvs;
+        this.list = [];
+        for (var i = 0; i < resultList.length; i++) {
+            if (!resultList[i].hidetraining || !resultList[i].hidevs) {
+                if (!firstvs) {
+                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].training, resultList[i].vs, resultList[i].hidetraining, resultList[i].hidevs));
+                } else {
+                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].vs, resultList[i].training, resultList[i].hidevs, resultList[i].hidetraining));
+                }
+            }
+        }
+    }
+};
+
+function List(trainingvalues, vsvalues) {
     var list = [];
     var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity boost" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
     var titles = ["Damage dealt to the target",
-        "Amount of frames attacker is in hitlag",
-        "Amount of frames the target can SDI",
-        "Total KB dealt",
-        "Angle target is launched without DI",
-        "KB X component", "KB Y component",
-        "Hitstun target gets while being launched", "Frame the target can do any action", "Frame target can cancel hitstun by airdodging",
-        "Frame target can cancel hitstun by using an aerial",
-        "Launch speed multiplier caused by LSI",
-        "Initial horizontal speed target will be launched",
-        "Additional vertical launch speed caused by gravity if attack causes tumble",
-        "Initial vertical speed target will be launched",
-        "Horizontal distance travelled being launched after hitstun",
-        "Vertical distance travelled being launched after hitstun"];
+        ];
     var hitstun = -1;
-    for (var i = 0; i < attributes.length && i < values.length; i++) {
+    for (var i = 0; i < attributes.length && i < vsvalues.length; i++) {
         if (attributes[i] == "Hitstun") {
-            hitstun = +values[i].toFixed(4);
+            hitstun = +vsvalues[i].toFixed(4);
         }
         if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
             if (hitstun + 1 == +values[i].toFixed(4)) {
@@ -2036,7 +2114,7 @@ function List(values) {
         if(typeof(values[i]) == "string"){
             list.push(new ListItem(attributes[i], values[i],titles[i]));
         }else{
-            list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i])); //.addStyle({'text-decoration':'line-through'})
+            list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i]));
         }
         if (attributes[i] == "Angle") {
             if (values[i] > 361) {

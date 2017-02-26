@@ -59,6 +59,10 @@ input[type=number]{
     display: none;
 }
 
+#result-table{
+    width:100%;
+}
+
 #data{
     
 }
@@ -140,9 +144,7 @@ input[type=number]{
 }
 
 table,td,tr{
-    border:1px solid white;
     padding:1px;
-    border-collapse: collapse;
 }
 
 .header-table{
@@ -271,11 +273,17 @@ table,td,tr{
 }
 
 .attribute{
-    padding:2px;
+    padding:4px;
 }
 
 .value{
-    padding:2px;
+    padding:4px;
+    text-align:center;
+    width:20%;
+}
+
+.value-even{
+    background:#595959;
 }
 
 .pos-left{
