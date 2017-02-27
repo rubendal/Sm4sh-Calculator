@@ -29,8 +29,8 @@
     }
 };
 
-function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, di, launch_rate) {
-    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, percent + damage, di, 1);
+function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, electric, di, launch_rate) {
+    return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, electric, percent + damage, di, 1);
 }
 
 function Rage(percent) {
@@ -137,11 +137,25 @@ function StaleNegation(timesInQueue, ignoreStale) {
     return s;
 }
 
-function Hitstun(kb, windbox) {
+function ElectricMove(value) {
+    switch (value) {
+        case "electric":
+            return true;
+        case "none":
+            return false;
+    }
+    return false;
+}
+
+function Hitstun(kb, windbox, electric) {
     if (windbox) {
         return 0;
     }
     var hitstun = Math.floor(kb * parameters.hitstun) - 1;
+    //Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
+    if (ElectricMove(electric)) {
+        hitstun++;
+    }
     if (hitstun < 0) {
         return 0;
     }
@@ -161,33 +175,33 @@ function SakuraiAngle(kb, aerial) {
     return (kb - 60) / 0.7;
 }
 
-function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, di, launch_rate) {
+function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate) {
     var s = StaleNegation(timesInQueue, ignoreStale);
-    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, percent + (damage * s), di, launch_rate);
+    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, percent + (damage * s), di, launch_rate);
 }
 
-function WeightBasedKB(weight, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, di, launch_rate) {
-    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, target_percent + damage, di, launch_rate);
+function WeightBasedKB(weight, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, electric, di, launch_rate) {
+    return new Knockback(((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, target_percent + damage, di, launch_rate);
 }
 
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {
     return base_damage * StaleNegation(timesInQueue, ignoreStale);
 }
 
-function FirstActionableFrame(kb, windbox) {
-    var hitstun = Hitstun(kb, windbox);
+function FirstActionableFrame(kb, windbox, electric) {
+    var hitstun = Hitstun(kb, windbox, electric);
     if (hitstun == 0) {
         return 0;
     }
     return hitstun + 1;
 }
 
-function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox) {
+function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox, electric) {
     var res = { 'airdodge': 0, 'aerial': 0 };
     if (windbox) {
         return res;
     }
-    var hitstun = Hitstun(kb, windbox);
+    var hitstun = Hitstun(kb, windbox, electric);
     var res = { 'airdodge': hitstun + 1, 'aerial': hitstun + 1 };
     var airdodge = false;
     var aerial = false;

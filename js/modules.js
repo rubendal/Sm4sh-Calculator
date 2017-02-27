@@ -581,15 +581,15 @@ app.controller('calculator', function ($scope) {
         preDamage *= target.modifier.damage_taken;
 
         if (!wbkb) {
-            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, di);
-            vskb = VSKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di, launch_rate);
+            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, di);
+            vskb = VSKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             trainingkb.addModifier(attacker.modifier.kb_dealt);
             vskb.addModifier(attacker.modifier.kb_dealt);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         } else {
-            trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, di);
-            vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di, launch_rate);
+            trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, di);
+            vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         }
@@ -620,8 +620,8 @@ app.controller('calculator', function ($scope) {
         }
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
-        var t_hc = HitstunCancel(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.angle, windbox);
-        var v_hc = HitstunCancel(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.angle, windbox);
+        var t_hc = HitstunCancel(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.angle, windbox, electric);
+        var v_hc = HitstunCancel(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.angle, windbox, electric);
         var traininglist = [, , , , , , , , , ];
         var vslist = [, , , , , , , , , ];
         
@@ -636,10 +636,10 @@ app.controller('calculator', function ($scope) {
             resultList.push(new Result("X", +trainingkb.x.toFixed(4), +vskb.x.toFixed(4)));
             resultList.push(new Result("Y", +trainingkb.y.toFixed(4), +vskb.y.toFixed(4)));
         }
-        resultList.push(new Result("Hitstun",Hitstun(trainingkb.base_kb, windbox),Hitstun(vskb.base_kb, windbox)));
-        resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox),FirstActionableFrame(vskb.base_kb, windbox)));
-        resultList.push(new Result("Airdodge hitstun cancel", t_hc.airdodge, v_hc.airdodge, (Hitstun(trainingkb.base_kb, windbox) == 0 || Hitstun(trainingkb.base_kb, windbox) + 1 == t_hc.airdodge), (Hitstun(vskb.base_kb, windbox) == 0 || Hitstun(vskb.base_kb, windbox) + 1 == v_hc.airdodge)));
-        resultList.push(new Result("Aerial hitstun cancel", t_hc.aerial, v_hc.aerial, (Hitstun(trainingkb.base_kb, windbox) == 0 || Hitstun(trainingkb.base_kb, windbox) + 1 == t_hc.aerial), (Hitstun(vskb.base_kb, windbox) == 0 || Hitstun(vskb.base_kb, windbox) + 1 == v_hc.aerial)));
+        resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
+        resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
+        resultList.push(new Result("Airdodge hitstun cancel", t_hc.airdodge, v_hc.airdodge, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.airdodge), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.airdodge)));
+        resultList.push(new Result("Aerial hitstun cancel", t_hc.aerial, v_hc.aerial, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.aerial), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.aerial)));
         resultList.push(new Result("LSI", +trainingkb.lsi.toFixed(4), +vskb.lsi.toFixed(4), trainingkb.lsi == 1, vskb.lsi == 1));
         resultList.push(new Result("Horizontal Launch Speed", +trainingkb.horizontal_launch_speed.toFixed(4), +vskb.horizontal_launch_speed.toFixed(4)));
         resultList.push(new Result("Gravity boost", +trainingkb.add_gravity_speed.toFixed(4), +vskb.add_gravity_speed.toFixed(4), trainingkb.add_gravity_speed == 0, vskb.add_gravity_speed == 0));
@@ -686,8 +686,8 @@ app.controller('calculator', function ($scope) {
 
         if (target.name == "Rosalina And Luma") {
             if (!wbkb) {
-                var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, di);
-                var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, di);
+                var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, di);
+                var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di);
                 luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
                 luma_vskb.addModifier(attacker.modifier.kb_dealt);
                 luma_trainingkb.addModifier(target.modifier.kb_received);
@@ -695,8 +695,8 @@ app.controller('calculator', function ($scope) {
                 resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
                 resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
             } else {
-                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, di);
-                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, di);
+                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, electric, di);
+                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));

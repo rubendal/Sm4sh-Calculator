@@ -1507,7 +1507,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, percent, di, launch_rate) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, electric, percent, di, launch_rate) {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1534,13 +1534,14 @@ class Knockback {
         this.horizontal_launch_speed = 0;
         this.vertical_launch_speed = 0;
         this.launch_rate = launch_rate;
+        this.electric = electric;
         if (this.launch_rate == undefined) {
             this.launch_rate = 1;
         }
         if(this.lsi == undefined){
             this.lsi = 1;
         }
-        this.hitstun = Hitstun(this.base_kb, this.windbox);
+        this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
         if (di !== undefined) {
             this.di = di;
         } else {
@@ -1606,7 +1607,7 @@ class Knockback {
             }
             this.horizontal_launch_speed *= this.lsi;
             this.vertical_launch_speed *= this.lsi;
-            this.hitstun = Hitstun(this.base_kb, false);
+            this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
         };
         this.addModifier = function (modifier) {
             this.base_kb *= modifier;
@@ -1626,7 +1627,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, launch_rate){
+    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, electric, launch_rate){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1661,6 +1662,8 @@ class PercentFromKnockback{
         this.lsi = lsi;
         this.wbkb_kb = -1;
         this.wbkb_modifier = 1;
+        this.electric = electric;
+        
         this.launch_rate = launch_rate;
         if (this.launch_rate == undefined) {
             this.launch_rate = 1;
@@ -1763,7 +1766,7 @@ class PercentFromKnockback{
                     }
                 }*/
 
-                this.hitstun = Hitstun(this.kb, this.windbox);
+                this.hitstun = Hitstun(this.kb, this.windbox, this.electric);
 
                 if (this.base_angle != 0 && this.base_angle != 180) {
                     this.tumble = this.kb > 80 && !windbox;
@@ -1826,7 +1829,7 @@ class PercentFromKnockback{
                             kb -= this.add_gravity_kb;
                             kb = Math.abs(kb / Math.sin(angle * Math.PI / 180));
                         }
-                        var hitstun = Hitstun(kb, this.windbox);
+                        var hitstun = Hitstun(kb, this.windbox, this.electric);
                         var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
                         var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
                         di_angles.push({ 'angle': i, 'training': training, 'vs': vs, 'hitstun': hitstun });
