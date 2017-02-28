@@ -36,7 +36,7 @@ class CancelCond{
         if(cond.includes("&gt;")){
             //Greater than
             this.type = ">";
-            this.value = parseFloat(cond.replace("&gt;",""));
+            this.value = parseFloat(cond.replace("&gt;","")) - 1;
             this.print = function(){
                 return this.value + ">";
             }
