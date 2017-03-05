@@ -1006,13 +1006,13 @@ class Distance{
         this.y = [this.position.y];
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
         var character_position = {'x':this.position.x,'y':this.position.y};
-        var launch_speed = {'x':x_speed, 'y':y_speed};
+        var launch_speed = { 'x': x_speed, 'y': y_speed };
         var character_speed = { 'x': 0, 'y': 0 };
         this.vertical_speed = [];
         var momentum = 1;
         var g = 0;
         var fg = 0;
-        var sliding = false;
+        var grounded = false;
         var bouncing = false;
         this.bounce_frame = -1;
         this.bounce_speed = 0;
@@ -1030,8 +1030,8 @@ class Distance{
                 momentum = 0;
             }
 
-            //Reset sliding
-            sliding = false;
+            //Reset grounded
+            grounded = false;
             bouncing = false;
 
             //Stage detection
@@ -1039,7 +1039,7 @@ class Distance{
                 //No stage
                 if(next_y < 0){
                     if(!this.tumble){
-                        sliding = true;
+                        grounded = true;
                         character_position.y = 0;
                         next_y=0;
                         g=0;
@@ -1118,7 +1118,7 @@ class Distance{
                             this.bounce_frame = i;
                         }else{
                             if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
-                                sliding = true;
+                                grounded = true;
                                 g=0;
                                 launch_speed.y=0;
                                 var point = IntersectionPoint([[character_position.x, character_position.y],[next_x, next_y]],line);
@@ -1180,7 +1180,7 @@ class Distance{
                                             character_speed.x = 0;
                                             character_speed.y = 0;
                                         }else{
-                                            sliding = true;
+                                            grounded = true;
                                             g=0;
                                             character_speed.x = 0;
                                             character_speed.y = 0;
@@ -1202,7 +1202,9 @@ class Distance{
             //Apply decay
             if(launch_speed.x != 0){
                 var x_dir = launch_speed.x / Math.abs(launch_speed.x);
-                launch_speed.x -= decay.x;
+                if (!grounded) {
+                    launch_speed.x -= decay.x;
+                }
                 if(x_dir == -1 && launch_speed.x > 0){
                     launch_speed.x = 0;
                 }else if(x_dir == 1 && launch_speed.x < 0){
@@ -1220,7 +1222,7 @@ class Distance{
             }
 
             //Sliding on surface
-            if(sliding){
+            if (grounded) {
                 //Traction applied here
                 if(Math.cos(angle * Math.PI / 180) < 0){
                     character_speed.x -= traction;
