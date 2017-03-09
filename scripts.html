@@ -104,7 +104,7 @@
 
                 Script:
                 <select name="script" ng-model="script" ng-change="updateScript()">
-                    <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.name}}</option>
+                    <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.display}}</option>
                 </select>
                 <input type="checkbox" name="onlyHitboxes" ng-model="onlyHitboxes" ng-change="updateFilter()" /> Only show scripts with hitboxes
 
