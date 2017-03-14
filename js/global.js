@@ -52,6 +52,10 @@ var defaultParameters = {
             aerial: 2,
             airdodge: 2.5
         }
+    },
+    paralyzer: {
+        constant: 14,
+        mult:0.025
     }
 };
 
@@ -157,7 +161,10 @@ var paramsList = [
     new Parameter("traction", "0.055"),
     new Parameter("setWeight", "0"),
     new Parameter("theme", "Normal"),
-    new Parameter("launchRate","1")
+    new Parameter("launchRate", "1"),
+    new Parameter("pParalConst", defaultParameters.paralyzer.constant),
+    new Parameter("pParalMult", defaultParameters.paralyzer.mult),
+    new Parameter("paralyzer","0")
 ];
 
 function checkUndefined(value) {
@@ -317,7 +324,7 @@ function buildParams($scope) {
     if (paramsList[68].value != $scope.theme) {
         params.push(new Parameter(paramsList[68].param, $scope.theme));
     }
-    if (paramsList[69].value != $scope.theme) {
+    if (paramsList[69].value != $scope.launch_rate) {
         params.push(new Parameter(paramsList[69].param, $scope.launch_rate));
     }
     if ($scope.app == "calculator") {
@@ -380,6 +387,15 @@ function buildParams($scope) {
         }
         if (paramsList[58].value != $scope.params.hitstunCancel.launchSpeed.aerial) {
             params.push(new Parameter(paramsList[58].param, $scope.params.hitstunCancel.launchSpeed.aerial));
+        }
+        if (paramsList[70].value != $scope.params.paralyzer.constant) {
+            params.push(new Parameter(paramsList[70].param, $scope.params.paralyzer.constant));
+        }
+        if (paramsList[71].value != $scope.params.paralyzer.mult) {
+            params.push(new Parameter(paramsList[71].param, $scope.params.paralyzer.mult));
+        }
+        if (paramsList[72].value != $scope.paralyzer) {
+            params.push(new Parameter(paramsList[72].param, boolToString($scope.paralyzer)));
         }
     } else if ($scope.app == "kbcalculator") {
         if (paramsList[43].value != $scope.kb) {
@@ -691,6 +707,18 @@ function mapParams($scope) {
             $scope.params.hitstunCancel.launchSpeed.airdodge = parseFloat(param);
         }
     }
+    param = Parameter.get(get_params, "pParalConst");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.paralyzer.constant = parseFloat(param);
+        }
+    }
+    param = Parameter.get(get_params, "pParalMult");
+    if (param) {
+        if ($scope.params != undefined) {
+            $scope.params.paralyzer.mult = parseFloat(param);
+        }
+    }
     param = Parameter.get(get_params, "damageDealt");
     if (param) {
         if ($scope.attacker_damage_dealt != undefined) {
@@ -743,6 +771,12 @@ function mapParams($scope) {
     if (param) {
         if ($scope.set_weight != undefined) {
             $scope.set_weight = param == 1;
+        }
+    }
+    param = Parameter.get(get_params, "paralyzer");
+    if (param) {
+        if ($scope.paralyzer != undefined) {
+            $scope.paralyzer = param == 1;
         }
     }
     param = Parameter.get(get_params, "theme");
@@ -1975,7 +2009,8 @@ function getTitle(attribute) {
         { "attribute": "Shield Advantage", "title": "" },
         { "attribute": "Unblockable attack", "title": "This attack cannot be blocked using shield" },
         { "attribute": "Hit Advantage", "title": "" },
-        { "attribute": "Launch rate", "title": "KB multiplier set in the VS mode rules" }];
+        { "attribute": "Launch rate", "title": "KB multiplier set in the VS mode rules" },
+        { "attribute": "Paralysis time", "title": "Amount of frames the target will be paralyzed" }];
     for (var i = 0; i < titles.length; i++) {
         if (attribute == titles[i].attribute) {
             return titles[i].title;
@@ -2011,7 +2046,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.training = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time") {
                 this.training = training + (training == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
                 this.training = "Frame " + training;
@@ -2024,7 +2059,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.vs = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time") {
                 this.vs = vs + (vs == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
                 this.vs = "Frame " + vs;
@@ -2257,5 +2292,6 @@ var landing_lag = 0;
 var stock_dif = "0";
 
 var set_weight = false;
+var paralyzer = false;
 
 var launch_rate = 1;

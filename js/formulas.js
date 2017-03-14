@@ -26,6 +26,10 @@
             aerial: 2,
             airdodge: 2.5
         }
+    },
+    paralyzer: {
+        constant: 14,
+        mult: 0.025
     }
 };
 
@@ -256,6 +260,25 @@ function Hitlag(base_damage, hitlag_mult, electric, crouch) {
         return 0;
     }
     return h;
+}
+
+function ParalyzerHitlag(base_damage, hitlag_mult, crouch) {
+    var h = Math.floor(((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult * crouch * parameters.paralyzer.mult);
+    if (h < 0) {
+        return 0;
+    }
+    return h;
+}
+
+function ParalysisTime(kb, base_damage, hitlag_mult, crouch) {
+    var p = Math.floor((((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult) * crouch * parameters.paralyzer.mult * kb);
+    if (p > 76) {
+        return 76;
+    }
+    if (p < 0) {
+        return 0;
+    }
+    return p;
 }
 
 function ChargeSmash(base_damage, frames, megaman_fsmash, witch_time) {

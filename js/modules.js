@@ -34,6 +34,7 @@ app.controller('calculator', function ($scope) {
     $scope.charging_frames_type = "Charging frames";
 
     $scope.set_weight = false;
+    $scope.paralyzer = false;
 
     $scope.hitbox_active_index = 0;
 
@@ -178,6 +179,11 @@ app.controller('calculator', function ($scope) {
 
     $scope.checkCounterVisibility = function () {
         $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
+    }
+
+    $scope.updateParalyzer = function () {
+        $scope.set_weight = $scope.paralyzer;
+        $scope.update();
     }
 
     $scope.charging = function(){
@@ -627,14 +633,21 @@ app.controller('calculator', function ($scope) {
         
         var resultList = [];
         resultList.push(new Result("Damage", damage, StaleDamage(damage, stale, ignoreStale)));
-        resultList.push(new Result("Attacker Hitlag",Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1),Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
-        resultList.push(new Result("Target Hitlag",Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)),Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
+        if (!paralyzer) {
+            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
+            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
+        } else {
+            resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1)));
+        }
         resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
         resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(4), +vskb.angle_with_di.toFixed(4), !trainingkb.di_able, !vskb.di_able));
         resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(4), +vskb.angle.toFixed(4)));
         if (angle <= 361) {
             resultList.push(new Result("X", +trainingkb.x.toFixed(4), +vskb.x.toFixed(4)));
             resultList.push(new Result("Y", +trainingkb.y.toFixed(4), +vskb.y.toFixed(4)));
+        }
+        if (paralyzer) {
+            resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
         }
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
         resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
@@ -803,6 +816,8 @@ app.controller('calculator', function ($scope) {
         shieldDamage = parseFloat($scope.shieldDamage);
 
         set_weight = $scope.set_weight;
+
+        paralyzer = $scope.paralyzer;
         
         launch_rate = parseFloat($scope.launch_rate);
 
@@ -851,6 +866,10 @@ app.controller('calculator', function ($scope) {
     }
 
     mapParams($scope);
+
+    if ($scope.paralyzer && !$scope.set_weight) {
+        $scope.set_weight = true;
+    }
 
     $scope.update();
 });

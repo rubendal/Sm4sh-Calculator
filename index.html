@@ -272,6 +272,8 @@
                         <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
                         <br />
                         <input type="checkbox" name="set_weight" ng-model="set_weight" ng-change="update()" />Set weight
+                        <br/>
+                        <input type="checkbox" name="paralyzer" ng-model="paralyzer" ng-change="updateParalyzer()" />Paralyzer
                     </div>
                 </div>
             </div>
@@ -478,6 +480,12 @@
                     <br />
                     Max launch speed <input name="param_aerial_cancel_ls" type="number" min="0" max="999" step="0.01" ng-model="params.hitstunCancel.launchSpeed.aerial" ng-change="updateParameters()" />
                     <br />
+                    <br />
+                    Paralyzers
+                    <br />
+                    Multiplier <input name="param_paral_mult" type="number" min="0" max="999" step="0.01" ng-model="params.paralyzer.mult" ng-change="updateParameters()" />
+                    <br />
+                    Constant <input name="param_paral_const" type="number" min="0" max="999" step="0.01" ng-model="params.paralyzer.constant" ng-change="updateParameters()" />
                 </div>
                 
                 

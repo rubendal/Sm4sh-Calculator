@@ -2,6 +2,7 @@
 Web based Smash 4 knockback calculator
 
 ### Recent Changes
+* Added - Paralysis time formula
 * Added - Launch rate (0.9 included)
 * Added - Set weight to 100 flag for moves that make the opponent have 100 weight like paralyzers and Finishing Touch
 * Added - Parameter editing (for modders and researchers)
