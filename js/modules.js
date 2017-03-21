@@ -650,9 +650,19 @@ app.controller('calculator', function ($scope) {
             resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
         }
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
+
         resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
         resultList.push(new Result("Airdodge hitstun cancel", t_hc.airdodge, v_hc.airdodge, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.airdodge), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.airdodge)));
         resultList.push(new Result("Aerial hitstun cancel", t_hc.aerial, v_hc.aerial, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.aerial), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.aerial)));
+
+        resultList.push(new Result("Tumble", trainingkb.tumble ? "Yes" : "No", vskb.tumble ? "Yes" : "No"));
+
+        resultList.push(new Result("Reeling/Spin animation", trainingkb.reeling ? "30%" : "0%", vskb.reeling ? "30%" : "0%", !trainingkb.reeling, !vskb.reeling));
+        resultList.push(new Result("Reeling hitstun", trainingkb.reeling ? Hitstun(trainingkb.base_kb, windbox, electric, true) : Hitstun(trainingkb.base_kb, windbox, electric), vskb.reeling ? Hitstun(vskb.base_kb, windbox, electric, true) : Hitstun(vskb.base_kb, windbox, electric), !trainingkb.reeling, !vskb.reeling));
+        resultList.push(new Result("Reeling FAF", FirstActionableFrame(trainingkb.base_kb, windbox, electric, true), FirstActionableFrame(vskb.base_kb, windbox, electric, true), !trainingkb.reeling, !vskb.reeling));
+
+        resultList.push(new Result("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No", vskb.can_jablock ? "Yes" : "No"));
+
         resultList.push(new Result("LSI", +trainingkb.lsi.toFixed(4), +vskb.lsi.toFixed(4), trainingkb.lsi == 1, vskb.lsi == 1));
         resultList.push(new Result("Horizontal Launch Speed", +trainingkb.horizontal_launch_speed.toFixed(4), +vskb.horizontal_launch_speed.toFixed(4)));
         resultList.push(new Result("Gravity boost", +trainingkb.add_gravity_speed.toFixed(4), +vskb.add_gravity_speed.toFixed(4), trainingkb.add_gravity_speed == 0, vskb.add_gravity_speed == 0));
@@ -667,7 +677,7 @@ app.controller('calculator', function ($scope) {
             resultList.splice(3, 0, new Result("KB received", "x" + +target.modifier.kb_received.toFixed(4), "x" + +target.modifier.kb_received.toFixed(4)));
         }
         if (launch_rate != 1) {
-            resultList.splice(4, 0, new Result("Launch rate", "x" + "1", "x" + launch_rate.toFixed(4), true));
+            resultList.splice(4, 0, new Result("Launch rate", "x" + "1", "x" + +launch_rate.toFixed(4), true));
         }
         if (attacker.modifier.kb_dealt != 1) {
             resultList.splice(3, 0, new Result("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4), "x" + +attacker.modifier.kb_dealt.toFixed(4)));
@@ -691,10 +701,6 @@ app.controller('calculator', function ($scope) {
             resultList.splice(0, 0, new Result("Stale-move negation", "x" + "1", "x" + +StaleNegation(stale, ignoreStale).toFixed(4),true));
         }
 
-        resultList.push(new Result("Tumble", trainingkb.tumble ? "Yes" : "No", vskb.tumble ? "Yes" : "No"));
-
-        resultList.push(new Result("Reeling/Spin animation", trainingkb.reeling ? "30%" : "0%", vskb.reeling ? "30%" : "0%", !trainingkb.reeling, !vskb.reeling));
-        resultList.push(new Result("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No", vskb.can_jablock ? "Yes" : "No"));
         resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
 
         if (target.name == "Rosalina And Luma") {

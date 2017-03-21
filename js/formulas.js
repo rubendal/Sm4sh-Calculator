@@ -152,13 +152,15 @@ function ElectricMove(value) {
     return false;
 }
 
-function Hitstun(kb, windbox, electric) {
+function Hitstun(kb, windbox, electric, ignoreReeling) {
     if (windbox) {
         return 0;
     }
     var hitstun = Math.floor(kb * parameters.hitstun) - 1;
-    if (kb * parameters.hitstun >= parameters.tumble_threshold) {
-        hitstun++;
+    if (!ignoreReeling) {
+        if (kb * parameters.hitstun >= parameters.tumble_threshold) {
+            hitstun++;
+        }
     }
     //Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
     if (ElectricMove(electric)) {
@@ -196,8 +198,8 @@ function StaleDamage(base_damage, timesInQueue, ignoreStale) {
     return base_damage * StaleNegation(timesInQueue, ignoreStale);
 }
 
-function FirstActionableFrame(kb, windbox, electric) {
-    var hitstun = Hitstun(kb, windbox, electric);
+function FirstActionableFrame(kb, windbox, electric, ignoreReeling) {
+    var hitstun = Hitstun(kb, windbox, electric, ignoreReeling);
     if (hitstun == 0) {
         return 0;
     }

@@ -1976,6 +1976,8 @@ function getTitle(attribute) {
         { "attribute": "X", "title": "KB X component" },
         { "attribute": "Y", "title": "KB Y component" },
         { "attribute": "Hitstun", "title": "Hitstun target gets while being launched" },
+        { "attribute": "Reeling hitstun", "title": "Hitstun target gets if it gets launched with a reeling animation" },
+        { "attribute": "Reeling FAF", "title": "Frame the target can do any action if it gets launched with a reeling animation" },
         { "attribute": "First Actionable Frame", "title": "Frame the target can do any action" },
         { "attribute": "Airdodge hitstun cancel", "title": "Frame target can cancel hitstun by airdodging" },
         { "attribute": "Aerial hitstun cancel", "title": "Frame target can cancel hitstun by using an aerial" },
@@ -2047,9 +2049,9 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.training = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
                 this.training = training + (training == 1 ? " frame" : " frames");
-            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.training = "Frame " + training;
             } else {
                 this.training = training;
@@ -2060,9 +2062,9 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.vs = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
                 this.vs = vs + (vs == 1 ? " frame" : " frames");
-            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame") {
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.vs = "Frame " + vs;
             } else {
                 this.vs = vs;
