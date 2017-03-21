@@ -39,6 +39,7 @@ var defaultParameters = {
     interrupted_smash: 1.2,
     hitstun: 0.4,
     launch_speed: 0.03,
+    tumble_threshold: 32,
     hitlag: {
         mult: 0.3846154,
         constant: 5
@@ -1994,7 +1995,7 @@ function getTitle(attribute) {
         { "attribute": "Damage dealt", "title": "Additional damage multiplier target receives caused by the attacker used in multiple powerups like Speed/Buster/Smash Monado Arts and Deep Breathing" },
         { "attribute": "Before launch damage", "title": "Throws can deal some damage during their animations like Pikachu's fthrow, this is added to the target percent before calculating KB" },
         { "attribute": "Stale-move negation", "title": "Damage reduction caused when using an attack repeatedly, if the attack isn't in the queue it gets a freshness bonus and increases damage a little" },
-        { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80 and angle isn't 0 or 180" },
+        { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
         { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
         { "attribute": "Angle with DI", "title": "Angle the target is launched affected by DI" },

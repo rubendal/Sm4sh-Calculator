@@ -13,6 +13,7 @@
     interrupted_smash: 1.2,
     hitstun: 0.4,
     launch_speed: 0.03,
+    tumble_threshold: 32,
     hitlag: {
         mult: 0.3846154,
         constant: 5
@@ -156,6 +157,9 @@ function Hitstun(kb, windbox, electric) {
         return 0;
     }
     var hitstun = Math.floor(kb * parameters.hitstun) - 1;
+    if (kb * parameters.hitstun >= parameters.tumble_threshold) {
+        hitstun++;
+    }
     //Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
     if (ElectricMove(electric)) {
         hitstun++;

@@ -854,6 +854,7 @@ app.controller('calculator', function ($scope) {
         parameters = $scope.params;
         parameters.hitstunCancel.frames.airdodge = Math.floor(parameters.hitstunCancel.frames.airdodge);
         parameters.hitstunCancel.frames.aerial = Math.floor(parameters.hitstunCancel.frames.aerial);
+        parameters.tumble_threshold = Math.floor(parameters.tumble_threshold);
         $scope.update();
     }
 
