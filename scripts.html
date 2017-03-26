@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
     <link id="style2" rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
     <link id="style3" rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
     <link id="style4" rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
     <title>Sm4sh Calculator - Script Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
@@ -101,14 +101,14 @@
                 </select>
 
                 <br/>
-
+                
                 Script:
                 <select name="script" ng-model="script" ng-change="updateScript()">
                     <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.display}}</option>
                 </select>
                 <input type="checkbox" name="onlyHitboxes" ng-model="onlyHitboxes" ng-change="updateFilter()" /> Only show scripts with hitboxes
 
-                <br/>
+                <br />
                 <br />
 
                 <select name="type" ng-model="type" ng-change="updateType()" style="width:300px;">
@@ -116,7 +116,7 @@
                 </select>
                 
                 <br/>
-                <textarea id="scriptbox" style="font-family: 'Ubuntu Mono', monospace; font-size:16px; margin-top:5px;" ng-model="code" rows="28" cols="180" readonly>
+                <textarea id="scriptbox" style="font-family: 'Ubuntu Mono', monospace;" ng-model="code" readonly>
 
                 </textarea>
 
