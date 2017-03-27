@@ -5,11 +5,11 @@ app.controller('calculator', function ($scope) {
     $scope.usingHttp = inhttp;
     $scope.attacker_characters = names;
     $scope.characters = names;
-    $scope.attackerValue = attacker.name;
-    $scope.attackerName = attacker.name;
+    $scope.attackerValue = attacker.display_name;
+    $scope.attackerName = attacker.display_name;
     $scope.attackerModifiers = attacker.modifiers;
     $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
-    $scope.targetValue = target.name;
+    $scope.targetValue = target.display_name;
     $scope.targetModifiers = target.modifiers;
     $scope.attackerPercent = attacker_percent;
     $scope.targetPercent = target_percent;

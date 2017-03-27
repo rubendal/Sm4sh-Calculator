@@ -46,6 +46,7 @@ input[type=number]{
 #results{
     font-size: 15px;
     color:black;
+    margin-left:10%;
 }
 
 #attributes{

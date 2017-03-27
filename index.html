@@ -16,7 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="js/modules.js"></script>
+    <script src="js/calculator.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
@@ -495,6 +495,8 @@
 
             </div>
 
+
+
         <div id="results">
             <div id="data_pos">
                 <a class="select-link cur-link" ng-click="collapse('data')">
@@ -520,26 +522,26 @@
                         </table>
                     </div>
                     <!--<div id="training">
-                        Training Mode
-                        <br />
-                        <table>
-                            <tr ng-repeat="x in training">
-                                <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
-                                <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                            </tr>
-                        </table>
-                    </div>
+                    Training Mode
+                    <br />
+                    <table>
+                        <tr ng-repeat="x in training">
+                            <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                        </tr>
+                    </table>
+                </div>
 
-                    <div id="vs">
-                        Vs Mode
-                        <br />
-                        <table>
-                            <tr ng-repeat="x in vs">
-                                <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
-                                <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
-                            </tr>
-                        </table>
-                    </div>-->
+                <div id="vs">
+                    Vs Mode
+                    <br />
+                    <table>
+                        <tr ng-repeat="x in vs">
+                            <td class="attribute" title="{{x.title}}">{{ x.attribute }}</td>
+                            <td class="value" ng-style="{{x.style}}">{{ x.value }}</td>
+                        </tr>
+                    </table>
+                </div>-->
                 </div>
 
                 <a class="select-link cur-link" ng-click="collapse('visualizer');check_graph();">
@@ -553,10 +555,9 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
-        
 
     </div>
 

@@ -1614,13 +1614,13 @@ class Knockback {
             }*/
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
-                if (this.kb != 0 && !this.windbox) {
+                if (this.kb != 0 && !this.windbox && !this.aerial) {
                     this.can_jablock = true;
                 }
             }
             this.spike = this.angle >= 230 && this.angle <= 310;
             if (this.spike) {
-                if (this.kb != 0 && !this.windbox) {
+                if (this.kb != 0 && !this.windbox && !this.aerial) {
                     this.can_jablock = !this.tumble;
                 }
             }
@@ -1999,7 +1999,7 @@ function getTitle(attribute) {
         { "attribute": "Stale-move negation", "title": "Damage reduction caused when using an attack repeatedly, if the attack isn't in the queue it gets a freshness bonus and increases damage a little" },
         { "attribute": "Tumble", "title": "Target will enter tumble if KB > 80" },
         { "attribute": "Reeling/Spin animation", "title": "Also called Untechable spin, special animation caused when KB > 80, angle isn't between 71 and 109 and target's percent is 100 or higher after the attack damage" },
-        { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80" },
+        { "attribute": "Can Jab lock", "title": "If target is in the ground after tumble during the bounce animation the attack can jab lock if Y = 0 or for spikes KB <= 80 and is grounded" },
         { "attribute": "Angle with DI", "title": "Angle the target is launched affected by DI" },
         { "attribute": "Launch angle", "title": "Angle the target is launched with gravity boost" },
         { "attribute": "Luma KB", "title": "Luma KB is calculated with weight = 100 and an additional 15%" },
@@ -2184,22 +2184,6 @@ function getStages(){
 }
 
 
-var attacker = new Character("Bayonetta");
-var target = new Character("Bayonetta");
-
-
-var attacker_percent = 0;
-var target_percent = 0;
-var base_damage = 1.5;
-var angle = 55;
-var in_air = false;
-var bkb = 45;
-var kbg = 25;
-var stale = 0;
-var hitlag = 1;
-
-var charge_frames = 0;
-
 function resetCharacterList(varIncluded, customMonado){
     characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Game And Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
     names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
@@ -2223,6 +2207,22 @@ function sorted_characters() {
 }
 
 sorted_characters();
+
+var attacker = new Character(names[0]);
+var target = new Character(names[0]);
+
+
+var attacker_percent = 0;
+var target_percent = 0;
+var base_damage = 1.5;
+var angle = 55;
+var in_air = false;
+var bkb = 45;
+var kbg = 25;
+var stale = 0;
+var hitlag = 1;
+
+var charge_frames = 0;
 
 var r = 1;
 
