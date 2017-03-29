@@ -114,6 +114,10 @@ Some examples:
 * ShieldDamage=[1-9][0-9]* (Hitboxes that deal shield damage)
 * SDI=0, (Hitboxes that cannot be SDI'd)
 * unk_853CD75E (Search scripts that contain hitboxes that ignore weight)
+* Damage=[1-9][0-9]*.*Flinchless=0x1 (Windboxes that deal damage)
+* WKB=[1-9][0-9]*.*Rehit=[1-9][0-9]* (WBKB hitboxes that have rehit rate)
+* Effect=0x14 (Hitboxes that paralyze)
+* Reflectable=0x0, Absorbable=0x1 (Hitboxes that cannot be reflected but can be absorbed)
 
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
