@@ -12,7 +12,7 @@
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-    <script src="js/rawscripts.js"></script>
+    <script src="js/scriptsearch.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
@@ -24,23 +24,23 @@
     <title>Sm4sh Calculator - Script Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
-    <meta name="description" content="Smash 4 hitbox script viewer" />
+    <meta name="description" content="Smash 4 hitbox script search" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_dal" />
-    <meta name="twitter:title" content="Sm4sh Calculator - Script Viewer" />
+    <meta name="twitter:title" content="Sm4sh Calculator - Script Search" />
     <meta name="twitter:description" content="" />
     <meta name="twitter:image:src" content="https://raw.githubusercontent.com/rubendal/Sm4sh-Calculator/gh-pages/img/icon.png" />
     <meta property="og:title" content="Sm4sh Calculator" />
     <meta property="og:image" content="https://raw.githubusercontent.com/rubendal/Sm4sh-Calculator/gh-pages/img/icon.png" />
     <meta property="og:description" content="Web based Smash 4 knockback calculator" />
 </head>
-<body ng-app="scripts" ng-controller="scripts">
+<body ng-app="scripts" ng-controller="scriptsearch">
 
     <div id="header" class="header">
         <div id="header-cont">
             <img id="header-icon" class="header-image" src="./img/icon.png" />
             <div id="header-text">
-                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#script-viewer" target="_blank" title="Github repository"><h2>Sm4sh Calculator - Script Viewer</h2></a>
+                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#script-search" target="_blank" title="Github repository"><h2>Sm4sh Calculator - Script Search</h2></a>
                 <br />
                 <span class="description"></span>
                 <br />
@@ -57,7 +57,7 @@
                                 <a class="header-link" href="./percentcalc.html">Percentage Calculator</a>
                             </td>
                             <td class="header-table">
-                                <a class="header-link" href="./scriptsearch.html">Script search</a>
+                                <a class="header-link" href="./scripts.html">Script viewer</a>
                             </td>
                         </tr>
                     </table>
@@ -97,34 +97,37 @@
     <div name="calculator" id="calculator">
 
         <div id="main">
-            
-
-            <div>
-                Character:
-                <select name="character" ng-model="character" ng-change="updateCharacter()">
-                    <option ng-selected="$first" ng:repeat="c in characters" ng-attr-value="{{c}}">{{c}}</option>
-                </select>
-
-                <br />
-
-                Script:
-                <select name="script" ng-model="script" ng-change="updateScript()">
-                    <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.display}}</option>
-                </select>
-                <input type="checkbox" name="onlyHitboxes" ng-model="onlyHitboxes" ng-change="updateFilter()" /> Only show scripts with hitboxes
-
-                <br />
-                <br />
-
-                <select name="type" ng-model="type" ng-change="updateType()" style="width:300px;">
-                    <option ng-selected="$first" ng:repeat="t in types" ng-attr-value="{{t}}">{{t}}</option>
-                </select>
-
-                <br />
-                <textarea id="scriptbox" style="font-family: 'Ubuntu Mono', monospace;" ng-model="code" readonly></textarea>
-
+            Regex on scripts: <input type="text" ng-model="regex" style="width:42em;" />
+            <br />
+            Negative Regex on scripts: <input type="text" ng-model="negate" style="width:42em;" />
+            <br />
+            Regex on script name: <input type="text" ng-model="name" style="width:42em;"/>
+            <br/>
+            <input type="button" ng-click="update()" value="Search" />
+            <br/>
+            <span>Results: {{resultLenght}}</span>
+            <br/>
+            <span>Matches: {{matches}}</span>
+            <br/>
+            <div ng-if="error">
+                Error: {{error}}
             </div>
+            <table>
+                <tr>
+                    <td>Character</td>
+                    <td>Script Name</td>
+                    <td>Matches</td>
+                </tr>
+                <tr ng-repeat="x in results track by $index" ng-class-even="'value-even'">
+                    <td class="attribute">{{ x.character }}</td>
+                    <td class="value-left">{{ x.scriptName }}</td>
+                    <td class="value-match">{{ x.matches }}</td>
+                </tr>
+            </table>
         </div>
+
+
+
     </div>
 
 

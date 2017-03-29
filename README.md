@@ -3,6 +3,7 @@ Web based Smash 4 knockback calculator
 
 ### Recent Changes
 * Added - Paralysis time formula
+* Changed - Result table design
 * Added - Launch rate (0.9 included)
 * Added - Set weight to 100 flag for moves that make the opponent have 100 weight like paralyzers and Finishing Touch
 * Added - Parameter editing (for modders and researchers)
@@ -11,10 +12,6 @@ Web based Smash 4 knockback calculator
 * Added - Hit Advantage
 * Added - Hitstun cancel calculation process
 * Added - URL Sharing
-* Changed - Improved move detection, also chargeable specials can be detected
-* Probably fixed - Move list loading bug, when changing characters sometimes previous character moves were loaded
-* Changed - Character attribute modifiers (Monado Arts, Limit Break, Deep Breathing) are now selected in a different location instead of all being in the character selection inputs
-* Changed - New design
 
 ### KH API and HTTPS
 To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for move list, switching the url to http will solve this issue
@@ -103,6 +100,13 @@ http://rubendal.github.io/Sm4sh-Calculator/scripts.html
 View character scripts that contain hitbox/throw data
 
 All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files if they have a game.bin script with a flag for those that contain hitboxes
+
+## Script Search
+http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html
+
+Search all character game.bin scripts that match certain regular expression, can use a negative regular expression to make easier expressions and filter by script Name
+
+Usually useful if you want to research certain hitboxes or events with certain parameters like SDI, trip chance or unknown events found in all character scripts
 
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback

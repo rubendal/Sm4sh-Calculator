@@ -283,6 +283,19 @@ table,td,tr{
     width:20%;
 }
 
+.value-left{
+    padding:4px;
+    text-align:left;
+    width:10%;
+}
+
+.value-match{
+    padding:4px;
+    text-align:left;
+    width:100%;
+    white-space: pre-wrap;
+}
+
 .value-even{
     background:#D9D9D9;
 }
