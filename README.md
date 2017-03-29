@@ -108,6 +108,13 @@ Search all character game.bin scripts that match certain regular expression, can
 
 Usually useful if you want to research certain hitboxes or events with certain parameters like SDI, trip chance or unknown events found in all character scripts
 
+Some examples:
+
+* Clang=0x1.*Rebound=0x0 (Moves that can clank but cannot rebound)
+* ShieldDamage=[1-9][0-9]* (Hitboxes that deal shield damage)
+* SDI=0, (Hitboxes that cannot be SDI'd)
+* unk_853CD75E (Search scripts that contain hitboxes that ignore weight)
+
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 
