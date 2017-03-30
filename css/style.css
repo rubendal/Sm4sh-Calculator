@@ -46,6 +46,11 @@ input[type=number]{
 #results{
     font-size: 15px;
     color:black;
+}
+
+#results-table{
+    font-size: 15px;
+    color:black;
     margin-left:10%;
 }
 
