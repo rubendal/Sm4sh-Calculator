@@ -165,7 +165,8 @@ var paramsList = [
     new Parameter("launchRate", "1"),
     new Parameter("pParalConst", defaultParameters.paralyzer.constant),
     new Parameter("pParalMult", defaultParameters.paralyzer.mult),
-    new Parameter("paralyzer","0")
+    new Parameter("paralyzer", "0"),
+    new Parameter("useLandingLag","no")
 ];
 
 function checkUndefined(value) {
@@ -397,6 +398,9 @@ function buildParams($scope) {
         }
         if (paramsList[72].value != $scope.paralyzer) {
             params.push(new Parameter(paramsList[72].param, boolToString($scope.paralyzer)));
+        }
+        if (paramsList[73].value != $scope.use_landing_lag) {
+            params.push(new Parameter(paramsList[73].param, $scope.use_landing_lag));
         }
     } else if ($scope.app == "kbcalculator") {
         if (paramsList[43].value != $scope.kb) {
@@ -801,6 +805,10 @@ function mapParams($scope) {
         if ($scope.launch_rate != undefined) {
             $scope.launch_rate = parseFloat(param);
         }
+    }
+    param = Parameter.get(get_params, "useLandingLag");
+    if (param) {
+        $scope.delayed_landing_lag = param;
     }
 }
 

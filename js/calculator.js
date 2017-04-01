@@ -126,6 +126,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.launch_rate = launch_rate;
 
+    $scope.delayed_landing_lag = null;
+
     $scope.params = parameters;
 
     $scope.getStage = function () {
@@ -208,10 +210,19 @@ app.controller('calculator', function ($scope) {
             $scope.charging_frames_type = "Charging frames";
         }else{
             $scope.hitbox_active_index = 0;
+            if ($scope.delayed_landing_lag != null) {
+                $scope.use_landing_lag = $scope.delayed_landing_lag;
+                setTimeout(function () {
+                    $scope.delayed_landing_lag = null;
+                    $scope.update_faf();
+                    $scope.$apply();
+                }, 10);
+            } else {
+                $scope.use_landing_lag = "no";
+            }
             $scope.is_aerial = { 'display': $scope.selected_move.aerial ? 'initial' : 'none' };
             $scope.prev_hf = { 'display': 'none' };
             $scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
-            $scope.use_landing_lag = "no";
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
                     $scope.charge_data = $scope.selected_move.charge;
@@ -877,6 +888,7 @@ app.controller('calculator', function ($scope) {
     if ($scope.paralyzer && !$scope.set_weight) {
         $scope.set_weight = true;
     }
+
 
     $scope.update();
 });
