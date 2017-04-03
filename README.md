@@ -99,7 +99,7 @@ http://rubendal.github.io/Sm4sh-Calculator/scripts.html
 
 View character scripts that contain hitbox/throw data
 
-All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files if they have a game.bin script with a flag for those that contain hitboxes
+All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files with a flag for those that contain hitboxes
 
 ## Script Search
 http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html

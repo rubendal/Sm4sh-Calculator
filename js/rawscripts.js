@@ -50,8 +50,11 @@ function filter() {
 };
 
 function getTypes(s) {
-    var types = ["Game"];
+    var types = [];
     var sc = JSON.parse(s);
+    if (sc.script != null) {
+        types.push("Game");
+    }
     if (sc.expression != null) {
         types.push("Expression");
     }
@@ -83,15 +86,20 @@ app.controller('scripts', function ($scope) {
     $scope.onlyHitboxes = onlyHitboxes;
 
     $scope.types = getTypes($scope.script);
-    $scope.type = $scope.types[0];
+    if ($scope.types.length > 0) {
+        $scope.type = $scope.types[0];
+    }
 
     $scope.code = script.script;
+
+    $scope.index = 0;
 
     $scope.updateScript = function () {
         script = JSON.parse($scope.script);
         $scope.types = getTypes($scope.script);
         $scope.type = $scope.types[0];
-        $scope.code = script.script;
+        $scope.updateType();
+        $scope.index = script.id;
     };
 
     $scope.updateCharacter = function () {

@@ -116,6 +116,10 @@
                 <br />
                 <br />
 
+                Subaction index: {{index}}
+
+                <br />
+
                 <select name="type" ng-model="type" ng-change="updateType()" style="width:300px;">
                     <option ng-selected="$first" ng:repeat="t in types" ng-attr-value="{{t}}">{{t}}</option>
                 </select>
