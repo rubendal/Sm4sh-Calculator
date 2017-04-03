@@ -100,6 +100,9 @@ app.controller('scriptsearch', function ($scope) {
             }
             for (var i = 0; i < allScripts.length; i++) {
                 for (var j = 0; j < allScripts[i].scripts.length; j++) {
+                    if (allScripts[i].scripts[j].script == null) {
+                        continue;
+                    }
                     var pass = false;
                     var l = allScripts[i].scripts[j].script.split('\n');
                     var lines = [];
