@@ -645,10 +645,10 @@ app.controller('calculator', function ($scope) {
         var resultList = [];
         resultList.push(new Result("Damage", damage, StaleDamage(damage, stale, ignoreStale)));
         if (!paralyzer) {
-            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
-            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
+            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
+            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
         } else {
-            resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1)));
+            resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, 1)));
         }
         resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
         resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(4), +vskb.angle_with_di.toFixed(4), !trainingkb.di_able, !vskb.di_able));
