@@ -182,6 +182,9 @@ function SakuraiAngle(kb, aerial) {
     if (kb >= 88) {
         return 40;
     }
+    if (kb == 60) {
+        return (kb - 59.9999) / 0.7
+    }
     return (kb - 60) / 0.7;
 }
 
