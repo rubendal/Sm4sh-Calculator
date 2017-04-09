@@ -318,7 +318,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.counterDamage = function () {
         var attack = $scope.moveset[$scope.move];
-        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(2);
+        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(4);
         if (damage > 50) {
             damage = 50;
         }

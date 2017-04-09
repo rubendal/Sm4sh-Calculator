@@ -553,6 +553,15 @@
                     <div id="res_graph" style="width:500px;height:500px;" class="plot">
 
                     </div>
+                    <br/>
+                    <div id="extra-table">
+                        <table class="result-table">
+                            <tr ng-repeat="x in visualizer_extra" ng-class-even="'value-even'">
+                                <td class="attribute" title="{{x.title}}">{{ x.name }}</td>
+                                <td class="value" title="{{x.title}}" ng-style="{{x.style}}">{{ x.training }}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
 

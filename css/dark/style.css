@@ -55,6 +55,12 @@ input[type=number]{
     margin-left:10%;
 }
 
+#extra-table {
+    font-size: 15px;
+    color: white;
+    margin-left: 10%;
+}
+
 #attributes{
     position:relative;
     display:none;

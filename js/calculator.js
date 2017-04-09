@@ -130,6 +130,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.params = parameters;
 
+    $scope.visualizer_extra = [];
+
     $scope.getStage = function () {
         for (var i = 0; i < $scope.stages.length; i++) {
             if ($scope.stages[i].stage == $scope.stageName) {
@@ -489,7 +491,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.counterDamage = function () {
         var attack = $scope.moveset[$scope.move];
-        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(2);
+        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(4);
         if (damage > 50) {
             damage = 50;
         }
@@ -765,6 +767,9 @@ app.controller('calculator', function ($scope) {
                 }
             }
             Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+            $scope.visualizer_extra = distance.extra;
+        } else {
+            $scope.visualizer_extra = [];
         }
 
         return new ResultList(resultList, false);

@@ -981,6 +981,153 @@ class Character {
 
 };
 
+class Result {
+    constructor(name, training, vs, hidetraining, hidevs) {
+        this.name = name;
+        this.title = getTitle(name);
+        this.training = training;
+        this.vs = vs;
+        this.hidetraining = false;
+        this.hidevs = false;
+        this.style = "";
+
+        this.addStyle = function (style) {
+            this.style = style;
+            return this;
+        }
+
+        if (hidetraining != undefined) {
+            this.hidetraining = hidetraining;
+        }
+        if (hidevs != undefined) {
+            this.hidevs = hidevs;
+        }
+
+        if (typeof training === "number" && isNaN(training)) {
+            this.addStyle({ 'color': 'red' });
+            this.training = "Invalid data";
+        } else {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
+                this.training = training + (training == 1 ? " frame" : " frames");
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
+                this.training = "Frame " + training;
+            } else {
+                this.training = training;
+            }
+        }
+
+        if (typeof vs === "number" && isNaN(vs)) {
+            this.addStyle({ 'color': 'red' });
+            this.vs = "Invalid data";
+        } else {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
+                this.vs = vs + (vs == 1 ? " frame" : " frames");
+            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
+                this.vs = "Frame " + vs;
+            } else {
+                this.vs = vs;
+            }
+        }
+
+        if (typeof (this.training) == "string") {
+            this.training = this.training;
+        } else {
+            this.training = +this.training.toFixed(4);
+        }
+
+        if (typeof (this.vs) == "string") {
+            this.vs = this.vs;
+        } else {
+            this.vs = +this.vs.toFixed(4);
+        }
+
+
+    }
+
+
+};
+
+class ResultRow {
+    constructor(name, title, style, v1, v2, h1, h2) {
+        this.name = name;
+        this.title = title;
+        this.val1 = v1;
+        this.val2 = v2;
+        this.h1 = h1;
+        this.h2 = h2;
+        this.style = style;
+        this.onlyOne = v1 == v2 && !h1 && !h2;
+        this.valc = this.onlyOne ? this.val1 : "";
+        if (h1 || this.onlyOne) {
+            this.val1 = "";
+        }
+        if (h2 || this.onlyOne) {
+            this.val2 = "";
+        }
+
+    }
+};
+
+class ResultList {
+    constructor(resultList, firstvs) {
+        this.resultList = resultList;
+        this.firstvs = firstvs;
+        this.list = [];
+        for (var i = 0; i < resultList.length; i++) {
+            if (!resultList[i].hidetraining || !resultList[i].hidevs) {
+                if (!firstvs) {
+                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].training, resultList[i].vs, resultList[i].hidetraining, resultList[i].hidevs));
+                } else {
+                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].vs, resultList[i].training, resultList[i].hidevs, resultList[i].hidetraining));
+                }
+            }
+        }
+    }
+};
+
+function List(trainingvalues, vsvalues) {
+    var list = [];
+    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity boost", "Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
+    var titles = ["Damage dealt to the target",
+    ];
+    var hitstun = -1;
+    for (var i = 0; i < attributes.length && i < vsvalues.length; i++) {
+        if (attributes[i] == "Hitstun") {
+            hitstun = +vsvalues[i].toFixed(4);
+        }
+        if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
+            if (hitstun + 1 == +values[i].toFixed(4)) {
+                continue;
+            }
+            if (hitstun == 0) {
+                continue;
+            }
+        }
+        if (attributes[i] == "LSI") {
+            if (values[i] == 1) {
+                continue;
+            }
+            values[i] = "x" + +values[i].toFixed(4);
+        }
+        if (attributes[i] == "Gravity boost") {
+            if (values[i] == 0) {
+                continue;
+            }
+        }
+        if (typeof (values[i]) == "string") {
+            list.push(new ListItem(attributes[i], values[i], titles[i]));
+        } else {
+            list.push(new ListItem(attributes[i], +values[i].toFixed(4), titles[i]));
+        }
+        if (attributes[i] == "Angle") {
+            if (values[i] > 361) {
+                i += 2;
+            }
+        }
+    }
+    return list;
+}
+
 class Distance{
     constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
@@ -1003,6 +1150,7 @@ class Distance{
         this.doPlot = doPlot;
         this.extraFrames = 20;
         this.finalPosition = position;
+        this.extra = [];
         if (extraFrames !== undefined) {
             this.extraFrames = extraFrames;
         }
@@ -1536,6 +1684,7 @@ class Distance{
                 }
                 if (this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1] || this.y[i] >= this.stage.blast_zones[2] || this.y[i] <= this.stage.blast_zones[3]) {
                     data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+                    this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                     ko = true;
                     break;
                 }
@@ -2031,154 +2180,6 @@ function getTitle(attribute) {
     }
     return "";
 };
-
-
-class Result {
-    constructor(name, training, vs, hidetraining, hidevs) {
-        this.name = name;
-        this.title = getTitle(name);
-        this.training = training;
-        this.vs = vs;
-        this.hidetraining = false;
-        this.hidevs = false;
-        this.style = "";
-
-        this.addStyle = function (style) {
-            this.style = style;
-            return this;
-        }
-
-        if (hidetraining != undefined) {
-            this.hidetraining = hidetraining;
-        }
-        if (hidevs != undefined) {
-            this.hidevs = hidevs;
-        }
-
-        if (typeof training === "number" && isNaN(training)) {
-            this.addStyle({ 'color': 'red' });
-            this.training = "Invalid data";
-        } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
-                this.training = training + (training == 1 ? " frame" : " frames");
-            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
-                this.training = "Frame " + training;
-            } else {
-                this.training = training;
-            }
-        }
-
-        if (typeof vs === "number" && isNaN(vs)) {
-            this.addStyle({ 'color': 'red' });
-            this.vs = "Invalid data";
-        } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
-                this.vs = vs + (vs == 1 ? " frame" : " frames");
-            } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
-                this.vs = "Frame " + vs;
-            } else {
-                this.vs = vs;
-            }
-        }
-
-        if (typeof (this.training) == "string") {
-            this.training = this.training;
-        } else {
-            this.training = +this.training.toFixed(4);
-        }
-
-        if (typeof (this.vs) == "string") {
-            this.vs = this.vs;
-        } else {
-            this.vs = +this.vs.toFixed(4);
-        }
-
-        
-    }
-
-    
-};
-
-class ResultRow {
-    constructor(name, title, style, v1, v2, h1, h2) {
-        this.name = name;
-        this.title = title;
-        this.val1 = v1;
-        this.val2 = v2;
-        this.h1 = h1;
-        this.h2 = h2;
-        this.style = style;
-        this.onlyOne = v1 == v2 && !h1 && !h2;
-        this.valc = this.onlyOne ? this.val1 : "";
-        if (h1 || this.onlyOne) {
-            this.val1 = "";
-        }
-        if (h2 || this.onlyOne) {
-            this.val2 = "";
-        }
-        
-    }
-};
-
-class ResultList {
-    constructor(resultList, firstvs) {
-        this.resultList = resultList;
-        this.firstvs = firstvs;
-        this.list = [];
-        for (var i = 0; i < resultList.length; i++) {
-            if (!resultList[i].hidetraining || !resultList[i].hidevs) {
-                if (!firstvs) {
-                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].training, resultList[i].vs, resultList[i].hidetraining, resultList[i].hidevs));
-                } else {
-                    this.list.push(new ResultRow(resultList[i].name, resultList[i].title, resultList[i].style, resultList[i].vs, resultList[i].training, resultList[i].hidevs, resultList[i].hidetraining));
-                }
-            }
-        }
-    }
-};
-
-function List(trainingvalues, vsvalues) {
-    var list = [];
-    var attributes = ["Damage", "Attacker Hitlag", "Target Hitlag", "Total KB", "Angle", "X", "Y", "Hitstun", "First Actionable Frame", "Airdodge hitstun cancel", "Aerial hitstun cancel", "LSI", "Horizontal Launch Speed", "Gravity boost" ,"Vertical Launch Speed", "Max Horizontal Distance", "Max Vertical Distance"];
-    var titles = ["Damage dealt to the target",
-        ];
-    var hitstun = -1;
-    for (var i = 0; i < attributes.length && i < vsvalues.length; i++) {
-        if (attributes[i] == "Hitstun") {
-            hitstun = +vsvalues[i].toFixed(4);
-        }
-        if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
-            if (hitstun + 1 == +values[i].toFixed(4)) {
-                continue;
-            }
-            if (hitstun == 0) {
-                continue;
-            }
-        }
-        if (attributes[i] == "LSI") {
-            if(values[i] == 1){
-                continue;
-            }
-            values[i] = "x" + +values[i].toFixed(4);
-        }
-        if(attributes[i] == "Gravity boost"){
-            if(values[i] == 0){
-                continue;
-            }
-        }
-        if(typeof(values[i]) == "string"){
-            list.push(new ListItem(attributes[i], values[i],titles[i]));
-        }else{
-            list.push(new ListItem(attributes[i], +values[i].toFixed(4),titles[i]));
-        }
-        if (attributes[i] == "Angle") {
-            if (values[i] > 361) {
-                i += 2;
-            }
-        }
-    }
-    return list;
-}
 
 function ShieldList(values) {
     var list = [];
