@@ -2,6 +2,7 @@
 Web based Smash 4 knockback calculator
 
 ### Recent Changes
+* Finally fixed - Vertical KO indicator
 * Added - Paralysis time formula
 * Changed - Result table design
 * Added - Launch rate (0.9 included)
@@ -48,7 +49,7 @@ If the API is not available or having issues you can fill move related data (Bas
 * Max distance when hitstun ends
 
 #### Launch Visualizer
-Note: Work in progress, this is not a combo calculator, distance calculation may not be accurate, stage layout collision detection might give weird results and bounced trajectories are not accurate, hurtboxes not included so KO percents are not accurate
+Note: Work in progress, this is not a combo calculator, stage layout collision detection might give weird results and bounced trajectories are not accurate, hurtboxes not included so KO percents are not accurate
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with some collision detection
 
@@ -60,6 +61,8 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * Move angle can be inverted horizontally to visualize launching opponents to the left
 * X-axis can represent a surface to show traction and bouncing effects when no stage is selected
 * Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
+
+Depending on the character launched you would need to increase the X and Y coordinates of the opponent hit, depending on their hit animation, for example most of the time on Puff you should add +4 to Y while on Dedede +2 on Y, meanwhile Cloud doesn't need this increase for an accurate result
 
 ## Move Search
 http://rubendal.github.io/Sm4sh-Calculator/movesearch.html

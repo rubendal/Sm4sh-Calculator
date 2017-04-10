@@ -1209,10 +1209,14 @@ class Distance{
         var bouncing = false;
         this.bounce_frame = -1;
         this.bounce_speed = 0;
+
+        this.launch_speeds = [];
         var limit = hitstun < 200 ? hitstun + this.extraFrames : 200;
         for(var i=0;i<limit;i++){
             var next_x = character_position.x + launch_speed.x + character_speed.x;
             var next_y = character_position.y + launch_speed.y + character_speed.y;
+
+            this.launch_speeds.push(Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2)));
 
             //Vertical direction
             if(next_y > character_position.y){
@@ -1304,7 +1308,7 @@ class Distance{
                             momentum = 0;
                             g=0;
                             this.bounce_speed = Math.abs(launch_speed.y + character_speed.y);
-                            launch_speed.x *= 0.8; //Knockback reduction applied
+                            launch_speed.x *= 0.8; //Launch speed reduction applied
                             launch_speed.y *= 0.8;
                             character_speed.x = 0;
                             character_speed.y = 0;
@@ -1418,9 +1422,9 @@ class Distance{
             if (grounded) {
                 //Traction applied here
                 if(Math.cos(angle * Math.PI / 180) < 0){
-                    character_speed.x -= traction;
-                }else{
-                    character_speed.x = traction;
+                    launch_speed.x -= traction;
+                } else {
+                    launch_speed.x = traction;
                 }
                 character_speed.y = 0;
                 launch_speed.y = 0;
@@ -1470,7 +1474,8 @@ class Distance{
                 this.bounce = true;
             }
 
-            this.vertical_speed.push(+(launch_speed.y + character_speed.y).toFixed(4));
+            this.vertical_speed.push(+(launch_speed.y).toFixed(4));
+
 
             if(this.bounce_frame == i && this.bounce_speed < 1){
                 //Character will bounce and stay in that position for 25 frames
@@ -1676,17 +1681,34 @@ class Distance{
             }
 
             var ko = false;
+            var character_size = 0;
 
             //Calculate if KO in blast zones
             for(var i=0;i<=hitstun && !ko;i++){
                 if(this.y[i] >= this.stage.blast_zones[2] + 10 || this.y[i] <= this.stage.blast_zones[3] - 10){
                     break;
                 }
-                if (this.x[i] <= this.stage.blast_zones[0] || this.x[i] >= this.stage.blast_zones[1] || this.y[i] >= this.stage.blast_zones[2] || this.y[i] <= this.stage.blast_zones[3]) {
+                if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
                     data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
                     this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                     ko = true;
                     break;
+                } else {
+                    if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
+                        if (this.launch_speeds[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
+                            data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+                            this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+                            ko = true;
+                            break;
+                        } else {
+                            if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
+                                data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+                                this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+                                ko = true;
+                                break;
+                            }
+                        }
+                    }
                 }
 
             }
@@ -1694,7 +1716,6 @@ class Distance{
             this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
             this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
         }
-
 
         this.plot = data;
 
