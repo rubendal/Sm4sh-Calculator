@@ -1680,6 +1680,27 @@ class Distance{
                 }
             }
 
+            if (this.stage.ledges !== undefined) {
+                if (this.stage.ledges.left !== undefined) {
+                    adxdata = [];
+                    adydata = [];
+                    for (var j = 0; j < this.stage.ledges.left.length; j++) {
+                        adxdata.push(this.stage.ledges.left[j][0]);
+                        adydata.push(this.stage.ledges.left[j][1]);
+                    }
+                    data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Left ledge" });
+                }
+                if (this.stage.ledges.right !== undefined) {
+                    adxdata = [];
+                    adydata = [];
+                    for (var j = 0; j < this.stage.ledges.right.length; j++) {
+                        adxdata.push(this.stage.ledges.right[j][0]);
+                        adydata.push(this.stage.ledges.right[j][1]);
+                    }
+                    data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Right ledge" });
+                }
+            }
+
             var ko = false;
             var character_size = 0;
 
