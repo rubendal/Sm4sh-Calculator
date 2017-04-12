@@ -1,0 +1,84 @@
+﻿[
+  {
+    "group": 1,
+    "tag": "Subaction",
+    "allEntries": true,
+    "values": 
+      [
+        null,
+        null,
+        "FAF",
+        "Intangibility start frame",
+        "Intangibility end frame",
+        null
+      ]
+    
+  },
+  {
+    "group": 4,
+    "tag": "Environment Collision Box (ECB)",
+    "allEntries": true,
+    "values": 
+      [
+        "Bone",
+        "X",
+        "Y",
+        "Z"
+      ]
+    
+  },
+  {
+    "group": 5,
+    "tag": "Hurtboxes",
+    "allEntries": true,
+    "values": 
+      [
+        "X",
+        "Y",
+        "Z",
+        "WarpX",
+        "WarpY",
+        "WarpZ",
+        "Size",
+        "Bone",
+        "Part?",
+        "Zone",
+        null,
+        null
+      ]
+    
+  },
+  {
+    "group": 7,
+    "tag": "Ledge grab boxes",
+    "allEntries": false,
+    "entries": [
+      {
+        "entry": 0,
+        "tag": "Ledge grab box 0"
+      },
+      {
+        "entry": 1,
+        "tag": "Ledge grab box 1"
+      },
+      {
+        "entry": 2,
+        "tag": "Ledge grab box 2"
+      },
+      {
+        "entry": 3,
+        "tag": "Tether ledge grab box"
+      },
+      {
+        "entry": 4,
+        "tag": "Tether ledge grab box 2"
+      }
+    ],
+    "values": [
+      "Z1",
+      "Y1",
+      "Z2",
+      "Y2"
+    ]
+  }
+]

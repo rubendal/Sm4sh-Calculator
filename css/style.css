@@ -89,6 +89,12 @@ input[type=number]{
     left:730px;
 }
 
+#data_pos-params {
+    position: absolute;
+    top: 0;
+    left: 300px;
+}
+
 .luma{
     margin-left:175px;
 }
@@ -292,6 +298,12 @@ table,td,tr{
     padding:4px;
     text-align:center;
     width:20%;
+}
+
+.tag-value {
+    padding: 4px;
+    text-align: left;
+    width: 40%;
 }
 
 .value-left{
