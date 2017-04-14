@@ -1218,6 +1218,8 @@ class Distance{
 
             this.launch_speeds.push(Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2)));
 
+            this.vertical_speed.push((launch_speed.y));
+
             //Vertical direction
             if(next_y > character_position.y){
                 momentum = 1;
@@ -1474,9 +1476,6 @@ class Distance{
                 this.bounce = true;
             }
 
-            this.vertical_speed.push(+(launch_speed.y).toFixed(4));
-
-
             if(this.bounce_frame == i && this.bounce_speed < 1){
                 //Character will bounce and stay in that position for 25 frames
                 i = limit;
@@ -1716,7 +1715,7 @@ class Distance{
                     break;
                 } else {
                     if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
-                        if (this.launch_speeds[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
+                        if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
                             data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
                             this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                             ko = true;
