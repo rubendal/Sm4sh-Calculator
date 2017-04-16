@@ -1,12 +1,12 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
-"move","move_base_damage","charge_frames","base_damage","damage","staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg",
-"kb_modifier","kb_multiplier","kb","kb_x","kb_y","di_lsi_angle","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","horizontal_launch_speed","vertical_launch_speed",
+"move","move_base_damage","charge_frames","base_damage","damage","staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg","is_wbkb",
+"kb_modifier","kb_multiplier","kb","kb_x","kb_y","di_lsi_angle","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","hit_frame","faf","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
 var tsv_rows = [];
 
 class Row{
-    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, aura, stock_dif, kb_multiplier, kb, distance){
+    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, aura, stock_dif, kb_multiplier, kb, is_wbkb, hit_frame, faf, distance){
         this.attacker = attacker;
         this.target = target;
         this.attacker_percent = attacker_percent;
@@ -39,6 +39,16 @@ class Row{
         this.staleMult = StaleNegation(this.staleness, this.staleness == -1);
         this.kb_multiplier = kb_multiplier;
         this.kb_modifier = this.kb_multiplier == 0.8 ? "Crouch Cancel" : this.kb_multiplier == 1.2 ? "Interrupted charged smash attack" : "None";
+
+        this.hit_frame = hit_frame;
+        if (isNaN(hit_frame) || hit_frame === undefined) {
+            this.hit_frame = 1;
+        }
+        this.faf = faf;
+        if (isNaN(faf)) {
+            this.faf = 0;
+        }
+        this.is_wbkb = is_wbkb;
         this.kb = kb;
         this.kb.calculate();
         this.distance = distance;
@@ -55,9 +65,9 @@ class Row{
 
         this.tsv = function(){
             return [this.attacker.name, this.attackerMod, this.attacker_display, this.target.name, this.targetMod, this.target_display,
-            this.attacker_percent, this.rage, this.target_percent,
-            this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg,
-            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.di, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
+                this.attacker_percent, this.rage, this.target_percent,
+                this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg, this.is_wbkb,
+            this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.di, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.hit_frame, this.faf, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }
     }
@@ -613,6 +623,8 @@ app.controller('calculator', function ($scope) {
     var kb;
     var distance;
     var move;
+    var faf;
+    var hit_frame;
 
     $scope.generate = function(){
 
@@ -653,11 +665,15 @@ app.controller('calculator', function ($scope) {
         if($scope.move == 0){
             move = new Move(0, "Custom", "Custom", base_damage, angle, bkb, kbg, wbkb, [], 0, -1, [], 0, 0, 0, 0);
             move.is_smash = is_smash;
+            hit_frame = NaN;
+            faf = NaN;
         }else{ 
             move = $scope.moveset[$scope.move];
             if(move.charge == null){
                 move.base_damage = base_damage;
             }
+            hit_frame = move.hitboxActive[0].start;
+            faf = move.faf;
         }
 
         $scope.status = "Processing...";
@@ -691,7 +707,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
             distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
-            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb,distance));
+            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
         }
 
         var funlist = [];
@@ -793,6 +809,8 @@ app.controller('calculator', function ($scope) {
                     unblockable = move.unblockable;
                     windbox = move.windbox;
                     shieldDamage = move.shieldDamage;
+                    hit_frame = move.hitboxActive[0].start;
+                    faf = move.faf;
                     charge_frames = 0;
                     if(attacker.name == "Mega Man" && move.name == "Fsmash"){
                         megaman_fsmash = true;

@@ -1864,7 +1864,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, electric, launch_rate){
+    constructor(kb, type, base_damage, damage, preDamage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, electric, launch_rate){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1873,6 +1873,7 @@ class PercentFromKnockback{
         this.original_angle = angle;
         this.base_angle = angle;
         this.base_damage = base_damage;
+        this.preDamage = preDamage;
         this.damage = damage;
         this.angle = angle;
         this.gravity = gravity;
@@ -1913,13 +1914,13 @@ class PercentFromKnockback{
         this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
 
         this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r){
-            var s=1;
-            return (500 * kb * (weight+100)- (r * (kbg * (7 * damage * s * (3 * base_damage * s+7 * base_damage+20)+90 * (weight+100))+ 500 * bkb * (weight+100))))/(7 * kbg * r * (base_damage * (3 *s +7)+20));
+            var s = 1;
+            return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
         this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, timesInQueue, ignoreStale){
             var s = StaleNegation(timesInQueue, ignoreStale);
             r = r * Rage(attacker_percent) * this.launch_rate;
-            return (500 * kb * (weight+100)- (r * (kbg * (7 * damage * s * (3 * base_damage * s+7 * base_damage+20)+90 * (weight+100))+ 500 * bkb * (weight+100))))/(7 * kbg * r * (base_damage * (3 *s +7)+20));
+            return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
 
         if(!this.wbkb){
