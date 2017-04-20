@@ -371,6 +371,12 @@ var chargeMoves = [
     new ChargeData(["Charge Shot"],0,115,function(base_damage, frames){
         return base_damage + (frames/116 * 22);
     }),
+    new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, frames) {
+        return 4 + (12-4)*(frames / 60);
+    }),
+    new ChargeData(["Spin Attack (No Charge,"], 0, 60, function (base_damage, frames) {
+        return base_damage * ((60 - frames) / 60 + (frames * 1.6 / 60));
+    }),
     new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"],0,105,function(base_damage, frames){
         return 5 + (((frames+15)/120)* .32 * 100);
     })];
