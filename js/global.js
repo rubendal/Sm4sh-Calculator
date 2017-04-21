@@ -1701,6 +1701,7 @@ class Distance{
             }
 
             var ko = false;
+            var crossed = false;
             var character_size = 0;
 
             //Calculate if KO in blast zones
@@ -1726,6 +1727,14 @@ class Distance{
                                 this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                                 ko = true;
                                 break;
+                            } else {
+                                //At least get launch speed the opponent had when crossing the blast zone
+                                if (!crossed) {
+                                    crossed = true;
+                                    this.extra.push(new Result("Vertical launch speed when crossing blast zone", this.vertical_speed[i], "", false, true));
+                                    this.extra.push(new Result("Required vertical launch speed to KO", "2.4", "", false, true));
+                                    this.extra.push(new Result("Frame crossing blast zone", "Frame " + i, "", false, true));
+                                }
                             }
                         }
                     }
