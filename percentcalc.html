@@ -257,8 +257,20 @@
                         KBG:
                         <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="updateAttackData()" />
                         <br />
-                        Times in Queue:
-                        <input name="stale" type="number" min="0" max="9" step="1" ng-model="stale" ng-change="update()" />
+                        <br />
+                        Queue:
+                        <table>
+                            <tr>
+                                <td ng-repeat="n in staleness_table">
+                                    {{n}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td ng-repeat="n in stale track by $index">
+                                    <input name="stale{{$index}}" type="checkbox" ng-model="stale[$index]" ng-change="update()" />
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="pos-right">
                         <br />

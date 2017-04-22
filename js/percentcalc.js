@@ -20,7 +20,8 @@ app.controller('calculator', function ($scope) {
     $scope.in_air = in_air;
     $scope.bkb = bkb;
     $scope.kbg = kbg;
-    $scope.stale = stale;
+    $scope.stale = [false, false, false, false, false, false, false, false, false];
+    $scope.staleness_table = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     $scope.kb_modifier = "none";
     //$scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     //$scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -421,7 +422,7 @@ app.controller('calculator', function ($scope) {
         in_air = $scope.in_air;
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
-        stale = parseFloat($scope.stale);
+        stale = $scope.stale;
 
         charge_frames = parseFloat($scope.smashCharge);
         r = KBModifier($scope.kb_modifier);

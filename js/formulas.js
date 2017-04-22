@@ -123,21 +123,26 @@ function Aura(percent, stock_dif, game_format) {
     return aura;
 }
 
-function StaleNegation(timesInQueue, ignoreStale) {
+function StaleNegation(queue, ignoreStale) {
     if (ignoreStale) {
         return 1;
     }
-    if (timesInQueue > 9) {
-        timesInQueue = 9;
-    }
-    if (timesInQueue == 0) {
-        return 1.05;
-    }
-    var S = [0, 8, 7.594, 6.782, 6.028, 5.274, 4.462, 3.766, 2.954, 2.2];
+    //if (timesInQueue > 9) {
+    //    timesInQueue = 9;
+    //}
+    //if (timesInQueue == 0) {
+    //    return 1.05;
+    //}
+    var S = [8, 7.594, 6.782, 6.028, 5.274, 4.462, 3.766, 2.954, 2.2];
     var s = 1;
-    for(var i = 0; i <= timesInQueue; i++)
+    for (var i = 0; i < queue.length; i++)
     {
-        s -= S[i] / 100;
+        if (queue[i]) {
+            s -= S[i] / 100;
+        }
+    }
+    if (s == 1) {
+        return 1.05;
     }
     return s;
 }

@@ -1,12 +1,12 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
-"move","move_base_damage","charge_frames","base_damage","damage","staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg","is_wbkb",
+"move","move_base_damage","charge_frames","base_damage","damage","ignore_staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg","is_wbkb",
 "kb_modifier","kb_multiplier","kb","kb_x","kb_y","di_lsi_angle","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","hit_frame","faf","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
 var tsv_rows = [];
 
 class Row{
-    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, aura, stock_dif, kb_multiplier, kb, is_wbkb, hit_frame, faf, distance){
+    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, stalequeue, aura, stock_dif, kb_multiplier, kb, is_wbkb, hit_frame, faf, distance){
         this.attacker = attacker;
         this.target = target;
         this.attacker_percent = attacker_percent;
@@ -30,13 +30,14 @@ class Row{
         this.charge_frames = charge_frames;
         this.damage = damage;
         this.staleness = staleness;
+        this.stalequeue = stalequeue;
         this.aura = aura;
         this.stock_dif = stock_dif;
         if(this.attacker.name != "Lucario"){
             this.aura = "";
             this.stock_dif = "";
         }
-        this.staleMult = StaleNegation(this.staleness, this.staleness == -1);
+        this.staleMult = StaleNegation(this.stalequeue, this.staleness);
         this.kb_multiplier = kb_multiplier;
         this.kb_modifier = this.kb_multiplier == 0.8 ? "Crouch Cancel" : this.kb_multiplier == 1.2 ? "Interrupted charged smash attack" : "None";
 
@@ -141,7 +142,8 @@ app.controller('calculator', function ($scope) {
     $scope.in_air = in_air;
     $scope.bkb = bkb;
     $scope.kbg = kbg;
-    $scope.stale = stale;
+    $scope.stale = [false, false, false, false, false, false, false, false, false];
+    $scope.staleness_table = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     $scope.kb_modifier = "none";
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
@@ -526,7 +528,7 @@ app.controller('calculator', function ($scope) {
         in_air = $scope.in_air;
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
-        stale = parseFloat($scope.stale);
+        stale = $scope.stale;
         hitlag = parseFloat($scope.hitlag);
 
         hitframe = parseFloat($scope.hit_frame);
@@ -707,7 +709,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
             distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
-            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1 : stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
+            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1,stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
         }
 
         var funlist = [];
