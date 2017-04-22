@@ -1,5 +1,5 @@
 ﻿var headers = ["attacker","attacker_modifier","attacker_name","target","target_modifier","target_name","attacker_percent","rage","target_percent",
-"move","move_base_damage","charge_frames","base_damage","damage","ignore_staleness","staleness_multiplier","aura","stock_difference","angle","bkb","kbg","is_wbkb",
+    "move", "move_base_damage", "charge_frames", "base_damage", "damage", "ignore_staleness", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9","staleness_multiplier","aura","stock_difference","angle","bkb","kbg","is_wbkb",
 "kb_modifier","kb_multiplier","kb","kb_x","kb_y","di_lsi_angle","launch_angle","hitstun","tumble","can_jab_lock","lsi_multiplier","hit_frame","faf","horizontal_launch_speed","vertical_launch_speed",
 "horizontal_distance","vertical_distance","x_position","y_position"];
 
@@ -67,7 +67,7 @@ class Row{
         this.tsv = function(){
             return [this.attacker.name, this.attackerMod, this.attacker_display, this.target.name, this.targetMod, this.target_display,
                 this.attacker_percent, this.rage, this.target_percent,
-                this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg, this.is_wbkb,
+                this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.stalequeue[0], this.stalequeue[1], this.stalequeue[2], this.stalequeue[3], this.stalequeue[4], this.stalequeue[5], this.stalequeue[6], this.stalequeue[7], this.stalequeue[8], this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg, this.is_wbkb,
             this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.di, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.hit_frame, this.faf, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }

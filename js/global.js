@@ -110,7 +110,7 @@ var paramsList = [
     new Parameter("windbox", "0"),
     new Parameter("shieldDamage", "0"),
     new Parameter("hitlag", "1"),
-    new Parameter("staleness", "0"),
+    new Parameter("staleness", ""),
     new Parameter("preDamage", "0"),
     new Parameter("chargeFrames", "0"),
     new Parameter("hitFrame", "9"),
@@ -177,6 +177,20 @@ function boolToString(value) {
     return value ? "1" : "0";
 }
 
+function boolArrayToString(value) {
+    //Prints string with position+1 separated by , when true
+    var str = "";
+    for (var i = 0; i < value.length; i++) {
+        if (value[i]) {
+            str += (i + 1) + ",";
+        }
+    }
+    if (str.length > 0) {
+        str = str.substr(0, str.length - 1);
+    }
+    return str;
+}
+
 function buildParams($scope) {
     var params = [];
     if (paramsList[0].value != $scope.attackerValue) {
@@ -232,8 +246,8 @@ function buildParams($scope) {
             params.push(new Parameter(paramsList[16].param, $scope.hitlag));
         }
     }
-    if (paramsList[17].value != $scope.stale) {
-        params.push(new Parameter(paramsList[17].param, $scope.stale));
+    if (paramsList[17].value != boolArrayToString($scope.stale)) {
+        params.push(new Parameter(paramsList[17].param, boolArrayToString($scope.stale)));
     }
     if (paramsList[18].value != $scope.preDamage) {
         params.push(new Parameter(paramsList[18].param, $scope.preDamage));
@@ -514,7 +528,16 @@ function mapParams($scope) {
     }
     param = Parameter.get(get_params, "staleness");
     if (param) {
-        $scope.stale = param;
+        var s = param.split(",");
+        for (var i = 0; i < s.length; i++) {
+            try {
+                var n = parseFloat(s[i]);
+                $scope.stale[n - 1] = true;
+
+            } catch (e) {
+
+            }
+        }
     }
     param = Parameter.get(get_params, "hitlag");
     if (param) {
