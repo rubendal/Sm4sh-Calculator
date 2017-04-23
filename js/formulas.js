@@ -133,12 +133,12 @@ function StaleNegation(queue, ignoreStale) {
     //if (timesInQueue == 0) {
     //    return 1.05;
     //}
-    var S = [8, 7.594, 6.782, 6.028, 5.274, 4.462, 3.766, 2.954, 2.2];
+    var S = [0.08, 0.07594, 0.06782, 0.06028, 0.05274, 0.04462, 0.03766, 0.02954, 0.022];
     var s = 1;
     for (var i = 0; i < queue.length; i++)
     {
         if (queue[i]) {
-            s -= S[i] / 100;
+            s -= S[i];
         }
     }
     if (s == 1) {
