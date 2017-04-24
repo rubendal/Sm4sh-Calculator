@@ -709,7 +709,7 @@ app.controller('calculator', function ($scope) {
             kb.addModifier(target.modifier.kb_received);
             kb.bounce(bounce);
             distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
-            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale ? -1,stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
+            tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale,stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
         }
 
         var funlist = [];
