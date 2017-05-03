@@ -203,9 +203,30 @@ class MoveParser {
                         bkbs = b.trim().split("/");
                     }
                 } else {
-                    if (this.bkb.includes("W: ")) {
-                        fkbs = this.bkb.replace("W:", "").trim().split("/");
-                        first_fkb = true;
+					if (this.bkb.includes("W: ")) {
+						var v = this.bkb.split("/");
+						//Check if W: is on the first hitbox (this often means all hitboxes are WBKB)
+						if (v[0].includes("W: ")){
+							fkbs = this.bkb.replace("W:", "").trim().split("/");
+							first_fkb = true;
+						} else {
+							//Splitted in BKB and WBKB, however there is no B: indicator to know which are BKB, so every value before W: will be considered BKB
+							var wb = false;
+							bkbs = [];
+							fkbs = [];
+							for (var i = 0; i < v.length; i++) {
+								if (v[i].includes("W: ")) {
+									fkbs.push(v[i].replace("W:", "").trim());
+									wb = true;
+								} else {
+									if (wb) {
+										fkbs.push(v[i]);
+									} else {
+										bkbs.push(v[i]);
+									}
+								}
+							}
+						}
                     } else {
                         bkbs = this.bkb.split("/");
                     }
