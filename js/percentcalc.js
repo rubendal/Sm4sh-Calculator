@@ -51,7 +51,7 @@ app.controller('calculator', function ($scope) {
     $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
     $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
-    $scope.wbkb = false;
+    $scope.wbkb = 0;
     $scope.windbox = false;
 
     $scope.ignoreStale = false;
@@ -435,7 +435,7 @@ app.controller('calculator', function ($scope) {
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
-        wbkb = $scope.wbkb;
+        wbkb = parseFloat($scope.wbkb);
         windbox = $scope.windbox;
 
         stock_dif = $scope.stock_dif;
@@ -463,13 +463,13 @@ app.controller('calculator', function ($scope) {
         var type = $scope.kbType;
 
         var kb = new PercentFromKnockback(kb, type, base_damage, damage, preDamage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, electric, launch_rate);
-        if (!kb.wbkb) {
+        if (kb.wbkb == 0) {
             kb.addModifier(attacker.modifier.kb_dealt);
         }
         kb.addModifier(target.modifier.kb_received);
         kb.bounce(bounce);
         var resultsList = [];
-        if(kb.wbkb){
+        if(kb.wbkb != 0){
             if (kb.rage_needed != -1) {
                 resultsList.push(new Result("Rage multiplier", 0, kb.rage_needed, true));
                 resultsList.push(new Result("Attacker percent", 0, kb.vs_percent, true));
@@ -516,7 +516,7 @@ app.controller('calculator', function ($scope) {
 
         $scope.results = new ResultList(resultsList);
 
-        $scope.sharing_url = buildURL($scope);
+		$scope.sharing_url = buildURL($scope);
     };
 
     $scope.get_jablock = function(){

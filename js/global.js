@@ -229,8 +229,8 @@ function buildParams($scope) {
     if (paramsList[11].value != $scope.kbg) {
         params.push(new Parameter(paramsList[11].param, $scope.kbg));
     }
-    if (paramsList[12].value != boolToString($scope.wbkb)) {
-        params.push(new Parameter(paramsList[12].param, boolToString($scope.wbkb)));
+    if (paramsList[12].value != $scope.wbkb) {
+        params.push(new Parameter(paramsList[12].param, $scope.wbkb));
     }
     if (paramsList[13].value != boolToString($scope.is_smash)) {
         params.push(new Parameter(paramsList[13].param, boolToString($scope.is_smash)));
@@ -501,8 +501,9 @@ function mapParams($scope) {
         $scope.updateAttackData();
     }
     param = Parameter.get(get_params, "wbkb");
-    if (param) {
-        $scope.wbkb = param == "1";
+	if (param) {
+		console.debug(param);
+        $scope.wbkb = parseFloat(param);
         $scope.updateAttackData();
     }
     param = Parameter.get(get_params, "smashAttack");
@@ -1913,7 +1914,7 @@ class PercentFromKnockback{
         this.aerial = aerial;
         this.bkb = bkb;
         this.kbg = kbg;
-        this.wbkb = wbkb;
+		this.wbkb = wbkb;
         this.r = r;
         this.windbox = windbox;
         this.weight = weight;
@@ -1955,7 +1956,7 @@ class PercentFromKnockback{
             return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
 
-        if(!this.wbkb){
+        if(this.wbkb != 0){
             if(this.type == "total"){
                 this.kb = kb;
             }
@@ -1968,19 +1969,8 @@ class PercentFromKnockback{
         }
 
 
-        if (!this.wbkb) {
+        if (this.wbkb == 0) {
             this.calculate = function () {
-                if (!this.wbkb) {
-                    if (this.type == "total") {
-                        this.kb = this.base_kb;
-                    }
-                    if (this.type == "x") {
-                        this.x = this.base_kb;
-                    }
-                    if (this.type == "y") {
-                        this.y = this.base_kb;
-                    }
-                }
 
 
                 if (this.original_angle == 361) {
@@ -2016,7 +2006,7 @@ class PercentFromKnockback{
                     }
                 }
 
-                if (!this.wbkb) {
+                if (this.wbkb!=0) {
                     if (this.type == "x") {
                         this.kb = Math.abs(this.x / Math.cos(this.angle * Math.PI / 180));
                     }
@@ -2155,12 +2145,13 @@ class PercentFromKnockback{
             };
         } else {
             this.calculate = function () {
-                this.kb = this.base_kb * this.wbkb_modifier;
+				this.kb = this.base_kb * this.wbkb_modifier;
                 this.rage_needed = -1;
                 this.vs_percent = 0;
-                var wbkb = WeightBasedKB(this.weight, this.bkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.lsi);
-                wbkb.addModifier(this.wbkb_modifier);
-                this.wbkb_kb = wbkb.kb;
+				var wbkb = WeightBasedKB(this.weight, this.bkb, this.wbkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.lsi);
+				wbkb.addModifier(this.wbkb_modifier);
+				this.wbkb_kb = wbkb.kb;
+				console.log("---");
                 if (this.kb <= this.wbkb_kb) {
                     this.training_percent = 0;
                 }

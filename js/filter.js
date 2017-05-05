@@ -51,7 +51,10 @@
         }
         if (isNaN(this.move.bkb)) {
             this.move.bkb = "-";
-        }
+		}
+		if (isNaN(this.move.wbkb)) {
+			this.move.wbkb = "-";
+		}
         if (isNaN(this.move.kbg)) {
             this.move.kbg = "-";
         }
@@ -72,9 +75,9 @@
             if(this.move.shieldDamage != 0){
                 this.move.base_damage_print += " (SD +" + this.move.shieldDamage + ")";
             }
-        }
-        if (this.move.wbkb) {
-            this.move.bkb_print = "W: " + this.move.bkb;
+		}
+		if (this.move.wbkb != 0 && this.move.wbkb != "-") {
+			this.move.bkb_print = this.move.bkb == "-" || this.move.bkb == "0" ? "W: " + this.move.wbkb : this.move.bkb + ",W: " + this.move.wbkb;
         } else {
             this.move.bkb_print = this.move.bkb;
         }
@@ -521,10 +524,10 @@ filter_app.controller('filter', function ($scope) {
                 $scope.compare($scope.kbg_cond, move.kbg, kbg, kbg2) &&
                 $scope.compare($scope.faf_cond, move.faf, faf, faf2)) {
                 if ($scope.wbkb_cond != "BKB/WBKB") {
-                    if (move.wbkb && $scope.wbkb_cond == "BKB") {
+                    if (move.wbkb != 0 && $scope.wbkb_cond == "BKB") {
                         return;
                     }
-                    if (!move.wbkb && $scope.wbkb_cond == "WBKB") {
+                    if (move.wbkb == 0 && $scope.wbkb_cond == "WBKB") {
                         return;
                     }
                 }

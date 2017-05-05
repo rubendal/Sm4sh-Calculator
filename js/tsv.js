@@ -6,7 +6,7 @@
 var tsv_rows = [];
 
 class Row{
-    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, stalequeue, aura, stock_dif, kb_multiplier, kb, is_wbkb, hit_frame, faf, distance){
+    constructor(attacker, target, attacker_percent, target_percent, move, base_damage, charge_frames, damage, staleness, stalequeue, aura, stock_dif, kb_multiplier, kb, wbkb, hit_frame, faf, distance){
         this.attacker = attacker;
         this.target = target;
         this.attacker_percent = attacker_percent;
@@ -49,7 +49,7 @@ class Row{
         if (isNaN(faf)) {
             this.faf = 0;
         }
-        this.is_wbkb = is_wbkb;
+        this.wbkb = wbkb;
         this.kb = kb;
         this.kb.calculate();
         this.distance = distance;
@@ -67,7 +67,7 @@ class Row{
         this.tsv = function(){
             return [this.attacker.name, this.attackerMod, this.attacker_display, this.target.name, this.targetMod, this.target_display,
                 this.attacker_percent, this.rage, this.target_percent,
-                this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.stalequeue[0], this.stalequeue[1], this.stalequeue[2], this.stalequeue[3], this.stalequeue[4], this.stalequeue[5], this.stalequeue[6], this.stalequeue[7], this.stalequeue[8], this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg, this.is_wbkb,
+                this.move.name, this.move.base_damage, this.charge_frames, this.base_damage, this.damage, this.staleness, this.stalequeue[0], this.stalequeue[1], this.stalequeue[2], this.stalequeue[3], this.stalequeue[4], this.stalequeue[5], this.stalequeue[6], this.stalequeue[7], this.stalequeue[8], this.staleMult, this.aura, this.stock_dif, this.move.angle, this.move.bkb, this.move.kbg, this.wbkb,
             this.kb_modifier, this.kb_multiplier, this.kb.kb, this.kb.x, this.kb.y, this.kb.di, this.kb.angle, this.kb.hitstun, this.kb.tumble, this.kb.can_jablock, this.lsi, this.hit_frame, this.faf, this.kb.horizontal_launch_speed, this.kb.vertical_launch_speed,
             this.distance.max_x, this.distance.max_y, this.h_pos, this.v_pos];
         }
@@ -172,7 +172,7 @@ app.controller('calculator', function ($scope) {
     $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
     $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
     $scope.smashCharge = 0;
-    $scope.wbkb = false;
+    $scope.wbkb = 0;
     $scope.windbox = false;
     $scope.ignoreStale = false;
 
@@ -546,7 +546,7 @@ app.controller('calculator', function ($scope) {
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
-        wbkb = $scope.wbkb;
+        wbkb = parseFloat($scope.wbkb);
         windbox = $scope.windbox;
 
         stock_dif = $scope.stock_dif;
@@ -701,10 +701,10 @@ app.controller('calculator', function ($scope) {
 
         var addRow = function () {
             calcDamage();
-            if(!wbkb){
+            if(wbkb == 0){
                 kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             }else{
-                kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
+                kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);

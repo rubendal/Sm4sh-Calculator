@@ -132,7 +132,7 @@ class MoveParser {
         
         this.count = 1;
         this.moves = [];
-        var wbkb = false;
+        var wbkb = 0;
 
         var damage = [];
         var angles = [];
@@ -177,7 +177,9 @@ class MoveParser {
 
             if (this.base_damage.includes("/") || this.bkb.includes("/") || this.kbg.includes("/") || this.angle.includes("/")) {
                 //multiple hitboxes
-                var first_fkb = false;
+				var first_fkb = false;
+				var multi_bkb_wbkb = false;
+				var sbkb = 0;
                 damage = this.base_damage.split("/");
                 angles = this.angle.split("/");
                 kbgs = this.kbg.split("/");
@@ -201,7 +203,12 @@ class MoveParser {
                         b = b.trim().split("W:")[0];
                         fkbs = w.trim().split("/");
                         bkbs = b.trim().split("/");
-                    }
+					}
+					var m = Math.max(damage.length, angles.length, kbgs.length);
+					if (m == fkbs.length) {
+						sbkb = bkbs[0];
+						multi_bkb_wbkb = true;
+					}
                 } else {
 					if (this.bkb.includes("W: ")) {
 						var v = this.bkb.split("/");
@@ -232,90 +239,115 @@ class MoveParser {
                     }
                 }
 
-                var hitbox_count = Math.max(damage.length, angles.length, kbgs.length, (fkbs.length + bkbs.length));
+				var hitbox_count = Math.max(damage.length, angles.length, kbgs.length, multi_bkb_wbkb ? fkbs.length : (fkbs.length + bkbs.length));
                 var set_count = 0;
                 var base_count = 0;
-                for (var i = 0; i < hitbox_count; i++) {
-                    var hitbox_name = this.name;
-                    if(!is_ryu_special){
-                        if (!ignore_hitboxes) {
-                            hitbox_name+= " (Hitbox " + (i + 1) + ")";
-                        }
-                    }else{
-                        if(i==1){
-                            hitbox_name = "True " + hitbox_name;
-                        }
-                    }
-                    
-                    var d = i < damage.length ? damage[i] : damage[damage.length - 1];
-                    var a = i < angles.length ? angles[i] : angles[angles.length - 1];
-                    var k = i < kbgs.length ? kbgs[i] : kbgs[kbgs.length - 1];
-                    var b = 0;
+				for (var i = 0; i < hitbox_count; i++) {
+					var hitbox_name = this.name;
+					if (!is_ryu_special) {
+						if (!ignore_hitboxes) {
+							hitbox_name += " (Hitbox " + (i + 1) + ")";
+						}
+					} else {
+						if (i == 1) {
+							hitbox_name = "True " + hitbox_name;
+						}
+					}
 
-                    var s = 0;
-                    if(this.shieldDamage == 0){
-                        if(shieldDamageRegex.test(d)){
-                            s = parseFloat(shieldDamageRegex.exec(d)[0].replace(/\+|\(|\)/gi,""));
-                        }
-                    }else{
-                        s = this.shieldDamage;
-                    }
+					var d = i < damage.length ? damage[i] : damage[damage.length - 1];
+					var a = i < angles.length ? angles[i] : angles[angles.length - 1];
+					var k = i < kbgs.length ? kbgs[i] : kbgs[kbgs.length - 1];
+					var b = 0;
 
-                    if (first_fkb) {
-                        if (set_count < fkbs.length) {
-                            b = fkbs[set_count];
-                            wbkb = true;
-                            set_count++;
-                        } else {
-                            if (bkbs.length > 0) {
-                                b = bkbs[base_count];
-                                wbkb = false;
-                                base_count++;
-                            } else {
-                                b = fkbs[fkbs.length - 1];
-                                wbkb = true;
-                            }
-                        }
-                    } else {
-                        if (base_count < bkbs.length) {
-                            b = bkbs[base_count];
-                            wbkb = false;
-                            base_count++;
-                        } else {
-                            if (fkbs.length > 0) {
-                                b = fkbs[set_count];
-                                wbkb = true;
-                                set_count++;
-                            } else {
-                                b = bkbs[bkbs.length - 1];
-                                wbkb = false;
-                            }
-                        }
-                    }
-                    this.moves.push(new Move(this.id, i, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s));
+					var s = 0;
+					if (this.shieldDamage == 0) {
+						if (shieldDamageRegex.test(d)) {
+							s = parseFloat(shieldDamageRegex.exec(d)[0].replace(/\+|\(|\)/gi, ""));
+						}
+					} else {
+						s = this.shieldDamage;
+					}
+
+					if (multi_bkb_wbkb) {
+						wbkb = fkbs[set_count]
+						b = sbkb;
+					} else {
+						if (first_fkb) {
+							if (set_count < fkbs.length) {
+								b = "0";
+								wbkb = fkbs[set_count];
+								set_count++;
+							} else {
+								if (bkbs.length > 0) {
+									b = bkbs[base_count];
+									wbkb = "0";
+									base_count++;
+								} else {
+									b = "0";
+									wbkb = fkbs[fkbs.length - 1];
+								}
+							}
+						} else {
+							if (base_count < bkbs.length) {
+								b = bkbs[base_count];
+								wbkb = "0";
+								base_count++;
+							} else {
+								if (fkbs.length > 0) {
+									b = "0";
+									wbkb = fkbs[set_count];
+									set_count++;
+								} else {
+									b = bkbs[bkbs.length - 1];
+									wbkb = "0";
+								}
+							}
+						}
+					}
+                    this.moves.push(new Move(this.id, i, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s));
                     if (ignore_hitboxes) {
                         return;
                     }
                 }
             } else {
                 //single hitbox
-                if (bkb.includes("W: ")) {
-                    wbkb = true;
-                    this.bkb = bkb.replace("W: ", "");
-                }
+				if (this.bkb.includes("W: ") && this.bkb.includes("B: ")) {
+					this.bkb = this.bkb.replace("/W:", "W:").replace("/B:", "B:").split(",").join("");
+					var w = this.bkb.split("W:");
+					if (w[1].includes("B:")) {
+						var b = w[1].split("B:")[1];
+						w = w[1].split("B:")[0];
+						fkbs = w.trim().split("/");
+						bkbs = b.trim().split("/");
+						first_fkb = true;
+					} else {
+						var b = this.bkb.split("B:")[1];
+						w = b.split("W:")[1];
+						b = b.trim().split("W:")[0];
+						fkbs = w.trim().split("/");
+						bkbs = b.trim().split("/");
+					}
+					this.bkb = bkbs[0];
+					wbkb = fkbs[0];
+				} else {
+					if (bkb.includes("W: ")) {
+						this.bkb = "0";
+						wbkb = bkb.replace("W: ", "");
+					}
+				}
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
-                    if (this.grab) {
-                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+					if (this.grab) {
+						this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                     } else {
-                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(this.id, 0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), wbkb, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+                    this.moves.push(new Move(this.id, 0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
                 }
             }
 
         } else {
-            this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, false, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+            this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
         }
 
 

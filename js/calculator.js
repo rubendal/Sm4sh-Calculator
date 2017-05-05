@@ -77,7 +77,7 @@ app.controller('calculator', function ($scope) {
     $scope.next_hf = { 'display': 'none' };
     $scope.selected_move = null;
     $scope.smashCharge = 0;
-    $scope.wbkb = false;
+    $scope.wbkb = 0;
     $scope.windbox = false;
     $scope.ignoreStale = false;
 
@@ -600,7 +600,7 @@ app.controller('calculator', function ($scope) {
         preDamage *= attacker.modifier.damage_dealt;
         preDamage *= target.modifier.damage_taken;
 
-        if (!wbkb) {
+        if (wbkb == 0) {
             trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, di);
             vskb = VSKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             trainingkb.addModifier(attacker.modifier.kb_dealt);
@@ -608,8 +608,8 @@ app.controller('calculator', function ($scope) {
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         } else {
-            trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, di);
-            vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
+            trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, di);
+            vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         }
@@ -814,7 +814,7 @@ app.controller('calculator', function ($scope) {
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
-        wbkb = $scope.wbkb;
+        wbkb = parseFloat($scope.wbkb);
         windbox = $scope.windbox;
 
         game_mode = $scope.game_mode;
