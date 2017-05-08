@@ -580,8 +580,8 @@ app.controller('calculator', function ($scope) {
         var step = parseFloat($scope.target_step);
 
         var m;
-        if($scope.move == 0){
-            m = new Move(0, "Custom", "Custom", base_damage, angle, bkb, kbg, wbkb, [], 0, -1, [], 0, 0, 0, 0);
+		if ($scope.move == 0) {
+			m = new Move(0, 0, "Custom", "Custom", base_damage, angle, bkb, kbg, wbkb, [], 0, -1, [], 0, 0, 0, shieldDamage);
             m.is_smash = is_smash;
         }else{ 
             m = $scope.moveset[$scope.move];
