@@ -617,7 +617,6 @@ app.controller('calculator', function ($scope) {
         }
 
         $scope.sharing_url = buildURL($scope);
-
     };
 
     var bd = base_damage;
