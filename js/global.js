@@ -1408,9 +1408,15 @@ class Distance{
                                             g=0;
                                             character_speed.x = 0;
                                             character_speed.y = 0;
-                                            launch_speed.y = 0;
-                                            next_x = point[0];
-                                            next_y = point[1];
+											launch_speed.y = 0;
+											if (line[1][1] - line[0][1] == 0) {
+												next_x = point[0];
+												next_y = line[0][1];
+											} else {
+												//Lylat platforms...
+												next_x = point[0];
+												next_y = point[1];
+											}
 											
                                         }
                                         break;
