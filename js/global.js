@@ -502,7 +502,6 @@ function mapParams($scope) {
     }
     param = Parameter.get(get_params, "wbkb");
 	if (param) {
-		console.debug(param);
         $scope.wbkb = parseFloat(param);
         $scope.updateAttackData();
     }
@@ -1174,7 +1173,7 @@ class Distance{
         this.doPlot = doPlot;
         this.extraFrames = 20;
         this.finalPosition = position;
-        this.extra = [];
+		this.extra = [];
         if (extraFrames !== undefined) {
             this.extraFrames = extraFrames;
         }
@@ -1236,7 +1235,7 @@ class Distance{
 
         this.launch_speeds = [];
         var limit = hitstun < 200 ? hitstun + this.extraFrames : 200;
-        for(var i=0;i<limit;i++){
+		for (var i = 0; i < limit; i++){
             var next_x = character_position.x + launch_speed.x + character_speed.x;
             var next_y = character_position.y + launch_speed.y + character_speed.y;
 
@@ -1296,7 +1295,7 @@ class Distance{
                     }
                     if(p1_inside || p2_inside || p_inside){
                         var line = p1_inside ? closestLine([character_position.x, character_position.y], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([next_x,next_y], this.stage.surface);
-                        if(this.tumble){
+						if (this.tumble) {
                             bouncing = true;
                             //Intersection point
                             var point = p1_inside ? IntersectionPoint([[character_position.x, character_position.y],p1],line) : p2_inside ? IntersectionPoint([[character_position.x, character_position.y],p2],line)  : IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],line);
@@ -1340,17 +1339,19 @@ class Distance{
                             character_speed.y = 0;
                             this.bounce_frame = i;
                         }else{
-                            if(lineIsFloor(line, this.stage.surface, this.stage.edges)){
+							if (lineIsFloor(line, this.stage.surface, this.stage.edges)) {
                                 grounded = true;
                                 g=0;
-                                launch_speed.y=0;
+								launch_speed.y = 0;
+								character_speed.y = 0;
+								next_y = character_position.y;
                                 var point = IntersectionPoint([[character_position.x, character_position.y],[next_x, next_y]],line);
                                 if(point != null){
-                                    next_x = point[0];
+                                    //next_x = point[0];
                                     next_y = point[1];
                                 }
-                            }else{
-                                launch_speed.x = 0;
+							} else {
+								launch_speed.x = 0;
                                 launch_speed.y = 0;
                                 character_speed.x = 0;
                                 character_speed.y = 0;
@@ -1410,6 +1411,7 @@ class Distance{
                                             launch_speed.y = 0;
                                             next_x = point[0];
                                             next_y = point[1];
+											
                                         }
                                         break;
                                     }
@@ -1422,51 +1424,46 @@ class Distance{
             }
 
 
-            //Apply decay
-            if(launch_speed.x != 0){
-                var x_dir = launch_speed.x / Math.abs(launch_speed.x);
-                if (!grounded) {
-                    launch_speed.x -= decay.x;
-                }
-                if(x_dir == -1 && launch_speed.x > 0){
-                    launch_speed.x = 0;
-                }else if(x_dir == 1 && launch_speed.x < 0){
-                    launch_speed.x = 0;
-                }
-            }
-            if(launch_speed.y != 0){
-                var y_dir = launch_speed.y / Math.abs(launch_speed.y);
-                launch_speed.y -= decay.y;
-                if(y_dir == -1 && launch_speed.y > 0){
-                    launch_speed.y = 0;
-                }else if(y_dir == 1 && launch_speed.y < 0){
-                    launch_speed.y = 0;
-                }
-            }
+			if (grounded) {
+				//Sliding on surface
+				//Traction applied here
+				if (launch_speed.x < 0) {
+					launch_speed.x += traction;
+				} else {
+					launch_speed.x -= traction;
+				}
+				character_speed.y = 0;
+				launch_speed.y = 0;
+				g = 0;
+			} else {
+				//Apply decay
+				if (launch_speed.x != 0) {
+					var x_dir = launch_speed.x / Math.abs(launch_speed.x);
+					if (!grounded) {
+						launch_speed.x -= decay.x;
+					}
+					if (x_dir == -1 && launch_speed.x > 0) {
+						launch_speed.x = 0;
+					} else if (x_dir == 1 && launch_speed.x < 0) {
+						launch_speed.x = 0;
+					}
+				}
+				if (launch_speed.y != 0) {
+					var y_dir = launch_speed.y / Math.abs(launch_speed.y);
+					launch_speed.y -= decay.y;
+					if (y_dir == -1 && launch_speed.y > 0) {
+						launch_speed.y = 0;
+					} else if (y_dir == 1 && launch_speed.y < 0) {
+						launch_speed.y = 0;
+					}
+				}
+				//Gravity
+				g -= gravity;
+				fg = Math.max(g, -fall_speed);
+				character_speed.y = fg;
+			}
 
-            //Sliding on surface
-            if (grounded) {
-                //Traction applied here
-                if(Math.cos(angle * Math.PI / 180) < 0){
-                    launch_speed.x -= traction;
-                } else {
-                    launch_speed.x = traction;
-                }
-                character_speed.y = 0;
-                launch_speed.y = 0;
-                g=gravity;
-            }else{
-                /*if(launch_speed.x != 0){
-                    character_speed.x = -friction.x;
-                }else{
-                    character_speed.x = 0;
-                }*/
-            }
-
-            //Gravity
-            g -= gravity;
-            fg = Math.max(g, -fall_speed);
-            character_speed.y = fg;
+            
 
             character_position.x = next_x;
             character_position.y = next_y;
@@ -2151,7 +2148,6 @@ class PercentFromKnockback{
 				var wbkb = WeightBasedKB(this.weight, this.bkb, this.wbkb, this.kbg, this.gravity, this.fall_speed, this.r, 0, this.damage, 0, this.angle, this.aerial, this.windbox, -1, this.lsi);
 				wbkb.addModifier(this.wbkb_modifier);
 				this.wbkb_kb = wbkb.kb;
-				console.log("---");
                 if (this.kb <= this.wbkb_kb) {
                     this.training_percent = 0;
                 }
