@@ -321,7 +321,16 @@ app.controller('calculator', function ($scope) {
             break;
         }
         $scope.update();
-    }
+	}
+
+	$scope.updateStaleness = function (value) {
+		if (value == "0") {
+			$scope.stale = [false, false, false, false, false, false, false, false, false];
+		} else if (value == "1") {
+			$scope.stale = [true, true, true, true, true, true, true, true, true];
+		}
+		$scope.update();
+	};
 
     $scope.check = function () {
         $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };

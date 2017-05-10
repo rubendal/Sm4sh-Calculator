@@ -232,6 +232,8 @@
                                 </td>
                             </tr>
                         </table>
+                        <input type="button" class="btn btn-secondary btn-sm" value="Full queue" ng-click="updateStaleness('1')" />
+                        <input type="button" class="btn btn-secondary btn-sm" value="Empty queue" ng-click="updateStaleness('0')" />
                     </div>
                     <div class="pos-right">
                         <br />
@@ -313,8 +315,8 @@
                         Hit frame:
                         <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
                         <span>
-                            <input type="button" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()" />
-                            <input type="button" value=">" ng-style="next_hf" ng-click="next_hit_frame()" />
+                            <input type="button" class="btn btn-secondary btn-sm" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()" />
+                            <input type="button" class="btn btn-secondary btn-sm" value=">" ng-style="next_hf" ng-click="next_hit_frame()" />
                         </span>
                         <br />
                         {{use_landing_lag == "no" ? "FAF" : "Landing frame"}}:
@@ -381,13 +383,13 @@
                 <br/>
                 <span>{{"Calculations: " + calculations + ", Maximum at a time: 100000"}}</span>
                 <br/>
-                <input type="button" class="btn button" value="{{status}}" ng-click="generate()"/>
+                <input type="button" class="btn btn-secondary btn-sm" value="{{status}}" ng-click="generate()"/>
                 <br/>
                 <span>{{"Stored calculations: " + stored}}</span>
                 <br/>
-                <input type="button" class="btn button" value="Download" ng-click="download()"/>
+                <input type="button" class="btn btn-secondary btn-sm" value="Download" ng-click="download()"/>
                 <br/>
-                <input type="button" class="btn button" value="Clear" ng-click="clear()"/>
+                <input type="button" class="btn btn-secondary btn-sm" value="Clear" ng-click="clear()"/>
             
             </div>
             

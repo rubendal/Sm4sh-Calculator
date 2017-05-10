@@ -263,6 +263,8 @@
                                 </td>
                             </tr>
                         </table>
+                        <input type="button" class="btn btn-secondary btn-sm" value="Full queue" ng-click="updateStaleness('1')" />
+                        <input type="button" class="btn btn-secondary btn-sm" value="Empty queue" ng-click="updateStaleness('0')" />
                         
                     </div>
                     <div class="pos-right">
@@ -347,8 +349,8 @@
                         Hit frame:
                         <input name="hit_frame" type="number" min="0" max="1000" step="1" ng-model="hit_frame" ng-change="update()" />
                         <span>
-                            <input type="button" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()" />
-                            <input type="button" value=">" ng-style="next_hf" ng-click="next_hit_frame()" />
+                            <input type="button" class="btn btn-secondary btn-sm" value="<" ng-style="prev_hf" ng-click="prev_hit_frame()" />
+                            <input type="button" class="btn btn-secondary btn-sm" value=">" ng-style="next_hf" ng-click="next_hit_frame()" />
                         </span>
                         <br />
                         {{use_landing_lag == "no" ? "FAF" : "Landing frame"}}:
@@ -406,9 +408,9 @@
                         <br />
                         <br />
                         <div>
-                            <input type="button" class="btn button" value="Store distance calculation" ng-click="storeDistanceCalculation()" ng-disabled="!show_graph" />
+                            <input type="button" class="btn btn-secondary btn-sm" value="Store distance calculation" ng-click="storeDistanceCalculation()" ng-disabled="!show_graph" />
                             <br/>
-                            <input type="button" class="btn button" value="Clear list" ng-click="clearVisualizerList()" ng-disabled="!show_graph" />
+                            <input type="button" class="btn btn-secondary btn-sm" value="Clear list" ng-click="clearVisualizerList()" ng-disabled="!show_graph" />
                         </div>
                     </div>
                     <div class="pos-right pos-mod">

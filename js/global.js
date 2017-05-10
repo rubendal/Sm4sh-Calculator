@@ -1900,7 +1900,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, preDamage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, timesInQueue, ignoreStale, windbox, electric, launch_rate){
+    constructor(kb, type, base_damage, damage, preDamage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, queue, ignoreStale, windbox, electric, launch_rate){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -1931,7 +1931,7 @@ class PercentFromKnockback{
         this.reeling = false;
         this.training_percent = 0;
         this.vs_percent = 0;
-        this.timesInQueue = timesInQueue;
+        this.queue = queue;
         this.ignoreStale = ignoreStale;
         this.lsi = lsi;
         this.wbkb_kb = -1;
@@ -1953,13 +1953,13 @@ class PercentFromKnockback{
             var s = 1;
             return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
-        this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, timesInQueue, ignoreStale){
-            var s = StaleNegation(timesInQueue, ignoreStale);
+        this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, queue, ignoreStale){
+            var s = StaleNegation(queue, ignoreStale);
             r = r * Rage(attacker_percent) * this.launch_rate;
             return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
 
-        if(this.wbkb != 0){
+        if(this.wbkb == 0){
             if(this.type == "total"){
                 this.kb = kb;
             }
@@ -2064,7 +2064,8 @@ class PercentFromKnockback{
                 }
 
                 this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-                this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
+                this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.queue, this.ignoreStale);
+
 
                 if (this.training_percent < 0) {
                     this.training_percent = 0;
@@ -2094,7 +2095,7 @@ class PercentFromKnockback{
                         }
                         var hitstun = Hitstun(kb, this.windbox, this.electric);
                         var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-                        var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.timesInQueue, this.ignoreStale);
+                        var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.queue, this.ignoreStale);
                         di_angles.push({ 'angle': i, 'training': training, 'vs': vs, 'hitstun': hitstun });
                     }
                     di_angles.sort(function (a, b) {
