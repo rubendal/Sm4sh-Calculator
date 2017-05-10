@@ -335,12 +335,12 @@ function ShieldHitlag(damage, hitlag, electric) {
 }
 
 function AttackerShieldHitlag(damage, hitlag, electric) {
-    if (hitlag > 1) {
+    /*if (hitlag > 1) {
         hitlag /= 1.25;
         if (hitlag < 1) {
             hitlag = 1;
         }
-    }
+    }*/
     return ShieldHitlag(damage, hitlag, electric);
 }
 
