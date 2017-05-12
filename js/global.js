@@ -1204,9 +1204,9 @@ class Distance{
         if(this.inverseX){
             angle = InvertXAngle(angle);
         }
-        if(this.tumble){
-            angle+=di;
-        }
+        //if(this.tumble){
+        //    angle+=di;
+        //}
         if(this.angle == 0 || this.angle == 180){
             if(x_speed > 8.3){
                 x_speed = 8.3;
@@ -1870,8 +1870,16 @@ class Knockback {
             
             if(this.tumble){
                 this.vertical_launch_speed += this.add_gravity_speed;
-                //Gravity boost changes launch angle
-                this.angle = Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed) * 180 / Math.PI;
+				//Gravity boost changes launch angle
+				var x_ref = Math.cos(this.angle * Math.PI / 180);
+				var y_ref = Math.sin(this.angle * Math.PI / 180);
+				this.angle = Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed) * 180 / Math.PI;
+				if (x_ref < 0) {
+					this.angle = InvertXAngle(this.angle);
+				}
+				if (y_ref < 0) {
+					this.angle = InvertYAngle(this.angle);
+				}
             }
             if (this.tumble) {
                 this.lsi = LSI(this.di, this.angle);
