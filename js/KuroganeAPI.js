@@ -435,7 +435,10 @@ var chargeMoves = [
     }),
     new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"],0,105,function(base_damage, frames){
         return 5 + (((frames+15)/120)* .32 * 100);
-    })];
+	}),
+	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, frames) {
+		return base_damage + (7.7 * (frames/30));
+	})];
 
 class Move {
     constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage) {
