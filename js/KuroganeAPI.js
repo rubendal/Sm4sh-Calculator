@@ -380,11 +380,16 @@ class MoveParser {
 var previousMove = null;
 
 class ChargeData{
-    constructor(names,min,max,formula){
+    constructor(names,min,max,formula,variable_bkb){
         this.names = names;
         this.min = min;
         this.max = max;
-        this.formula = formula;
+		this.formula = formula;
+		if (variable_bkb == undefined) {
+			this.variable_bkb = false;
+		} else {
+			this.variable_bkb = variable_bkb;
+		}
     }
 
     static get(list, move_name){
@@ -400,44 +405,47 @@ class ChargeData{
 };
 
 var chargeMoves = [
-    new ChargeData(["Palutena's Bow (No Charge)","Palutena's Bow (No Charge, Aerial)"],1,60,function(base_damage, frames){
-        return 3.2 + (frames * 0.09);
+    new ChargeData(["Palutena's Bow (No Charge)","Palutena's Bow (No Charge, Aerial)"],1,60,function(base_damage, bkb, frames){
+		return [3.2 + (frames * 0.09), bkb];
     }),
-    new ChargeData(["Silver Bow (No Charge)","Silver Bow (No Charge, Aerial)"],1,60,function(base_damage, frames){
-        return 4.2 + (frames * 0.1125);
+	new ChargeData(["Silver Bow (No Charge)", "Silver Bow (No Charge, Aerial)"], 1, 60, function (base_damage, bkb, frames){
+		return [4.2 + (frames * 0.1125), bkb];
     }),
-    new ChargeData(["Flare Blade (Uncharged)"],0,239,function(base_damage, frames){
-        return 6 + (frames * 5 / 30);
+	new ChargeData(["Flare Blade (Uncharged)"], 0, 239, function (base_damage, bkb, frames){
+		return [6 + (frames * 5 / 30), bkb];
     }),
-    new ChargeData(["Shield Breaker (No Charge)"],0,59,function(base_damage, frames){
-        return base_damage * ((60-frames)/60 + (frames * 2.2 / 60));
+	new ChargeData(["Shield Breaker (No Charge)"], 0, 59, function (base_damage, bkb, frames){
+		return [base_damage * ((60 - frames) / 60 + (frames * 2.2 / 60)), bkb];
     }),
-    new ChargeData(["Eruption"],0,119,function(base_damage, frames){
-        return 10 + (frames * 4 / 30);
+	new ChargeData(["Eruption"], 0, 119, function (base_damage, bkb, frames){
+		return [10 + (frames * 4 / 30), bkb];
     }),
-    new ChargeData(["Quickdraw (Attack)"], 0, 70, function (base_damage, frames) {
-        return base_damage + (frames * 0.1);
+	new ChargeData(["Quickdraw (Attack)"], 0, 70, function (base_damage, bkb, frames) {
+		return [base_damage + (frames * 0.1), bkb];
     }),
-    new ChargeData(["Giant Punch (Uncharged"],0,9,function(base_damage, frames){
+	new ChargeData(["Giant Punch (Uncharged"], 0, 9, function (base_damage, bkb, frames){
         if(frames == 1){
             frames = 0;
         }
-        return base_damage + (2*(frames-1));
+		return [base_damage + (2 * (frames - 1)), bkb];
     }),
-    new ChargeData(["Charge Shot"],0,115,function(base_damage, frames){
-        return base_damage + (frames/116 * 22);
+	new ChargeData(["Charge Shot"], 0, 115, function (base_damage, bkb, frames){
+		return [base_damage + (frames / 116 * 22), bkb];
     }),
-    new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, frames) {
-        return 4 + (12-4)*(frames / 60);
+	new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, bkb, frames) {
+		return [4 + (12 - 4) * (frames / 60), bkb];
     }),
-    new ChargeData(["Spin Attack (No Charge,"], 0, 60, function (base_damage, frames) {
-        return base_damage * ((60 - frames) / 60 + (frames * 1.6 / 60));
+	new ChargeData(["Spin Attack (No Charge,"], 0, 60, function (base_damage, bkb, frames) {
+		return [base_damage * ((60 - frames) / 60 + (frames * 1.6 / 60)), bkb];
     }),
-    new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"],0,105,function(base_damage, frames){
-        return 5 + (((frames+15)/120)* .32 * 100);
+	new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"], 0, 105, function (base_damage, bkb, frames){
+		return [5 + (((frames + 15) / 120) * .32 * 100), bkb];
 	}),
-	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, frames) {
-		return base_damage + (7.7 * (frames/30));
+	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, bkb, frames) {
+		return [base_damage + (7.7 * (frames / 30)), bkb];
+	}),
+	new ChargeData(["Dragon Fang Shot (Shot, No Charge)"], 0, 28, function (base_damage, bkb, frames) {
+		return [base_damage * (1 + (1.25 * (frames / 30))), bkb + (frames * 0.65)]; //Still working on this formula
 	})];
 
 class Move {
@@ -507,8 +515,11 @@ class Move {
         if(this.chargeable){
             this.charge = ChargeData.get(chargeMoves, this.name);
             this.charge_damage = function(frames){
-                return +this.charge.formula(this.base_damage, frames).toFixed(4);
-            }
+                return +this.charge.formula(this.base_damage, this.bkb, frames)[0].toFixed(4);
+			}
+			this.charge_bkb = function (frames) {
+				return +this.charge.formula(this.base_damage, this.bkb, frames)[1].toFixed(4);
+			}
         }
 
         this.invalidate = function () {
