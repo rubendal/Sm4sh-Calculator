@@ -1733,7 +1733,7 @@ class Distance{
 
             //Calculate if KO in blast zones
             for(var i=0;i<=hitstun && !ko;i++){
-                if(this.y[i] >= this.stage.blast_zones[2] + 10 || this.y[i] <= this.stage.blast_zones[3] - 10){
+                if(this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30){
                     break;
                 }
                 if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
