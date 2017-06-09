@@ -43,15 +43,11 @@ app.controller('calculator', function ($scope) {
     $scope.di = di;
     $scope.noDI = true;
 
-    $scope.lumaPercent = 0;
-    $scope.lumaclass = { 'display': 'none' };
-
     $scope.attackerMod = "Normal";
     $scope.targetMod = "Normal";
     $scope.charge_frames = 0;
     $scope.attacker_percent = 0;
     $scope.target_percent = 0;
-    $scope.luma_percent = 0;
 
     $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
     $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
@@ -101,11 +97,9 @@ app.controller('calculator', function ($scope) {
     $scope.surface = false;
     $scope.position_x = 0;
     $scope.position_y = 0;
-    $scope.extra_vis_frames = 20;
+    $scope.extra_vis_frames = 0;
 
-    $scope.stages = getStages();
-    $scope.stages.unshift({"stage":"No stage"});
-    $scope.stage = null;
+	$scope.stages = getStages();
     $scope.stageValue = JSON.stringify($scope.stages[0]);
 
     $scope.spawns = [];
@@ -120,12 +114,19 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
-    $scope.stageName = "";
+	$scope.stage = JSON.parse($scope.stageValue);
 
-    $scope.currentPlot = {};
-    $scope.visList = [];
+	$scope.stageName = $scope.stage.stage;
 
-    $scope.launch_rate = launch_rate;
+	$scope.spawns = ["Center"];
+	for (var i = 0; i < $scope.stage.spawns.length; i++) {
+		$scope.spawns.push(i + 1);
+	}
+	$scope.spawn = "Center";
+
+	$scope.currentPlot = {};
+
+	$scope.launch_rate = launch_rate;
 
     $scope.delayed_landing_lag = null;
 
@@ -146,13 +147,7 @@ app.controller('calculator', function ($scope) {
     $scope.updateStage = function(){
         $scope.stage = JSON.parse($scope.stageValue);
         $scope.stageName = $scope.stage.stage;
-        if($scope.stage.stage == "No stage"){
-            $scope.stage = null;
-            $scope.spawns = [];
-            $scope.spawn = "";
-            $scope.update();
-            return;
-        }
+
         $scope.position_x = $scope.stage.center[0];
         $scope.position_y = $scope.stage.center[1];
         $scope.spawns = ["Center"];
@@ -588,14 +583,83 @@ app.controller('calculator', function ($scope) {
         $scope.target_kb_received = target.modifier.kb_received;
         $scope.target_fall_speed = target.attributes.fall_speed * target.modifier.fall_speed;
         $scope.target_traction = target.attributes.traction * target.modifier.traction;
-        $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none" };
-        $scope.lumaPercent = 0;
         $scope.update();
-    }
+	}
+
+	$scope.getDistance = function (damage) {
+		if (wbkb == 0) {
+			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, di);
+			vskb = VSKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
+			trainingkb.addModifier(attacker.modifier.kb_dealt);
+			vskb.addModifier(attacker.modifier.kb_dealt);
+			trainingkb.addModifier(target.modifier.kb_received);
+			vskb.addModifier(target.modifier.kb_received);
+		} else {
+			trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, di);
+			vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
+			trainingkb.addModifier(target.modifier.kb_received);
+			vskb.addModifier(target.modifier.kb_received);
+		}
+
+		var distance;
+		if (game_mode == "training") {
+			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, true, 0);
+		} else {
+			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, true, 0);
+		}
+
+		return distance;
+	}
+
+	$scope.calc = function (damage) {
+		var data = {};
+		//Check if it can KO at 999% (if not just stop calculation)
+		target_percent = 999;
+		var distance = $scope.getDistance(damage);
+		var last = 0;
+		var found = false;
+		if (distance.KO) {
+			for (var i = 0; i < 999 && !found; i += 20) {
+				target_percent = i;
+				distance = $scope.getDistance(damage);
+				if (distance.KO) {
+					if (i == 0) {
+						data = { "ko": true, "ko_percent": 0, "plot": distance.plot, "graph": { "x": distance.graph_x, "y": distance.graph_y } };
+						found = true;
+						break;
+					}
+					else {
+						for (var x = i; x > i - 30; x -= 0.5) {
+							last = x;
+							target_percent = x - 0.5;
+							distance = $scope.getDistance(damage);
+							if (!distance.KO) {
+								for (var y = x+0.5; y > x; y -= 0.001) {
+									last = y;
+									target_percent = y - 0.001;
+									distance = $scope.getDistance(damage);
+									if (!distance.KO) {
+										found = true;
+										data = { "ko": true, "ko_percent": last, "plot": distance.plot, "graph": { "x": distance.graph_x, "y": distance.graph_y } };
+										break;
+									}
+								}
+							}
+							if (found) {
+								break;
+							}
+						}
+
+					}
+				}
+			}
+		} else {
+			data = { "ko": false };
+		}
+		return data;
+	}
 
     $scope.calculate = function (){
-        var result = { 'training': [], 'vs': [], 'shield': [] };
-
         if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
@@ -609,180 +673,83 @@ app.controller('calculator', function ($scope) {
         preDamage *= attacker.modifier.damage_dealt;
         preDamage *= target.modifier.damage_taken;
 
-        if (wbkb == 0) {
-            trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, di);
-            vskb = VSKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
-            trainingkb.addModifier(attacker.modifier.kb_dealt);
-            vskb.addModifier(attacker.modifier.kb_dealt);
-            trainingkb.addModifier(target.modifier.kb_received);
-            vskb.addModifier(target.modifier.kb_received);
-        } else {
-            trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, di);
-            vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di, launch_rate);
-            trainingkb.addModifier(target.modifier.kb_received);
-            vskb.addModifier(target.modifier.kb_received);
-        }
+		var data = $scope.calc(damage);
 
-        var distance;
-        if(game_mode == "training"){
-            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
-        }else{
-            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
-        }
+		$scope.visualizer_extra = [];
 
-        if(stage != null){
-            if(distance.bounce_speed >= 1){
-                //$scope.kb_modifier_bounce = distance.bounce;
-                //bounce = distance.bounce;
-            }
-        }
+		if (data.ko) {
+			$scope.visualizer_extra.push(new Result("Target %", data.ko_percent, "", false, true));
+			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
+			var max_x = data.graph.x + 10;
+			var max_y = data.graph.y + 10;
+			max_x = max_y = Math.max(max_x, max_y);
+			Plotly.newPlot('res_graph', data.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+		}
+		else {
+			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
+		}
 
-        
-        var trainingDistance;
-        var vsDistance;
-        if (game_mode == "training") {
-            vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
-            trainingDistance = distance;
-        } else {
-            vsDistance = distance;
-            trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
-        }
-        trainingkb.bounce(bounce);
-        vskb.bounce(bounce);
-        var t_hc = HitstunCancel(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.angle, windbox, electric);
-        var v_hc = HitstunCancel(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.angle, windbox, electric);
-        var traininglist = [, , , , , , , , , ];
-        var vslist = [, , , , , , , , , ];
-        
-        var resultList = [];
-        resultList.push(new Result("Damage", damage, StaleDamage(damage, stale, ignoreStale)));
-        if (!paralyzer) {
-            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
-            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
-        } else {
-            resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, 1)));
-        }
-        resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
-        resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(4), +vskb.angle_with_di.toFixed(4), !trainingkb.di_able, !vskb.di_able));
-        resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(4), +vskb.angle.toFixed(4)));
-        if (angle <= 361) {
-            resultList.push(new Result("X", +trainingkb.x.toFixed(4), +vskb.x.toFixed(4)));
-            resultList.push(new Result("Y", +trainingkb.y.toFixed(4), +vskb.y.toFixed(4)));
-        }
-        if (paralyzer) {
-            resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
-        }
-        resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
+	};
 
-        resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
-        resultList.push(new Result("Airdodge hitstun cancel", t_hc.airdodge, v_hc.airdodge, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.airdodge), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.airdodge)));
-        resultList.push(new Result("Aerial hitstun cancel", t_hc.aerial, v_hc.aerial, (Hitstun(trainingkb.base_kb, windbox, electric) == 0 || Hitstun(trainingkb.base_kb, windbox, electric) + 1 == t_hc.aerial), (Hitstun(vskb.base_kb, windbox, electric) == 0 || Hitstun(vskb.base_kb, windbox, electric) + 1 == v_hc.aerial)));
+	$scope.calculateDI = function () {
+		if ($scope.charge_data == null && $scope.is_smash) {
+			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+		}
+		if (attacker.name == "Lucario") {
+			base_damage *= Aura(attacker_percent, stock_dif, game_format);
+			preDamage *= Aura(attacker_percent, stock_dif, game_format);
+		}
+		var damage = base_damage;
+		damage *= attacker.modifier.damage_dealt;
+		damage *= target.modifier.damage_taken;
+		preDamage *= attacker.modifier.damage_dealt;
+		preDamage *= target.modifier.damage_taken;
 
-        resultList.push(new Result("Tumble", trainingkb.tumble ? "Yes" : "No", vskb.tumble ? "Yes" : "No"));
+		var list = [];
+		var data = $scope.calc(damage);
 
-        resultList.push(new Result("Reeling/Spin animation", trainingkb.reeling ? "30%" : "0%", vskb.reeling ? "30%" : "0%", !trainingkb.reeling, !vskb.reeling));
-        resultList.push(new Result("Reeling hitstun", trainingkb.reeling ? Hitstun(trainingkb.base_kb, windbox, electric, true) : Hitstun(trainingkb.base_kb, windbox, electric), vskb.reeling ? Hitstun(vskb.base_kb, windbox, electric, true) : Hitstun(vskb.base_kb, windbox, electric), !trainingkb.reeling, !vskb.reeling));
-        resultList.push(new Result("Reeling FAF", FirstActionableFrame(trainingkb.base_kb, windbox, electric, true), FirstActionableFrame(vskb.base_kb, windbox, electric, true), !trainingkb.reeling, !vskb.reeling));
+		
 
-        resultList.push(new Result("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No", vskb.can_jablock ? "Yes" : "No"));
+		$scope.visualizer_extra = [];
 
-        resultList.push(new Result("LSI", +trainingkb.lsi.toFixed(4), +vskb.lsi.toFixed(4), trainingkb.lsi == 1, vskb.lsi == 1));
-        resultList.push(new Result("Horizontal Launch Speed", +trainingkb.horizontal_launch_speed.toFixed(4), +vskb.horizontal_launch_speed.toFixed(4)));
-        resultList.push(new Result("Gravity boost", +trainingkb.add_gravity_speed.toFixed(4), +vskb.add_gravity_speed.toFixed(4), trainingkb.add_gravity_speed == 0, vskb.add_gravity_speed == 0));
-        resultList.push(new Result("Vertical Launch Speed",trainingkb.vertical_launch_speed,vskb.vertical_launch_speed));
-        resultList.push(new Result("Max Horizontal Distance", +trainingDistance.max_x.toFixed(4), +vsDistance.max_x.toFixed(4)));
-        resultList.push(new Result("Max Vertical Distance", +trainingDistance.max_y.toFixed(4), +vsDistance.max_y.toFixed(4)));
-        if (r != 1) {
-            resultList.splice(3,0,new Result("KB modifier", "x" + +r.toFixed(4), "x" + +r.toFixed(4)));
-        }
-        resultList.splice(3, 0, new Result("Rage", "x" + "1", "x" + +Rage(attacker_percent).toFixed(4), true));
-        if (target.modifier.kb_received != 1) {
-            resultList.splice(3, 0, new Result("KB received", "x" + +target.modifier.kb_received.toFixed(4), "x" + +target.modifier.kb_received.toFixed(4)));
-        }
-        if (launch_rate != 1) {
-            resultList.splice(4, 0, new Result("Launch rate", "x" + "1", "x" + +launch_rate.toFixed(4), true));
-        }
-        if (attacker.modifier.kb_dealt != 1) {
-            resultList.splice(3, 0, new Result("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4), "x" + +attacker.modifier.kb_dealt.toFixed(4)));
-        }
-        if (attacker.name == "Lucario") {
-            resultList.splice(0, 0, new Result("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4), "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
-        }
-        if (is_smash && $scope.charge_data == null) {
-            resultList.splice(0, 0, new Result("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4), "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
-        }
-        if (target.modifier.damage_taken != 1) {
-            resultList.splice(0, 0, new Result("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4), "x" + +target.modifier.damage_taken.toFixed(4)));
-        }
-        if (attacker.modifier.damage_dealt != 1) {
-            resultList.splice(0, 0, new Result("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4), "x" + +attacker.modifier.damage_dealt.toFixed(4)));
-        }
-        if (preDamage != 0) {
-            resultList.splice(0, 0, new Result("Before launch damage", "+" + +preDamage.toFixed(4) + "%", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
-        }
-        if (!ignoreStale) {
-            resultList.splice(0, 0, new Result("Stale-move negation", "x" + "1", "x" + +StaleNegation(stale, ignoreStale).toFixed(4),true));
-        }
+		if (data.ko) {
+			for (var i = 0; i < 360; i+=1) {
+				di = i;
+				var data = $scope.calc(damage);
 
-        resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
+				list.push({ "di": i, "percent": data.ko_percent, "data": data });
+			}
 
-        if (target.name == "Rosalina And Luma") {
-            if (!wbkb) {
-                var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, di);
-                var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di);
-                luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
-                luma_vskb.addModifier(attacker.modifier.kb_dealt);
-                luma_trainingkb.addModifier(target.modifier.kb_received);
-                luma_vskb.addModifier(target.modifier.kb_received);
-                resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
-                resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
-            } else {
-                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, electric, di);
-                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di);
-                luma_vskb.addModifier(target.modifier.kb_received);
-                luma_vskb.addModifier(target.modifier.kb_received);
-                resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
-                resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
-            }
-        }
+			list.sort(function (a, b) {
+				if (a.percent > b.percent) {
+					return -1;
+				} else if (a.percent < b.percent) {
+					return 1;
+				}
+				return 0;
+			});
 
-        if (!unblockable) {
-            if (!powershield) {
-                var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-                var sv = (StaleDamage(base_damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-                resultList.push(new Result("Shield Damage", +s.toFixed(4), +sv.toFixed(4)));
-                resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(4), +(50 * target.modifier.shield).toFixed(4)));
-                resultList.push(new Result("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No", sv >= 50 * target.modifier.shield ? "Yes" : "No"));
-            }
-            resultList.push(new Result("Shield stun", ShieldStun(damage, is_projectile, powershield), ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)));
-            resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric))));
-            resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)));
-        } else {
-            resultList.push(new Result("Unblockable attack", "Yes", "Yes"));
-        }
+			$scope.visualizer_extra.push(new Result("Best DI angle", list[0].di, "", false, true));
+			$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
+			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
+			var max_x = list[0].data.graph.x + 10;
+			var max_y = list[0].data.graph.y + 10;
+			max_x = max_y = Math.max(max_x, max_y);
+			Plotly.newPlot('res_graph', list[0].data.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
 
-        
-        if(graph){
-            var max_x = distance.graph_x + 10;
-            var max_y = distance.graph_y + 10;
-            max_x = max_y = Math.max(max_x, max_y);
-            $scope.currentPlot = distance.plot;
-            var data = distance.plot;
-            for (var p = 0; p < $scope.visList.length; p++) {
-                for (var pl = 0; pl < $scope.visList[p].length; pl++) {
-                    if ($scope.visList[p][pl].calcValue == "Launch" ) {
-                        data.push($scope.visList[p][pl]);
-                    }
-                }
-            }
-            Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
-            $scope.visualizer_extra = distance.extra;
-        } else {
-            $scope.visualizer_extra = [];
-        }
+			if ($scope.noDI) {
+				di = -1;
+			} else {
+				di = parseFloat($scope.di);
+			}
+			
+		}
+		else {
+			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
+		}
 
-        return new ResultList(resultList, false);
-    };
+	};
+	
 
     $scope.updateCharge = function(){
         if($scope.charge_data != null){
@@ -799,8 +766,8 @@ app.controller('calculator', function ($scope) {
     $scope.update = function () {
         $scope.check();
         $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
-        attacker_percent = parseFloat($scope.attackerPercent);
-        target_percent = parseFloat($scope.targetPercent);
+		attacker_percent = parseFloat($scope.attackerPercent);
+
         preDamage = parseFloat($scope.preDamage);
         base_damage = parseFloat($scope.baseDamage);
         angle = parseFloat($scope.angle);
@@ -829,9 +796,6 @@ app.controller('calculator', function ($scope) {
         windbox = $scope.windbox;
 
         game_mode = $scope.game_mode;
-        stage = $scope.stage;
-        graph = $scope.show_graph;
-        position = {"x":parseFloat($scope.position_x), "y":parseFloat($scope.position_y)};
         inverseX = $scope.inverseX;
         onSurface = $scope.surface;
 
@@ -843,7 +807,6 @@ app.controller('calculator', function ($scope) {
         }else{
             di = parseFloat($scope.di);
         }
-        luma_percent = parseFloat($scope.lumaPercent);
 
         unblockable = $scope.unblockable;
 
@@ -855,8 +818,117 @@ app.controller('calculator', function ($scope) {
         
         launch_rate = parseFloat($scope.launch_rate);
 
-        $scope.results = $scope.calculate();
+		//Stage
+		var data = [];
+		//Stage blast zones
+		var adxdata = [];
+		var adydata = [];
 
+		//Stage blast zones
+		adxdata.push($scope.stage.blast_zones[0]);
+		adxdata.push($scope.stage.blast_zones[1]);
+		adxdata.push($scope.stage.blast_zones[1]);
+		adxdata.push($scope.stage.blast_zones[0]);
+		adxdata.push($scope.stage.blast_zones[0]);
+
+		adydata.push($scope.stage.blast_zones[2]);
+		adydata.push($scope.stage.blast_zones[2]);
+		adydata.push($scope.stage.blast_zones[3]);
+		adydata.push($scope.stage.blast_zones[3]);
+		adydata.push($scope.stage.blast_zones[2]);
+
+		data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Blast zone" });
+
+		position = { "x": parseFloat($scope.position_x), "y": parseFloat($scope.position_y) };
+
+		if (position.x < $scope.stage.blast_zones[0]) {
+			position.x = $scope.stage.blast_zones[0];
+			$scope.position_x = position.x;
+		}
+		if (position.x > $scope.stage.blast_zones[1]) {
+			position.x = $scope.stage.blast_zones[1];
+			$scope.position_x = position.x;
+		}
+
+		if (position.y > $scope.stage.blast_zones[2]) {
+			position.y = $scope.stage.blast_zones[2];
+			$scope.position_y = position.y;
+		}
+		if (position.y < $scope.stage.blast_zones[3]) {
+			position.y = $scope.stage.blast_zones[3];
+			$scope.position_y = position.y;
+		}
+
+		//Stage Camera bounds
+		adxdata = [];
+		adydata = [];
+		adxdata.push($scope.stage.camera[0]);
+		adxdata.push($scope.stage.camera[1]);
+		adxdata.push($scope.stage.camera[1]);
+		adxdata.push($scope.stage.camera[0]);
+		adxdata.push($scope.stage.camera[0]);
+
+		adydata.push($scope.stage.camera[2]);
+		adydata.push($scope.stage.camera[2]);
+		adydata.push($scope.stage.camera[3]);
+		adydata.push($scope.stage.camera[3]);
+		adydata.push($scope.stage.camera[2]);
+
+		data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
+
+		//Stage surface
+		adxdata = [];
+		adydata = [];
+		for (var i = 0; i < $scope.stage.surface.length; i++) {
+			adxdata.push($scope.stage.surface[i][0]);
+			adydata.push($scope.stage.surface[i][1]);
+		}
+
+		data.push({ 'calcValue': "Stage", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Stage" });
+
+		//Stage platforms
+		if ($scope.stage.platforms !== undefined) {
+			for (var i = 0; i < $scope.stage.platforms.length; i++) {
+				adxdata = [];
+				adydata = [];
+				for (var j = 0; j < $scope.stage.platforms[i].vertex.length; j++) {
+					adxdata.push($scope.stage.platforms[i].vertex[j][0]);
+					adydata.push($scope.stage.platforms[i].vertex[j][1]);
+				}
+				data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': $scope.stage.platforms[i].name });
+			}
+		}
+
+		if ($scope.stage.ledges !== undefined) {
+			if ($scope.stage.ledges.left !== undefined) {
+				adxdata = [];
+				adydata = [];
+				for (var j = 0; j < $scope.stage.ledges.left.length; j++) {
+					adxdata.push($scope.stage.ledges.left[j][0]);
+					adydata.push($scope.stage.ledges.left[j][1]);
+				}
+				data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Left ledge" });
+			}
+			if ($scope.stage.ledges.right !== undefined) {
+				adxdata = [];
+				adydata = [];
+				for (var j = 0; j < $scope.stage.ledges.right.length; j++) {
+					adxdata.push($scope.stage.ledges.right[j][0]);
+					adydata.push($scope.stage.ledges.right[j][1]);
+				}
+
+			}
+		}
+
+		$scope.graph_x = Math.abs(position.x);
+		$scope.graph_y = Math.abs(position.y);
+
+		$scope.graph_x = Math.max($scope.graph_x, $scope.stage.blast_zones[1]) + 10;
+		$scope.graph_y = Math.max($scope.graph_y, $scope.stage.blast_zones[2]) + 10;
+
+		data.push({ 'calcValue': "Position", 'x': [position.x], 'y': [position.y], 'mode': 'markers', 'marker': { 'color': 'blue' }, 'name': "Position" });
+
+		Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-$scope.graph_x, $scope.graph_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-$scope.graph_y, $scope.graph_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
 
         $scope.sharing_url = buildURL($scope);
     };
@@ -870,18 +942,6 @@ app.controller('calculator', function ($scope) {
 
     $scope.collapse = function (id) {
         $("#" + id).collapse('toggle');
-    }
-
-    $scope.storeDistanceCalculation = function () {
-        for (var pl = 0; pl < $scope.currentPlot.length; pl++) {
-            $scope.currentPlot[pl].opacity = 0.5;
-        }
-        $scope.visList.push($scope.currentPlot);
-    }
-
-    $scope.clearVisualizerList = function () {
-        $scope.visList = [];
-        $scope.update();
     }
 
     $scope.updateParameters = function () {

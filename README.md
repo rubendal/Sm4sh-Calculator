@@ -127,6 +127,11 @@ http://rubendal.github.io/Sm4sh-Calculator/params.html
 
 See all characters fighter_param_vl files parameters online, groups before 13 have tags for known stuff, you can check Meshima's [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) to check special moves and other stuff (groups 13 and higher) for known values for each character
 
+## KO calculator
+http://rubendal.github.io/Sm4sh-Calculator/kocalc.html
+
+Calculates opponent's KO percentages on inputted position on a stage, it can also calculate best DI angle the opponent can use to survive however this calculation is a heavy process so it could freeze the page for a moment or even get a popup that the page isn't responding
+
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 

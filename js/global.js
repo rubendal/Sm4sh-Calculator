@@ -1199,7 +1199,9 @@ class Distance{
         this.max_y = this.position.y;
 
         var x_speed = +this.x_launch_speed.toFixed(8);
-        var y_speed = +this.y_launch_speed.toFixed(8);
+		var y_speed = +this.y_launch_speed.toFixed(8);
+
+		this.KO = false;
 
         if(this.inverseX){
             angle = InvertXAngle(angle);
@@ -1509,7 +1511,9 @@ class Distance{
             }
 
 
-        }
+		}
+
+		this.vertical_speed.push((launch_speed.y));
 
         this.graph_x = Math.abs(this.max_x);
         this.graph_y = Math.abs(this.max_y);
@@ -1737,7 +1741,7 @@ class Distance{
                     break;
                 }
                 if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
-                    data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
                     this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                     ko = true;
                     break;
@@ -1745,19 +1749,19 @@ class Distance{
                     if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
                         if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
                             data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-                            this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+							this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                             ko = true;
                             break;
                         } else {
                             if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
                                 data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-                                this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+								this.extra.push(new Result("KO", "Frame " + i, "", false, true));
                                 ko = true;
                                 break;
                             } else {
                                 //At least get launch speed the opponent had when crossing the blast zone
                                 if (!crossed) {
-                                    crossed = true;
+									crossed = true;
                                     this.extra.push(new Result("Vertical launch speed when crossing blast zone", this.vertical_speed[i], "", false, true));
                                     this.extra.push(new Result("Required vertical launch speed to KO", "2.4", "", false, true));
                                     this.extra.push(new Result("Frame crossing blast zone", "Frame " + i, "", false, true));
@@ -1767,7 +1771,9 @@ class Distance{
                     }
                 }
 
-            }
+			}
+
+			this.KO = ko;
 
             this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
             this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
