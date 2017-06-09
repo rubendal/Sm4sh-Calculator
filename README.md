@@ -62,8 +62,6 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * X-axis can represent a surface to show traction and bouncing effects when no stage is selected
 * Add legal stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 
-Depending on the character launched you would need to increase the X and Y coordinates of the opponent hit, depending on their hit animation, for example most of the time on Puff you should add +4 to Y while on Dedede +2 on Y, meanwhile Cloud doesn't need this increase for an accurate result
-
 ## Move Search
 http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 
