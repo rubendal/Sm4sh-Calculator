@@ -1738,6 +1738,8 @@ class Distance{
             //Calculate if KO in blast zones
             for(var i=0;i<=hitstun && !ko;i++){
 				if (this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30) {
+					data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 					ko = true;
                     break;
                 }
