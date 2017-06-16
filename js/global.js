@@ -1151,6 +1151,330 @@ function List(trainingvalues, vsvalues) {
     return list;
 }
 
+//Bit Flagged state
+var CharacterState = {
+	LAUNCH_START: 1, //Start launch
+	GROUNDED: 2, //Grounded
+	SLIDING: 4, //Sliding
+	AERIAL: 8, //In the air
+	COLLIDING_FLOOR: 16, //Colliding with floor
+	COLLIDING_WALL: 32, //Colliding with floor
+	COLLIDING_CEILING: 64 //Colliding with floor
+};
+
+class Collision {
+	constructor(frame, stage, position, next_position, momentum, state, tumble, launch_speed, angle) {
+		this.collisionOccurred = false;
+		this.collision_data = {
+			"next_position": next_position,
+			"resetGravity": false,
+			"launchSpeed": launch_speed,
+			"angle": angle,
+			"momentum": momentum,
+			"state": state,
+			"collision": null,
+			"intersection": null,
+			"lineType": null,
+			"slideDirection" : 0 //0 none, -1 left, 1 right
+		};
+
+		if (stage == null)
+			return;
+
+		var launch_line = [position, next_position];
+		var launch_angle = LineAngle(launch_line);
+
+		var collisionFound = false;
+
+		//Check stage collisions
+		for (var i = 0; i < stage.collisions.length; i++) {
+
+			var intersections = IntersectionLines(launch_line, stage.collisions[i].vertex);
+
+			if (intersections.length == 0)
+				continue; //No intersections found
+
+			var material, normal;
+			//Calculate distance for all stage lines intersections
+			for (var j = 0; j < intersections.length; j++) {
+				intersections[j].distance = LineDistance(position, intersections[j].line);
+			}
+
+			intersections.sort(function (a, b) {
+				if (a.distance < b.distance) {
+					return -1;
+				} else if (a.distance > b.distance) {
+					return 1;
+				}
+				return 0;
+			});
+
+			var intersection = intersections[0];
+
+			//Get passthrough angle
+			material = stage.collisions[i].materials[intersection.i];
+			//Check if angle between current position and possible next position make collision with line
+			if (!LineCollision(launch_angle, material.passthroughAngle))
+				break;
+
+			//Found collision
+			collisionFound = true;
+
+			//Prepare data
+			var lineType = GetLineType(material);
+			this.collision_data.next_position = intersection.point;
+			this.collision_data.collision = stage.collisions[i];
+			this.collision_data.intersection = intersection;
+			this.collision_data.lineType = lineType;
+
+			//Check if it bounces off the wall/floor/ceiling
+			if (tumble) {
+				//Collides and Bounces off
+				if (lineType == LineTypes.FLOOR) {
+					this.collision_data.resetGravity = true;
+					this.collision_data.state = CharacterState.COLLIDING_FLOOR;
+				}
+				else if (lineType == LineTypes.WALL) {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.COLLIDING_WALL;
+				}
+				else {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.COLLIDING_CEILING;
+				}
+				//Calculate bounced off angle
+				var rAngle = (2 * (material.passthroughAngle)) - 180 - launch_angle;
+				launch_speed.x = Math.abs(launch_speed.x * 0.8);
+				launch_speed.y = Math.abs(launch_speed.y * 0.8);
+				if (Math.cos(rAngle * Math.PI / 180) < 0) {
+					launch_speed.x *= -1;
+				}
+				if (Math.sin(rAngle * Math.PI / 180) < 0) {
+					launch_speed.y *= -1;
+				}
+
+				this.collision_data.angle = rAngle;
+				this.collision_data.launchSpeed = launch_speed;
+
+				if (Math.sin(rAngle * Math.PI / 180) > 0) {
+					momentum = 1;
+				} else if (Math.sin(rAngle * Math.PI / 180) < 0) {
+					momentum = -1;
+				} else {
+					momentum = 0;
+				}
+
+				this.collision_data.momentum = momentum;
+
+
+
+			} else {
+				//Doesn't collide/bounce off
+
+				if (lineType == LineTypes.FLOOR) {
+					this.collision_data.resetGravity = true;
+					this.collision_data.state = CharacterState.SLIDING;
+
+					var sAngle = LineAngle(intersection.line);
+					//Direction of the slope
+					if (Math.cos(angle * Math.PI / 180) > 0) {
+						this.collision_data.slideDirection = 1;
+						if (Math.cos(sAngle * Math.PI / 180) < 0) {
+							sAngle = ((sAngle - 180) + 360) % 360;
+						}
+					} else if (Math.cos(angle * Math.PI / 180) < 0) {
+						this.collision_data.slideDirection = -1;
+						if (Math.cos(sAngle * Math.PI / 180) > 0) {
+							sAngle = (sAngle + 180) % 360;
+						}
+					}
+					this.collision_data.angle = sAngle;
+
+					if (this.collision_data.launchSpeed.x > 8.3) {
+						this.collision_data.launchSpeed.x = 8.3;
+					}
+					this.collision_data.launchSpeed.y = 0;
+
+					if (Math.sin(sAngle * Math.PI / 180) > 0) {
+						momentum = 1;
+					} else if (Math.sin(sAngle * Math.PI / 180) < 0) {
+						momentum = -1;
+					} else {
+						momentum = 0;
+					}
+
+					var p = ClosestPointToLine(GetPointFromSlide(intersection.point, this.collision_data.launchSpeed, sAngle, intersection.line), intersection.line);
+					this.collision_data.next_position = [p[0], p[1]];
+				}
+				else if (lineType == LineTypes.WALL) {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.AERIAL;
+				}
+				else {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.AERIAL;
+				}
+
+				
+				
+			}
+
+			if (collisionFound)
+				break;
+		}
+
+		this.collisionOccurred = collisionFound;
+
+		if (collisionFound)
+			return;
+
+		//Check platforms
+
+		//If momentum isn't -1 (character is going down) don't check platform collisions
+		if (momentum != -1)
+			return;
+
+		for (var i = 0; i < stage.platforms.length; i++) {
+			var intersections = IntersectionLines(launch_line, stage.platforms[i].vertex);
+
+
+			if (intersections.length == 0)
+				continue; //No intersections found
+
+			var material, normal;
+			//Calculate distance for all stage lines intersections
+			for (var j = 0; j < intersections.length; j++) {
+				intersections[j].distance = LineDistance(position, intersections[j].line);
+			}
+
+			intersections.sort(function (a, b) {
+				if (a.distance < b.distance) {
+					return -1;
+				} else if (a.distance > b.distance) {
+					return 1;
+				}
+				return 0;
+			});
+
+			var intersection = intersections[0];
+
+			//Get passthrough angle
+			material = stage.platforms[i].materials[intersection.i];
+			//Check if angle between current position and possible next position make collision with line
+			if (!LineCollision(launch_angle, material.passthroughAngle))
+				return;
+
+			//Found collision
+			collisionFound = true;
+
+			//Prepare data
+			var lineType = GetLineType(material);
+			this.collision_data.next_position = intersection.point;
+			this.collision_data.collision = stage.platforms[i];
+			this.collision_data.intersection = intersection;
+			this.collision_data.lineType = lineType;
+
+			//Check if it bounces off the wall/floor/ceiling
+			if (tumble) {
+				//Collides and Bounces off
+				if (lineType == LineTypes.FLOOR) {
+					this.collision_data.resetGravity = true;
+					this.collision_data.state = CharacterState.COLLIDING_FLOOR;
+				}
+				else if (lineType == LineTypes.WALL) {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.COLLIDING_WALL;
+				}
+				else {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.COLLIDING_CEILING;
+				}
+				//Calculate bounced off angle
+				var rAngle = (2 * (material.passthroughAngle)) - 180 - launch_angle;
+				launch_speed.x = Math.abs(launch_speed.x * 0.8);
+				launch_speed.y = Math.abs(launch_speed.y * 0.8);
+				if (Math.cos(rAngle * Math.PI / 180) < 0) {
+					launch_speed.x *= -1;
+				}
+				if (Math.sin(rAngle * Math.PI / 180) < 0) {
+					launch_speed.y *= -1;
+				}
+
+				this.collision_data.angle = rAngle;
+				this.collision_data.launchSpeed = launch_speed;
+
+				if (Math.sin(rAngle * Math.PI / 180) > 0) {
+					momentum = 1;
+				} else if (Math.sin(rAngle * Math.PI / 180) < 0) {
+					momentum = -1;
+				} else {
+					momentum = 0;
+				}
+
+				this.collision_data.momentum = momentum;
+
+
+
+			} else {
+				//Doesn't collide/bounce off
+
+				if (lineType == LineTypes.FLOOR) {
+					this.collision_data.resetGravity = true;
+					this.collision_data.state = CharacterState.SLIDING;
+
+					var sAngle = LineAngle(intersection.line);
+					//Direction of the slope
+					if (Math.cos(angle * Math.PI / 180) > 0) {
+						this.collision_data.slideDirection = 1;
+						if (Math.cos(sAngle * Math.PI / 180) < 0) {
+							sAngle = ((sAngle - 180) + 360) % 360;
+						}
+					} else if (Math.cos(angle * Math.PI / 180) < 0) {
+						this.collision_data.slideDirection = -1;
+						if (Math.cos(sAngle * Math.PI / 180) > 0) {
+							sAngle = (sAngle + 180) % 360;
+						}
+					}
+					this.collision_data.angle = sAngle;
+
+					if (Math.sin(sAngle * Math.PI / 180) > 0) {
+						momentum = 1;
+					} else if (Math.sin(sAngle * Math.PI / 180) < 0) {
+						momentum = -1;
+					} else {
+						momentum = 0;
+					}
+
+					if (this.collision_data.launchSpeed.x > 8.3) {
+						this.collision_data.launchSpeed.x = 8.3;
+					}
+					this.collision_data.launchSpeed.y = 0;
+
+					var p = ClosestPointToLine(GetPointFromSlide(intersection.point, this.collision_data.launchSpeed, sAngle, intersection.line), intersection.line);
+					this.collision_data.next_position = [p[0],p[1]];
+
+				}
+				else if (lineType == LineTypes.WALL) {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.AERIAL;
+				}
+				else {
+					this.collision_data.resetGravity = false;
+					this.collision_data.state = CharacterState.AERIAL;
+				}
+
+
+
+			}
+
+			if (collisionFound) {
+				this.collisionOccurred = true;
+				return;
+			}
+		}
+	}
+}
+
 class Distance{
     constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
@@ -1170,7 +1494,6 @@ class Distance{
         this.tumble = false;
         this.position = {"x":0, "y":0};
         this.bounce = false;
-        this.doPlot = doPlot;
         this.extraFrames = 20;
         this.finalPosition = position;
 		this.extra = [];
@@ -1184,7 +1507,7 @@ class Distance{
         this.stage = null;
         if(stage !== undefined){
             this.stage = stage;
-        }
+		}
         if(kb > 80 && angle != 0 && angle != 180){
             this.tumble = true;
         }
@@ -1193,26 +1516,19 @@ class Distance{
             if(this.position.y < 0 && this.onSurface){
                 this.position.y = 0;
             }
-        }
+		}
+
 
         this.max_x = this.position.x;
         this.max_y = this.position.y;
 
-        var x_speed = +this.x_launch_speed.toFixed(8);
-		var y_speed = +this.y_launch_speed.toFixed(8);
+        var x_speed = +this.x_launch_speed.toFixed(4);
+		var y_speed = +this.y_launch_speed.toFixed(4);
 
 		this.KO = false;
 
         if(this.inverseX){
             angle = InvertXAngle(angle);
-        }
-        //if(this.tumble){
-        //    angle+=di;
-        //}
-        if(this.angle == 0 || this.angle == 180){
-            if(x_speed > 8.3){
-                x_speed = 8.3;
-            }
         }
         if(Math.cos(angle * Math.PI / 180) < 0){
             x_speed *= -1;
@@ -1224,22 +1540,40 @@ class Distance{
         this.y = [this.position.y];
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
         var character_position = {'x':this.position.x,'y':this.position.y};
-        var launch_speed = { 'x': x_speed, 'y': y_speed };
+		var launch_speed = { 'x': x_speed, 'y': y_speed };
+		var next_position = { 'x': 0, 'y': 0 };
         var character_speed = { 'x': 0, 'y': 0 };
         this.vertical_speed = [];
         var momentum = 1;
         var g = 0;
         var fg = 0;
-        var grounded = false;
-        var bouncing = false;
         this.bounce_frame = -1;
-        this.bounce_speed = 0;
+		this.bounce_speed = 0;
+		var state = CharacterState.LAUNCH_START;
+
+		//if (aerial) {
+		//	state |= CharacterState.AERIAL;
+		//} else {
+		//	state |= CharacterState.GROUNDED;
+		//}
 
         this.launch_speeds = [];
-        var limit = hitstun < 200 ? hitstun + this.extraFrames : 200;
+		var limit = hitstun < 200 ? hitstun + this.extraFrames : 200;
+
+		var previousCollisionIntersection = null;
+		var previousCollision = null;
+
+		var slidingDirection = 0;
+
 		for (var i = 0; i < limit; i++){
+
             var next_x = character_position.x + launch_speed.x + character_speed.x;
-            var next_y = character_position.y + launch_speed.y + character_speed.y;
+			var next_y = character_position.y + launch_speed.y + character_speed.y;
+
+			var prev_state = state;
+
+			next_position.x = next_x;
+			next_position.y = next_y;
 
             this.launch_speeds.push(Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2)));
 
@@ -1247,209 +1581,159 @@ class Distance{
 
             //Vertical direction
             if(next_y > character_position.y){
-                momentum = 1;
+				momentum = 1;
             }else if(next_y < character_position.y){
-                momentum = -1;
+				momentum = -1;
             }else{
                 momentum = 0;
             }
 
-            //Reset grounded
-            grounded = false;
-            bouncing = false;
+			var countGravity = true;
 
             //Stage detection
-            if(this.stage == null && this.onSurface){
-                //No stage
-                if(next_y < 0){
-                    if(!this.tumble){
-                        grounded = true;
-                        character_position.y = 0;
-                        next_y=0;
-                        g=0;
-                        character_speed.y = 0;
-                        launch_speed.y=0;
-                    }else{
-                        angle = InvertYAngle(angle);
-                        decay.y *= -1;
-                        launch_speed.y*=-1;
-                        character_position.y = 0;
-                        character_speed.y = 0;
-                        next_y=0;
-                        momentum = 0;
-                        g=0;
-                    }
-                }
-            }else{
-                if(this.stage != null && !bouncing){
-                    //Calculate if some points between previous and current positions are inside a surface
-                    var n_angle = character_position.y == next_y && character_position.x == next_x ? angle : Math.atan2(next_y - character_position.y, next_x - character_position.x) * 180 / Math.PI;
-                    var p1 = [character_position.x + (next_x - character_position.x)/5, character_position.y + (next_y - character_position.y)/5];
-                    var p2 = [character_position.x + 3*(next_x - character_position.x)/5, character_position.y + 3*(next_y - character_position.y)/5];
-                    var p1_inside = false;
-                    var p2_inside = false;
-                    var p_inside = false;
-                    //Reducing cases, if Y position isn't on the surface Y range go to else
-                    if((this.stage.surfaceY[0] <= character_position.y || this.stage.surfaceY[0] <= next_y) && (this.stage.surfaceY[1] >= character_position.y || this.stage.surfaceY[1] >= next_y)){
-                        p1_inside = insideSurface(p1, this.stage.surface);
-                        p2_inside = insideSurface(p2, this.stage.surface);
-                        p_inside = insideSurface([next_x,next_y], this.stage.surface);
-                    }
-                    if(p1_inside || p2_inside || p_inside){
-                        var line = p1_inside ? closestLine([character_position.x, character_position.y], this.stage.surface) : p2_inside ? closestLine(p1, this.stage.surface)  : closestLine([next_x,next_y], this.stage.surface);
-						if (this.tumble) {
-                            bouncing = true;
-                            //Intersection point
-                            var point = p1_inside ? IntersectionPoint([[character_position.x, character_position.y],p1],line) : p2_inside ? IntersectionPoint([[character_position.x, character_position.y],p2],line)  : IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],line);
-                            var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                            var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                            decay.x = parameters.decay * Math.cos(t_angle * Math.PI / 180);
-                            decay.y = parameters.decay * Math.sin(t_angle * Math.PI / 180);
-                            launch_speed.x = Math.abs(launch_speed.x);
-                            launch_speed.y = Math.abs(launch_speed.y);
-                            if(Math.cos(t_angle * Math.PI / 180) < 0){
-                                launch_speed.x *= -1;
-                            }
-                            if(Math.sin(t_angle * Math.PI / 180) < 0){
-                                launch_speed.y *= -1;
-                            }
-                            if(point!=null){
-                                next_x = point[0];
-                                next_y = point[1];
-                            }
-                            if(!insideSurface([next_x, next_y], this.stage.surface)){
-                                angle = t_angle;
-                            }else{
-                                angle = line_angle + 90;
-                                decay.x = parameters.decay * Math.cos(angle * Math.PI / 180);
-                                decay.y = parameters.decay * Math.sin(angle * Math.PI / 180);
-                                launch_speed.x = Math.abs(launch_speed.x);
-                                launch_speed.y = Math.abs(launch_speed.y);
-                                if(Math.cos(angle * Math.PI / 180) < 0){
-                                    launch_speed.x *= -1;
-                                }
-                                if(Math.sin(angle * Math.PI / 180) < 0){
-                                    launch_speed.y *= -1;
-                                }
-                            }
-                            momentum = 0;
-                            g=0;
-                            this.bounce_speed = Math.abs(launch_speed.y + character_speed.y);
-                            launch_speed.x *= 0.8; //Launch speed reduction applied
-                            launch_speed.y *= 0.8;
-                            character_speed.x = 0;
-                            character_speed.y = 0;
-                            this.bounce_frame = i;
-                        }else{
-							if (lineIsFloor(line, this.stage.surface, this.stage.edges)) {
-                                grounded = true;
-                                g=0;
-								launch_speed.y = 0;
-								character_speed.y = 0;
-								next_y = character_position.y;
-                                var point = IntersectionPoint([[character_position.x, character_position.y],[next_x, next_y]],line);
-                                if(point != null){
-                                    //next_x = point[0];
-                                    next_y = point[1];
-                                }
+			if (this.stage != null) {
+				var c = new Collision(i, this.stage, [character_position.x, character_position.y], [next_x, next_y], momentum, state, this.tumble, launch_speed, angle);
+
+				if (c.collisionOccurred) {
+					launch_speed = c.collision_data.launchSpeed;
+					next_x = c.collision_data.next_position[0];
+					next_y = c.collision_data.next_position[1];
+					angle = c.collision_data.angle;
+					momentum = c.collision_data.momentum;
+					state = c.collision_data.state;
+					previousCollision = c.collision_data.collision;
+					previousCollisionIntersection = c.collision_data.intersection;
+					slidingDirection = c.collision_data.slideDirection;
+					decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
+
+					if (c.collision_data.resetGravity) {
+						g = 0;
+						fg = 0;
+						countGravity = false;
+					}
+				} else {
+					if (((state & CharacterState.SLIDING) == CharacterState.SLIDING) && previousCollision != null) {
+						countGravity = false;
+						g = 0;
+						fg = 0;
+						character_speed.y = 0;
+						if (!PointInLine([character_position.x, character_position.y], previousCollisionIntersection.line)) {
+							//Check if the next position is in the line next to the one that started the slide
+							var prev_index = (previousCollisionIntersection.i - 1) % previousCollision.vertex.length;
+							var next_index = (previousCollisionIntersection.i + 1) % previousCollision.vertex.length;
+							var next_index2 = (previousCollisionIntersection.i + 2) % previousCollision.vertex.length;
+							if (prev_index == -1) {
+								prev_index = previousCollision.vertex.length-1;
+							}
+							//Get line that is on the direction of sliding direction
+							var prev_line = [previousCollision.vertex[prev_index], previousCollision.vertex[previousCollisionIntersection.i]];
+							var next_line = [previousCollision.vertex[next_index], previousCollision.vertex[next_index2]];
+							var prev_line_floor = GetLineType(previousCollision.materials[prev_index]) == LineTypes.FLOOR;
+							var next_line_floor = GetLineType(previousCollision.materials[next_index]) == LineTypes.FLOOR;
+							var material = null;
+							var selected_line = null;
+							var selected_index = 0;
+							if (slidingDirection == -1) {
+								//Left
+								if (prev_line[0][0] < previousCollisionIntersection.line[0][0] && prev_line_floor) {
+									selected_line = prev_line;
+									selected_index = prev_index;
+									material = previousCollision.materials[prev_index];
+								} else if (next_line[0][0] < previousCollisionIntersection.line[0][0] && next_line_floor) {
+									selected_line = next_line;
+									selected_index = next_index;
+									material = previousCollision.material[next_index];
+								}
+							} else if (slidingDirection == 1) {
+								//Right
+								if (prev_line[0][0] > previousCollisionIntersection.line[0][0] && prev_line_floor) {
+									selected_line = prev_line;
+									selected_index = prev_index;
+									material = previousCollision.materials[prev_index];
+								} else if (next_line[0][0] > previousCollisionIntersection.line[0][0] && next_line_floor) {
+									selected_line = next_line;
+									selected_index = next_index;
+									material = previousCollision.materials[next_index];
+								}
 							} else {
-								launch_speed.x = 0;
-                                launch_speed.y = 0;
-                                character_speed.x = 0;
-                                character_speed.y = 0;
-                                g=0;
-                            }
-                        }
-                    }else{
-                        //Platform intersection
-                        if(this.stage.platforms !== undefined){
-                            //Platforms are ignored when launched upwards, but you can land on them when going downwards
-                            if(momentum == -1){
-                                for(var j=0;j<this.stage.platforms.length;j++){
-                                    var intersect = false;
-                                    //Intersection code goes here
-                                    if((character_position.y >= this.stage.platforms[j].vertex[0][1] || character_position.y >= this.stage.platforms[j].vertex[1][1]) && 
-                                    (next_y <= this.stage.platforms[j].vertex[0][1] || next_y <= this.stage.platforms[j].vertex[1][1])){
-                                    }else{
-                                        continue;
-                                    }
-                                    var point = IntersectionPoint([[character_position.x, character_position.y],[next_x,next_y]],this.stage.platforms[j].vertex);
-                                    if(point == null){
-                                        continue;
-                                    }
-                                    intersect = PointInLine(point, this.stage.platforms[j].vertex);
-                                    if(intersect){
-                                        var line = this.stage.platforms[j].vertex; 
-                                        if(this.tumble){
-                                            bouncing = true;
-                                            this.bounce_speed = Math.abs(launch_speed.y + character_speed.y);
-                                            this.bounce_frame = i;
-                                            var line_angle = Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI;
-                                            var t_angle = (2* (line_angle + 90)) - 180 - n_angle;
-                                            decay.x = parameters.decay * Math.cos(t_angle * Math.PI / 180);
-                                            decay.y = parameters.decay * Math.sin(t_angle * Math.PI / 180);
-                                            launch_speed.x = Math.abs(launch_speed.x);
-                                            launch_speed.y = Math.abs(launch_speed.y);
-                                            if(Math.cos(t_angle * Math.PI / 180) < 0){
-                                                launch_speed.x *= -1;
-                                            }
-                                            if(Math.sin(t_angle * Math.PI / 180) < 0){
-                                                launch_speed.y *= -1;
-                                            }
-                                            angle = t_angle;
-                                            momentum = 0;
-                                            g=0;
-                                            next_x = point[0];
-                                            next_y = point[1];
-                                            launch_speed.y *= 0.8;
-                                            launch_speed.x *= 0.8;
-                                            character_speed.x = 0;
-                                            character_speed.y = 0;
-                                        }else{
-                                            grounded = true;
-                                            g=0;
-                                            character_speed.x = 0;
-                                            character_speed.y = 0;
-											launch_speed.y = 0;
-											if (line[1][1] - line[0][1] == 0) {
-												next_x = point[0];
-												next_y = line[0][1];
-											} else {
-												//Lylat platforms...
-												next_x = point[0];
-												next_y = point[1];
-											}
-											
-                                        }
-                                        break;
-                                    }
-                                }
-                                
-                            }
-                        }
-                    }
-                }
-            }
+								//Landed on this point and doesn't have horizontal momentum, so we end here
+								for (var ii = i; ii <= hitstun; i++) {
+									//Fill the rest of the data until hitstun end
+									this.x.push(+character_position.x.toFixed(6));
+									this.y.push(+character_position.y.toFixed(6));
+								}
+								break;
+							}
 
+							if (selected_line != null) {
 
-			if (grounded) {
+								//We have the next line the character will continue to slide, recalculate angle and get next point
+								previousCollisionIntersection.line = selected_line;
+								previousCollisionIntersection.i = selected_index;
+								previousCollisionIntersection.point = p;
+
+								var sAngle = LineAngle(selected_line);
+								//Direction of the slope
+								if (slidingDirection == 1) {
+									if (Math.cos(sAngle * Math.PI / 180) < 0) {
+										sAngle = ((sAngle - 180) + 360) % 360;
+									}
+								} else if (slidingDirection == -1) {
+									if (Math.cos(sAngle * Math.PI / 180) > 0) {
+										sAngle = (sAngle + 180) % 360;
+									}
+								}
+								angle = sAngle;
+
+								launch_speed.y = 0;
+
+								if (Math.sin(sAngle * Math.PI / 180) > 0) {
+									momentum = 1;
+								} else if (Math.sin(sAngle * Math.PI / 180) < 0) {
+									momentum = -1;
+								} else {
+									momentum = 0;
+								}
+
+								var p = ClosestPointToLine(GetPointFromSlide([character_position.x, character_position.y],launch_speed,angle,selected_line), selected_line);
+								next_x = p[0];
+								next_y = p[1];
+
+							} else {
+								state &= 0x9;
+								state |= CharacterState.AERIAL;
+								slidingDirection = 0;
+							}
+						} else {
+							//Same line
+							var p = ClosestPointToLine(GetPointFromSlide([character_position.x, character_position.y], launch_speed, angle, previousCollisionIntersection.line), previousCollisionIntersection.line);
+							next_x = p[0];
+							next_y = p[1];
+
+						}
+					} else {
+						state &= 0x9;
+						state |= CharacterState.AERIAL;
+						slidingDirection = 0;
+					}
+				}
+			} else {
+				state &= 0x9;
+				state |= CharacterState.AERIAL;
+				slidingDirection = 0;
+			}
+
+			if (((state & CharacterState.SLIDING) == CharacterState.SLIDING)) {
 				//Sliding on surface
 				//Traction applied here
-				if (launch_speed.x < 0) {
-					launch_speed.x += traction;
-				} else {
-					launch_speed.x -= traction;
-				}
-				character_speed.y = 0;
-				launch_speed.y = 0;
-				g = 0;
-			} else {
-				//Apply decay
 				if (launch_speed.x != 0) {
 					var x_dir = launch_speed.x / Math.abs(launch_speed.x);
-					if (!grounded) {
-						launch_speed.x -= decay.x;
+					if (launch_speed.x < 0) {
+						launch_speed.x += traction;
+					} else {
+						launch_speed.x -= traction;
 					}
+					launch_speed.x = +launch_speed.x.toFixed(6);
 					if (x_dir == -1 && launch_speed.x > 0) {
 						launch_speed.x = 0;
 					} else if (x_dir == 1 && launch_speed.x < 0) {
@@ -1459,6 +1743,32 @@ class Distance{
 				if (launch_speed.y != 0) {
 					var y_dir = launch_speed.y / Math.abs(launch_speed.y);
 					launch_speed.y -= decay.y;
+					launch_speed.y = +launch_speed.y.toFixed(6);
+					if (y_dir == -1 && launch_speed.y > 0) {
+						launch_speed.y = 0;
+					} else if (y_dir == 1 && launch_speed.y < 0) {
+						launch_speed.y = 0;
+					}
+				}
+				character_speed.y = 0;
+				//launch_speed.y = 0;
+				g = 0;
+			} else if ((state & (CharacterState.COLLIDING_FLOOR - 1)) != 0) { //Not colliding
+				//Apply decay
+				if (launch_speed.x != 0) {
+					var x_dir = launch_speed.x / Math.abs(launch_speed.x);
+					launch_speed.x -= decay.x;
+					launch_speed.x = +launch_speed.x.toFixed(6);
+					if (x_dir == -1 && launch_speed.x > 0) {
+						launch_speed.x = 0;
+					} else if (x_dir == 1 && launch_speed.x < 0) {
+						launch_speed.x = 0;
+					}
+				}
+				if (launch_speed.y != 0) {
+					var y_dir = launch_speed.y / Math.abs(launch_speed.y);
+					launch_speed.y -= decay.y;
+					launch_speed.y = +launch_speed.y.toFixed(6);
 					if (y_dir == -1 && launch_speed.y > 0) {
 						launch_speed.y = 0;
 					} else if (y_dir == 1 && launch_speed.y < 0) {
@@ -1466,22 +1776,22 @@ class Distance{
 					}
 				}
 				//Gravity
-				g -= gravity;
-				fg = Math.max(g, -fall_speed);
-				character_speed.y = fg;
+				if (countGravity) {
+					g -= gravity;
+					fg = Math.max(g, -fall_speed);
+					character_speed.y = fg;
+					character_speed.y = +character_speed.y.toFixed(6);
+				} else {
+					character_speed.y = 0;
+				}
 			}
-
-            
 
             character_position.x = next_x;
             character_position.y = next_y;
 
-            this.x.push(+character_position.x.toFixed(4));
-            this.y.push(+character_position.y.toFixed(4));
+            this.x.push(+character_position.x.toFixed(6));
+            this.y.push(+character_position.y.toFixed(6));
 
-            //Recalculate angle and decay
-            //angle = Math.atan2(launch_speed.y, launch_speed.x) * 180 / Math.PI;
-            //decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
             
             //Maximum position during hitstun
             if(i<hitstun){
@@ -1499,18 +1809,11 @@ class Distance{
 
             if (i == hitstun) {
                 this.finalPosition = { "x": character_position.x, "y": character_position.y };
-            }
+			}
 
-            if(bouncing){
-                this.bounce = true;
-            }
-
-            if(this.bounce_frame == i && this.bounce_speed < 1){
-                //Character will bounce and stay in that position for 25 frames
-                i = limit;
-            }
-
-
+			if (i == 0) {
+				state &= 0xFE; //Clear launch start flag
+			}
 		}
 
 		this.vertical_speed.push((launch_speed.y));
@@ -1519,7 +1822,286 @@ class Distance{
         this.graph_y = Math.abs(this.max_y);
 
         this.max_x = Math.abs(this.max_x - this.position.x);
-        this.max_y = Math.abs(this.max_y - this.position.y);
+		this.max_y = Math.abs(this.max_y - this.position.y);
+
+		this.ko_data = [];
+
+		if (this.stage != null) {
+			var data = [];
+			var ko = false;
+			var crossed = false;
+			var character_size = 0;
+
+			//Calculate if KO in blast zones
+			for (var i = 0; i <= hitstun && !ko; i++) {
+				if (this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30) {
+					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+					ko = true;
+					break;
+				}
+				if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
+					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+					ko = true;
+					break;
+				} else {
+					if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
+						if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
+							this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+							this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+							ko = true;
+							break;
+						} else {
+							if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
+								this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+								this.extra.push(new Result("KO", "Frame " + i, "", false, true));
+								ko = true;
+								break;
+							} else {
+								//At least get launch speed the opponent had when crossing the blast zone
+								if (!crossed) {
+									crossed = true;
+									this.extra.push(new Result("Vertical launch speed when crossing blast zone", this.vertical_speed[i], "", false, true));
+									this.extra.push(new Result("Required vertical launch speed to KO", "2.4", "", false, true));
+									this.extra.push(new Result("Frame crossing blast zone", "Frame " + i, "", false, true));
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+			this.KO = ko;
+		}
+
+		this.doPlot = function () {
+			this.data = [];
+			var px = 0;
+			var py = 0;
+			var cx = px;
+			var cy = py;
+			var color = "blue";
+			var dir = 1;
+			var data = [];
+			var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
+			var airdodge = hc.airdodge;
+			var aerial = hc.aerial;
+			for (var i = 0; i < this.x.length; i++) {
+				var xdata = [];
+				var ydata = [];
+				var change = false;
+				do {
+					px = this.x[i];
+					py = this.y[i];
+					if (i == 0) {
+						if (i + 1 < this.x.length) {
+							if (py > this.y[i + 1]) {
+								if (dir == 1) {
+									change = true;
+									dir = -1;
+								}
+							} else {
+								if (py < this.y[i + 1]) {
+									if (dir == -1) {
+										change = true;
+										dir = 1;
+									}
+								}
+							}
+						}
+					} else {
+						if (py < cy) {
+							if (dir == 1) {
+								change = true;
+							}
+							dir = -1;
+						} else {
+							if (dir == -1) {
+								change = true;
+							}
+							dir = 1;
+						}
+					}
+					if (!change) {
+						xdata.push(px);
+						ydata.push(py);
+						cx = px;
+						cy = py;
+						i++;
+					} else {
+						if (i != 0) {
+							xdata.push(px);
+							ydata.push(py);
+						}
+						i--;
+					}
+				} while (!change && i < this.x.length);
+				if (xdata.length > 0) {
+					data.push({ 'calcValue': "Launch", 'x': xdata, 'y': ydata, 'mode': 'lines+markers', 'marker': { 'color': color }, 'line': { 'color': color }, 'name': color == 'blue' ? "" : "" });
+				}
+				switch (color) {
+					case 'blue':
+						color = "red";
+						break;
+					case 'red':
+						color = "blue";
+						break;
+				}
+			}
+
+			if (hitstun < this.x.length) {
+				data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': 'brown', 'size': 14 }, 'name': "Hitstun end" });
+			}
+
+			if (faf >= 0) {
+				if (faf < this.x.length) {
+					data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': '#0066FF', 'size': 14 }, 'name': "Attacker FAF" });
+				}
+			}
+
+			var adxdata = [];
+			var adydata = [];
+
+			for (var i = hitstun + 1; i < this.x.length; i++) {
+				adxdata.push(this.x[i]);
+				adydata.push(this.y[i]);
+			}
+
+			if (adxdata.length > 0) {
+				data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'orange' }, 'name': "Actionable frame" });
+			}
+
+			adxdata = [];
+			adydata = [];
+
+			if (airdodge < hitstun) {
+				for (var i = airdodge; i < hitstun; i++) {
+					adxdata.push(this.x[i]);
+					adydata.push(this.y[i]);
+				}
+
+
+				if (adxdata.length > 0) {
+					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'yellow' }, 'name': "Airdodge cancel" });
+				}
+
+			}
+
+			if (aerial < hitstun) {
+				adxdata = [];
+				adydata = [];
+				for (var i = aerial; i < hitstun; i++) {
+					adxdata.push(this.x[i]);
+					adydata.push(this.y[i]);
+				}
+				if (adxdata.length > 0) {
+					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'green' }, 'name': "Aerial cancel" });
+				}
+
+			}
+
+			//Stage blast zones
+			if (this.stage != null) {
+				adxdata = [];
+				adydata = [];
+				adxdata.push(this.stage.blast_zones[0]);
+				adxdata.push(this.stage.blast_zones[1]);
+				adxdata.push(this.stage.blast_zones[1]);
+				adxdata.push(this.stage.blast_zones[0]);
+				adxdata.push(this.stage.blast_zones[0]);
+
+				adydata.push(this.stage.blast_zones[2]);
+				adydata.push(this.stage.blast_zones[2]);
+				adydata.push(this.stage.blast_zones[3]);
+				adydata.push(this.stage.blast_zones[3]);
+				adydata.push(this.stage.blast_zones[2]);
+
+				data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Blast zone" });
+
+				//Stage Camera bounds
+				adxdata = [];
+				adydata = [];
+				adxdata.push(this.stage.camera[0]);
+				adxdata.push(this.stage.camera[1]);
+				adxdata.push(this.stage.camera[1]);
+				adxdata.push(this.stage.camera[0]);
+				adxdata.push(this.stage.camera[0]);
+
+				adydata.push(this.stage.camera[2]);
+				adydata.push(this.stage.camera[2]);
+				adydata.push(this.stage.camera[3]);
+				adydata.push(this.stage.camera[3]);
+				adydata.push(this.stage.camera[2]);
+
+				data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
+
+				//Stage surface
+				adxdata = [];
+				adydata = [];
+				var adxdata2 = [];
+				var adydata2 = [];
+				var semi_tech = [];
+
+				for (var i = 0; i < this.stage.collisions.length; i++) {
+					adxdata = [];
+					adydata = [];
+					for (var j = 0; j < this.stage.collisions[i].vertex.length; j++) {
+						adxdata.push(this.stage.collisions[i].vertex[j][0]);
+						adydata.push(this.stage.collisions[i].vertex[j][1]);
+
+						if (j < this.stage.collisions[i].vertex.length - 1) {
+							//Wall jump disabled walls
+							adxdata2 = [];
+							adydata2 = [];
+							if (this.stage.collisions[i].materials[j].noWallJump) {
+								adxdata2.push(this.stage.collisions[i].vertex[j][0]);
+								adydata2.push(this.stage.collisions[i].vertex[j][1]);
+								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
+								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
+								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Wall jump disabled wall" });
+							}
+							//Small walls
+							adxdata2 = [];
+							adydata2 = [];
+							if (this.stage.collisions[i].materials[j].length <= 7 && (this.stage.collisions[i].materials[j].wall || this.stage.collisions[i].materials[j].ceiling) && !this.stage.collisions[i].materials[j].noWallJump) {
+								adxdata2.push(this.stage.collisions[i].vertex[j][0]);
+								adydata2.push(this.stage.collisions[i].vertex[j][1]);
+								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
+								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
+								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Semi-techable small wall" });
+							}
+						}
+					}
+					data.push({ 'calcValue': this.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Stage" });
+				}
+
+				data = data.concat(semi_tech);
+
+
+
+				//Stage platforms
+				if (this.stage.platforms !== undefined) {
+					for (var i = 0; i < this.stage.platforms.length; i++) {
+						adxdata = [];
+						adydata = [];
+						for (var j = 0; j < this.stage.platforms[i].vertex.length; j++) {
+							adxdata.push(this.stage.platforms[i].vertex[j][0]);
+							adydata.push(this.stage.platforms[i].vertex[j][1]);
+						}
+						data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Platform: " + this.stage.platforms[i].name });
+					}
+				}
+
+
+				data = data.concat(this.ko_data);
+				this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
+				this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
+			}
+
+			this.plot = data;
+		};
 
         if(!doPlot){
             this.data = [];
@@ -1527,263 +2109,7 @@ class Distance{
             return;
         }
 
-        this.data = [];
-        var px = 0;
-        var py = 0;
-        var cx = px;
-        var cy = py;
-        var color = "blue";
-        var dir = 1;
-        var data = [];
-        var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
-        var airdodge = hc.airdodge;
-        var aerial = hc.aerial;
-        for(var i = 0; i < this.x.length; i++){
-            var xdata = [];
-            var ydata = [];
-            var change = false;
-            do{
-                px = this.x[i];
-                py = this.y[i];
-                if(i==0){
-                    if(i+1 < this.x.length){
-                        if(py > this.y[i+1]){
-                            if(dir==1){
-                                change = true;
-                                dir=-1;
-                            }
-                        }else{
-                            if(py < this.y[i+1]){
-                                if(dir==-1){
-                                    change = true;
-                                    dir=1;
-                                }
-                            }
-                        }
-                    }
-                }else{
-                    if(py < cy){
-                        if(dir == 1){
-                            change = true;
-                        }
-                        dir = -1;
-                    }else{
-                        if(dir == -1){
-                            change = true;
-                        }
-                        dir = 1;
-                    }
-                }
-                if(!change){
-                    xdata.push(px);
-                    ydata.push(py);
-                    cx = px;
-                    cy = py;
-                    i++;
-                }else{
-                    if(i!=0){
-                        xdata.push(px);
-                        ydata.push(py);
-                    }
-                    i--;
-                }
-            }while(!change && i < this.x.length);
-            if(xdata.length > 0){
-                data.push({ 'calcValue': "Launch", 'x': xdata, 'y': ydata, 'mode': 'lines+markers', 'marker': { 'color': color }, 'line': { 'color': color }, 'name': color == 'blue' ? "" : "" });
-            }
-            switch(color){
-                case 'blue':
-                    color = "red";
-                break;
-                case 'red':
-                    color = "blue";
-                break;
-            }
-        }
-
-        if(hitstun < this.x.length){
-            data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': 'brown', 'size': 14 }, 'name': "Hitstun end" });
-        }
-
-        if (faf >= 0) {
-            if (faf < this.x.length) {
-                data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': '#0066FF', 'size': 14 }, 'name': "Attacker FAF" });
-            }
-        }
-
-        var adxdata = [];
-        var adydata = [];
-
-       for(var i=hitstun+1;i<this.x.length;i++){
-            adxdata.push(this.x[i]);
-            adydata.push(this.y[i]);
-        }
-
-        if(adxdata.length>0){
-            data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'orange' }, 'name': "Actionable frame" });
-        }
-
-        adxdata = [];
-        adydata = [];
-
-        if(airdodge < hitstun){
-            for(var i = airdodge; i < hitstun; i++){
-                adxdata.push(this.x[i]);
-                adydata.push(this.y[i]);
-            }
-            
-
-            if(adxdata.length>0){
-                data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'yellow' }, 'name': "Airdodge cancel" });
-            }
-
-        }
-
-        if(aerial < hitstun){
-            adxdata = [];
-            adydata = [];
-            for(var i = aerial; i < hitstun; i++){
-                adxdata.push(this.x[i]);
-                adydata.push(this.y[i]);
-            }
-            if(adxdata.length>0){
-                data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'green' }, 'name': "Aerial cancel" });
-            }
-
-        }
-
-        //Stage blast zones
-        if(this.stage != null){
-            adxdata = [];
-            adydata = [];
-            adxdata.push(this.stage.blast_zones[0]);
-            adxdata.push(this.stage.blast_zones[1]);
-            adxdata.push(this.stage.blast_zones[1]);
-            adxdata.push(this.stage.blast_zones[0]);
-            adxdata.push(this.stage.blast_zones[0]);
-
-            adydata.push(this.stage.blast_zones[2]);
-            adydata.push(this.stage.blast_zones[2]);
-            adydata.push(this.stage.blast_zones[3]);
-            adydata.push(this.stage.blast_zones[3]);
-            adydata.push(this.stage.blast_zones[2]);
-
-            data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Blast zone" });
-
-            //Stage Camera bounds
-            adxdata = [];
-            adydata = [];
-            adxdata.push(this.stage.camera[0]);
-            adxdata.push(this.stage.camera[1]);
-            adxdata.push(this.stage.camera[1]);
-            adxdata.push(this.stage.camera[0]);
-            adxdata.push(this.stage.camera[0]);
-
-            adydata.push(this.stage.camera[2]);
-            adydata.push(this.stage.camera[2]);
-            adydata.push(this.stage.camera[3]);
-            adydata.push(this.stage.camera[3]);
-            adydata.push(this.stage.camera[2]);
-
-            data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
-
-            //Stage surface
-            adxdata = [];
-            adydata = [];
-            for(var i=0;i<this.stage.surface.length;i++){
-                adxdata.push(this.stage.surface[i][0]);
-                adydata.push(this.stage.surface[i][1]);
-            }
-
-            data.push({ 'calcValue': "Stage", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Stage" });
-
-            //Stage platforms
-            if(this.stage.platforms !== undefined){
-                for(var i=0;i<this.stage.platforms.length;i++){
-                    adxdata = [];
-                    adydata = [];
-                    for(var j=0;j<this.stage.platforms[i].vertex.length;j++){
-                        adxdata.push(this.stage.platforms[i].vertex[j][0]);
-                        adydata.push(this.stage.platforms[i].vertex[j][1]);
-                    }
-                    data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': this.stage.platforms[i].name });
-                }
-            }
-
-            if (this.stage.ledges !== undefined) {
-                if (this.stage.ledges.left !== undefined) {
-                    adxdata = [];
-                    adydata = [];
-                    for (var j = 0; j < this.stage.ledges.left.length; j++) {
-                        adxdata.push(this.stage.ledges.left[j][0]);
-                        adydata.push(this.stage.ledges.left[j][1]);
-                    }
-                    data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Left ledge" });
-                }
-                if (this.stage.ledges.right !== undefined) {
-                    adxdata = [];
-                    adydata = [];
-                    for (var j = 0; j < this.stage.ledges.right.length; j++) {
-                        adxdata.push(this.stage.ledges.right[j][0]);
-                        adydata.push(this.stage.ledges.right[j][1]);
-                    }
-                    data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Right ledge" });
-                }
-            }
-
-            var ko = false;
-            var crossed = false;
-            var character_size = 0;
-
-            //Calculate if KO in blast zones
-            for(var i=0;i<=hitstun && !ko;i++){
-				if (this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30) {
-					data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
-					ko = true;
-                    break;
-                }
-                if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
-					data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-                    this.extra.push(new Result("KO", "Frame " + i, "", false, true));
-                    ko = true;
-                    break;
-                } else {
-                    if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
-                        if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
-                            data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-							this.extra.push(new Result("KO", "Frame " + i, "", false, true));
-                            ko = true;
-                            break;
-                        } else {
-                            if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
-                                data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
-								this.extra.push(new Result("KO", "Frame " + i, "", false, true));
-                                ko = true;
-                                break;
-                            } else {
-                                //At least get launch speed the opponent had when crossing the blast zone
-                                if (!crossed) {
-									crossed = true;
-                                    this.extra.push(new Result("Vertical launch speed when crossing blast zone", this.vertical_speed[i], "", false, true));
-                                    this.extra.push(new Result("Required vertical launch speed to KO", "2.4", "", false, true));
-                                    this.extra.push(new Result("Frame crossing blast zone", "Frame " + i, "", false, true));
-                                }
-                            }
-                        }
-                    }
-                }
-
-			}
-
-			this.KO = ko;
-
-            this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
-            this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
-        }
-
-        this.plot = data;
-
+		this.doPlot();
 
     }
 };
@@ -1853,10 +2179,6 @@ class Knockback {
             if(!this.tumble){
                 this.add_gravity_speed = 0;
             }
-            /*
-            if(this.kb > 80 && (this.angle != 0 && this.angle != 180)){
-                this.y += this.add_gravity_kb;
-            }*/
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox && !this.aerial) {
@@ -1959,9 +2281,6 @@ class PercentFromKnockback{
         if (this.launch_rate == undefined) {
             this.launch_rate = 1;
         }
-        /*if(this.lsi == undefined){
-            this.lsi = 0;
-        }*/
 
         this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
         this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
@@ -2034,17 +2353,7 @@ class PercentFromKnockback{
                         this.kb = Math.abs(this.y / Math.sin(this.angle * Math.PI / 180));
                     }
                 }
-                /*if(this.lsi != 0 && this.tumble){
-                    if((this.angle >= 0 && this.angle <= (1.1 * 180 / Math.PI)) || (this.angle >= InvertXAngle((1.1 * 180 / Math.PI)) && this.angle <= 180)){
-                        if(this.lsi == 1){
-                        this.kb *= 0.92;
-                    }else{
-                        if(this.lsi == -1){
-                            this.kb *= 1.095;
-                        }
-                    }
-                    }
-                }*/
+
 
                 this.hitstun = Hitstun(this.kb, this.windbox, this.electric);
 
@@ -2276,7 +2585,7 @@ function ShieldList(values) {
 }
 
 function getStages(){
-    return loadJSONPath("./Data/Stages/stagedata.json");
+    return loadJSONPath("./Data/Stages/legalstagedata.json");
 }
 
 

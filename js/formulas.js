@@ -335,12 +335,6 @@ function ShieldHitlag(damage, hitlag, electric) {
 }
 
 function AttackerShieldHitlag(damage, hitlag, electric) {
-    /*if (hitlag > 1) {
-        hitlag /= 1.25;
-        if (hitlag < 1) {
-            hitlag = 1;
-        }
-    }*/
     return ShieldHitlag(damage, hitlag, electric);
 }
 
@@ -399,151 +393,167 @@ function InvertYAngle(angle){
     }
 }
 
-function insideSurface(point, surface) {
-    var x = point[0];
-    var y = point[1];
+//Get the distance between a point and a line
+function LineDistance(point, line) {
+	return Math.abs(((line[1][1] - line[0][1]) * point[0]) - ((line[1][0] - line[0][0]) * point[1]) + (line[1][0] * line[0][1]) - (line[1][1] * line[0][0])) / Math.sqrt(Math.pow(line[1][1] - line[0][1], 2) + Math.pow(line[1][0] - line[0][0], 2));
+}
 
-    var inside = false;
-    for (var i = 0, j = surface.length - 1; i < surface.length; j = i++) {
-        var xi = surface[i][0];
-        var yi = surface[i][1];
-        var xj = surface[j][0];
-        var yj = surface[j][1];
-
-        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect){
-            inside = !inside;
-        }
-    }
-
-    return inside;
-};
-
+//Get the closest line from a point
 function closestLine(point, surface){
     var x = point[0];
     var y = point[1];
 
-    var line = [];
+	var line = {i:-1, line:[]};
     var min_distance = null;
 
-    for(var i=0;i<surface.length-1;i++){
-        var x1 = surface[i][0];
-        var x2 = surface[i+1][0];
-        var y1 = surface[i][1];
-        var y2 = surface[i+1][1];
+	for (var i = 0; i < surface.length - 1; i++){
+		var x1 = surface[i][0];
+		var x2 = surface[i + 1][0];
+		var y1 = surface[i][1];
+		var y2 = surface[i + 1][1];
         var distance = Math.abs(((y2-y1) * x) - ((x2-x1) * y) + (x2*y1) - (y2*x1)) / Math.sqrt(Math.pow(y2-y1,2) + Math.pow(x2-x1,2));
-        if(min_distance == null){
-            min_distance = distance;
-            line = [[x1,y1],[x2,y2]];
+		if (min_distance == null) {
+			line.i = i;
+			min_distance = distance;
+			line.line = [[x1, y1], [x2, y2]];
         }else{
             if(distance < min_distance){
-                min_distance = distance;
-                line = [[x1,y1],[x2,y2]];
+				min_distance = distance;
+				line.i = i;
+				line.line = [[x1, y1], [x2, y2]];
             }
         }
     }
     return line;
 }
 
-function findSubArray(array, find){
-    for(var i=0;i<array.length;i++){
-        var found = true;
-        for(var j=0;array[i].length;j++){
-            if(array[i][j] != find[j]){
-                found = false;
-                break;
-            }
-            if(found){
-                return true;
-            }
-        }
-    }
-    return false;
+var LineTypes = {
+	FLOOR : 1,
+	WALL : 2,
+	CEILING : 3
+};
+
+//Get if line is floor, wall or ceiling
+function GetLineType(material) {
+
+	if (!material.ceiling && !material.wall) {
+		return LineTypes.FLOOR;
+	}
+	if (material.wall) {
+		return LineTypes.WALL;
+	}
+	return LineTypes.CEILING;
 }
 
-function lineIsFloor(line, surface, edges){
-    //Get surface floor
-    var floor = [];
-    var edgeid = -1;
-    var found = false;
-    for(var i=0;i<surface.length;i++){
-        if(edgeid != -1 && !found){
-            floor.push(surface[i]);
-        }
-        if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1]) || (surface[i][0] == edges[1][0] && surface[i][1] == edges[1][1])){
-            if(edgeid==-1){
-                floor.push(surface[i]);
-            }
-            if(edgeid != -1){
-                found = true;
-                return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
-            }
-            if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1])){
-                edgeid = 0;
-            }else{
-                edgeid = 1;
-            }
-            
-        }
-    }
-    return (findSubArray(floor,line[0]) && findSubArray(floor,line[1]));
+//Find the point where two lines intersect when they expand through infinity
+function IntersectionPoint(line_a, line_b) {
+	var x1 = line_a[0][0];
+	var x2 = line_a[1][0];
+	var y1 = line_a[0][1];
+	var y2 = line_a[1][1];
+	var x3 = line_b[0][0];
+	var x4 = line_b[1][0];
+	var y3 = line_b[0][1];
+	var y4 = line_b[1][1];
+	var d = ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4));
+	var x = (((x1 * y2) - (y1 * x2)) * (x3 - x4)) - ((x1 - x2) * ((x3 * y4) - (y3 * x4)));
+	var y = (((x1 * y2) - (y1 * x2)) * (y3 - y4)) - ((y1 - y2) * ((x3 * y4) - (y3 * x4)));
+	if (d != 0) {
+		var xd = x / d;
+		var yd = y / d;
+		if (xd == -0)
+			xd = 0;
+		if (yd == -0)
+			yd = 0;
+		return [+xd.toFixed(6), +yd.toFixed(6)];
+	}
+	return null;
 }
 
-function getFloorLines(surface, edges){
-    var floor = [];
-    var found = false;
-    var edgeid = -1;
-    for(var i=0;i<surface.length;i++){
-        if(edgeid != -1 && !found){
-            floor.push(surface[i]);
-        }
-        if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1]) || (surface[i][0] == edges[1][0] && surface[i][1] == edges[1][1])){
-            if(edgeid==-1){
-                floor.push(surface[i]);
-            }
-            if(edgeid != -1){
-                found = true;
-                return floor;
-            }
-            if((surface[i][0] == edges[0][0] && surface[i][1] == edges[0][1])){
-                edgeid = 0;
-            }else{
-                edgeid = 1;
-            }
-            
-        }
-    }
-    return floor;
+//Get if a point is on a line segment given by two points
+function PointInLine(point, line) {
+	var x = point[0];
+	var y = point[1];
+	var x1 = line[0][0];
+	var x2 = line[1][0];
+	var y1 = line[0][1];
+	var y2 = line[1][1];
+
+	var hx = Math.max(x1, x2);
+	var lx = Math.min(x1, x2);
+	var hy = Math.max(y1, y2);
+	var ly = Math.min(y1, y2);
+
+	var distance = Math.abs(((y2 - y1) * x) - ((x2 - x1) * y) + (x2 * y1) - (y2 * x1)) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+	if (distance < 0.001) {
+		//lx,ly - 0.001, hx,hy + 0.001 for precision loss cases
+		return (lx - 0.001) <= x && x <= (hx + 0.001) && (ly - 0.001) <= y && y <= (hy + 0.001);
+	}
+	return false;
 }
 
-function IntersectionPoint(line_a, line_b){
-    var x1 = line_a[0][0];
-    var x2 = line_a[1][0];
-    var y1 = line_a[0][1];
-    var y2 = line_a[1][1];
-    var x3 = line_b[0][0];
-    var x4 = line_b[1][0];
-    var y3 = line_b[0][1];
-    var y4 = line_b[1][1];
-    var d = ((x1-x2)*(y3-y4))-((y1-y2)*(x3-x4));
-    var x = (((x1*y2)-(y1*x2))*(x3-x4))-((x1-x2)*((x3*y4)-(y3*x4)));
-    var y = (((x1*y2)-(y1*x2))*(y3-y4))-((y1-y2)*((x3*y4)-(y3*x4)));
-    if(d!=0){
-        return [x/d,y/d];
-    }
-    return null;
+function GetPointFromSlide(point, speed, angle, line) {
+	var x = point[0] + (Math.abs(speed.x) * Math.cos(angle * Math.PI / 180));
+	var y = point[1] + (Math.abs(speed.y) * Math.sin(angle * Math.PI / 180));
+	return [x, y];
+
 }
 
-function PointInLine(point, line){
-    var x = point[0];
-    var y = point[1];
-    var x1 = line[0][0];
-    var x2 = line[1][0];
-    var y1 = line[0][1];
-    var y2 = line[1][1];
-    var distance = Math.abs(((y2-y1) * x) - ((x2-x1) * y) + (x2*y1) - (y2*x1)) / Math.sqrt(Math.pow(y2-y1,2) + Math.pow(x2-x1,2));
-    if(distance < 0.0001){
-        return x1 <= x && x2 >= x;
-    }
-    return false;
+//Used in sliding, to prevent float precision errors or random js stuff get the closest point of a line near to another point
+function ClosestPointToLine(point, line) {
+	var a = line[0];
+	var b = line[1];
+
+	var ap = [point[0] - a[0], point[1] - a[1]];
+	var ab = [b[0] - a[0], b[1] - a[1]];
+
+	var p = (ap[0] * ab[0]) + (ap[1] * ab[1]);
+	var m = (Math.pow(ab[0], 2) + Math.pow(ab[1], 2));
+
+	var distance = p / m;
+
+	if (distance == -0) {
+		distance = 0;
+	}
+
+	return [a[0] + (ab[0] * distance), a[1] + (ab[1] * distance)];
+
+	//if (distance < 0)
+	//	return a;
+	//else if (distance > 1)
+	//	return b;
+	//else
+	//	return [a[0] + (ab[0] * distance), a[1] + (ab[1] * distance)];
+}
+
+//Check if launch angle goes to the opposite direction of the line normal vector angle, returns false when the line is on the same direction or parallel
+function LineCollision(launch_angle, line_angle) {
+	var a = Math.cos(Math.abs(line_angle - launch_angle) * Math.PI / 180);
+	if (a > 0) {
+		return false;
+	}
+	return true;
+}
+
+//Get all lines that intersect with a line
+function IntersectionLines(line, vertex) {
+	var l = [];
+
+	for (var i = 0; i < vertex.length - 1; i++) {
+		var stageLine = [vertex[i], vertex[i + 1]];
+		var p = IntersectionPoint(line, stageLine);
+		if (p != null) {
+			var f = PointInLine(p, line) && PointInLine(p, stageLine);
+			if (f) {
+				l.push({ "i": i, "point": p, "line": stageLine });
+			}
+		}
+	}
+
+	return l;
+}
+
+//Get line angle given by two points
+function LineAngle(line) {
+	return ((Math.atan2(line[1][1] - line[0][1], line[1][0] - line[0][0]) * 180 / Math.PI) + 360) % 360;
 }

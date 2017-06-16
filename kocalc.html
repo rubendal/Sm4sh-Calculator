@@ -435,7 +435,7 @@
                         <div class="pos-left">
                             Stage:
                             <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
-                                <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
+                                <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{$index}}">{{stage.stage}}</option>
                             </select>
                             <br />
                             Set position on spawn:

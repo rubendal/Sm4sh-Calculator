@@ -100,7 +100,7 @@ app.controller('calculator', function ($scope) {
     $scope.extra_vis_frames = 0;
 
 	$scope.stages = getStages();
-    $scope.stageValue = JSON.stringify($scope.stages[0]);
+    $scope.stageValue = "0";
 
     $scope.spawns = [];
 
@@ -114,7 +114,7 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
-	$scope.stage = JSON.parse($scope.stageValue);
+	$scope.stage = $scope.stages[0];
 
 	$scope.stageName = $scope.stage.stage;
 
@@ -134,42 +134,54 @@ app.controller('calculator', function ($scope) {
 
     $scope.visualizer_extra = [];
 
-    $scope.getStage = function () {
-        for (var i = 0; i < $scope.stages.length; i++) {
-            if ($scope.stages[i].stage == $scope.stageName) {
-                $scope.stageValue = JSON.stringify($scope.stages[i]);
-                $scope.updateStage();
-                return;
-            }
-        }
-    }
+	$scope.getStage = function () {
+		for (var i = 0; i < $scope.stages.length; i++) {
+			if ($scope.stages[i].stage == $scope.stageName) {
+				$scope.stageValue = i + "";
+				$scope.updateStage();
+				return;
+			}
+		}
+	}
 
-    $scope.updateStage = function(){
-        $scope.stage = JSON.parse($scope.stageValue);
-        $scope.stageName = $scope.stage.stage;
+	$scope.updateStage = function () {
+		$scope.stage = $scope.stages[$scope.stageValue];
+		$scope.stageName = $scope.stage.stage;
+		if ($scope.stage.stage == "No stage") {
+			$scope.stage = null;
+			$scope.spawns = [];
+			$scope.spawn = "";
+			$scope.update();
+			return;
+		}
+		if ($scope.stage.center != null) {
+			$scope.position_x = $scope.stage.center[0];
+			$scope.position_y = $scope.stage.center[1];
+			$scope.spawns = ["Center"];
+		} else {
+			$scope.position_x = $scope.spawns[0];
+			$scope.position_y = $scope.spawns[1];
+			$scope.spawns = [];
+		}
+		for (var i = 0; i < $scope.stage.spawns.length; i++) {
+			$scope.spawns.push(i + 1);
+		}
+		$scope.spawn = "Center";
+		$scope.update();
+	}
 
-        $scope.position_x = $scope.stage.center[0];
-        $scope.position_y = $scope.stage.center[1];
-        $scope.spawns = ["Center"];
-        for(var i=0;i<$scope.stage.spawns.length;i++){
-            $scope.spawns.push(i+1);
-        }
-        $scope.spawn = "Center";
-        $scope.update();
-    }
-
-    $scope.setPositionSpawn = function(){
-        if($scope.spawn != "Center"){
-            var i = parseFloat($scope.spawn) - 1;
-            $scope.position_x = $scope.stage.spawns[i][0];
-            $scope.position_y = $scope.stage.spawns[i][1];
-            $scope.update();
-        }else{
-            $scope.position_x = $scope.stage.center[0];
-            $scope.position_y = $scope.stage.center[1];
-            $scope.update();
-        }
-    }
+	$scope.setPositionSpawn = function () {
+		if ($scope.spawn != "Center") {
+			var i = parseFloat($scope.spawn) - 1;
+			$scope.position_x = $scope.stage.spawns[i][0];
+			$scope.position_y = $scope.stage.spawns[i][1];
+			$scope.update();
+		} else {
+			$scope.position_x = $scope.stage.center[0];
+			$scope.position_y = $scope.stage.center[1];
+			$scope.update();
+		}
+	}
 
     $scope.checkSmashVisibility = function () {
         $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
@@ -603,9 +615,9 @@ app.controller('calculator', function ($scope) {
 
 		var distance;
 		if (game_mode == "training") {
-			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, true, 0);
+			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, false, 0);
 		} else {
-			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, true, 0);
+			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, $scope.stage, false, 0);
 		}
 
 		return distance;
@@ -624,23 +636,23 @@ app.controller('calculator', function ($scope) {
 				distance = $scope.getDistance(damage);
 				if (distance.KO) {
 					if (i == 0) {
-						data = { "ko": true, "ko_percent": 0, "plot": distance.plot, "graph": { "x": distance.graph_x, "y": distance.graph_y } };
+						data = { "ko": true, "ko_percent": 0, "distance": distance };
 						found = true;
 						break;
 					}
 					else {
-						for (var x = i; x > i - 30; x -= 0.5) {
+						for (var x = i; x > i - 30; x -= 2) {
 							last = x;
-							target_percent = x - 0.5;
+							target_percent = x - 2;
 							distance = $scope.getDistance(damage);
 							if (!distance.KO) {
-								for (var y = x+0.5; y > x; y -= 0.001) {
+								for (var y = x+2; y > x; y -= 0.02) {
 									last = y;
-									target_percent = y - 0.001;
+									target_percent = y - 0.02;
 									distance = $scope.getDistance(damage);
 									if (!distance.KO) {
 										found = true;
-										data = { "ko": true, "ko_percent": last, "plot": distance.plot, "graph": { "x": distance.graph_x, "y": distance.graph_y } };
+										data = { "ko": true, "ko_percent": last, "distance": distance };
 										break;
 									}
 								}
@@ -678,12 +690,14 @@ app.controller('calculator', function ($scope) {
 		$scope.visualizer_extra = [];
 
 		if (data.ko) {
+			data.distance.doPlot();
 			$scope.visualizer_extra.push(new Result("Target %", data.ko_percent, "", false, true));
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
-			var max_x = data.graph.x + 10;
-			var max_y = data.graph.y + 10;
+			var max_x = data.distance.graph_x + 10;
+			var max_y = data.distance.graph_y + 10;
 			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', data.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+
+			Plotly.newPlot('res_graph', data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
 		}
 		else {
 			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
@@ -729,13 +743,15 @@ app.controller('calculator', function ($scope) {
 				return 0;
 			});
 
+			list[0].data.distance.doPlot();
+
 			$scope.visualizer_extra.push(new Result("Best DI angle", list[0].di, "", false, true));
 			$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
-			var max_x = list[0].data.graph.x + 10;
-			var max_y = list[0].data.graph.y + 10;
+			var max_x = list[0].data.distance.graph_x + 10;
+			var max_y = list[0].data.distance.graph_y + 10;
 			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', list[0].data.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+			Plotly.newPlot('res_graph', list[0].data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
 
 			if ($scope.noDI) {
 				di = -1;
@@ -824,21 +840,6 @@ app.controller('calculator', function ($scope) {
 		var adxdata = [];
 		var adydata = [];
 
-		//Stage blast zones
-		adxdata.push($scope.stage.blast_zones[0]);
-		adxdata.push($scope.stage.blast_zones[1]);
-		adxdata.push($scope.stage.blast_zones[1]);
-		adxdata.push($scope.stage.blast_zones[0]);
-		adxdata.push($scope.stage.blast_zones[0]);
-
-		adydata.push($scope.stage.blast_zones[2]);
-		adydata.push($scope.stage.blast_zones[2]);
-		adydata.push($scope.stage.blast_zones[3]);
-		adydata.push($scope.stage.blast_zones[3]);
-		adydata.push($scope.stage.blast_zones[2]);
-
-		data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Blast zone" });
-
 		position = { "x": parseFloat($scope.position_x), "y": parseFloat($scope.position_y) };
 
 		if (position.x < $scope.stage.blast_zones[0]) {
@@ -858,6 +859,21 @@ app.controller('calculator', function ($scope) {
 			position.y = $scope.stage.blast_zones[3];
 			$scope.position_y = position.y;
 		}
+
+		//Stage blast zones
+		adxdata.push($scope.stage.blast_zones[0]);
+		adxdata.push($scope.stage.blast_zones[1]);
+		adxdata.push($scope.stage.blast_zones[1]);
+		adxdata.push($scope.stage.blast_zones[0]);
+		adxdata.push($scope.stage.blast_zones[0]);
+
+		adydata.push($scope.stage.blast_zones[2]);
+		adydata.push($scope.stage.blast_zones[2]);
+		adydata.push($scope.stage.blast_zones[3]);
+		adydata.push($scope.stage.blast_zones[3]);
+		adydata.push($scope.stage.blast_zones[2]);
+
+		data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Blast zone" });
 
 		//Stage Camera bounds
 		adxdata = [];
@@ -879,12 +895,45 @@ app.controller('calculator', function ($scope) {
 		//Stage surface
 		adxdata = [];
 		adydata = [];
-		for (var i = 0; i < $scope.stage.surface.length; i++) {
-			adxdata.push($scope.stage.surface[i][0]);
-			adydata.push($scope.stage.surface[i][1]);
+		var adxdata2 = [];
+		var adydata2 = [];
+		var semi_tech = [];
+
+		for (var i = 0; i < $scope.stage.collisions.length; i++) {
+			adxdata = [];
+			adydata = [];
+			for (var j = 0; j < $scope.stage.collisions[i].vertex.length; j++) {
+				adxdata.push($scope.stage.collisions[i].vertex[j][0]);
+				adydata.push($scope.stage.collisions[i].vertex[j][1]);
+
+				if (j < $scope.stage.collisions[i].vertex.length - 1) {
+					//Wall jump disabled walls
+					adxdata2 = [];
+					adydata2 = [];
+					if ($scope.stage.collisions[i].materials[j].noWallJump) {
+						adxdata2.push($scope.stage.collisions[i].vertex[j][0]);
+						adydata2.push($scope.stage.collisions[i].vertex[j][1]);
+						adxdata2.push($scope.stage.collisions[i].vertex[j + 1][0]);
+						adydata2.push($scope.stage.collisions[i].vertex[j + 1][1]);
+						semi_tech.push({ 'calcValue': $scope.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Wall jump disabled wall" });
+					}
+					//Small walls
+					adxdata2 = [];
+					adydata2 = [];
+					if ($scope.stage.collisions[i].materials[j].length <= 7 && ($scope.stage.collisions[i].materials[j].wall || $scope.stage.collisions[i].materials[j].ceiling) && !$scope.stage.collisions[i].materials[j].noWallJump) {
+						adxdata2.push($scope.stage.collisions[i].vertex[j][0]);
+						adydata2.push($scope.stage.collisions[i].vertex[j][1]);
+						adxdata2.push($scope.stage.collisions[i].vertex[j + 1][0]);
+						adydata2.push($scope.stage.collisions[i].vertex[j + 1][1]);
+						semi_tech.push({ 'calcValue': $scope.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Semi-techable small wall" });
+					}
+				}
+			}
+			data.push({ 'calcValue': $scope.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Stage" });
 		}
 
-		data.push({ 'calcValue': "Stage", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Stage" });
+		data = data.concat(semi_tech);
+
 
 		//Stage platforms
 		if ($scope.stage.platforms !== undefined) {
@@ -895,28 +944,7 @@ app.controller('calculator', function ($scope) {
 					adxdata.push($scope.stage.platforms[i].vertex[j][0]);
 					adydata.push($scope.stage.platforms[i].vertex[j][1]);
 				}
-				data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': $scope.stage.platforms[i].name });
-			}
-		}
-
-		if ($scope.stage.ledges !== undefined) {
-			if ($scope.stage.ledges.left !== undefined) {
-				adxdata = [];
-				adydata = [];
-				for (var j = 0; j < $scope.stage.ledges.left.length; j++) {
-					adxdata.push($scope.stage.ledges.left[j][0]);
-					adydata.push($scope.stage.ledges.left[j][1]);
-				}
-				data.push({ 'calcValue': "Ledges", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Left ledge" });
-			}
-			if ($scope.stage.ledges.right !== undefined) {
-				adxdata = [];
-				adydata = [];
-				for (var j = 0; j < $scope.stage.ledges.right.length; j++) {
-					adxdata.push($scope.stage.ledges.right[j][0]);
-					adydata.push($scope.stage.ledges.right[j][1]);
-				}
-
+				data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': $scope.stage.platforms[i].name });
 			}
 		}
 

@@ -106,7 +106,7 @@ app.controller('calculator', function ($scope) {
     $scope.stages = getStages();
     $scope.stages.unshift({"stage":"No stage"});
     $scope.stage = null;
-    $scope.stageValue = JSON.stringify($scope.stages[0]);
+	$scope.stageValue = "0";
 
     $scope.spawns = [];
 
@@ -131,20 +131,20 @@ app.controller('calculator', function ($scope) {
 
     $scope.params = parameters;
 
-    $scope.visualizer_extra = [];
+	$scope.visualizer_extra = [];
 
-    $scope.getStage = function () {
-        for (var i = 0; i < $scope.stages.length; i++) {
-            if ($scope.stages[i].stage == $scope.stageName) {
-                $scope.stageValue = JSON.stringify($scope.stages[i]);
-                $scope.updateStage();
-                return;
-            }
-        }
-    }
+	$scope.getStage = function () {
+		for (var i = 0; i < $scope.stages.length; i++) {
+			if ($scope.stages[i].stage == $scope.stageName) {
+				$scope.stageValue = i + "";
+				$scope.updateStage();
+				return;
+			}
+		}
+	}
 
-    $scope.updateStage = function(){
-        $scope.stage = JSON.parse($scope.stageValue);
+	$scope.updateStage = function () {
+		$scope.stage = $scope.stages[$scope.stageValue];
         $scope.stageName = $scope.stage.stage;
         if($scope.stage.stage == "No stage"){
             $scope.stage = null;
@@ -152,10 +152,16 @@ app.controller('calculator', function ($scope) {
             $scope.spawn = "";
             $scope.update();
             return;
-        }
-        $scope.position_x = $scope.stage.center[0];
-        $scope.position_y = $scope.stage.center[1];
-        $scope.spawns = ["Center"];
+		}
+		if ($scope.stage.center != null) {
+			$scope.position_x = $scope.stage.center[0];
+			$scope.position_y = $scope.stage.center[1];
+			$scope.spawns = ["Center"];
+		} else {
+			$scope.position_x = $scope.spawns[0];
+			$scope.position_y = $scope.spawns[1];
+			$scope.spawns = [];
+		}
         for(var i=0;i<$scope.stage.spawns.length;i++){
             $scope.spawns.push(i+1);
         }
@@ -165,12 +171,12 @@ app.controller('calculator', function ($scope) {
 
     $scope.setPositionSpawn = function(){
         if($scope.spawn != "Center"){
-            var i = parseFloat($scope.spawn) - 1;
-            $scope.position_x = $scope.stage.spawns[i][0];
-            $scope.position_y = $scope.stage.spawns[i][1];
+			var i = parseFloat($scope.spawn) - 1;
+			$scope.position_x = $scope.stage.spawns[i][0];
+			$scope.position_y = $scope.stage.spawns[i][1];
             $scope.update();
-        }else{
-            $scope.position_x = $scope.stage.center[0];
+		} else {
+			$scope.position_x = $scope.stage.center[0];
             $scope.position_y = $scope.stage.center[1];
             $scope.update();
         }

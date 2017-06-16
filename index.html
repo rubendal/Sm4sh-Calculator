@@ -386,7 +386,7 @@
                     <div class="pos-left">
                         Stage:
                         <select name="stageSelect" ng-model="stageValue" ng-change="updateStage()">
-                            <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{stage}}">{{stage.stage}}</option>
+                            <option ng-selected="$first" ng:repeat="stage in stages" ng-attr-value="{{$index}}">{{stage.stage}}</option>
                         </select>
                         <br />
                         Set position on spawn:
@@ -403,8 +403,6 @@
                         <div id="graph_options">
                             <br />
                             <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="update()" />Invert move angle horizontally
-                            <br />
-                            <input type="checkbox" name="surface" ng-model="surface" ng-change="update()" />X-axis is surface (When no stage is selected)
                         </div>
                         <br />
                         Display <input name="extra_frames" type="number" min="0" max="200" step="1" ng-model="extra_vis_frames" ng-change="update()" /> additional actionable frames
