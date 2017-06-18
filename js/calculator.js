@@ -734,8 +734,8 @@ app.controller('calculator', function ($scope) {
 
         if (target.name == "Rosalina And Luma") {
             if (!wbkb) {
-                var luma_trainingkb = TrainingKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, di);
-                var luma_vskb = VSKB(15 + luma_percent + preDamage, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di);
+                var luma_trainingkb = TrainingKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, di);
+                var luma_vskb = VSKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di);
                 luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
                 luma_vskb.addModifier(attacker.modifier.kb_dealt);
                 luma_trainingkb.addModifier(target.modifier.kb_received);
@@ -759,9 +759,9 @@ app.controller('calculator', function ($scope) {
                 resultList.push(new Result("Shield Damage", +s.toFixed(4), +sv.toFixed(4)));
                 resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(4), +(50 * target.modifier.shield).toFixed(4)));
                 resultList.push(new Result("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No", sv >= 50 * target.modifier.shield ? "Yes" : "No"));
-            }
-            resultList.push(new Result("Shield stun", ShieldStun(damage, is_projectile, powershield), ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)));
-            resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric))));
+			}
+			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric))));
+            resultList.push(new Result("Shield stun", ShieldStun(damage, is_projectile, powershield), ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)));            
             resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)));
         } else {
             resultList.push(new Result("Unblockable attack", "Yes", "Yes"));
