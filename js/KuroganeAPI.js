@@ -33,10 +33,11 @@ class HitboxActiveFrames {
 class CancelCond{
     constructor(cond){
         this.rawValue = cond;
-        if(cond.includes("&gt;")){
-            //Greater than
-            this.type = ">";
-            this.value = parseFloat(cond.replace("&gt;","")) - 1;
+		if (cond.includes("&gt;")) {
+			//Greater than
+			this.type = ">";
+			this.value = parseFloat(cond.replace("&gt;", "")) - 1;
+			this.values = null;
             this.print = function(){
                 return this.value + ">";
             }
@@ -46,17 +47,19 @@ class CancelCond{
         }else{
             if(/[0-9]+\-[0-9]+/i.test(cond)){
                 //Range
-                this.type = "-";
-                this.value = [parseFloat(cond.split("-")[0]),parseFloat(cond.split("-")[1])];
+				this.type = "-";
+				this.value = null;
+                this.values = [parseFloat(cond.split("-")[0]),parseFloat(cond.split("-")[1])];
                 this.print = function(){
                     return this.value[0] + "-" + this.value[1];
                 }
                 this.eval = function(value){
-                    return value >= this.value[0] && value <= this.value[1];
+                    return value >= this.values[0] && value <= this.values[1];
                 }
             }else{
                 this.type = "empty";
-                this.value = "-";
+				this.value = null;
+				this.values = null;
                 this.print = function(){
                     return "-";
                 }

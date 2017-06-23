@@ -623,6 +623,21 @@ app.controller('calculator', function ($scope) {
 		return distance;
 	}
 
+	$scope.search = function (damage, i, prev, n) {
+		var found = false;
+		var distance;
+		var last;
+		for (var x = i; x >= i - prev; x -= n) {
+			last = x;
+			target_percent = x - n;
+			distance = $scope.getDistance(damage);
+			if (!distance.KO) {
+				return { "last": last, "distance": distance };
+			}
+		}
+		return null;
+	};
+
 	$scope.calc = function (damage) {
 		var data = {};
 		//Check if it can KO at 999% (if not just stop calculation)
@@ -631,7 +646,9 @@ app.controller('calculator', function ($scope) {
 		var last = 0;
 		var found = false;
 		if (distance.KO) {
-			for (var i = 0; i < 999 && !found; i += 20) {
+			for (var i = 0; i <= 1000 && !found; i += 20) {
+				if (i == 1000)
+					i = 999;
 				target_percent = i;
 				distance = $scope.getDistance(damage);
 				if (distance.KO) {
@@ -641,24 +658,19 @@ app.controller('calculator', function ($scope) {
 						break;
 					}
 					else {
-						for (var x = i; x > i - 30; x -= 2) {
-							last = x;
-							target_percent = x - 2;
-							distance = $scope.getDistance(damage);
-							if (!distance.KO) {
-								for (var y = x+2; y > x; y -= 0.02) {
-									last = y;
-									target_percent = y - 0.02;
-									distance = $scope.getDistance(damage);
-									if (!distance.KO) {
-										found = true;
-										data = { "ko": true, "ko_percent": last, "distance": distance };
+						var t = $scope.search(damage, i, 20, 5);
+						if (t != null) {
+							t = $scope.search(damage, t.last, 5, 1);
+							if (t != null) {
+								t = $scope.search(damage, t.last, 1, 0.5);
+								if (t != null) {
+									t = $scope.search(damage, t.last, 0.5, 0.1);
+									if (t != null) {
+										t = $scope.search(damage, t.last, 0.1, 0.02);
+										data = { "ko": true, "ko_percent": t.last, "distance": t.distance };
 										break;
 									}
 								}
-							}
-							if (found) {
-								break;
 							}
 						}
 
