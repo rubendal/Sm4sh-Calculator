@@ -1497,6 +1497,7 @@ class Distance{
         this.extraFrames = 20;
         this.finalPosition = position;
 		this.extra = [];
+		this.collisions = 0;
         if (extraFrames !== undefined) {
             this.extraFrames = extraFrames;
         }
@@ -1595,6 +1596,7 @@ class Distance{
 				var c = new Collision(i, this.stage, [character_position.x, character_position.y], [next_x, next_y], momentum, state, this.tumble, launch_speed, angle);
 
 				if (c.collisionOccurred) {
+					this.collisions++;
 					launch_speed = c.collision_data.launchSpeed;
 					next_x = c.collision_data.next_position[0];
 					next_y = c.collision_data.next_position[1];
@@ -1825,6 +1827,8 @@ class Distance{
 		this.max_y = Math.abs(this.max_y - this.position.y);
 
 		this.ko_data = [];
+
+		this.di_plot = [];
 
 		if (this.stage != null) {
 			var data = [];
@@ -2103,9 +2107,46 @@ class Distance{
 			this.plot = data;
 		};
 
+		this.doDIPlot = function (di,d) {
+			//Use di angle to make the line and from there try to make the arrow head
+			var x_data = [];
+			var y_data = [];
+
+			this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': 'black', 'size': 5 }, 'hoverinfo': 'none' });
+
+			if (this.inverseX) {
+				di = InvertXAngle(di);
+			}
+
+			x_data.push(this.position.x);
+			y_data.push(this.position.y);
+
+			var point = this.position;
+			point.x += (d * Math.cos(di * Math.PI / 180));
+			point.y += (d * Math.sin(di * Math.PI / 180));
+			x_data.push(point.x);
+			y_data.push(point.y);
+
+			var head_angle = 135;
+
+			x_data.push(point.x + ((d / 3) * Math.cos((di + head_angle) * Math.PI / 180)));
+			y_data.push(point.y + ((d / 3) * Math.sin((di + head_angle) * Math.PI / 180)));
+
+			x_data.push(point.x);
+			y_data.push(point.y);
+
+			x_data.push(point.x + ((d / 3) * Math.cos((di - head_angle) * Math.PI / 180)));
+			y_data.push(point.y + ((d / 3) * Math.sin((di - head_angle) * Math.PI / 180)));
+
+			
+			this.di_plot.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': 'black' }, 'hoverinfo':'none' });
+
+		}
+
         if(!doPlot){
             this.data = [];
-            this.plot = [];
+			this.plot = [];
+			this.di_plot = [];
             return;
         }
 

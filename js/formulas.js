@@ -535,6 +535,15 @@ function LineCollision(launch_angle, line_angle) {
 	return true;
 }
 
+//Check if launch angle goes to the same direction of the line normal vector angle
+function LinePassthroughCollision(launch_angle, line_angle) {
+	var a = Math.cos(Math.abs(line_angle - launch_angle) * Math.PI / 180);
+	if (a <= 0) {
+		return false;
+	}
+	return true;
+}
+
 //Get all lines that intersect with a line
 function IntersectionLines(line, vertex) {
 	var l = [];
