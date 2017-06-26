@@ -51,7 +51,7 @@ class CancelCond{
 				this.value = null;
                 this.values = [parseFloat(cond.split("-")[0]),parseFloat(cond.split("-")[1])];
                 this.print = function(){
-                    return this.value[0] + "-" + this.value[1];
+                    return this.values[0] + "-" + this.values[1];
                 }
                 this.eval = function(value){
                     return value >= this.values[0] && value <= this.values[1];
