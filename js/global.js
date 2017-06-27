@@ -2107,10 +2107,16 @@ class Distance{
 			this.plot = data;
 		};
 
-		this.doDIPlot = function (di,d) {
+		this.doDIPlot = function (di,d, koAtZero) {
 			//Use di angle to make the line and from there try to make the arrow head
 			var x_data = [];
 			var y_data = [];
+
+			if (koAtZero) {
+				//KO regardless of DI
+				this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 5 }, 'hoverinfo': 'none' });
+				return;
+			}
 
 			this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': 'black', 'size': 5 }, 'hoverinfo': 'none' });
 
@@ -2121,7 +2127,7 @@ class Distance{
 			x_data.push(this.position.x);
 			y_data.push(this.position.y);
 
-			var point = this.position;
+			var point = { x: this.position.x, y: this.position.y };
 			point.x += (d * Math.cos(di * Math.PI / 180));
 			point.y += (d * Math.sin(di * Math.PI / 180));
 			x_data.push(point.x);

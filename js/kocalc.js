@@ -139,6 +139,8 @@ app.controller('calculator', function ($scope) {
 
 	$scope.di_ignore_collisions = true;
 
+	$scope.show_interpolation = true;
+
 	$scope.getStage = function () {
 		for (var i = 0; i < $scope.stages.length; i++) {
 			if ($scope.stages[i].stage == $scope.stageName) {
@@ -1014,6 +1016,59 @@ app.controller('calculator', function ($scope) {
 		return true;
 	};
 
+	$scope.interpolatedPositions = function (a, b, d, color) {
+		if (a.possible && b.possible) {
+			if (a.di != -1 && b.di != -1) {
+
+				if (color == undefined)
+					color = 'gray';
+
+				var data = [];
+
+				
+				var i_position = { x: +((a.position[0] + b.position[0]) / 2).toFixed(6), y: +((a.position[1] + b.position[1]) / 2).toFixed(6) };
+
+				if (!$scope.checkPosition([i_position.x, i_position.y]))
+					return null;
+
+				var i_di = Math.floor((a.di + b.di) / 2);
+
+				data.push({ 'calcValue': "Position", 'x': [i_position.x], 'y': [i_position.y], 'mode': 'markers', 'marker': { 'color': color, 'size': 5 }, 'hoverinfo': 'none' });
+
+				var x_data = [];
+				var y_data = [];
+
+				x_data.push(i_position.x);
+				y_data.push(i_position.y);
+
+				var point = { x: i_position.x, y: i_position.y };
+				point.x += (d * Math.cos(i_di * Math.PI / 180));
+				point.y += (d * Math.sin(i_di * Math.PI / 180));
+				x_data.push(point.x);
+				y_data.push(point.y);
+
+				var head_angle = 135;
+
+				x_data.push(point.x + ((d / 3) * Math.cos((i_di + head_angle) * Math.PI / 180)));
+				y_data.push(point.y + ((d / 3) * Math.sin((i_di + head_angle) * Math.PI / 180)));
+
+				x_data.push(point.x);
+				y_data.push(point.y);
+
+				x_data.push(point.x + ((d / 3) * Math.cos((i_di - head_angle) * Math.PI / 180)));
+				y_data.push(point.y + ((d / 3) * Math.sin((i_di - head_angle) * Math.PI / 180)));
+
+
+				data.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': color }, 'hoverinfo': 'none' });
+
+				return { data: data, position: [i_position.x, i_position.y], di: i_di };
+			}
+		}
+
+
+		return null;
+	}
+
 	$scope.calculateDIPositions = function () {
 		if ($scope.charge_data == null && $scope.is_smash) {
 			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
@@ -1040,37 +1095,40 @@ app.controller('calculator', function ($scope) {
 		var top_margin = $scope.stage.blast_zones[2]/4;
 		var bottom_margin = $scope.stage.blast_zones[3]/2;
 
-		positions.push([center[0], center[1]]);
-		positions.push([center[0], center[1] + top_margin]);
-		positions.push([center[0], center[1] + (2 * top_margin)]);
-		positions.push([center[0], center[1] + (3 * top_margin)]);
-		positions.push([center[0], center[1] + bottom_margin]);
 
-
-		for (var i = 0; i < 3; i++) {
+		for (var i = 2; i >= 0; i--) {
+			positions.push([center[0] + (left_margin * (i + 1)), center[1] + bottom_margin]);
 			positions.push([center[0] + (left_margin * (i+1)), center[1]]);
 			positions.push([center[0] + (left_margin * (i + 1)), center[1] + top_margin]);
 			positions.push([center[0] + (left_margin * (i + 1)), center[1] + (2 * top_margin)]);
 			positions.push([center[0] + (left_margin * (i + 1)), center[1] + (3 * top_margin)]);
-			positions.push([center[0] + (left_margin * (i + 1)), center[1] + bottom_margin]);
+			
 		}
 
+		positions.push([center[0], center[1] + bottom_margin]);
+		positions.push([center[0], center[1]]);
+		positions.push([center[0], center[1] + top_margin]);
+		positions.push([center[0], center[1] + (2 * top_margin)]);
+		positions.push([center[0], center[1] + (3 * top_margin)]);
+		
+
 		for (var i = 0; i < 3; i++) {
+			positions.push([center[0] + (right_margin * (i + 1)), center[1] + bottom_margin]);
 			positions.push([center[0] + (right_margin * (i + 1)), center[1]]);
 			positions.push([center[0] + (right_margin * (i + 1)), center[1] + top_margin]);
 			positions.push([center[0] + (right_margin * (i + 1)), center[1] + (2 * top_margin)]);
 			positions.push([center[0] + (right_margin * (i + 1)), center[1] + (3 * top_margin)]);
-			positions.push([center[0] + (right_margin * (i + 1)), center[1] + bottom_margin]);
+			
 		}
 
 
 		var possible_positions = [];
 
+
 		for (var i = 0; i < positions.length; i++) {
-			if ($scope.checkPosition(positions[i])) {
-				possible_positions.push(positions[i]);
-			}
+			possible_positions.push({ "position": positions[i], "possible": $scope.checkPosition(positions[i]), "di":-1 });
 		}
+		
 
 		var distances = $scope.plotStage();
 
@@ -1081,8 +1139,11 @@ app.controller('calculator', function ($scope) {
 		var max_y = 0;
 
 		for (var p = 0; p < possible_positions.length; p++) {
-			position.x = possible_positions[p][0];
-			position.y = possible_positions[p][1];
+			if (!possible_positions[p].possible) {
+				continue;
+			}
+			position.x = possible_positions[p].position[0];
+			position.y = possible_positions[p].position[1];
 			var tempList = [];
 			list = [];
 			var data = $scope.calc(damage);
@@ -1121,7 +1182,17 @@ app.controller('calculator', function ($scope) {
 				if (list.length > 0) {
 
 					if (list[0].percent != 0) {
-						list[0].data.distance.doDIPlot(list[0].di, 30);
+						possible_positions[p].di = list[0].di;
+						list[0].data.distance.doDIPlot(list[0].di, 30, false);
+						distances = distances.concat(list[0].data.distance.di_plot);
+
+						max_x = Math.max(max_x, list[0].data.distance.graph_x + 10);
+						max_y = Math.max(max_y, list[0].data.distance.graph_y + 10);
+					} else {
+						
+						possible_positions[p].di = -1;
+
+						list[0].data.distance.doDIPlot(list[0].di, 30, true);
 						distances = distances.concat(list[0].data.distance.di_plot);
 
 						max_x = Math.max(max_x, list[0].data.distance.graph_x + 10);
@@ -1130,6 +1201,47 @@ app.controller('calculator', function ($scope) {
 				}
 				
 			}
+		}
+
+		if ($scope.show_interpolation) {
+
+			//Interpolation
+			var interpolations = [];
+			//Side interpolation
+			for (var i = 0; i < possible_positions.length - 5; i++) {
+				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 5], 30);
+				if (interpolated != null) {
+					distances = distances.concat(interpolated.data);
+					interpolations.push({ position: interpolated.position, possible: true, di: interpolated.di });
+				} else {
+					interpolations.push({ position: [0, 0], possible: false, di: -1 });
+				}
+
+			}
+
+			//Vertical interpolation
+			for (var i = 0; i < possible_positions.length - 1; i++) {
+				if (i % 5 == 4) {
+					continue;
+				}
+				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 1], 30);
+				if (interpolated != null) {
+					distances = distances.concat(interpolated.data);
+				}
+
+			}
+
+			for (var i = 0; i < interpolations.length - 1; i++) {
+				if (i % 5 == 4) {
+					continue;
+				}
+				var interpolated = $scope.interpolatedPositions(interpolations[i], interpolations[i + 1], 30);
+				if (interpolated != null) {
+					distances = distances.concat(interpolated.data);
+				}
+
+			}
+
 		}
 		
 		max_x = max_y = Math.max(max_x, max_y);
@@ -1142,8 +1254,6 @@ app.controller('calculator', function ($scope) {
 		}
 
 		position = { "x": parseFloat($scope.position_x), "y": parseFloat($scope.position_y) };
-
-		
 
 	};
 
