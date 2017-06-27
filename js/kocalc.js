@@ -1031,7 +1031,12 @@ app.controller('calculator', function ($scope) {
 				if (!$scope.checkPosition([i_position.x, i_position.y]))
 					return null;
 
-				var i_di = Math.floor((a.di + b.di) / 2);
+				var min_a = Math.min(a.di, b.di);
+				var max_a = Math.max(a.di, b.di);
+
+				var t = (max_a - min_a) % 360;
+
+				var i_di = min_a + ((((2 * t) % 360) - t) * 0.5);
 
 				data.push({ 'calcValue': "Position", 'x': [i_position.x], 'y': [i_position.y], 'mode': 'markers', 'marker': { 'color': color, 'size': 5 }, 'hoverinfo': 'none' });
 
