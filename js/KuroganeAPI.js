@@ -35,14 +35,15 @@ class CancelCond{
         this.rawValue = cond;
 		if (cond.includes("&gt;")) {
 			//Greater than
-			this.type = ">";
-			this.value = parseFloat(cond.replace("&gt;", "")) - 1;
+			this.type = ">=";
+			this.value = parseFloat(cond.replace("&gt;", ""));
 			this.values = null;
+			this.rawValue = this.rawValue.replace("&gt;", "&ge;")
             this.print = function(){
                 return this.value + ">";
             }
             this.eval = function(value){
-                return this.value < value;
+                return this.value <= value;
             }
         }else{
             if(/[0-9]+\-[0-9]+/i.test(cond)){
