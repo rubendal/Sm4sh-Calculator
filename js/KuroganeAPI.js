@@ -73,7 +73,17 @@ class CancelCond{
 }
 
 class MoveParser {
-    constructor(id, name, base_damage, angle, bkb, kbg, hitboxActive, faf, landingLag, autoCancel, ignore_hitboxes) {
+	constructor(id, name, base_damage, angle, bkb, kbg, hitboxActive, faf, landingLag, autoCancel, weightDependent, ignore_hitboxes) {
+		if (base_damage == null)
+			base_damage = "";
+		if (angle == null)
+			angle = "";
+		if (bkb == null)
+			bkb = "";
+		if (kbg == null)
+			kbg = "";
+
+
         this.id = id;
         this.name = name;
         this.angle = angle;
@@ -95,7 +105,9 @@ class MoveParser {
         var counterRegex = /(\([0-9]+(\.[0-9]+)*&#215;\))/i;
 
         this.shieldDamage = 0;
-        var shieldDamageRegex = /\(\+[0-9]+\)/i;
+		var shieldDamageRegex = /\(\+[0-9]+\)/i;
+
+		this.weightDependent = weightDependent;
 
         if (!this.throw) {
             this.hitboxActive = parseHitbox(hitboxActive);
@@ -308,7 +320,7 @@ class MoveParser {
 							}
 						}
 					}
-                    this.moves.push(new Move(this.id, i, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s));
+					this.moves.push(new Move(this.id, i, hitbox_name, this.name, parseFloat(d), parseFloat(a), parseFloat(b), parseFloat(k), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, s, this.weightDependent));
                     if (ignore_hitboxes) {
                         return;
                     }
@@ -341,17 +353,17 @@ class MoveParser {
 				}
                 if (this.base_damage == "" && this.angle == "" && this.bkb == "" && this.kbg == "") {
 					if (this.grab) {
-						this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+						this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage, this.weightDependent));
                     } else {
-                        this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+						this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage, this.weightDependent).invalidate());
                     }
                 } else {
-                    this.moves.push(new Move(this.id, 0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage));
+					this.moves.push(new Move(this.id, 0, this.name, this.name, parseFloat(this.base_damage), parseFloat(this.angle), parseFloat(this.bkb), parseFloat(this.kbg), parseFloat(wbkb), this.hitboxes, parseFloat(this.faf), parseFloat(this.landingLag), this.autoCancel, this.preDamage, this.counterMult, this.rehitRate, this.shieldDamage, this.weightDependent));
                 }
             }
 
         } else {
-            this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage).invalidate());
+			this.moves.push(new Move(this.id, 0, this.name, this.name, NaN, NaN, NaN, NaN, NaN, [new HitboxActiveFrames(NaN, NaN)], NaN, parseFloat(this.landingLag), this.autoCancel, 0, this.counterMult, this.rehitRate, this.shieldDamage, this.weightDependent).invalidate());
         }
 
 
@@ -453,7 +465,7 @@ var chargeMoves = [
 	})];
 
 class Move {
-    constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage) {
+	constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage, weightDependent) {
         this.api_id = api_id;
         this.id = 0;
         this.hitbox_no = hitbox_no;
@@ -471,7 +483,8 @@ class Move {
         this.preDamage = preDamage;
         this.counterMult = counterMult;
         this.rehitRate = rehitRate;
-        this.shieldDamage = shieldDamage;
+		this.shieldDamage = shieldDamage;
+		this.weightDependent = weightDependent;
 
         this.eval_autoCancel = function(value){
             for(var i=0;i<this.autoCancel.length;i++){
@@ -529,7 +542,14 @@ class Move {
         this.invalidate = function () {
             this.valid = false;
             return this;
-        }
+		}
+
+		this.check = function () {
+			if (isNaN(this.base_damage) && isNaN(this.angle) && isNaN(this.bkb) && isNaN(this.kbg))
+				this.valid = false;
+			
+			return this;
+		}
 
         this.addCharacter = function (character) {
             this.character = character;
@@ -580,7 +600,11 @@ class Move {
         
         if((this.name.includes("Limit") && !this.name.includes("Limit Break")) || this.name.includes("Finishing Touch") ){
             this.type += ",LimitBreak";
-        }
+		}
+
+		if (this.weightDependent) {
+			this.type += ",WeightDependent"
+		}
 
         if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){
             if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
@@ -595,23 +619,27 @@ class Move {
                 }
             }
         }
-        previousMove = this;
+		previousMove = this;
+
+		//Check if move can be used in the calculator
+		if (isNaN(this.base_damage) && isNaN(this.angle) && isNaN(this.bkb) && isNaN(this.kbg))
+			this.valid = false;
     }
 };
 
 function getMoveset(attacker, $scope) {
     $scope.moveset = [];
-    var api_name = attacker.api_name.toLowerCase().replace("and", "").replace("-", "").split(".").join("").split(" ").join("");
-    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/characters/name/" + api_name, function (character) {
+	var api_name = attacker.api_name.toLowerCase().replace("and", "").replace("&", "").split(".").join("").split(" ").join("");
+	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters/name/" + api_name, function (character) {
         if (character != null) {
-            var id = character.id;
-            loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/Characters/" + id + "/moves", function (moveset) {
+            var id = character.OwnerId;
+			loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters/" + id + "/moves", function (moveset) {
                 if (moveset != null) {
                     var moves = [];
                     var count = 1;
                     for (var i = 0; i < moveset.length; i++) {
                         var move = moveset[i];
-                        var parser = new MoveParser(move.id, move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, move.landingLag, move.autoCancel, false);
+                        var parser = new MoveParser(move.InstanceId, move.Name, move.BaseDamage, move.Angle, move.BaseKnockBackSetKnockback, move.KnockbackGrowth, move.HitboxActive, move.FirstActionableFrame, move.LandingLag, move.AutoCancel, move.IsWeightDependent, false);
                         for (var c = 0; c < parser.moves.length; c++) {
                             var m = parser.moves[c];
                             m.id = count;
@@ -662,21 +690,22 @@ function getMoveset(attacker, $scope) {
 
 function getCharactersId(names, $scope) {
     $scope.charactersId = [];
-    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/characters/", function (character) {
+	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters", function (character) {
         if (character != null) {
             var characters = [];
             for (var i = 0; i < character.length; i++) {
-                var id = character[i].id;
-                var name = character[i].name;
-                var color = character[i].colorTheme;
-                for (var n = 0; n < names.length; n++) {
-                    var api_name = names[n].toLowerCase().replace("and", "").replace("-", "").replace("&","").split(".").join("").split(" ").join("");
+                var id = character[i].OwnerId;
+                var name = character[i].Name;
+                var color = character[i].ColorTheme;
+				for (var n = 0; n < names.length; n++) {
+					var api_name = names[n].toLowerCase().replace("&","").replace("and", "").split(".").join("").split(" ").join("");
                     if (name.toLowerCase() == api_name) {
                         name = names[n];
                         name = name.replace(/\&/gi,"and");
                         characters.push(new CharacterId(name, id, color));
                         break;
-                    }
+					}
+					
                 }
             }
             try {
@@ -698,7 +727,7 @@ function getCharactersId(names, $scope) {
 
 function getAllMoves($scope) {
     $scope.moves = [];
-    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/moves", function (moveset) {
+	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/moves", function (moveset) {
         if (moveset != null) {
             var moves = [];
             var count = 0;
@@ -709,11 +738,11 @@ function getAllMoves($scope) {
             }
             for (var i = 0; i < moveset.length; i++) {
                 var move = moveset[i];
-                var parser = new MoveParser(move.id, move.name, move.baseDamage, move.angle, move.baseKnockBackSetKnockback, move.knockbackGrowth, move.hitboxActive, move.firstActionableFrame, move.landingLag, move.autoCancel, false);
+                var parser = new MoveParser(move.InstanceId, move.Name, move.BaseDamage, move.Angle, move.BaseKnockBackSetKnockback, move.KnockbackGrowth, move.HitboxActive, move.FirstActionableFrame, move.LandingLag, move.AutoCancel, move.IsWeightDependent, false);
                 for (var c = 0; c < parser.moves.length; c++) {
                     var m = parser.moves[c];
                     m.id = count;
-                    moves.push(m.addCharacter(move.ownerId));
+                    moves.push(m.addCharacter(move.OwnerId));
                     count++;
                 }
             }
@@ -730,43 +759,5 @@ function getAllMoves($scope) {
     }, null, function () {
         $scope.status = "Couldn't access API";
         $scope.ready(true);
-    });
-}
-
-class Throw{
-    constructor(id, move_id, weightDependent){
-        this.id = id;
-        this.move_id = move_id;
-        this.weightDependent = weightDependent;
-    }
-};
-
-function getThrowData($scope) {
-    $scope.throws = [];
-    loadAsyncFunctionJSON("http://api.kuroganehammer.com/api/throws", function (throwData) {
-        if (throwData != null) {
-            var throws = [];
-            var count = 0;
-            try{
-                $scope.$apply(function () { $scope.status = "Parsing moves..."; });
-            } catch (err) {
-                $scope.status = "Parsing moves...";
-            }
-            for (var i = 0; i < throwData.length; i++) {
-                var t = throwData[i];
-                throws.push(new Throw(t.id, t.moveId, t.weightDependent));
-            }
-            try {
-                $scope.$apply(function () {
-                    $scope.throws = throws;
-                    $scope.ready();
-                });
-            } catch (err) {
-                $scope.throws = throws;
-                $scope.ready();
-            }
-        }
-    }, null, function () {
-        $scope.status = "Couldn't access API";
     });
 }

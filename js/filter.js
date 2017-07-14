@@ -293,7 +293,6 @@ filter_app.controller('filter', function ($scope) {
 
     $scope.charactersId = [];
     $scope.moves = [];
-    $scope.throws = [];
     $scope.fail = false;
 
     $scope.ready = function (fail) {
@@ -302,38 +301,17 @@ filter_app.controller('filter', function ($scope) {
             $scope.status = "Couldn't access API";
             return;
         }
-        if ($scope.charactersId.length != 0 && $scope.moves.length != 0 && $scope.throws.length != 0) {
-            $scope.status = "Adding throw data to moves...";
-
-            $scope.throws.forEach(function(t, index) {
-                var i = $scope.moves.map(function(move){
-                    return move.api_id;
-                }).indexOf(t.move_id);
-                if(i!=-1){
-                    if($scope.moves[i].throw){
-                        $scope.moves[i].weightDependent = t.weightDependent;
-                        if(t.weightDependent){
-                            $scope.moves[i].type += ",WeightDependentThrow";
-                        }
-                    }
-                }
-            });
-
+        if ($scope.charactersId.length != 0 && $scope.moves.length != 0) {
 
             $scope.status = "";
             $scope.loading = { "display": "none" };
             $scope.filter_interface = { "display": "block" };
             $scope.update();
         } else {
-            if($scope.throws.length == 0){
-                getThrowData($scope);
-                $scope.status = "Getting throw data...";
-            }else{
-                if($scope.moves.length == 0){
-                    getAllMoves($scope);
-                    $scope.status = "Parsing moves...";
-                }
-            }
+			if ($scope.moves.length == 0) {
+				getAllMoves($scope);
+				$scope.status = "Parsing moves...";
+			}
         }
     }
 

@@ -3,50 +3,47 @@
     "group": 1,
     "tag": "Subaction",
     "allEntries": true,
-    "values": 
-      [
-        null,
-        null,
-        "FAF",
-        "Intangibility start frame",
-        "Intangibility end frame",
-        null
-      ]
-    
+    "values": [
+      "Animation Loop Flag",
+      "Loop Transition Frame",
+      "FAF",
+      "Intangibility start frame",
+      "Intangibility end frame",
+      null
+    ]
+
   },
   {
     "group": 4,
     "tag": "Environment Collision Box (ECB)",
     "allEntries": true,
-    "values": 
-      [
-        "Bone",
-        "X",
-        "Y",
-        "Z"
-      ]
-    
+    "values": [
+      "Bone",
+      "X",
+      "Y",
+      "Z"
+    ]
+
   },
   {
     "group": 5,
     "tag": "Hurtboxes",
     "allEntries": true,
-    "values": 
-      [
-        "X",
-        "Y",
-        "Z",
-        "WarpX",
-        "WarpY",
-        "WarpZ",
-        "Size",
-        "Bone",
-        "Part?",
-        "Zone",
-        null,
-        null
-      ]
-    
+    "values": [
+      "X",
+      "Y",
+      "Z",
+      "X2",
+      "Y2",
+      "Z2",
+      "Size",
+      "Bone",
+      "Part?",
+      "Zone",
+      null,
+      null
+    ]
+
   },
   {
     "group": 7,
@@ -75,10 +72,54 @@
       }
     ],
     "values": [
-      "Z1",
+      "X1",
       "Y1",
-      "Z2",
+      "X2",
       "Y2"
     ]
+  },
+  {
+    "group": 8,
+    "tag": "Final Smash Aura Bones",
+    "allEntries": true,
+    "values": [
+      "Bone",
+      "X",
+      "Y",
+      "Z",
+      "Height",
+      "Width"
+    ]
+
+  },
+  {
+    "group": 9,
+    "tag": "Item Placement",
+    "allEntries": true,
+    "values": [
+      "Bone",
+      "X",
+      "Y",
+      "Z",
+      "X Rotation",
+      "Y Rotation",
+      "Z Rotation"
+    ]
+
+  },
+  {
+    "group": 10,
+    "tag": "Gooey Bomb/Pikmin? Placement",
+    "allEntries": true,
+    "values": [
+      "Bone",
+      "X",
+      "Y",
+      "Z",
+      "X Rotation",
+      "Y Rotation",
+      "Z Rotation"
+    ]
+
   }
 ]
