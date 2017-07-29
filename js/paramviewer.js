@@ -20,6 +20,8 @@ function sorted_characters() {
 sorted_characters();
 
 function getCharGameName(name) {
+	if (names.indexOf(name) < 0)
+		return null;
     return gameNames[names.indexOf(name)];
 };
 
@@ -71,7 +73,7 @@ app.controller('paramviewer', function ($scope) {
     $scope.app = 'params';
 
     $scope.characters = names;
-    $scope.character = character;
+	$scope.character = character;
 
     $scope.params = getParams(gamename);
 
@@ -102,7 +104,9 @@ app.controller('paramviewer', function ($scope) {
 
     $scope.updateCharacter = function () {
         character = $scope.character;
-        gamename = getCharGameName(character);
+		gamename = getCharGameName(character);
+		if (gamename == null)
+			gamename = character;
         $scope.params = getParams(gamename);
         $scope.groups = $scope.params;
         $scope.group = "0";

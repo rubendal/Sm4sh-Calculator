@@ -606,7 +606,7 @@ app.controller('calculator', function ($scope) {
 
         smashcount = $scope.it_moves ? ($scope.it_charge ? smashcount : 0) : $scope.it_charge && is_smash ? 1 : 0;
         var imod = $scope.inc_mod && $scope.it_targets ? 23 : ($scope.inc_mod ? (target.modifiers.length > 0 ? target.modifiers.length - 1 : 0) : 0);
-        //var istale = $scope.it_stale ? 10 : 1;
+        //var istale = $scope.it_stale ? 10 : 1; Removed cause all queue iteraions = 9! (which is 362880)
         var istale = 1;
         var ikbmod = $scope.it_kb_mod ? 3 : 1;
         var imoves = $scope.it_moves ? ($scope.moveset.length > 1 ? $scope.moveset.length - 1 : 1) : 1;
