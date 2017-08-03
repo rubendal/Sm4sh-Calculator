@@ -2162,7 +2162,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, electric, percent, di, launch_rate) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, electric, percent, set_weight, di, launch_rate) {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -2174,7 +2174,8 @@ class Knockback {
         this.angle = angle;
         this.gravity = gravity;
         this.aerial = aerial;
-        this.windbox = windbox;
+		this.windbox = windbox;
+		this.set_weight = set_weight;
         this.tumble = false;
         this.can_jablock = false;
         this.di_able = false;
@@ -2223,7 +2224,7 @@ class Knockback {
             this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
             this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
             this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
-            if(!this.tumble){
+			if (!this.tumble || this.set_weight){
                 this.add_gravity_speed = 0;
             }
             this.can_jablock = false;
@@ -2245,8 +2246,8 @@ class Knockback {
             this.launch_speed = LaunchSpeed(this.kb);
             this.horizontal_launch_speed = LaunchSpeed(this.x);
             this.vertical_launch_speed = LaunchSpeed(this.y);
-            
-            if(this.tumble){
+
+			if (this.tumble && !this.set_weight) {
                 this.vertical_launch_speed += this.add_gravity_speed;
 				//Gravity boost changes launch angle
 				var x_ref = Math.cos(this.angle * Math.PI / 180);
