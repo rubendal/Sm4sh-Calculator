@@ -740,15 +740,17 @@ app.controller('calculator', function ($scope) {
                 luma_vskb.addModifier(attacker.modifier.kb_dealt);
                 luma_trainingkb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
-                resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
-                resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
+				resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
+				resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
+				resultList.push(new Result("Luma hitstun", LumaHitstun(luma_trainingkb.kb, windbox, electric), LumaHitstun(luma_vskb.kb, windbox, electric), luma_trainingkb.tumble, luma_vskb.tumble));
             } else {
                 var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, electric, di);
                 var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
-                resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
+				resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
+				resultList.push(new Result("Luma hitstun", LumaHitstun(luma_trainingkb.kb, windbox, electric), LumaHitstun(luma_vskb.kb, windbox, electric), luma_trainingkb.tumble, luma_vskb.tumble));
             }
         }
 

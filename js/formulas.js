@@ -177,6 +177,21 @@ function Hitstun(kb, windbox, electric, ignoreReeling) {
     return hitstun;
 }
 
+function LumaHitstun(kb, windbox, electric) {
+	if (windbox) {
+		return 0;
+	}
+	var hitstun = Math.floor(kb * 0.27) - 1;
+	//Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
+	if (ElectricMove(electric)) {
+		hitstun++;
+	}
+	if (hitstun < 0) {
+		return 0;
+	}
+	return hitstun;
+}
+
 function SakuraiAngle(kb, aerial) {
     if (aerial) {
         return (.79 * 180 / Math.PI);

@@ -1030,7 +1030,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.training = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun") {
                 this.training = training + (training == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.training = "Frame " + training;
@@ -1043,7 +1043,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.vs = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun") {
+			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun") {
                 this.vs = vs + (vs == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.vs = "Frame " + vs;
