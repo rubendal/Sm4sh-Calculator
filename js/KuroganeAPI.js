@@ -631,7 +631,7 @@ class Move {
 		this.updateMoveData = function () {
 			if (this.character == "Olimar") {
 				if (this.name.includes("Fsmash") || this.name.includes("Dsmash") || this.name.includes("Usmash") || this.name.includes("Uair") || this.name.includes("Dair")
-					|| this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("throw")) {
+					|| this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("Uthrow")) {
 
 					if (this.moveName == "Dsmash (Purple Pikmin, Late)") {
 						this.pikminColor = "Purple";
