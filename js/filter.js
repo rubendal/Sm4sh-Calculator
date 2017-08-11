@@ -92,12 +92,15 @@ class CharacterId {
         this.color = color;
     }
 
-    static getName(list, id){
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].id == id) {
-                return list[i];
-            }
-        }
+	static getName(list, id) {
+		if (id < list.length + 1) {
+			return list[id-1];
+		}
+        //for (var i = 0; i < list.length; i++) {
+        //    if (list[i].id == id) {
+        //        return list[i];
+        //    }
+        //}
         return null;
     }
 
@@ -108,7 +111,17 @@ class CharacterId {
             }
         }
         return -1;
-    }
+	}
+
+	static sort(a, b) {
+		if (a.id < b.id) {
+			return -1;
+		}
+		if (a.id > b.id) {
+			return 1;
+		}
+		return 0;
+	}
 };
 
 class RegexMap{
@@ -169,8 +182,8 @@ class Condition {
         if (this.condition.includes("character:")) {
             this.type = "Character";
 
-            this.eval = function (move) {
-                var character = CharacterId.getName(characterListId, move.character);
+			this.eval = function (move) {
+				var character = move.characterData;
                 if(character == null){
                     return false;
                 }
@@ -320,7 +333,7 @@ filter_app.controller('filter', function ($scope) {
     $scope.filter_interface = { "display": "none" };
 
     getCharactersId(KHcharacters, $scope);
-    
+	$scope.charactersId.sort(CharacterId.sort);
 
     $scope.hitbox_start = 0;
     $scope.hitbox_start2 = 0;
@@ -559,7 +572,7 @@ filter_app.controller('filter', function ($scope) {
                         }
                     }
                 }
-                var name = CharacterId.getName($scope.charactersId, move.character);
+				var name = move.characterData;
                 if (name != null) {
                     $scope.filteredMoves.push(new FilterListItem(name, move));
                 }

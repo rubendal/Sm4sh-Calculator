@@ -624,6 +624,79 @@ class Move {
 		//Check if move can be used in the calculator
 		if (isNaN(this.base_damage) && isNaN(this.angle) && isNaN(this.bkb) && isNaN(this.kbg))
 			this.valid = false;
+
+		//New data
+		this.pikminColor = null;
+
+		this.updateMoveData = function () {
+			if (this.character == "Olimar") {
+				if (this.name.includes("Fsmash") || this.name.includes("Dsmash") || this.name.includes("Usmash") || this.name.includes("Uair") || this.name.includes("Dair")
+					|| this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("throw")) {
+
+					if (this.moveName == "Dsmash (Purple Pikmin, Late)") {
+						this.pikminColor = "Purple";
+					} else {
+						switch (this.hitbox_no) {
+							case 0:
+								this.pikminColor = "Red";
+								break;
+							case 1:
+								this.pikminColor = "Yellow";
+								break;
+							case 2:
+								this.pikminColor = "Blue";
+								break;
+							case 3:
+								this.pikminColor = "White";
+								break;
+							case 4:
+								this.pikminColor = "Purple";
+								break;
+						}
+					}
+					//Apply damage multipliers
+					switch (this.pikminColor) {
+						case "Red":
+							if (this.throw) {
+								this.base_damage *= 0.8;
+							} else {
+								this.base_damage *= 1.2;
+							}
+							this.base_damage = +this.base_damage.toFixed(1);
+							break;
+						case "Yellow":
+
+							break;
+						case "Blue":
+							if (this.throw) {
+								this.base_damage *= 1.6;
+							}
+							this.base_damage = +this.base_damage.toFixed(1);
+							break;
+						case "White":
+							if (!this.throw) {
+								this.base_damage *= 0.8;
+							}
+							this.base_damage = +this.base_damage.toFixed(1);
+							break;
+						case "Purple":
+							if (!this.throw) {
+								this.base_damage *= 1.4;
+							}
+							this.base_damage = +this.base_damage.toFixed(1);
+							break;
+					}
+
+					if (this.pikminColor != null) {
+						this.name = this.moveName + " (" + this.pikminColor + ")";
+					}
+				}
+			}
+
+			return this;
+		}
+
+
     }
 };
 
@@ -644,7 +717,7 @@ function getMoveset(attacker, $scope) {
                             var m = parser.moves[c];
                             m.id = count;
                             if (!m.grab && m.valid) {
-                                moves.push(m.addCharacter(attacker.name));
+                                moves.push(m.addCharacter(attacker.name).updateMoveData());
                                 count++;
                             }
                         }
@@ -735,14 +808,17 @@ function getAllMoves($scope) {
                 $scope.$apply(function () { $scope.status = "Parsing moves..."; });
             } catch (err) {
                 $scope.status = "Parsing moves...";
-            }
+			}
+
             for (var i = 0; i < moveset.length; i++) {
                 var move = moveset[i];
                 var parser = new MoveParser(move.InstanceId, move.Name, move.BaseDamage, move.Angle, move.BaseKnockBackSetKnockback, move.KnockbackGrowth, move.HitboxActive, move.FirstActionableFrame, move.LandingLag, move.AutoCancel, move.IsWeightDependent, false);
                 for (var c = 0; c < parser.moves.length; c++) {
-                    var m = parser.moves[c];
-                    m.id = count;
-                    moves.push(m.addCharacter(move.OwnerId));
+					var m = parser.moves[c];
+					var characterName = $scope.charactersId[move.OwnerId - 1].name;
+					m.characterData = $scope.charactersId[move.OwnerId - 1];
+					m.id = count;
+					moves.push(m.addCharacter(characterName).updateMoveData());
                     count++;
                 }
             }
