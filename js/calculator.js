@@ -32,10 +32,12 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = hitframe;
     $scope.faf = faf;
     $scope.shieldDamage = 0;
-    $scope.charging_frames_type = "Charging frames";
+	$scope.charging_frames_type = "Charging frames";
+
+	$scope.effects = effects;
+	$scope.effect = effects[0].name;
 
     $scope.set_weight = false;
-    $scope.paralyzer = false;
 
     $scope.hitbox_active_index = 0;
 
@@ -190,12 +192,13 @@ app.controller('calculator', function ($scope) {
 
     $scope.checkCounterVisibility = function () {
         $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
-    }
+	}
 
-    $scope.updateParalyzer = function () {
-        $scope.set_weight = $scope.paralyzer;
-        $scope.update();
-    }
+	$scope.updateEffect = function () {
+		if ($scope.effect == "Paralyze" || $scope.effect == "Bury")
+			$scope.set_weight = true;
+		$scope.update();
+	}
 
     $scope.charging = function(){
         $scope.checkSmashVisibility();
@@ -597,7 +600,7 @@ app.controller('calculator', function ($scope) {
         $scope.lumaclass = { "display": target.name == "Rosalina And Luma" ? "block" : "none" };
         $scope.lumaPercent = 0;
         $scope.update();
-    }
+	}
 
     $scope.calculate = function (){
         var result = { 'training': [], 'vs': [], 'shield': [] };
@@ -663,8 +666,8 @@ app.controller('calculator', function ($scope) {
         var resultList = [];
         resultList.push(new Result("Damage", damage, StaleDamage(damage, stale, ignoreStale)));
         if (!paralyzer) {
-            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, HitlagElectric(electric), 1), Hitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, HitlagElectric(electric), 1)));
-            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, HitlagElectric(electric), HitlagCrouch(crouch)), Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric), HitlagCrouch(crouch))));
+            resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, electric, 1), Hitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, electric, 1)));
+            resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, electric, HitlagCrouch(crouch)), Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric, HitlagCrouch(crouch))));
         } else {
             resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, 1)));
         }
@@ -677,7 +680,10 @@ app.controller('calculator', function ($scope) {
         }
         if (paralyzer) {
             resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
-        }
+		}
+		if (flower) {
+			resultList.push(new Result("Flower time", FlowerTime(damage), FlowerTime(StaleDamage(damage, stale, ignoreStale))));
+		}
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
 
         resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
@@ -762,9 +768,9 @@ app.controller('calculator', function ($scope) {
                 resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(4), +(50 * target.modifier.shield).toFixed(4)));
                 resultList.push(new Result("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No", sv >= 50 * target.modifier.shield ? "Yes" : "No"));
 			}
-			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, HitlagElectric(electric)), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, HitlagElectric(electric))));
+			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, electric), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric)));
             resultList.push(new Result("Shield stun", ShieldStun(damage, is_projectile, powershield), ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)));            
-            resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, HitlagElectric(electric), powershield)));
+            resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield)));
         } else {
             resultList.push(new Result("Unblockable attack", "Yes", "Yes"));
         }
@@ -827,9 +833,9 @@ app.controller('calculator', function ($scope) {
         powershield = $scope.shield == "power";
         is_projectile = $scope.is_projectile == true;
 
-        megaman_fsmash = $scope.megaman_fsmash;
+		megaman_fsmash = $scope.megaman_fsmash;
+		electric = $scope.effect == "Electric";
         witch_time_smash_charge = $scope.witch_time_charge;
-        electric = $scope.hitlag_modifier;
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
@@ -859,7 +865,8 @@ app.controller('calculator', function ($scope) {
 
         set_weight = $scope.set_weight;
 
-        paralyzer = $scope.paralyzer;
+		paralyzer = $scope.effect == "Paralyze";
+		flower = $scope.effect == "Flower";
         
         launch_rate = parseFloat($scope.launch_rate);
 

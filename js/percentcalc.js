@@ -440,7 +440,7 @@ app.controller('calculator', function ($scope) {
 
         megaman_fsmash = $scope.megaman_fsmash;
         witch_time_smash_charge = $scope.witch_time_charge;
-        electric = $scope.hitlag_modifier;
+        electric = false;
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;

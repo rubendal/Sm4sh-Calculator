@@ -85,11 +85,6 @@
                         <img class="icon" src="./img/icon.png" />
                         Wiki
                     </a>
-                    <br />
-                    <a href="http://calculator.kuroganehammer.com/swagger/ui/" target="_blank" class="header-link">
-                        <img class="icon" src="./img/icon.png" />
-                        API
-                    </a>
                 </span>
             </span>
             <span id="theme">
@@ -294,8 +289,12 @@
                         <input type="checkbox" name="ignoreStale" ng-model="ignoreStale" ng-change="update()" />Ignores staleness
                         <br />
                         <input type="checkbox" name="set_weight" ng-model="set_weight" ng-change="update()" />Set weight
-                        <br/>
-                        <input type="checkbox" name="paralyzer" ng-model="paralyzer" ng-change="updateParalyzer()" />Paralyzer
+                        <br />
+                        <br />
+                        Effect:
+                        <select id="effect" ng-model="effect" ng-change="updateEffect()">
+                            <option ng:repeat="e in effects" ng-attr-value="{{e.name}}">{{e.name}}</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -328,14 +327,6 @@
                             <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="crouch" ng-change="update()" />Crouch cancel
                             <br />
                             <input type="radio" name="kbMod" ng-model="kb_modifier" ng-attr-value="charging" ng-change="update()" />Interrupted charged smash attack
-                        </div>
-                        <br/>
-                        <div id="hitlag_modifiers">
-                            Hitlag modifiers
-                            <br />
-                            <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="electric" ng-change="update()" />Electric attack
-                            <br />
-                            <input type="radio" name="hitlagMod" ng-model="hitlag_modifier" ng-attr-value="none" ng-change="update()" />None
                         </div>
                     </div>
                 </div>

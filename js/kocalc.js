@@ -32,10 +32,12 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = hitframe;
     $scope.faf = faf;
     $scope.shieldDamage = 0;
-    $scope.charging_frames_type = "Charging frames";
+	$scope.charging_frames_type = "Charging frames";
+
+	$scope.effects = effects;
+	$scope.effect = effects[0].name;
 
     $scope.set_weight = false;
-    $scope.paralyzer = false;
 
     $scope.hitbox_active_index = 0;
 
@@ -198,12 +200,13 @@ app.controller('calculator', function ($scope) {
 
     $scope.checkCounterVisibility = function () {
         $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
-    }
+	}
 
-    $scope.updateParalyzer = function () {
-        $scope.set_weight = $scope.paralyzer;
-        $scope.update();
-    }
+	$scope.updateEffect = function () {
+		if ($scope.effect == "Paralyze")
+			$scope.set_weight = true;
+		$scope.update();
+	}
 
     $scope.charging = function(){
         $scope.checkSmashVisibility();
@@ -1300,7 +1303,7 @@ app.controller('calculator', function ($scope) {
 
         megaman_fsmash = $scope.megaman_fsmash;
         witch_time_smash_charge = $scope.witch_time_charge;
-        electric = $scope.hitlag_modifier;
+        electric = $scope.effect == "Electric";
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
@@ -1326,7 +1329,7 @@ app.controller('calculator', function ($scope) {
 
         set_weight = $scope.set_weight;
 
-        paralyzer = $scope.paralyzer;
+        paralyzer = $scope.effect == "Paralyze";
         
         launch_rate = parseFloat($scope.launch_rate);
 

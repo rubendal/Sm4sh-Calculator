@@ -147,16 +147,6 @@ function StaleNegation(queue, ignoreStale) {
     return s;
 }
 
-function ElectricMove(value) {
-    switch (value) {
-        case "electric":
-            return true;
-        case "none":
-            return false;
-    }
-    return false;
-}
-
 function Hitstun(kb, windbox, electric, ignoreReeling) {
     if (windbox) {
         return 0;
@@ -168,7 +158,7 @@ function Hitstun(kb, windbox, electric, ignoreReeling) {
         }
     }
     //Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
-    if (ElectricMove(electric)) {
+	if (electric) {
         hitstun++;
     }
     if (hitstun < 0) {
@@ -183,7 +173,7 @@ function LumaHitstun(kb, windbox, electric) {
 	}
 	var hitstun = Math.floor(kb * 0.27) - 1;
 	//Electric moves deal +1 hitstun https://twitter.com/Meshima_/status/786780420817899521
-	if (ElectricMove(electric)) {
+	if (electric) {
 		hitstun++;
 	}
 	if (hitstun < 0) {
@@ -240,7 +230,7 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox, elect
     var aerial = false;
     var launch_speed = { 'x': launch_speed_x, 'y': launch_speed_y };
     var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
-    var ec = ElectricMove(electric) ? 1 : 0;
+	var ec = electric ? 1 : 0;
     for (var i = 0; i < hitstun; i++) {
         if (launch_speed.x != 0) {
             var x_dir = launch_speed.x / Math.abs(launch_speed.x);
@@ -282,7 +272,11 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox, elect
 }
 
 function Hitlag(base_damage, hitlag_mult, electric, crouch) {
-    var h = Math.floor((((base_damage * parameters.hitlag.mult + parameters.hitlag.constant) * electric) * hitlag_mult) * crouch) - 1;
+	var electric_mult = 1;
+	if (electric) {
+		electric_mult = 1.5;
+	}
+	var h = Math.floor((((base_damage * parameters.hitlag.mult + parameters.hitlag.constant) * electric_mult) * hitlag_mult) * crouch) - 1;
     if (h > 30) {
         return 30;
     }
@@ -290,25 +284,6 @@ function Hitlag(base_damage, hitlag_mult, electric, crouch) {
         return 0;
     }
     return h;
-}
-
-function ParalyzerHitlag(base_damage, hitlag_mult, crouch) {
-    var h = Math.floor(((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult * crouch * parameters.paralyzer.mult);
-    if (h < 0) {
-        return 0;
-    }
-    return h;
-}
-
-function ParalysisTime(kb, base_damage, hitlag_mult, crouch) {
-    var p = Math.floor((((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult) * crouch * parameters.paralyzer.mult * kb);
-    if (p > 76) {
-        return 76;
-    }
-    if (p < 0) {
-        return 0;
-    }
-    return p;
 }
 
 function ChargeSmash(base_damage, frames, megaman_fsmash, witch_time) {
@@ -388,6 +363,30 @@ function LaunchSpeed(kb){
 
 function HitAdvantage(hitstun, hitframe, faf) {
     return hitstun - (faf - (hitframe + 1));
+}
+
+//Effect formulas
+function ParalyzerHitlag(base_damage, hitlag_mult, crouch) {
+	var h = Math.floor(((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult * crouch * parameters.paralyzer.mult);
+	if (h < 0) {
+		return 0;
+	}
+	return h;
+}
+
+function ParalysisTime(kb, base_damage, hitlag_mult, crouch) {
+	var p = Math.floor((((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult) * crouch * parameters.paralyzer.mult * kb);
+	if (p > 76) {
+		return 76;
+	}
+	if (p < 0) {
+		return 0;
+	}
+	return p;
+}
+
+function FlowerTime(damage) {
+	return Math.min(Math.floor(20 + (damage * 40)),3000);
 }
 
 //Launch visualizer formulas

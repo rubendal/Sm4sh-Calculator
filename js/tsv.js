@@ -156,7 +156,10 @@ app.controller('calculator', function ($scope) {
     $scope.di = di;
     $scope.noDI = true;
 
-    $scope.set_weight = false;
+	$scope.set_weight = false;
+
+	$scope.effects = effects;
+	$scope.effect = effects[0].name;
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
@@ -223,7 +226,13 @@ app.controller('calculator', function ($scope) {
 
     $scope.checkCounterVisibility = function () {
         $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
-    }
+	}
+
+	$scope.updateEffect = function () {
+		if ($scope.effect == "Paralyze")
+			$scope.set_weight = true;
+		$scope.update();
+	}
 
     $scope.charging = function(){
         $scope.checkSmashVisibility();
@@ -551,7 +560,7 @@ app.controller('calculator', function ($scope) {
 
         megaman_fsmash = $scope.megaman_fsmash;
         witch_time_smash_charge = $scope.witch_time_charge;
-        electric = $scope.hitlag_modifier;
+        electric = $scope.effect == "Electric";
         crouch = $scope.kb_modifier;
 
         is_smash = $scope.is_smash;
@@ -575,7 +584,9 @@ app.controller('calculator', function ($scope) {
 
         shieldDamage = parseFloat($scope.shieldDamage);
 
-        set_weight = $scope.set_weight;
+		set_weight = $scope.set_weight;
+
+		paralyzer = $scope.effect == "Paralyze";
         
         //$scope.changeCharacters($scope.inc_mod, $scope.inc_cust);
 

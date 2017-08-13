@@ -116,7 +116,7 @@ var paramsList = [
     new Parameter("hitFrame", "9"),
     new Parameter("faf", "26"),
     new Parameter("kbModifier", "none"),
-    new Parameter("electric", "0"),
+    new Parameter("effect", "None/Other"),
     new Parameter("lsi", "none"),
     new Parameter("bounce", "0"),
     new Parameter("projectile", "0"),
@@ -165,7 +165,6 @@ var paramsList = [
     new Parameter("launchRate", "1"),
     new Parameter("pParalConst", defaultParameters.paralyzer.constant),
     new Parameter("pParalMult", defaultParameters.paralyzer.mult),
-    new Parameter("paralyzer", "0"),
     new Parameter("useLandingLag","no")
 ];
 
@@ -259,8 +258,8 @@ function buildParams($scope) {
         params.push(new Parameter(paramsList[22].param, $scope.kb_modifier));
     }
     if ($scope.app != "kbcalculator") {
-        if (paramsList[23].value != boolToString($scope.hitlag_modifier == "electric")) {
-            params.push(new Parameter(paramsList[23].param, boolToString($scope.hitlag_modifier == "electric")));
+		if (paramsList[23].value != $scope.effect) {
+			params.push(new Parameter(paramsList[23].param, $scope.effect));
         }
     }
     if (paramsList[25].value != boolToString($scope.kb_modifier_bounce)) {
@@ -410,11 +409,8 @@ function buildParams($scope) {
         if (paramsList[71].value != $scope.params.paralyzer.mult) {
             params.push(new Parameter(paramsList[71].param, $scope.params.paralyzer.mult));
         }
-        if (paramsList[72].value != $scope.paralyzer) {
-            params.push(new Parameter(paramsList[72].param, boolToString($scope.paralyzer)));
-        }
-        if (paramsList[73].value != $scope.use_landing_lag) {
-            params.push(new Parameter(paramsList[73].param, $scope.use_landing_lag));
+        if (paramsList[72].value != $scope.use_landing_lag) {
+            params.push(new Parameter(paramsList[72].param, $scope.use_landing_lag));
         }
     } else if ($scope.app == "kbcalculator") {
         if (paramsList[43].value != $scope.kb) {
@@ -556,9 +552,12 @@ function mapParams($scope) {
     if (param) {
         $scope.faf = parseFloat(param);
     }
-    param = Parameter.get(get_params, "electric");
-    if (param) {
-        $scope.hitlag_modifier = param == "1" ? "electric" : "none";
+    param = Parameter.get(get_params, "effect");
+	if (param) {
+		console.log($scope.effect);
+		$scope.effect = param;
+		console.log($scope.effect);
+		$scope.updateEffect();
     }
     param = Parameter.get(get_params, "kbModifier");
     if (param) {
@@ -801,12 +800,6 @@ function mapParams($scope) {
             $scope.set_weight = param == 1;
         }
     }
-    param = Parameter.get(get_params, "paralyzer");
-    if (param) {
-        if ($scope.paralyzer != undefined) {
-            $scope.paralyzer = param == 1;
-        }
-    }
     param = Parameter.get(get_params, "theme");
     if (param) {
         $scope.theme = param;
@@ -1030,7 +1023,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.training = "Invalid data";
         } else {
-            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun") {
+            if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun" || name == "Flower time") {
                 this.training = training + (training == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.training = "Frame " + training;
@@ -1043,7 +1036,7 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.vs = "Invalid data";
         } else {
-			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun") {
+			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun" || name == "Flower time") {
                 this.vs = vs + (vs == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.vs = "Frame " + vs;
@@ -2701,16 +2694,6 @@ function HitlagCrouch(value) {
     return 1;
 }
 
-function HitlagElectric(value) {
-    switch (value) {
-        case "electric":
-            return 1.5;
-        case "none":
-            return 1;
-    }
-    return 1;
-}
-
 var hitframe = 9;
 var faf = 26;
 
@@ -2722,7 +2705,7 @@ var is_projectile = false;
 
 var megaman_fsmash = false;
 var witch_time_smash_charge = false;
-var electric = "none";
+var electric = false;
 var crouch = "none";
 var is_smash = false;
 
@@ -2749,5 +2732,13 @@ var stock_dif = "0";
 
 var set_weight = false;
 var paralyzer = false;
+var flower = false;
 
 var launch_rate = 1;
+
+var effects = [
+	{ id: 0, name: "None/Other" },
+	{ id: 3, name: "Electric" },
+	{ id: 20, name: "Paralyze" },
+	{ id: 14, name: "Flower" }	
+];
