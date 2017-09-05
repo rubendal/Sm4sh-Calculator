@@ -4,10 +4,12 @@ Web based Smash 4 knockback calculator
 ### KH API and HTTPS
 To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for move list, switching the url to http will solve this issue
 
+A label "API doesn't work with https" should appear next to move select box which is a link to http version of the web page
+
 ### How to use it
 Just input your data, the calculator will update the results when you change something
 
-If the API is not available or having issues you can fill move related data (Base damage, Angle, BKB, KBG) using [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
+If the API is not available or having issues you can fill move related data (Base damage, Angle, BKB, WBKB, KBG and frame data) using [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 #### Launch Visualizer
 Note: Stage layout collision detection might give weird results and bounced trajectories are not accurate, character models/ECBs/animations not included so KO percents are not accurate
@@ -25,6 +27,8 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 http://rubendal.github.io/Sm4sh-Calculator/kocalc.html
 
 Calculates opponent's KO percentages on inputted position on a stage, it can also calculate best DI angle the opponent can use to survive on that position or generate a vector field to get best di possible on various positions however this calculation is a heavy process so it could freeze the page for a moment or even get a popup that the page isn't responding
+
+Reminder: character models/ECBs/animations not included so KO percents are not accurate by a small margin
 
 ### Percentage Calculator
 http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
@@ -45,10 +49,12 @@ View character scripts that contain hitbox/throw data
 
 All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files with a flag for those that contain hitboxes
 
+Scripts version: 1.1.6/1.1.7
+
 ### Script Search
 http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html
 
-Search all character game.bin scripts that match certain regular expression, can use a negative regular expression to make easier expressions and filter by script Name
+Search all character game.bin scripts that match certain regular expression on each line, can use a negative regular expression to make easier expressions and filter by script Name
 
 Usually useful if you want to research certain hitboxes or events with certain parameters like SDI, trip chance or unknown events found in all character scripts
 
