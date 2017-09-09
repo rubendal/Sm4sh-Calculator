@@ -36,7 +36,9 @@ var defaultParameters = {
     bounce: 0.8,
     crouch_cancelling: 0.85,
     crouch_hitlag: 0.67,
-    interrupted_smash: 1.2,
+	interrupted_smash: 1.2,
+	buried_kb_mult: 0.7,
+	buried_kb_threshold: 70,
     hitstun: 0.4,
     launch_speed: 0.03,
     tumble_threshold: 32,
@@ -2679,7 +2681,9 @@ function KBModifier(value) {
         case "grounded":
             return 1; //0.8 applied after hitstun
         case "charging":
-            return parameters.interrupted_smash;
+			return parameters.interrupted_smash;
+		case "buried":
+			return parameters.buried_kb_mult;
         case "none":
             return 1;
     }

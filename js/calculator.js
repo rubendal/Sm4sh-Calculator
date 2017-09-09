@@ -671,7 +671,11 @@ app.controller('calculator', function ($scope) {
         } else {
             resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, 1)));
         }
-        resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
+		resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
+		if ($scope.kb_modifier == "buried") {
+			resultList.push(new Result("Buried removed", trainingkb.kb >= parameters.buried_kb_threshold ? "Yes" : "No", vskb.kb >= parameters.buried_kb_threshold ? "Yes" : "No"));
+		}
+
         resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(4), +vskb.angle_with_di.toFixed(4), !trainingkb.di_able, !vskb.di_able));
         resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(4), +vskb.angle.toFixed(4)));
         if (angle <= 361) {
@@ -734,7 +738,7 @@ app.controller('calculator', function ($scope) {
         }
         if (!ignoreStale) {
             resultList.splice(0, 0, new Result("Stale-move negation", "x" + "1", "x" + +StaleNegation(stale, ignoreStale).toFixed(4),true));
-        }
+		}
 
         resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
 
