@@ -391,6 +391,12 @@ function FlowerTime(damage) {
 	return Math.min(Math.floor(20 + (damage * 40)),3000);
 }
 
+function BuriedTime(percent, damage, kb) {
+	if (kb == 0)
+		return 0;
+	return Math.ceil(55 + (Math.min(percent + damage, 999)*0.5) + (kb * 1.5));
+}
+
 //Launch visualizer formulas
 
 function InvertXAngle(angle){

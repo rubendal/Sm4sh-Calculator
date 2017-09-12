@@ -688,6 +688,9 @@ app.controller('calculator', function ($scope) {
 		if (flower) {
 			resultList.push(new Result("Flower time", FlowerTime(damage), FlowerTime(StaleDamage(damage, stale, ignoreStale))));
 		}
+		if (bury) {
+			resultList.push(new Result("Buried time", BuriedTime(target_percent + preDamage, damage, trainingkb.kb), BuriedTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
+		}
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
 
         resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
@@ -871,6 +874,7 @@ app.controller('calculator', function ($scope) {
 
 		paralyzer = $scope.effect == "Paralyze";
 		flower = $scope.effect == "Flower";
+		bury = $scope.effect == "Bury";
         
         launch_rate = parseFloat($scope.launch_rate);
 
