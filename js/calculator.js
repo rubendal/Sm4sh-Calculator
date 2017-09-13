@@ -195,7 +195,7 @@ app.controller('calculator', function ($scope) {
 	}
 
 	$scope.updateEffect = function () {
-		if ($scope.effect == "Paralyze" || $scope.effect == "Bury")
+		if ($scope.effect == "Paralyze" || $scope.effect == "Bury" || $scope.effect == "Sleep")
 			$scope.set_weight = true;
 		$scope.update();
 	}
@@ -691,6 +691,9 @@ app.controller('calculator', function ($scope) {
 		if (bury) {
 			resultList.push(new Result("Buried time", BuriedTime(target_percent + preDamage, damage, trainingkb.kb), BuriedTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
 		}
+		if (sleep) {
+			resultList.push(new Result("Sleep time", SleepTime(target_percent + preDamage, damage, trainingkb.kb), SleepTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
+		}
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
 
         resultList.push(new Result("First Actionable Frame",FirstActionableFrame(trainingkb.base_kb, windbox, electric),FirstActionableFrame(vskb.base_kb, windbox, electric)));
@@ -875,6 +878,7 @@ app.controller('calculator', function ($scope) {
 		paralyzer = $scope.effect == "Paralyze";
 		flower = $scope.effect == "Flower";
 		bury = $scope.effect == "Bury";
+		sleep = $scope.effect == "Sleep";
         
         launch_rate = parseFloat($scope.launch_rate);
 
