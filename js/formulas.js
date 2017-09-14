@@ -397,11 +397,11 @@ function BuriedTime(percent, damage, kb) {
 	return Math.ceil(55 + (Math.min(percent + damage, 999)*0.5) + (kb * 1.5));
 }
 
-//Sleep time formula by Meshima https://twitter.com/Meshima_/status/907974009551122432
+//Sleep time formula by Meshima https://twitter.com/Meshima_/status/908375931101650945
 function SleepTime(percent, damage, kb) {
 	if (kb == 0)
 		return 0;
-	return Math.ceil(60 + (Math.min(percent + damage, 999) * 1) + (kb * 25));
+	return Math.ceil(70 + (Math.min(percent + damage, 999) * 1) + (kb * 25));
 }
 
 //Launch visualizer formulas
