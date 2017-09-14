@@ -195,7 +195,7 @@ app.controller('calculator', function ($scope) {
 	}
 
 	$scope.updateEffect = function () {
-		if ($scope.effect == "Paralyze" || $scope.effect == "Bury" || $scope.effect == "Sleep")
+		if ($scope.effect == "Paralyze" || $scope.effect == "Bury" || $scope.effect == "Sleep" || $scope.effect == "Disable") // || $scope.effect == "Stun") Not sure about stun
 			$scope.set_weight = true;
 		$scope.update();
 	}
@@ -681,18 +681,27 @@ app.controller('calculator', function ($scope) {
         if (angle <= 361) {
             resultList.push(new Result("X", +trainingkb.x.toFixed(4), +vskb.x.toFixed(4)));
             resultList.push(new Result("Y", +trainingkb.y.toFixed(4), +vskb.y.toFixed(4)));
-        }
-        if (paralyzer) {
+		}
+		if (effect == "Paralyze") {
             resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
 		}
-		if (flower) {
+		if (effect == "Flower") {
 			resultList.push(new Result("Flower time", FlowerTime(damage), FlowerTime(StaleDamage(damage, stale, ignoreStale))));
 		}
-		if (bury) {
+		if (effect == "Bury") {
 			resultList.push(new Result("Buried time", BuriedTime(target_percent + preDamage, damage, trainingkb.kb), BuriedTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
 		}
-		if (sleep) {
+		if (effect == "Sleep") {
 			resultList.push(new Result("Sleep time", SleepTime(target_percent + preDamage, damage, trainingkb.kb), SleepTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
+		}
+		if (effect == "Freeze") {
+			resultList.push(new Result("Freeze time", FreezeTime(damage, trainingkb.kb), FreezeTime(StaleDamage(damage, stale, ignoreStale), vskb.kb)));
+		}
+		if (effect == "Stun") {
+			resultList.push(new Result("Stun time", StunTime(trainingkb.kb), StunTime(vskb.kb)));
+		}
+		if (effect == "Disable") {
+			resultList.push(new Result("Disable time", DisableTime(target_percent + preDamage, damage, trainingkb.kb), DisableTime(target_percent + StaleDamage(preDamage, stale, ignoreStale), StaleDamage(damage, stale, ignoreStale), vskb.kb)));
 		}
         resultList.push(new Result("Hitstun", Hitstun(trainingkb.base_kb, windbox, electric), Hitstun(vskb.base_kb, windbox, electric)));
 
@@ -875,10 +884,7 @@ app.controller('calculator', function ($scope) {
 
         set_weight = $scope.set_weight;
 
-		paralyzer = $scope.effect == "Paralyze";
-		flower = $scope.effect == "Flower";
-		bury = $scope.effect == "Bury";
-		sleep = $scope.effect == "Sleep";
+		effect = $scope.effect
         
         launch_rate = parseFloat($scope.launch_rate);
 
@@ -929,9 +935,8 @@ app.controller('calculator', function ($scope) {
 
     mapParams($scope);
 
-    if ($scope.paralyzer && !$scope.set_weight) {
-        $scope.set_weight = true;
-    }
+	if ($scope.effect == "Paralyze" || $scope.effect == "Bury" || $scope.effect == "Sleep" || $scope.effect == "Disable") // || $scope.effect == "Stun") Not sure about stun
+		$scope.set_weight = true;
 
 
     $scope.update();

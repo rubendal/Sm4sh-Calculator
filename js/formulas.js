@@ -404,6 +404,25 @@ function SleepTime(percent, damage, kb) {
 	return Math.ceil(70 + (Math.min(percent + damage, 999) * 1) + (kb * 25));
 }
 
+//Freeze time formula by Meshima https://twitter.com/Meshima_/status/908383003675471872
+function FreezeTime(damage, kb) {
+	if (kb < 52.5)
+		return 0;
+	return Math.ceil(damage * 12);
+}
+
+//Stun time formula by Meshima https://twitter.com/Meshima_/status/908383383486578688
+function StunTime(kb) {
+	return Math.ceil(121 + kb);
+}
+
+//Disable time formula by Meshima https://twitter.com/Meshima_/status/908383535265804288
+function DisableTime(percent, damage, kb) {
+	if (kb == 0)
+		return 0;
+	return Math.ceil(kb + (Math.min(percent + damage, 999) * 1.1));
+}
+
 //Launch visualizer formulas
 
 function InvertXAngle(angle){

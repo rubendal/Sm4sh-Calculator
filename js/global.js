@@ -1025,7 +1025,8 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.training = "Invalid data";
         } else {
-			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun" || name == "Flower time" || name == "Buried time" || name == "Sleep time") {
+			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun"
+				|| name == "Flower time" || name == "Buried time" || name == "Sleep time" || name == "Freeze time" || name == "Stun time" || name == "Disable time") {
                 this.training = training + (training == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.training = "Frame " + training;
@@ -1038,7 +1039,8 @@ class Result {
             this.addStyle({ 'color': 'red' });
             this.vs = "Invalid data";
         } else {
-			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun" || name == "Flower time" || name == "Buried time" || name == "Sleep time") {
+			if (name == "Hitstun" || name == "Attacker Hitlag" || name == "Target Hitlag" || name == "Shield stun" || name == "Shield Hitlag" || name == "Shield Advantage" || name == "Hit Advantage" || name == "Paralysis time" || name == "Reeling hitstun" || name == "Luma hitstun"
+				|| name == "Flower time" || name == "Buried time" || name == "Sleep time" || name == "Freeze time" || name == "Stun time" || name == "Disable time") {
                 this.vs = vs + (vs == 1 ? " frame" : " frames");
             } else if (name == "Airdodge hitstun cancel" || name == "Aerial hitstun cancel" || name == "First Actionable Frame" || name == "Reeling FAF") {
                 this.vs = "Frame " + vs;
@@ -2736,17 +2738,17 @@ var stock_dif = "0";
 
 var set_weight = false;
 var paralyzer = false;
-var flower = false;
-var bury = false;
-var sleep = false;
-
+var effect = "None/Other";
 var launch_rate = 1;
 
 var effects = [
 	{ id: 0, name: "None/Other" },
 	{ id: 3, name: "Electric" },
+	{ id: 4, name: "Freeze" },
 	{ id: 9, name: "Sleep" },
 	{ id: 11, name: "Bury" },
+	{ id: 12, name: "Stun" },
 	{ id: 20, name: "Paralyze" },
-	{ id: 14, name: "Flower" }
+	{ id: 14, name: "Flower" },
+	{ id: 31, name: "Disable" }
 ];
