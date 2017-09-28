@@ -478,7 +478,11 @@
                             DI angle step: <input name="di_step" type="number" min="1" max="90" step="1" ng-model="di_step" /> <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-secondary btn-sm" value="Calculate KO % with best DI" ng-click="calculateDI()" />
                         </div>
                         <div style="margin-top:5px;">
-                            DI angle step: <input name="di_step" type="number" min="10" max="90" step="1" ng-model="di_step_stage" /> <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles on multiple positions" class="btn btn-secondary btn-sm" value="Calculate best DI vector field" ng-click="calculateDIPositions()" />
+                            Target KO'd percent: <input name="percent_ko" type="number" min="0" max="999" step="1" ng-model="percent_ko" /> %
+                            <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-secondary btn-sm" value="Calculate DI based on KO %" ng-click="calculatePercentBasedDI()" />
+                        </div>
+                        <div style="margin-top:5px;">
+                            Vector field DI angle step: <input name="di_step" type="number" min="10" max="90" step="1" ng-model="di_step_stage" /> <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles on multiple positions" class="btn btn-secondary btn-sm" value="Calculate best DI vector field" ng-click="calculateDIPositions()" />
                             <br />
                             <input type="checkbox" ng-model="di_ignore_collisions" /> Ignore positions with stage collisions
                             <br />

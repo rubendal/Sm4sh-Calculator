@@ -120,6 +120,9 @@ app.controller('calculator', function ($scope) {
 
 	$scope.stageName = $scope.stage.stage;
 
+	$scope.percent_ko = 0;
+	$scope.di_step_percent = 1;
+
 	$scope.spawns = ["Center"];
 	for (var i = 0; i < $scope.stage.spawns.length; i++) {
 		$scope.spawns.push(i + 1);
@@ -838,6 +841,114 @@ app.controller('calculator', function ($scope) {
 			max_x = max_y = Math.max(max_x, max_y);
 
 			Plotly.newPlot('res_graph', data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+		}
+		else {
+			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
+		}
+
+	};
+
+	$scope.calculatePercentBasedDI = function () {
+		if ($scope.charge_data == null && $scope.is_smash) {
+			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
+		}
+		if (attacker.name == "Lucario") {
+			base_damage *= Aura(attacker_percent, stock_dif, game_format);
+			preDamage *= Aura(attacker_percent, stock_dif, game_format);
+		}
+		var damage = base_damage;
+		damage *= attacker.modifier.damage_dealt;
+		damage *= target.modifier.damage_taken;
+		preDamage *= attacker.modifier.damage_dealt;
+		preDamage *= target.modifier.damage_taken;
+
+		var step = parseFloat($scope.di_step);
+
+		var list = [];
+		var data = $scope.calc(damage);
+
+		var percent_ko = parseFloat($scope.percent_ko);
+
+		$scope.visualizer_extra = [];
+
+		if (data.ko) {
+			for (var i = 0; i < 360; i += step) {
+				di = i;
+				var data = $scope.calc(damage);
+
+				list.push({ "di": i, "percent": data.ko_percent, "data": data });
+			}
+
+			list.sort(function (a, b) {
+				if (a.percent > b.percent) {
+					return -1;
+				} else if (a.percent < b.percent) {
+					return 1;
+				}
+				return 0;
+			});
+
+			//Compare ko percents with KO'd percent to check
+			var p = null;
+			var error = 1.4;
+
+			if (list[0].percent + error < percent_ko) {
+				$scope.visualizer_extra.push(new Result("Error", "Inputted % is higher than best DI KO %", "", false, true));
+				return;
+			}
+
+
+			if (list[list.length-1].percent - error > percent_ko) {
+				$scope.visualizer_extra.push(new Result("Error", "Inputted % is lower than worst DI KO %", "", false, true));
+				return;
+			}
+
+			var using_error = false;
+
+			//Check if it's between best/worst DI and error variable
+			if (list[0].percent + error >= percent_ko && percent_ko >= list[0].percent) {
+				p = list[0];
+				using_error = true;
+			}else if (list[list.length - 1].percent - error <= percent_ko && percent_ko <= list[list.length - 1].percent) {
+				p = list[list.length - 1];
+				using_error = true;
+			}
+
+			for (var i = 0; i < list.length - 1 && p == null; i++) {
+				if (list[i].percent >= percent_ko && percent_ko >= list[i + 1].percent) {
+					//It's between this percents so it should be the DI used
+					var d1 = list[i].percent - percent_ko;
+					var d2 = percent_ko - list[i + 1].percent;
+					if (d1 <= d2) {
+						p = list[i];
+					} else {
+						p = list[i + 1];
+					}
+					break;
+				}
+			}
+
+			if (p == null) {
+				$scope.visualizer_extra.push(new Result("Error", "Couldn't find DI", "", false, true));
+				return;
+			}
+
+			p.data.distance.doPlot();
+
+			$scope.visualizer_extra.push(new Result("DI angle", p.di, "", false, true));
+			$scope.visualizer_extra.push(new Result("Calculated Target %", +p.percent.toFixed(6).toString() + (using_error ? "*" : ""), "", false, false));
+			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
+			var max_x = p.data.distance.graph_x + 10;
+			var max_y = p.data.distance.graph_y + 10;
+			max_x = max_y = Math.max(max_x, max_y);
+			Plotly.newPlot('res_graph', p.data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+
+			if ($scope.noDI) {
+				di = -1;
+			} else {
+				di = parseFloat($scope.di);
+			}
+
 		}
 		else {
 			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
