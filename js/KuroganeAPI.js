@@ -460,9 +460,12 @@ var chargeMoves = [
 	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, bkb, frames) {
 		return [base_damage + (7.7 * (frames / 30)), bkb];
 	}),
-	new ChargeData(["Dragon Fang Shot (Shot, No Charge)"], 0, 28, function (base_damage, bkb, frames) {
-		return [base_damage * (1 + (1.25 * (frames / 30))), bkb + (frames * 0.65)]; //Still working on this formula
-	})];
+	new ChargeData(["Dragon Fang Shot (Shot, No Charge)"], 0, 29, function (base_damage, bkb, frames) {
+		//21 and 27 frames charged have floating point precision error in-game, so they are rounded down
+		if (frames == 21 || frames == 27)
+			return [base_damage * (1 + (1.25 * (frames / 30))), Math.floor(bkb + (frames * 0.6666667)) - 1];
+		return [base_damage * (1 + (1.25 * (frames / 30))), Math.floor(bkb + (frames * 0.6666667))];
+	},true)];
 
 class Move {
 	constructor(api_id, hitbox_no, name, moveName, base_damage, angle, bkb, kbg, wbkb, hitboxActive, faf, landingLag, autoCancel, preDamage, counterMult, rehitRate, shieldDamage, weightDependent) {
