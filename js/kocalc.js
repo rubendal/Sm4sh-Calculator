@@ -814,7 +814,8 @@ app.controller('calculator', function ($scope) {
 		return data;
 	}
 
-    $scope.calculate = function (){
+	$scope.calculate = function () {
+		$scope.update();
         if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
@@ -849,6 +850,7 @@ app.controller('calculator', function ($scope) {
 	};
 
 	$scope.calculatePercentBasedDI = function () {
+		$scope.update();
 		if ($scope.charge_data == null && $scope.is_smash) {
 			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
 		}
@@ -957,6 +959,7 @@ app.controller('calculator', function ($scope) {
 	};
 
 	$scope.calculateDI = function () {
+		$scope.update();
 		if ($scope.charge_data == null && $scope.is_smash) {
 			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
 		}
@@ -1189,6 +1192,7 @@ app.controller('calculator', function ($scope) {
 	}
 
 	$scope.calculateDIPositions = function () {
+		$scope.update();
 		if ($scope.charge_data == null && $scope.is_smash) {
 			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
 		}
