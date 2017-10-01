@@ -468,6 +468,9 @@ var chargeMoves = [
 	}, true),
 	new ChargeData(["Aura Sphere (Release from Charge)"], 0, 89, function (base_damage, bkb, frames) {
 		return [6.9 * ((90 - frames)/ 90 + (frames * 2.5 / 90)), bkb];
+	}),
+	new ChargeData(["Shadow Ball (Uncharged)"], 0, 119, function (base_damage, bkb, frames) {
+		return [base_damage + (frames * 0.1875), bkb];
 	})
 ];
 
@@ -521,7 +524,7 @@ class Move {
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
         this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
-		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)";
+		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)" || name == "Shadow Ball (Uncharged)";
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");

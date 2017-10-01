@@ -2245,11 +2245,11 @@ class Knockback {
             this.vertical_launch_speed = LaunchSpeed(this.y);
 
 			if (this.tumble && !this.set_weight) {
-                this.vertical_launch_speed += this.add_gravity_speed;
+                var vls = this.vertical_launch_speed + this.add_gravity_speed;
 				//Gravity boost changes launch angle
 				var x_ref = Math.cos(this.angle * Math.PI / 180);
 				var y_ref = Math.sin(this.angle * Math.PI / 180);
-				this.angle = Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed) * 180 / Math.PI;
+				this.angle = Math.atan2(vls, this.horizontal_launch_speed) * 180 / Math.PI;
 				if (x_ref < 0) {
 					this.angle = InvertXAngle(this.angle);
 				}
@@ -2263,7 +2263,9 @@ class Knockback {
                 this.lsi = 1;
             }
             this.horizontal_launch_speed *= this.lsi;
-            this.vertical_launch_speed *= this.lsi;
+			this.vertical_launch_speed *= this.lsi;
+			//LSI is applied only to launch speed, gravity boost isn't affected by it (even if it changes the angle)
+			this.vertical_launch_speed += this.add_gravity_speed;
             this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
         };
         this.addModifier = function (modifier) {
