@@ -45,28 +45,10 @@
                 <span class="description"></span>
                 <br />
                 <div class="header-links">
-                    <table class="header-table">
-                        <tr class="header-table">
-                            <td class="header-table">
-                                <a class="header-link" href="./index.html">Calculator</a>
-                            </td>
-                            <td class="header-table">
-                                <a class="header-link" href="./movesearch.html">Move search</a>
-                            </td>
-                            <td class="header-table">
-                                <a class="header-link" href="./percentcalc.html">Percentage Calculator</a>
-                            </td>
-                            <td class="header-table">
-                                <a class="header-link" href="./scripts.html">Script viewer</a>
-                            </td>
-                            <td class="header-table">
-                                <a class="header-link" href="./params.html">Param viewer</a>
-                            </td>
-                            <td class="header-table">
-                                <a class="header-link" href="./kocalc.html">KO calculator</a>
-                            </td>
-                        </tr>
-                    </table>
+                    <select id="appSelect" ng-model="appLink">
+                        <option ng-selected="$first" ng:repeat="a in apps" ng-attr-value="{{a.link}}">{{a.title}}</option>
+                    </select>
+                    <a class="header-link" href="{{appLink}}">Go</a>
                 </div>
             </div>
             <!--<span id="github-user">

@@ -12,7 +12,7 @@ Just input your data, the calculator will update the results when you change som
 If the API is not available or having issues you can fill move related data (Base damage, Angle, BKB, WBKB, KBG and frame data) using [KuroganeHammer frame data repository](http://kuroganehammer.com/Smash4)
 
 #### Launch Visualizer
-Note: Stage layout collision detection might give weird results and bounced trajectories are not accurate, character models/ECBs/animations not included so KO percents are not accurate
+*Note: Stage layout collision detection might give weird results and bounced trajectories are not accurate, character models/ECBs/animations not included so KO percents are not accurate* 
 
 Visualize launch trajectory, position per hitstun frame and distance launched in a graph and display stage layout with collision detection
 
@@ -50,6 +50,11 @@ View character scripts that contain hitbox/throw data
 All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files with a flag for those that contain hitboxes
 
 Scripts version: 1.1.6/1.1.7
+
+### Script Diff Viewer
+http://rubendal.github.io/Sm4sh-Calculator/scriptdiff.html
+
+View character scripts being diffed between the first version they were available (3DS 1.0.0 for non-DLC characters) and the current patch 1.1.7 to check all changes they had between patches
 
 ### Script Search
 http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html

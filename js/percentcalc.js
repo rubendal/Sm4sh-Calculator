@@ -1,6 +1,8 @@
 ﻿var app = angular.module('calculator', []);
 app.controller('calculator', function ($scope) {
-    $scope.app = 'kbcalculator';
+	$scope.app = 'kbcalculator';
+	$scope.apps = GetApps($scope.app);
+	$scope.appLink = $scope.apps[0].link;
     $scope.sharing_url = "";
     $scope.usingHttp = inhttp;
     $scope.attacker_characters = names;

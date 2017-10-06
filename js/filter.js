@@ -273,7 +273,9 @@ var characterListId = [];
 var filter_app = angular.module('filter', []);
 filter_app.controller('filter', function ($scope) {
     $scope.usingHttp = inhttp;
-    $scope.app = 'movesearch';
+	$scope.app = 'movesearch';
+	$scope.apps = GetApps($scope.app);
+	$scope.appLink = $scope.apps[0].link;
     $scope.name = "";
     $scope.options = ["any", "=", "<", "<=", ">", ">=", "between"];
     $scope.woptions = ["BKB/WBKB", "BKB", "WBKB"];

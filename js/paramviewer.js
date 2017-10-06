@@ -60,6 +60,26 @@ function getTag(tags, group) {
     return null;
 };
 
+var appSelection = [
+	{ appName: "calculator", title: "Calculator", link: "./index.html" },
+	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
+	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
+	{ appName: "kocalculator", title: "KO Calculator", link: "./kocalc.html" },
+	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
+	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
+	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
+	{ appName: "params", title: "Param Viewer", link: "./params.html" }
+];
+
+function GetApps(current) {
+	var list = [];
+	for (var i = 0; i < appSelection.length; i++) {
+		if (appSelection[i].appName != current)
+			list.push(appSelection[i]);
+	}
+	return list;
+}
+
 var character = names[0];
 var gamename = getCharGameName(character);
 
@@ -70,7 +90,9 @@ var group;
 
 var app = angular.module('paramviewer', []);
 app.controller('paramviewer', function ($scope) {
-    $scope.app = 'params';
+	$scope.app = 'params';
+	$scope.apps = GetApps($scope.app);
+	$scope.appLink = $scope.apps[0].link;
 
     $scope.characters = names;
 	$scope.character = character;

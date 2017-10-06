@@ -48,7 +48,11 @@
                 <span class="description">Smash 4 knockback calculator</span>
                 <br/>
                 <div class="header-links">
-                    <table class="header-table">
+                    <select id="appSelect" ng-model="appLink">
+                        <option ng-selected="$first" ng:repeat="a in apps" ng-attr-value="{{a.link}}">{{a.title}}</option>
+                    </select>
+                    <a class="header-link" href="{{appLink}}">Go</a>
+                    <!--<table class="header-table">
                         <tr class="header-table">
                             <td class="header-table">
                                 <a class="header-link" href="./movesearch.html">Move search</a>
@@ -66,7 +70,7 @@
                                 <a class="header-link" href="./kocalc.html">KO calculator</a>
                             </td>
                         </tr>
-                    </table>
+                    </table>-->
                 </div>
             </div>
             <!--<span id="github-user">

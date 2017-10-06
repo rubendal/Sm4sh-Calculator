@@ -2754,3 +2754,23 @@ var effects = [
 	{ id: 14, name: "Flower" },
 	{ id: 31, name: "Disable" }
 ];
+
+var appSelection = [
+	{ appName: "calculator", title: "Calculator", link: "./index.html" },
+	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
+	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
+	{ appName: "kocalculator", title: "KO Calculator", link: "./kocalc.html" },
+	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
+	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
+	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
+	{ appName: "params", title: "Param Viewer", link: "./params.html" }
+];
+
+function GetApps(current) {
+	var list = [];
+	for (var i = 0; i < appSelection.length; i++) {
+		if (appSelection[i].appName != current)
+			list.push(appSelection[i]);
+	}
+	return list;
+}
