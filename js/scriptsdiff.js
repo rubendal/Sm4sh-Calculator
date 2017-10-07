@@ -57,10 +57,33 @@ function GetApps(current) {
 	return list;
 }
 
+function GetPatches(s) {
+	var list = [];
+	
+	for (var i = 0; i < s.length; i++) {
+		if (list.indexOf(s[i].patch1 + " -> " + s[i].patch2) == -1) {
+			list.push(s[i].patch1 + " -> " + s[i].patch2);
+		}
+	}
+	return list;
+}
+
+function filter() {
+	var list = [];
+	for (var i = 0; i < scripts.scripts.length; i++) {
+		
+		if (scripts.scripts[i].patch1 + " -> " + scripts.scripts[i].patch2 == patch) {
+			list.push(scripts.scripts[i]);
+		}
+	}
+	return list;
+};
+
 var character = names[0];
 var gamename = getCharGameName(character);
 var scripts = getScripts(gamename);
 var script = scripts.scripts[0];
+var patch = script.patch1 + " -> " + script.patch2;
 
 var app = angular.module('scripts', []);
 
@@ -73,66 +96,71 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
     $scope.characters = names;
 	$scope.character = character;
 
+
 	$scope.scripts = scripts.scripts;
 	$scope.script = JSON.stringify($scope.scripts[0]);
 
+	$scope.patches = GetPatches($scope.scripts);
+	$scope.patch = $scope.patches[0];
+	patch = $scope.patch;
+
 	$scope.ignoreNew = true;
+
+	script = JSON.parse($scope.script);
+
+	$scope.ver1 = script.patch1;
+	$scope.ver2 = script.patch2;
 
 	$scope.v1 = "";
 	$scope.v2 = "";
 
-	$scope.ver1 = "3DS 1.0.0";
-	$scope.ver2 = "1.1.7";
 
-
-    $scope.updateScript = function () {
+	$scope.updateScript = function () {
 		script = JSON.parse($scope.script);
 		$scope.v1 = $sce.trustAsHtml(script.v1);
 		$scope.v2 = $sce.trustAsHtml(script.v2);
+		$scope.ver1 = script.patch1;
+		$scope.ver2 = script.patch2;
 	};
 
 	$scope.updateFilter = function () {
+		patch = $scope.patch;
 		scripts = getScripts(gamename);
-		if (!$scope.ignoreNew) {
-			$scope.scripts = scripts.scripts;
-			$scope.script = JSON.stringify($scope.scripts[0]);
-			$scope.updateScript();
-			return;
-		}
-		var list = [];
-		for (var i = 0; i < scripts.scripts.length; i++) {
-			if (!scripts.scripts[i].newScript) {
-				list.push(scripts.scripts[i]);
-			}
-		}
-		$scope.scripts = list;
+		$scope.scripts = filter();
 		$scope.script = JSON.stringify($scope.scripts[0]);
 		$scope.updateScript();
+		//scripts = getScripts(gamename);
+		//if (!$scope.ignoreNew) {
+		//	$scope.scripts = scripts.scripts;
+		//	$scope.script = JSON.stringify($scope.scripts[0]);
+		//	$scope.updateScript();
+		//	return;
+		//}
+		//var list = [];
+		//for (var i = 0; i < scripts.scripts.length; i++) {
+		//	if (!scripts.scripts[i].newScript) {
+		//		list.push(scripts.scripts[i]);
+		//	}
+		//}
+		//$scope.scripts = list;
+		//$scope.script = JSON.stringify($scope.scripts[0]);
+		//$scope.updateScript();
 	}
 
     $scope.updateCharacter = function () {
         character = $scope.character;
         gamename = getCharGameName(character);
 		scripts = getScripts(gamename);
+		$scope.scripts = scripts.scripts;
+		$scope.script = JSON.stringify($scope.scripts[0]);
 
-		switch (character) {
-			case "Mewtwo":
-			case "Lucas":
-			case "Ryu":
-			case "Roy":
-				$scope.ver1 = "1.0.8";
-				break;
-			case "Cloud":
-				$scope.ver1 = "1.1.3";
-				break;
-			case "Corrin":
-			case "Bayonetta":
-				$scope.ver1 = "1.1.4";
-				break;
-			default:
-				$scope.ver1 = "3DS 1.0.0";
-				break;
-		}
+		$scope.patches = GetPatches($scope.scripts);
+		$scope.patch = $scope.patches[0];
+		patch = $scope.patch;
+		script = JSON.parse($scope.script);
+
+		$scope.ver1 = script.patch1;
+		$scope.ver2 = script.patch2;
 
 		$scope.updateFilter();
         

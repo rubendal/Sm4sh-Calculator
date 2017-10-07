@@ -94,6 +94,12 @@
                 </select>
 
                 <br />
+                Patch: 
+                <select name="script" ng-model="patch" ng-change="updateFilter()">
+                    <option ng-selected="$first" ng:repeat="p in patches" ng-attr-value="{{p}}">{{p}}</option>
+                </select>
+
+                <br />
 
                 Script:
                 <select name="script" ng-model="script" ng-change="updateScript()">
