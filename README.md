@@ -54,7 +54,7 @@ Scripts version: 1.1.6/1.1.7
 ### Script Diff Viewer
 http://rubendal.github.io/Sm4sh-Calculator/scriptdiff.html
 
-View character scripts being diffed between the first version they were available (3DS 1.0.0 for non-DLC characters) and the current patch 1.1.7 to check all changes they had between patches
+View character scripts being diffed between the first version they were available (3DS 1.0.0 for non-DLC characters) and the current patch with character changes 1.1.6 to check all changes they had between patches, it also allows checking diffs of changes between patches
 
 ### Script Search
 http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html
