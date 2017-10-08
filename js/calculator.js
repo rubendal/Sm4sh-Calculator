@@ -109,8 +109,8 @@ app.controller('calculator', function ($scope) {
 
     $scope.stages = getStages();
     $scope.stages.unshift({"stage":"No stage"});
-    $scope.stage = null;
-	$scope.stageValue = "0";
+    $scope.stage = $scope.stages[3]; //FD
+	$scope.stageValue = "3";
 
     $scope.spawns = [];
 
@@ -124,7 +124,7 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
-    $scope.stageName = "";
+    $scope.stageName = "Final Destination";
 
     $scope.currentPlot = {};
     $scope.visList = [];
@@ -940,6 +940,7 @@ app.controller('calculator', function ($scope) {
 	if ($scope.effect == "Paralyze" || $scope.effect == "Bury" || $scope.effect == "Sleep" || $scope.effect == "Disable") // || $scope.effect == "Stun") Not sure about stun
 		$scope.set_weight = true;
 
+	$scope.updateStage();
 
-    $scope.update();
+    //$scope.update();
 });

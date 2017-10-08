@@ -15,6 +15,18 @@
     height: 19px;
 }
 
+.header-link-icon {
+    width: 19px;
+    height: 19px;
+    margin-left: 5px;
+}
+
+.header-link-icon2 {
+    width: 25px;
+    height: 25px;
+    margin-left:5px;
+}
+
 .stock-icon{
     width: 30px;
     height: 30px;
@@ -201,15 +213,16 @@ table,td,tr{
     right: 0;
     top: 0;
     left: 0;
-    border-bottom:1px solid black;
-    width:100%;
+    border-bottom: 1px solid black;
+    width: 100%;
     padding: 10px 0 10px 0;
-    height:auto;
+    height: auto;
     text-align: left;
     display: inline-block;
-    background:#AAAAAA;
-    background:#222222 linear-gradient(to bottom right, rgba(234, 22, 22, 0.2), rgba(0, 0, 255, 0.2));
+    /*background:#222222 linear-gradient(to bottom right, rgba(234, 22, 22, 0.2), rgba(0, 0, 255, 0.2));*/
+    background: #222222 linear-gradient(to bottom right, rgba(234, 22, 22, 0.2), rgba(0, 0, 255, 0.25));
     color: white;
+    padding-bottom: 15px;
 }
 
 .footer{
@@ -247,9 +260,7 @@ table,td,tr{
 }
 
 #github-profile{
-    clear:none;
-    float:right;
-    margin-right:20px;
+    border-radius:25px;
 }
 
 #links {
@@ -264,12 +275,12 @@ table,td,tr{
     float:right;
     margin-right:20px;
     line-height: 20px;
-    margin-top: 25px;
+    margin-top: 15px;
 }
 
-#header-cont h2{
+#header-cont h3 {
     display: inline;
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 .description{
@@ -279,7 +290,7 @@ table,td,tr{
 .header-links{
     position:relative;
     top:5px;
-    margin-left:5px;
+    margin-left:10px;
 }
 
 #attacker-mod-sel{

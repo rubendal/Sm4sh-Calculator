@@ -104,7 +104,7 @@ app.controller('calculator', function ($scope) {
     $scope.extra_vis_frames = 0;
 
 	$scope.stages = getStages();
-    $scope.stageValue = "0";
+    $scope.stageValue = "2";
 
     $scope.spawns = [];
 
@@ -118,7 +118,7 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
-	$scope.stage = $scope.stages[0];
+	$scope.stage = $scope.stages[2];
 
 	$scope.stageName = $scope.stage.stage;
 

@@ -132,7 +132,7 @@ var paramsList = [
     new Parameter("counterMult", "0"),
     new Parameter("stockDif", "0"),
     new Parameter("gameMode", "Singles"),
-    new Parameter("stage", ""),
+    new Parameter("stage", "Final Destination"),
     new Parameter("positionX", "0"),
     new Parameter("positionY", "0"),
     new Parameter("visInverse", "0"),
@@ -344,7 +344,7 @@ function buildParams($scope) {
     if (paramsList[69].value != $scope.launch_rate) {
         params.push(new Parameter(paramsList[69].param, $scope.launch_rate));
     }
-    if ($scope.app == "calculator") {
+	if ($scope.app == "calculator" || $scope.app == "kocalculator") {
         if (paramsList[37].value != $scope.stageName) {
             params.push(new Parameter(paramsList[37].param, $scope.stageName));
         }
