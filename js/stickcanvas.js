@@ -12,6 +12,8 @@
 		this.r2 = 19;
 		this.h = 2;
 
+		this.invert = invert;
+
 		this.clickActive = false;
 
 		var stickWheel = this;
@@ -27,6 +29,10 @@
 			var angle = Math.atan2(stickWheel.center.y - y, x - stickWheel.center.x) * 180 / Math.PI;
 			if (angle < 0) {
 				angle += 360;
+			}
+
+			if (stickWheel.invert) {
+				angle = InvertXAngle(angle);
 			}
 
 			stickWheel.f(Math.floor(angle));
@@ -45,6 +51,8 @@
 
 		this.drawStick = function (noDI, angle, invert) {
 			var context = this.canvas.getContext("2d");
+
+			this.invert = invert;
 			
 			context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			
