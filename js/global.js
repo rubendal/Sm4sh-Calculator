@@ -1533,7 +1533,8 @@ class Distance{
         }
         if(Math.sin(angle * Math.PI / 180) < 0){
             y_speed *= -1;
-        }
+		}
+
         this.x = [this.position.x];
         this.y = [this.position.y];
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
@@ -1793,17 +1794,17 @@ class Distance{
 
             
             //Maximum position during hitstun
-            if(i<hitstun){
+			if (i < hitstun) {
                 if(Math.cos(angle*Math.PI / 180) < 0){
                     this.max_x = Math.min(this.max_x, character_position.x);
                 }else{
                     this.max_x = Math.max(this.max_x, character_position.x);
-                }
-                if(Math.sin(angle * Math.PI / 180) <= 0){
-                    this.max_y = Math.min(this.max_y, character_position.y);
+				}
+                if(Math.sin(angle * Math.PI / 180) < 0){
+					this.max_y = Math.min(this.max_y, character_position.y);
                 }else{
                     this.max_y = Math.max(this.max_y, character_position.y);
-                }
+				}
             }
 
             if (i == hitstun) {
@@ -2163,7 +2164,7 @@ class Knockback {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
-        }
+		}
         this.kb = this.base_kb;
         this.original_angle = angle;
         this.base_angle = angle;

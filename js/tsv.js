@@ -535,7 +535,21 @@ app.controller('calculator', function ($scope) {
             $scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
         }
         $scope.update();
-    }
+	}
+
+	$scope.updateDIFromCanvas = function (di) {
+		$scope.di = di;
+		$scope.noDI = false;
+		$scope.$apply();
+		$scope.updateDI();
+	}
+
+	$scope.stickDI = new StickWheel($scope.updateDIFromCanvas, 'stickAngle', $scope.noDI, parseFloat($scope.di), false);
+
+	$scope.updateDI = function () {
+		$scope.stickDI.drawStick($scope.noDI, parseFloat($scope.di), false);
+		$scope.update();
+	}
 
     $scope.update = function () {
         $scope.check();
@@ -945,7 +959,7 @@ app.controller('calculator', function ($scope) {
         changeStyle($scope.theme);
     }
 
-    mapParams($scope);
+	mapParams($scope);
 
     $scope.tsv_options();
 });

@@ -13,6 +13,7 @@
     <script src="js/formulas.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="js/global.js"></script>
+    <script src="js/stickcanvas.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -292,9 +293,10 @@
             <div id="modifiers" class="card-block collapse group">
                 <div id="attack_options">
                     <div class="pos-left">
+                        <canvas id="stickAngle"></canvas>
                         Target DI/LSI angle:
-                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="update()" />
-                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="update()" />No DI     
+                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="updateDI()" />
+                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="updateDI()" />No DI     
                         <br/>
                         <br />
                         <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
@@ -381,7 +383,7 @@
                         <br />
                         <div id="graph_options">
                             <br />
-                            <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="update()" />Invert move angle horizontally
+                            <input type="checkbox" name="inverseX" ng-model="inverseX" ng-change="updateDI()" />Invert move angle horizontally (hitting opponent from right side)
                         </div>
                         <br />
                         Display <input name="extra_frames" type="number" min="0" max="200" step="1" ng-model="extra_vis_frames" ng-change="update()" /> additional actionable frames

@@ -604,6 +604,20 @@ app.controller('calculator', function ($scope) {
         $scope.update();
 	}
 
+	$scope.updateDIFromCanvas = function (di) {
+		$scope.di = di;
+		$scope.noDI = false;
+		$scope.$apply();
+		$scope.updateDI();
+	}
+
+	$scope.stickDI = new StickWheel($scope.updateDIFromCanvas, 'stickAngle', $scope.noDI, parseFloat($scope.di), $scope.inverseX);
+
+	$scope.updateDI = function () {
+		$scope.stickDI.drawStick($scope.noDI, parseFloat($scope.di), $scope.inverseX);
+		$scope.update();
+	}
+
     $scope.calculate = function (){
         var result = { 'training': [], 'vs': [], 'shield': [] };
 

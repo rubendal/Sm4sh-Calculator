@@ -1393,7 +1393,21 @@ app.controller('calculator', function ($scope) {
             $scope.faf = $scope.selected_move.faf + parseFloat($scope.smashCharge);
         }
         $scope.update();
-    }
+	}
+
+	$scope.updateDIFromCanvas = function (di) {
+		$scope.di = di;
+		$scope.noDI = false;
+		$scope.$apply();
+		$scope.updateDI();
+	}
+
+	$scope.stickDI = new StickWheel($scope.updateDIFromCanvas, 'stickAngle', $scope.noDI, parseFloat($scope.di), $scope.inverseX);
+
+	$scope.updateDI = function () {
+		$scope.stickDI.drawStick($scope.noDI, parseFloat($scope.di), $scope.inverseX);
+		$scope.update();
+	}
 
     $scope.update = function () {
         $scope.check();
@@ -1497,7 +1511,6 @@ app.controller('calculator', function ($scope) {
     if ($scope.paralyzer && !$scope.set_weight) {
         $scope.set_weight = true;
     }
-
 
     $scope.update();
 });
