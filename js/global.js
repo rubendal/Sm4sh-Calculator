@@ -589,11 +589,15 @@ function mapParams($scope) {
     }
     param = Parameter.get(get_params, "DI");
     if (param) {
-        $scope.di = parseFloat(param);
+		$scope.di = parseFloat(param);
+		if ($scope.app != "kbcalculator")
+			$scope.updateDI();
     }
     param = Parameter.get(get_params, "noDI");
     if (param) {
-        $scope.noDI = param == 1;
+		$scope.noDI = param == 1;
+		if ($scope.app != "kbcalculator")
+			$scope.updateDI();
     }
     param = Parameter.get(get_params, "counteredDamage");
     if (param) {
