@@ -556,9 +556,7 @@ function mapParams($scope) {
     }
     param = Parameter.get(get_params, "effect");
 	if (param) {
-		console.log($scope.effect);
 		$scope.effect = param;
-		console.log($scope.effect);
 		$scope.updateEffect();
     }
     param = Parameter.get(get_params, "kbModifier");
@@ -1617,7 +1615,7 @@ class Distance{
 						g = 0;
 						fg = 0;
 						character_speed.y = 0;
-						if (!PointInLine([character_position.x, character_position.y], previousCollisionIntersection.line)) {
+						if (!PointInLine([character_position.x, character_position.y], previousCollisionIntersection.line) && previousCollision.vertex.length > 2) {
 							//Check if the next position is in the line next to the one that started the slide
 							var prev_index = (previousCollisionIntersection.i - 1) % previousCollision.vertex.length;
 							var next_index = (previousCollisionIntersection.i + 1) % previousCollision.vertex.length;
