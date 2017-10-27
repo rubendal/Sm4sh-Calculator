@@ -630,7 +630,7 @@ class Move {
 			this.type += ",WeightDependent"
 		}
 
-        if(previousMove != null && this.hitboxActive.length == 1 && isNaN(this.faf)){
+		if (previousMove != null && isNaN(this.faf)) {
             if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
                 this.faf = previousMove.faf;
                 if(this.autoCancel.length==1){
