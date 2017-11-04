@@ -631,17 +631,19 @@ class Move {
 		}
 
 		if (previousMove != null && isNaN(this.faf)) {
-            if(this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()){
-                this.faf = previousMove.faf;
-                if(this.autoCancel.length==1){
-                    if(this.autoCancel[0].type == "empty"){
-                        this.autoCancel = previousMove.autoCancel;
-                    }
-                }
-                if(this.landingLag == "-" || isNaN(this.landingLag)){
-                    this.landingLag = previousMove.landingLag;
-                }
-            }
+			if (previousMove.valid) {
+				if (this.moveName.split("(")[0].trim() == previousMove.moveName.split("(")[0].trim()) {
+					this.faf = previousMove.faf;
+					if (this.autoCancel.length == 1) {
+						if (this.autoCancel[0].type == "empty") {
+							this.autoCancel = previousMove.autoCancel;
+						}
+					}
+					if (this.landingLag == "-" || isNaN(this.landingLag)) {
+						this.landingLag = previousMove.landingLag;
+					}
+				}
+			}
         }
 		previousMove = this;
 
@@ -766,21 +768,21 @@ function getMoveset(attacker, $scope) {
                         $scope.detectAttack();
                     }
                 } else {
-                    $scope.moveset = [new Move(0, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+					$scope.moveset = [new Move(-1, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
                 }
             },
             function () {
-                //$scope.moveset = [new Move(0, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+                //$scope.moveset = [new Move(-1, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
             }, function () {
-                $scope.moveset = [new Move(0, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+                $scope.moveset = [new Move(-1, -1, "Couldn't get attacks", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
             });
         } else {
-            $scope.moveset = [new Move(0, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+			$scope.moveset = [new Move(-1, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
         }
     }, function () {
-        $scope.moveset = [new Move(0, -1, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+		$scope.moveset = [new Move(-1, -1, "Loading...", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
     }, function () {
-        $scope.moveset = [new Move(0, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
+		$scope.moveset = [new Move(-1, -1, "Couldn't access API", 0, 0, 0, 0, false, 0, 0, 1).invalidate()];
     });
     
 }
