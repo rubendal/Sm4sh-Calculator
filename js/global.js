@@ -544,7 +544,7 @@ function mapParams($scope) {
     param = Parameter.get(get_params, "preDamage");
     if (param) {
         $scope.preDamage = param;
-        $scope.updateAttackData();
+        $scope.update();
     }
     param = Parameter.get(get_params, "hitFrame");
     if (param) {

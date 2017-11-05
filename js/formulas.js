@@ -331,6 +331,25 @@ function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric,
     return hitframe - (FAF - 1) + ShieldStun(damage, is_projectile, powershield) + ShieldHitlag(damage,hitlag,electric) - (is_projectile ? 0 : AttackerShieldHitlag(damage, hitlag, electric));
 }
 
+function ShieldPushback(damage, projectile, powershield) {
+	var projectileMult = is_projectile ? 0.5 : 1;
+	var powershieldMult = powershield ? 0.66 : 1;
+	var powershieldMult2 = powershield ? 0.15 : 1;
+
+	var pushback = ((damage * 0.58 * projectileMult * powershieldMult) + 4) * 0.09 * powershieldMult2;
+	if (pushback > 1.3)
+		pushback = 1.3;
+
+	return pushback;
+}
+
+function AttackerShieldPushback(damage, projectile = false) {
+	if (projectile)
+		return 0;
+
+	return (damage * 0.04) + 0.025;
+}
+
 function DI(angle, move_angle){
     if(angle == -1){
         return 0;
