@@ -331,6 +331,7 @@ function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric,
     return hitframe - (FAF - 1) + ShieldStun(damage, is_projectile, powershield) + ShieldHitlag(damage,hitlag,electric) - (is_projectile ? 0 : AttackerShieldHitlag(damage, hitlag, electric));
 }
 
+//Formula by Arthur https://twitter.com/BenArthur_7/status/926918804466225152
 function ShieldPushback(damage, projectile, powershield) {
 	var projectileMult = is_projectile ? 0.5 : 1;
 	var powershieldMult = powershield ? 0.66 : 1;
