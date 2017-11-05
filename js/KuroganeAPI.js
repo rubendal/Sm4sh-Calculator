@@ -458,8 +458,8 @@ var chargeMoves = [
         }
 		return [base_damage + (2 * (frames - 1)), bkb];
     }),
-	new ChargeData(["Charge Shot"], 0, 115, function (base_damage, bkb, frames){
-		return [base_damage + (frames / 116 * 22), bkb];
+	new ChargeData(["Charge Shot"], 0, 111, function (base_damage, bkb, frames){
+		return [base_damage + (frames / 112 * 22), bkb];
     }),
 	new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, bkb, frames) {
 		return [4 + (12 - 4) * (frames / 60), bkb];

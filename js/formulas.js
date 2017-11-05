@@ -309,17 +309,9 @@ function ChargeSmashMultiplier(frames, megaman_fsmash, witch_time) {
 }
 
 function ShieldStun(damage, is_projectile, powershield) {
-    if (is_projectile) {
-        if (powershield) {
-            return Math.floor((damage/5.22)+3)-1;
-        }
-        return Math.floor((damage / 3.5) + 3) - 1;
-    } else {
-        if (powershield) {
-            return Math.floor((damage / 2.61) + 3) - 1;
-        }
-        return Math.floor((damage / 1.72) + 3) - 1;
-    }
+	var projectileMult = is_projectile ? 0.5 : 1;
+	var powershieldMult = powershield ? 0.66 : 1;
+	return Math.floor((damage * 0.58 * projectileMult * powershieldMult) + 3) - 1;
 }
 
 function ShieldHitlag(damage, hitlag, electric) {
