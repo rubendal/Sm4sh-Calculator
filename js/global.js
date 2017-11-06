@@ -167,7 +167,8 @@ var paramsList = [
     new Parameter("launchRate", "1"),
     new Parameter("pParalConst", defaultParameters.paralyzer.constant),
     new Parameter("pParalMult", defaultParameters.paralyzer.mult),
-    new Parameter("useLandingLag","no")
+	new Parameter("useLandingLag", "no"),
+	new Parameter("isFinishingTouch","0")
 ];
 
 function checkUndefined(value) {
@@ -413,7 +414,10 @@ function buildParams($scope) {
         }
         if (paramsList[72].value != $scope.use_landing_lag) {
             params.push(new Parameter(paramsList[72].param, $scope.use_landing_lag));
-        }
+		}
+		if (paramsList[73].value != boolToString($scope.isFinishingTouch)) {
+			params.push(new Parameter(paramsList[73].param, boolToString($scope.isFinishingTouch)));
+		}
     } else if ($scope.app == "kbcalculator") {
         if (paramsList[43].value != $scope.kb) {
             params.push(new Parameter(paramsList[43].param, $scope.kb));
@@ -829,7 +833,13 @@ function mapParams($scope) {
     param = Parameter.get(get_params, "useLandingLag");
     if (param) {
         $scope.delayed_landing_lag = param;
-    }
+	}
+	param = Parameter.get(get_params, "isFinishingTouch");
+	if (param) {
+		if ($scope.isFinishingTouch != undefined) {
+			$scope.isFinishingTouch = param == 1;
+		}
+	}
 }
 
 var styleList = loadJSONPath("./css/themes.json");
@@ -1475,7 +1485,7 @@ class Collision {
 }
 
 class Distance{
-    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, inverseX, onSurface, position, stage, doPlot, extraFrames){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, isFinishingTouch, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
         this.x_launch_speed = x_launch_speed;
         this.y_launch_speed = y_launch_speed;
@@ -1487,7 +1497,8 @@ class Distance{
         this.max_x = 0;
         this.max_y = 0;
         this.graph_x = 0;
-        this.graph_y = 0;
+		this.graph_y = 0;
+		this.isFinishingTouch = isFinishingTouch;
         this.inverseX = inverseX;
         this.onSurface = onSurface;
         this.tumble = false;
@@ -1779,10 +1790,37 @@ class Distance{
 				}
 				//Gravity
 				if (countGravity) {
-					g -= gravity;
-					fg = Math.max(g, -fall_speed);
-					character_speed.y = fg;
-					character_speed.y = +character_speed.y.toFixed(6);
+					if (!this.isFinishingTouch) {
+						g -= gravity;
+						fg = Math.max(g, -fall_speed);
+						character_speed.y = fg;
+						character_speed.y = +character_speed.y.toFixed(6);
+					} else {
+						//First 22 frames
+						if (i < 22) {
+							//Set gravity to 0.087 and fall speed to 1.5
+							g -= 0.087;
+							fg = Math.max(g, -1.5);
+							character_speed.y = fg;
+							character_speed.y = +character_speed.y.toFixed(6);
+						} else {
+							if (i == 22) {
+								g = fg;
+							}
+							if (character_speed.y < -fall_speed) {
+								//Current fall speed is higher than character normal fall speed, add gravity until it reduces to fall speed
+								g += gravity;
+								fg = Math.min(g, -fall_speed);
+								character_speed.y = fg;
+								character_speed.y = +character_speed.y.toFixed(6);
+							} else {
+								g -= gravity;
+								fg = Math.max(g, -fall_speed);
+								character_speed.y = fg;
+								character_speed.y = +character_speed.y.toFixed(6);
+							}
+						}
+					}
 				} else {
 					character_speed.y = 0;
 				}
@@ -2728,6 +2766,7 @@ var luma_percent = 0;
 var shieldDamage = 0;
 
 var unblockable = false;
+var isFinishingTouch = false;
 
 var game_mode = "vs";
 var graph = false;

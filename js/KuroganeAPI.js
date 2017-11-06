@@ -550,7 +550,8 @@ class Move {
         this.unblockable = this.grab || this.throw || this.commandGrab || (this.name.includes("Vision") && this.name.includes("Attack")) || this.name.includes("Witch Time") || this.name.includes("KO Punch") || this.name == "Focus Attack (Stage 3)" || this.name == "Reflect Barrier"; 
         this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)";
         this.multihit = /(Hit [0-9]+)/gi.test(this.name) || /(Hits [0-9]+\-[0-9]+)/gi.test(this.name) || this.name.includes("Final Hit") || this.rehitRate != 0;
-        this.spike = this.angle >= 230 && this.angle <= 310;
+		this.spike = this.angle >= 230 && this.angle <= 310;
+		this.isFinishingTouch = this.name.includes("Finishing Touch") && !this.name.includes("Windbox");
 
         this.charge = null;
         if(this.chargeable){

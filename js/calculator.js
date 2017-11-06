@@ -93,7 +93,8 @@ app.controller('calculator', function ($scope) {
     $scope.counterStyle = { "display": "none" };
     $scope.counteredDamage = 0;
     $scope.counterMult = 0;
-    $scope.unblockable = false;
+	$scope.unblockable = false;
+	$scope.isFinishingTouch = false;
 
     getMoveset(attacker, $scope);
     $scope.move = "0";
@@ -439,7 +440,8 @@ app.controller('calculator', function ($scope) {
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
             $scope.counterMult = attack.counterMult;
-            $scope.unblockable = attack.unblockable;
+			$scope.unblockable = attack.unblockable;
+			$scope.isFinishingTouch = attack.isFinishingTouch;
             $scope.windbox = attack.windbox;
             $scope.shieldDamage = attack.shieldDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
@@ -486,7 +488,8 @@ app.controller('calculator', function ($scope) {
                     $scope.move = "0";
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
-                    $scope.unblockable = false;
+					$scope.unblockable = false;
+					$scope.isFinishingTouch = false;
                     $scope.selected_move = null;
                     if($scope.angle < 360){
                         $scope.di = $scope.angle;
@@ -498,7 +501,8 @@ app.controller('calculator', function ($scope) {
                 $scope.move = "0";
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
-                $scope.unblockable=false;
+				$scope.unblockable = false;
+				$scope.isFinishingTouch = false;
                 $scope.selected_move = null;
                 if($scope.angle < 360){
                     $scope.di = $scope.angle;
@@ -544,7 +548,8 @@ app.controller('calculator', function ($scope) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
-                        $scope.unblockable = attack.unblockable;
+						$scope.unblockable = attack.unblockable;
+						$scope.isFinishingTouch = attack.isFinishingTouch;
                         $scope.selected_move = attack;
                         $scope.check_move();
                         detected = true;
@@ -570,7 +575,8 @@ app.controller('calculator', function ($scope) {
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
-                            $scope.unblockable = attack.unblockable;
+							$scope.unblockable = attack.unblockable;
+							$scope.isFinishingTouch = attack.isFinishingTouch;
                             $scope.move = i.toString();
                             $scope.selected_move = attack;
                             $scope.check_move();
@@ -650,9 +656,9 @@ app.controller('calculator', function ($scope) {
 
         var distance;
         if(game_mode == "training"){
-            distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
-        }else{
-            distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
+			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
+		} else {
+			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
         }
 
         //if(stage != null){
@@ -666,11 +672,11 @@ app.controller('calculator', function ($scope) {
         var trainingDistance;
         var vsDistance;
         if (game_mode == "training") {
-            vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
+			vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
             trainingDistance = distance;
         } else {
             vsDistance = distance;
-            trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
+			trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
         }
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
@@ -900,7 +906,11 @@ app.controller('calculator', function ($scope) {
         }
         luma_percent = parseFloat($scope.lumaPercent);
 
-        unblockable = $scope.unblockable;
+		unblockable = $scope.unblockable;
+		isFinishingTouch = $scope.isFinishingTouch;
+
+		if (isFinishingTouch)
+			$scope.set_weight = true;
 
         shieldDamage = parseFloat($scope.shieldDamage);
 

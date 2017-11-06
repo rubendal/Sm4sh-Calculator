@@ -187,7 +187,8 @@ app.controller('calculator', function ($scope) {
     $scope.counterStyle = { "display": "none" };
     $scope.counteredDamage = 0;
     $scope.counterMult = 0;
-    $scope.unblockable = false;
+	$scope.unblockable = false;
+	$scope.isFinishingTouch = false;
 
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
@@ -327,7 +328,8 @@ app.controller('calculator', function ($scope) {
         $scope.preDamage = 0;
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
-        $scope.unblockable = false;
+		$scope.unblockable = false;
+		$scope.isFinishingTouch = false;
         $scope.selected_move = null;
         $scope.checkCounterVisibility();
         $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
@@ -373,7 +375,8 @@ app.controller('calculator', function ($scope) {
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
             $scope.counterMult = attack.counterMult;
-            $scope.unblockable = attack.unblockable;
+			$scope.unblockable = attack.unblockable;
+			$scope.isFinishingTouch = attack.isFinishingTouch;
             $scope.windbox = attack.windbox;
             $scope.shieldDamage = attack.shieldDamage;
             if (!isNaN(attack.hitboxActive[0].start)) {
@@ -420,7 +423,8 @@ app.controller('calculator', function ($scope) {
                     $scope.move = "0";
                     $scope.moveset[0].name = "Custom move";
                     $scope.preDamage = 0;
-                    $scope.unblockable = false;
+					$scope.unblockable = false;
+					$scope.isFinishingTouch = false;
                     $scope.selected_move = null;
                     if($scope.angle < 360){
                         $scope.di = $scope.angle;
@@ -432,7 +436,8 @@ app.controller('calculator', function ($scope) {
                 $scope.move = "0";
                 $scope.moveset[0].name = "Custom move";
                 $scope.preDamage = 0;
-                $scope.unblockable=false;
+				$scope.unblockable = false;
+				$scope.isFinishingTouch = false;
                 $scope.selected_move = null;
                 if($scope.angle < 360){
                     $scope.di = $scope.angle;
@@ -476,7 +481,8 @@ app.controller('calculator', function ($scope) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
-                        $scope.unblockable = attack.unblockable;
+						$scope.unblockable = attack.unblockable;
+						$scope.isFinishingTouch = attack.isFinishingTouch;
                         $scope.selected_move = attack;
                             $scope.check_move();
                         detected = true;
@@ -502,7 +508,8 @@ app.controller('calculator', function ($scope) {
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
-                            $scope.unblockable = attack.unblockable;
+							$scope.unblockable = attack.unblockable;
+							$scope.isFinishingTouch = attack.isFinishingTouch;
                             $scope.selected_move = attack;
                             $scope.check_move();
                             $scope.move = i.toString();
@@ -596,7 +603,12 @@ app.controller('calculator', function ($scope) {
 
         luma_percent = parseFloat($scope.lumaPercent);
 
-        unblockable = $scope.unblockable;
+		unblockable = $scope.unblockable;
+
+		isFinishingTouch = $scope.isFinishingTouch;
+
+		if (isFinishingTouch)
+			$scope.set_weight = true;
 
         shieldDamage = parseFloat($scope.shieldDamage);
 
@@ -743,8 +755,8 @@ app.controller('calculator', function ($scope) {
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
-            kb.bounce(bounce);
-            distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction);
+			kb.bounce(bounce);
+			distance = new Distance(kb.kb, kb.horizontal_launch_speed, kb.vertical_launch_speed, kb.hitstun, kb.base_angle, kb.di_change, target.attributes.gravity * target.modifier.gravity, 0, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch);
             tsv_rows.push(new Row(attacker,target,attacker_percent,target_percent,move,bd,charge_frames,StaleDamage(damage, stale, ignoreStale),ignoreStale,stale, Aura(attacker_percent, stock_dif), stock_dif, r,kb, wbkb, hit_frame, faf, distance));
         }
 
