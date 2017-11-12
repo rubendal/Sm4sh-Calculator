@@ -47,7 +47,7 @@
                 <span class="description"></span>
                 <br/>
                 <div class="header-links">
-                    <select id="appSelect" ng-model="appLink">
+                    <select id="appSelect" class="header-select" ng-model="appLink">
                         <option ng-selected="$first" ng:repeat="a in apps" ng-attr-value="{{a.link}}">{{a.title}}</option>
                     </select>
                     <a class="header-link" href="{{appLink}}">Go</a>
@@ -68,7 +68,7 @@
             </span>
             <span id="theme">
                 Theme
-                <select name="theme" ng-model="theme" ng-change="changeTheme()">
+                <select name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
                     <option ng-selected="$first" ng:repeat="t in themes" ng-attr-value="{{t.name}}">{{t.name}}</option>
                 </select>
             </span>
@@ -105,10 +105,10 @@
                 <div class="pos-right">
                     <div id="quick_options">
                         <span ng-style="st_jab_lock">
-                            <input type="button" class="btn btn-secondary btn-sm" value="Max Jab lock percent" ng-click="get_jablock()" />
+                            <input type="button" class="btn btn-sm" value="Max Jab lock percent" ng-click="get_jablock()" />
                             <br />
                         </span>
-                        <input type="button" class="btn btn-secondary btn-sm" value="Min tumble percent" ng-click="get_tumble()" style="margin-top:10px;" />
+                        <input type="button" class="btn btn-sm" value="Min tumble percent" ng-click="get_tumble()" style="margin-top:10px;" />
                     </div>
                 </div>
             </div>
@@ -257,8 +257,8 @@
                                 </td>
                             </tr>
                         </table>
-                        <input type="button" class="btn btn-secondary btn-sm" value="Full queue" ng-click="updateStaleness('1')" />
-                        <input type="button" class="btn btn-secondary btn-sm" value="Empty queue" ng-click="updateStaleness('0')" />
+                        <input type="button" class="btn btn-sm" value="Full queue" ng-click="updateStaleness('1')" />
+                        <input type="button" class="btn btn-sm" value="Empty queue" ng-click="updateStaleness('0')" />
 
                     </div>
                     <div class="pos-right">

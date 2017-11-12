@@ -375,3 +375,14 @@ table,td,tr{
     width:100%;
     height:30em;
 }
+
+input[type=button] {
+    background: #FFFFFF;
+    color: #000000;
+    border-color: #CCCCCC;
+}
+
+.header-select {
+    background: #FFFFFF;
+    color: #000000;
+}

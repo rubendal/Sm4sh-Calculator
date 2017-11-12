@@ -18,8 +18,8 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 
 * Each marker represents each frame in hitstun
 * Line color represents vertical momentum
-* Yellow markers represents frames that hitstun can be cancelled by using an airdodge
-* Green markers represents frames that hitstun can be cancelled by using an aerial
+* Cyan markers represents frames that hitstun can be cancelled by using an airdodge
+* Magenta markers represents frames that hitstun can be cancelled by using an aerial
 * Move angle can be inverted horizontally to visualize hitting opponents from the right side
 * Add stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 

@@ -349,3 +349,18 @@ table,td,tr{
     width:100%;
     height:30em;
 }
+
+.header-select {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+input,select {
+    background: #2a2a2a;
+    color: white;
+    border-color: #212121;
+}
+
+input[type=button] {
+     border-color: #525252;
+}
