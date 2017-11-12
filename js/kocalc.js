@@ -848,7 +848,7 @@ app.controller('calculator', function ($scope) {
 			var max_y = data.distance.graph_y + 10;
 			max_x = max_y = Math.max(max_x, max_y);
 
-			Plotly.newPlot('res_graph', data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+			Plotly.newPlot('res_graph', data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 		}
 		else {
 			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
@@ -950,7 +950,7 @@ app.controller('calculator', function ($scope) {
 			var max_x = p.data.distance.graph_x + 10;
 			var max_y = p.data.distance.graph_y + 10;
 			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', p.data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+			Plotly.newPlot('res_graph', p.data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 
 			if ($scope.noDI) {
 				di = -1;
@@ -1014,7 +1014,7 @@ app.controller('calculator', function ($scope) {
 			var max_x = list[0].data.distance.graph_x + 10;
 			var max_y = list[0].data.distance.graph_y + 10;
 			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', list[0].data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+			Plotly.newPlot('res_graph', list[0].data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 
 			if ($scope.noDI) {
 				di = -1;
@@ -1145,7 +1145,7 @@ app.controller('calculator', function ($scope) {
 			if (a.di != -1 && b.di != -1) {
 
 				if (color == undefined)
-					color = 'gray';
+					color = settings.visualizer_colors.interpolatedLine;
 
 				var data = [];
 
@@ -1375,7 +1375,7 @@ app.controller('calculator', function ($scope) {
 		}
 		
 		max_x = max_y = Math.max(max_x, max_y);
-		Plotly.newPlot('res_graph', distances, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+		Plotly.newPlot('res_graph', distances, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 
 		if ($scope.noDI) {
 			di = -1;
@@ -1483,7 +1483,7 @@ app.controller('calculator', function ($scope) {
 
 		data.push({ 'calcValue': "Position", 'x': [position.x], 'y': [position.y], 'mode': 'markers', 'marker': { 'color': 'blue' }, 'name': "Position" });
 
-		Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-$scope.graph_x, $scope.graph_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-$scope.graph_y, $scope.graph_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+		Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-$scope.graph_x, $scope.graph_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-$scope.graph_y, $scope.graph_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 
         $scope.sharing_url = buildURL($scope);
     };
@@ -1512,7 +1512,8 @@ app.controller('calculator', function ($scope) {
     $scope.themes = styleList;
 
     $scope.changeTheme = function () {
-        changeStyle($scope.theme);
+		changeStyle($scope.theme);
+		$scope.updateDI();
     }
 
     mapParams($scope);

@@ -62,6 +62,29 @@ var defaultParameters = {
     }
 };
 
+var settings = {
+	stick_color: "#000000",
+	visualizer_colors: {
+		upward: "#0000FF",
+		downward: "#FF0000",
+		airdodge: "#00cccc",
+		aerial: "#8B008B",
+		hitstunEnd: "#A52A2A",
+		actionable: "#FF8A00",
+		attackerFAF: "#0066FF",
+		stage: "#008000",
+		platform: "#008000",
+		noWallJump: "#800080",
+		semitechable: "#FF0000",
+		camera: "#0000FF",
+		blastzone: "#FF0000",
+		ko: "#FF0000",
+		diLine: "#000000",
+		interpolatedLine: "#808080",
+		background: "#FCFCFF"
+	}
+};
+
 function getWebProtocol() {
     var p = document.location.protocol;
     return p.replace(":", "");
@@ -880,6 +903,10 @@ function changeStyle(style) {
                 $("#style4").attr("href", defaultStyle.style4);
                 checkAndChangeMedia("#style4", defaultStyle.media4);
             }
+			if (styleList[i].visualSettings)
+				settings = styleList[i].visualSettings;
+			else
+				settings = defaultStyle.visualSettings;
             return;
         }
     }
@@ -1877,26 +1904,26 @@ class Distance{
 			//Calculate if KO in blast zones
 			for (var i = 0; i <= hitstun && !ko; i++) {
 				if (this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30) {
-					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
 					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 					ko = true;
 					break;
 				}
 				if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
-					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
 					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 					ko = true;
 					break;
 				} else {
 					if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
 						if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
-							this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+							this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
 							this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 							ko = true;
 							break;
 						} else {
 							if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
-								this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': 'red', size: 15 }, 'name': "KO" });
+								this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
 								this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 								ko = true;
 								break;
@@ -1924,7 +1951,7 @@ class Distance{
 			var py = 0;
 			var cx = px;
 			var cy = py;
-			var color = "blue";
+			var color = settings.visualizer_colors.upward;
 			var dir = 1;
 			var data = [];
 			var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
@@ -1984,22 +2011,22 @@ class Distance{
 					data.push({ 'calcValue': "Launch", 'x': xdata, 'y': ydata, 'mode': 'lines+markers', 'marker': { 'color': color }, 'line': { 'color': color }, 'name': color == 'blue' ? "" : "" });
 				}
 				switch (color) {
-					case 'blue':
-						color = "red";
+					case settings.visualizer_colors.upward:
+						color = settings.visualizer_colors.downward;
 						break;
-					case 'red':
-						color = "blue";
+					case settings.visualizer_colors.downward:
+						color = settings.visualizer_colors.upward;
 						break;
 				}
 			}
 
 			if (hitstun < this.x.length) {
-				data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': 'brown', 'size': 14 }, 'name': "Hitstun end" });
+				data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.hitstunEnd, 'size': 14 }, 'name': "Hitstun end" });
 			}
 
 			if (faf >= 0) {
 				if (faf < this.x.length) {
-					data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': '#0066FF', 'size': 14 }, 'name': "Attacker FAF" });
+					data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.attackerFAF, 'size': 14 }, 'name': "Attacker FAF" });
 				}
 			}
 
@@ -2012,7 +2039,7 @@ class Distance{
 			}
 
 			if (adxdata.length > 0) {
-				data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'orange' }, 'name': "Actionable frame" });
+				data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'marker': { 'color': settings.visualizer_colors.actionable }, 'name': "Actionable frame" });
 			}
 
 			adxdata = [];
@@ -2026,7 +2053,7 @@ class Distance{
 
 
 				if (adxdata.length > 0) {
-					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'yellow' }, 'name': "Airdodge cancel" });
+					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'line': { 'color': settings.visualizer_colors.airdodge }, 'marker': { 'color': settings.visualizer_colors.airdodge }, 'name': "Airdodge cancel" });
 				}
 
 			}
@@ -2039,7 +2066,7 @@ class Distance{
 					adydata.push(this.y[i]);
 				}
 				if (adxdata.length > 0) {
-					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'markers', 'marker': { 'color': 'green' }, 'name': "Aerial cancel" });
+					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'line': { 'color': settings.visualizer_colors.aerial }, 'marker': { 'color': settings.visualizer_colors.aerial }, 'name': "Aerial cancel" });
 				}
 
 			}
@@ -2060,7 +2087,7 @@ class Distance{
 				adydata.push(this.stage.blast_zones[3]);
 				adydata.push(this.stage.blast_zones[2]);
 
-				data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Blast zone" });
+				data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.blastzone }, 'name': "Blast zone" });
 
 				//Stage Camera bounds
 				adxdata = [];
@@ -2077,7 +2104,7 @@ class Distance{
 				adydata.push(this.stage.camera[3]);
 				adydata.push(this.stage.camera[2]);
 
-				data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
+				data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.camera }, 'name': "Camera bounds" });
 
 				//Stage surface
 				adxdata = [];
@@ -2102,7 +2129,7 @@ class Distance{
 								adydata2.push(this.stage.collisions[i].vertex[j][1]);
 								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
 								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
-								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Wall jump disabled wall" });
+								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.noWallJump }, 'name': "Wall jump disabled wall" });
 							}
 							//Small walls
 							adxdata2 = [];
@@ -2112,11 +2139,11 @@ class Distance{
 								adydata2.push(this.stage.collisions[i].vertex[j][1]);
 								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
 								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
-								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Semi-techable small wall" });
+								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.semitechable }, 'name': "Semi-techable small wall" });
 							}
 						}
 					}
-					data.push({ 'calcValue': this.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Stage" });
+					data.push({ 'calcValue': this.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.stage }, 'name': "Stage" });
 				}
 
 				data = data.concat(semi_tech);
@@ -2132,7 +2159,7 @@ class Distance{
 							adxdata.push(this.stage.platforms[i].vertex[j][0]);
 							adydata.push(this.stage.platforms[i].vertex[j][1]);
 						}
-						data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Platform: " + this.stage.platforms[i].name });
+						data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.platform }, 'name': "Platform: " + this.stage.platforms[i].name });
 					}
 				}
 
@@ -2152,11 +2179,11 @@ class Distance{
 
 			if (koAtZero) {
 				//KO regardless of DI
-				this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': 'red', 'size': 5 }, 'hoverinfo': 'none' });
+				this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, 'size': 5 }, 'hoverinfo': 'none' });
 				return;
 			}
 
-			this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': 'black', 'size': 5 }, 'hoverinfo': 'none' });
+			this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.diLine, 'size': 5 }, 'hoverinfo': 'none' });
 
 			if (this.inverseX) {
 				di = InvertXAngle(di);
@@ -2183,7 +2210,7 @@ class Distance{
 			y_data.push(point.y + ((d / 3) * Math.sin((di - head_angle) * Math.PI / 180)));
 
 			
-			this.di_plot.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': 'black' }, 'hoverinfo':'none' });
+			this.di_plot.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.diLine }, 'hoverinfo':'none' });
 
 		}
 

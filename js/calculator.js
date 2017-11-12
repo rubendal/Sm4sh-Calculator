@@ -835,8 +835,8 @@ app.controller('calculator', function ($scope) {
                         data.push($scope.visList[p][pl]);
                     }
                 }
-            }
-            Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 } }, { 'displayModeBar': false });
+			}
+			Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
             $scope.visualizer_extra = distance.extra;
         } else {
             $scope.visualizer_extra = [];
@@ -962,7 +962,8 @@ app.controller('calculator', function ($scope) {
     $scope.themes = styleList;
 
     $scope.changeTheme = function () {
-        changeStyle($scope.theme);
+		changeStyle($scope.theme);
+		$scope.updateDI();
 	}
 
 	$scope.updateStage();

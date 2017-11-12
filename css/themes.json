@@ -7,10 +7,54 @@
     "style3": "css/style-1280.css",
     "media3": "screen and (max-width: 1279px) and (min-width: 600px)",
     "style4": "css/style-600.css",
-    "media4": "screen and (max-width: 599px) and (min-width: 0px)"
+    "media4": "screen and (max-width: 599px) and (min-width: 0px)",
+    "visualSettings": {
+      "stick_color": "#000000",
+      "visualizer_colors": {
+        "upward": "#0000FF",
+        "downward": "#FF0000",
+        "airdodge": "#00cccc",
+        "aerial": "#8B008B",
+        "hitstunEnd": "#A52A2A",
+        "actionable": "#FF8A00",
+        "attackerFAF": "#0066FF",
+        "stage": "#008000",
+        "platform": "#008000",
+        "noWallJump": "#800080",
+        "semitechable": "#FF0000",
+        "camera": "#0000FF",
+        "blastzone": "#FF0000",
+        "ko": "#FF0000",
+        "diLine": "#000000",
+        "interpolatedLine": "#808080",
+        "background": "#FCFCFF"
+      }
+    }
   },
   {
     "name": "Dark",
-    "main": "css/dark/style.css"
+    "main": "css/dark/style.css",
+    "visualSettings": {
+      "stick_color": "#FFFFFF",
+      "visualizer_colors": {
+        "upward": "#0000FF",
+        "downward": "#FF0000",
+        "airdodge": "#00cccc",
+        "aerial": "#8B008B",
+        "hitstunEnd": "#A52A2A",
+        "actionable": "#FF8A00",
+        "attackerFAF": "#0066FF",
+        "stage": "#008000",
+        "platform": "#008000",
+        "noWallJump": "#800080",
+        "semitechable": "#FF0000",
+        "camera": "#0000FF",
+        "blastzone": "#FF0000",
+        "ko": "#FF0000",
+        "diLine": "#000000",
+        "interpolatedLine": "#808080",
+        "background": "#212121"
+      }
+    }
   }
 ]

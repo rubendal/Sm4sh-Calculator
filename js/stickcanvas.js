@@ -55,6 +55,8 @@
 			this.invert = invert;
 			
 			context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+			context.strokeStyle = settings.stick_color;
 			
 			context.beginPath();
 			context.arc(this.center.x, this.center.y, this.r, 0, 2 * Math.PI);
