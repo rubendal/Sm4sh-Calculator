@@ -351,12 +351,25 @@ function AttackerShieldPushback(damage, projectile = false) {
 	return (damage * 0.04) + 0.025;
 }
 
+function DIAngleDeadzones(angle) {
+	var deadzone = 11;
+	if (angle <= deadzone || angle >= 360 - deadzone)
+		angle = 0;
+	else if (angle <= 90 + deadzone && angle >= 90 - deadzone)
+		angle = 90;
+	else if (angle <= 180 + deadzone && angle >= 180 - deadzone)
+		angle = 180;
+	else if (angle <= 270 + deadzone && angle >= 270 - deadzone)
+		angle = 270;
+	return angle;
+}
+
 function DI(angle, move_angle){
     if(angle == -1){
         return 0;
     }
     //Value was 10, however in params is 0.17 in radians, https://twitter.com/Meshima_/status/766640794807603200
-    return (parameters.di * 180 / Math.PI) * Math.sin((angle-move_angle) * Math.PI / 180);
+    return (parameters.di * 180 / Math.PI) * Math.sin((DIAngleDeadzones(angle)-move_angle) * Math.PI / 180);
 }
 
 function LSI(angle, launch_angle) {
@@ -370,10 +383,9 @@ function LSI(angle, launch_angle) {
         return 1;
     }
     if (angle >= 0 && angle <= 180) {
-        return 1 + ((parameters.lsi_max - 1) * Math.sin(angle * Math.PI / 180));
+		return 1 + ((parameters.lsi_max - 1) * Math.sin(DIAngleDeadzones(angle) * Math.PI / 180));
     }
-    return 1 + ((1 - parameters.lsi_min) * Math.sin(angle * Math.PI / 180));
-    
+	return 1 + ((1 - parameters.lsi_min) * Math.sin(DIAngleDeadzones(angle) * Math.PI / 180));
 }
 
 function LaunchSpeed(kb){

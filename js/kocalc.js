@@ -874,6 +874,8 @@ app.controller('calculator', function ($scope) {
 		var step = parseFloat($scope.di_step);
 
 		var list = [];
+
+		var anglesDone = [];
 		var data = $scope.calc(damage);
 
 		var percent_ko = parseFloat($scope.percent_ko);
@@ -882,10 +884,16 @@ app.controller('calculator', function ($scope) {
 
 		if (data.ko) {
 			for (var i = 0; i < 360; i += step) {
-				di = i;
+				di = DIAngleDeadzones(i);
+
+				if (anglesDone.indexOf(di) != -1)
+					continue;
+
 				var data = $scope.calc(damage);
 
 				list.push({ "di": i, "percent": data.ko_percent, "data": data });
+
+				anglesDone.push(di);
 			}
 
 			list.sort(function (a, b) {
@@ -985,16 +993,22 @@ app.controller('calculator', function ($scope) {
 		var list = [];
 		var data = $scope.calc(damage);
 
-		
+		var anglesDone = [];
 
 		$scope.visualizer_extra = [];
 
 		if (data.ko) {
 			for (var i = 0; i < 360; i+=step) {
-				di = i;
+				di = DIAngleDeadzones(i);
+
+				if (anglesDone.indexOf(di) != -1)
+					continue;
+
 				var data = $scope.calc(damage);
 
 				list.push({ "di": i, "percent": data.ko_percent, "data": data });
+
+				anglesDone.push(di);
 			}
 
 			list.sort(function (a, b) {
@@ -1275,15 +1289,20 @@ app.controller('calculator', function ($scope) {
 			position.x = possible_positions[p].position[0];
 			position.y = possible_positions[p].position[1];
 			var tempList = [];
+			var anglesDone = [];
 			list = [];
 			var data = $scope.calc(damage);
 			if (data.ko) {
 				for (var i = 0; i < 360; i += step) {
-					di = i;
+					di = DIAngleDeadzones(i);
+					if (anglesDone.indexOf(di) != -1)
+						continue;
+
 					var d = $scope.calc(damage);
 					if (d.ko) {
 						tempList.push({ "di": i, "percent": d.ko_percent, "data": d });
 					}
+					anglesDone.push(di);
 				}
 
 				if (tempList.length == 0)

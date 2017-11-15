@@ -516,7 +516,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.counterDamage = function () {
         var attack = $scope.moveset[$scope.move];
-        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(4);
+        var damage = +(parseFloat($scope.counteredDamage) * attack.counterMult).toFixed(6);
         if (damage > 50) {
             damage = 50;
         }
@@ -686,25 +686,25 @@ app.controller('calculator', function ($scope) {
 		var resultList = [];
 
 		if (!ignoreStale) {
-			resultList.push(new Result("Stale-move negation", "x" + "1", "x" + +StaleNegation(stale, ignoreStale).toFixed(4), true));
+			resultList.push(new Result("Stale-move negation", "x" + "1", "x" + +StaleNegation(stale, ignoreStale).toFixed(6), true));
 		}
 		if (target.modifier.damage_taken != 1) {
-			resultList.push(new Result("Damage taken", "x" + +target.modifier.damage_taken.toFixed(4), "x" + +target.modifier.damage_taken.toFixed(4)));
+			resultList.push(new Result("Damage taken", "x" + +target.modifier.damage_taken.toFixed(6), "x" + +target.modifier.damage_taken.toFixed(6)));
 		}
 		if (attacker.modifier.damage_dealt != 1) {
-			resultList.push(new Result("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(4), "x" + +attacker.modifier.damage_dealt.toFixed(4)));
+			resultList.push(new Result("Damage dealt", "x" + +attacker.modifier.damage_dealt.toFixed(6), "x" + +attacker.modifier.damage_dealt.toFixed(6)));
 		}
 		if (attacker.name == "Lucario") {
-			resultList.push(new Result("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4), "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(4)));
+			resultList.push(new Result("Aura", "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(6), "x" + +Aura(attacker_percent, stock_dif, game_format).toFixed(6)));
 		}
 		if (is_smash && $scope.charge_data == null) {
-			resultList.push(new Result("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4), "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(4)));
+			resultList.push(new Result("Charged Smash", "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(6), "x" + +ChargeSmashMultiplier(charge_frames, megaman_fsmash, witch_time_smash_charge).toFixed(6)));
 		}
 		if (preDamage != 0) {
-			resultList.push(new Result("Before launch damage", "+" + +preDamage.toFixed(4) + "%", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(4) + "%"));
+			resultList.push(new Result("Before launch damage", "+" + +preDamage.toFixed(6) + "%", "+" + +(preDamage * StaleNegation(stale, ignoreStale)).toFixed(6) + "%"));
 		}
-		resultList.push(new Result("Damage", +damage.toFixed(4) + "%", +StaleDamage(damage, stale, ignoreStale).toFixed(4) + "%"));
-		resultList.push(new Result("Target's %", +(target_percent + preDamage + damage).toFixed(4) + "%", +(target_percent + (preDamage * StaleNegation(stale, ignoreStale)) + StaleDamage(damage, stale, ignoreStale)).toFixed(4) + "%"));
+		resultList.push(new Result("Damage", +damage.toFixed(6) + "%", +StaleDamage(damage, stale, ignoreStale).toFixed(6) + "%"));
+		resultList.push(new Result("Target's %", +(target_percent + preDamage + damage).toFixed(6) + "%", +(target_percent + (preDamage * StaleNegation(stale, ignoreStale)) + StaleDamage(damage, stale, ignoreStale)).toFixed(6) + "%"));
         if (!paralyzer) {
             resultList.push(new Result("Attacker Hitlag", Hitlag(damage, is_projectile ? 0 : hitlag, electric, 1), Hitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, electric, 1)));
             resultList.push(new Result("Target Hitlag", Hitlag(damage, hitlag, electric, HitlagCrouch(crouch)), Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric, HitlagCrouch(crouch))));
@@ -712,28 +712,28 @@ app.controller('calculator', function ($scope) {
             resultList.push(new Result("Attacker Hitlag", ParalyzerHitlag(damage, is_projectile ? 0 : hitlag, 1), ParalyzerHitlag(StaleDamage(damage, stale, ignoreStale), is_projectile ? 0 : hitlag, 1)));
 		}
 		if (r != 1) {
-			resultList.push(new Result("KB modifier", "x" + +r.toFixed(4), "x" + +r.toFixed(4)));
+			resultList.push(new Result("KB modifier", "x" + +r.toFixed(6), "x" + +r.toFixed(6)));
 		}
 		if (launch_rate != 1) {
-			resultList.push(new Result("Launch rate", "x" + "1", "x" + +launch_rate.toFixed(4), true));
+			resultList.push(new Result("Launch rate", "x" + "1", "x" + +launch_rate.toFixed(6), true));
 		}
 		if (target.modifier.kb_received != 1) {
-			resultList.push(new Result("KB received", "x" + +target.modifier.kb_received.toFixed(4), "x" + +target.modifier.kb_received.toFixed(4)));
+			resultList.push(new Result("KB received", "x" + +target.modifier.kb_received.toFixed(6), "x" + +target.modifier.kb_received.toFixed(6)));
 		}
 		if (attacker.modifier.kb_dealt != 1) {
-			resultList.push(new Result("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(4), "x" + +attacker.modifier.kb_dealt.toFixed(4)));
+			resultList.push(new Result("KB dealt", "x" + +attacker.modifier.kb_dealt.toFixed(6), "x" + +attacker.modifier.kb_dealt.toFixed(6)));
 		}
-		resultList.push(new Result("Rage", "x" + "1", "x" + +Rage(attacker_percent).toFixed(4), true));
-		resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(4), +vskb.kb.toFixed(4)));
+		resultList.push(new Result("Rage", "x" + "1", "x" + +Rage(attacker_percent).toFixed(6), true));
+		resultList.push(new Result("Total KB", +trainingkb.kb.toFixed(6), +vskb.kb.toFixed(6)));
 		if ($scope.kb_modifier == "buried") {
 			resultList.push(new Result("Buried removed", trainingkb.kb >= parameters.buried_kb_threshold ? "Yes" : "No", vskb.kb >= parameters.buried_kb_threshold ? "Yes" : "No"));
 		}
 
-        resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(4), +vskb.angle_with_di.toFixed(4), !trainingkb.di_able, !vskb.di_able));
-        resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(4), +vskb.angle.toFixed(4)));
+        resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(6), +vskb.angle_with_di.toFixed(6), !trainingkb.di_able, !vskb.di_able));
+        resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(6), +vskb.angle.toFixed(6)));
         if (angle <= 361) {
-            resultList.push(new Result("X", +trainingkb.x.toFixed(4), +vskb.x.toFixed(4)));
-            resultList.push(new Result("Y", +trainingkb.y.toFixed(4), +vskb.y.toFixed(4)));
+            resultList.push(new Result("X", +trainingkb.x.toFixed(6), +vskb.x.toFixed(6)));
+            resultList.push(new Result("Y", +trainingkb.y.toFixed(6), +vskb.y.toFixed(6)));
 		}
 		if (effect == "Paralyze") {
             resultList.push(new Result("Paralysis time", ParalysisTime(trainingkb.kb, damage, hitlag, HitlagCrouch(crouch)), ParalysisTime(vskb.kb, damage, hitlag, HitlagCrouch(crouch))));
@@ -770,12 +770,12 @@ app.controller('calculator', function ($scope) {
 
         resultList.push(new Result("Can Jab lock", trainingkb.can_jablock ? "Yes" : "No", vskb.can_jablock ? "Yes" : "No"));
 
-        resultList.push(new Result("LSI", +trainingkb.lsi.toFixed(4), +vskb.lsi.toFixed(4), trainingkb.lsi == 1, vskb.lsi == 1));
-        resultList.push(new Result("Horizontal Launch Speed", +trainingkb.horizontal_launch_speed.toFixed(4), +vskb.horizontal_launch_speed.toFixed(4)));
-        resultList.push(new Result("Gravity boost", +trainingkb.add_gravity_speed.toFixed(4), +vskb.add_gravity_speed.toFixed(4), trainingkb.add_gravity_speed == 0, vskb.add_gravity_speed == 0));
+        resultList.push(new Result("LSI", +trainingkb.lsi.toFixed(6), +vskb.lsi.toFixed(6), trainingkb.lsi == 1, vskb.lsi == 1));
+        resultList.push(new Result("Horizontal Launch Speed", +trainingkb.horizontal_launch_speed.toFixed(6), +vskb.horizontal_launch_speed.toFixed(6)));
+        resultList.push(new Result("Gravity boost", +trainingkb.add_gravity_speed.toFixed(6), +vskb.add_gravity_speed.toFixed(6), trainingkb.add_gravity_speed == 0, vskb.add_gravity_speed == 0));
         resultList.push(new Result("Vertical Launch Speed",trainingkb.vertical_launch_speed,vskb.vertical_launch_speed));
-        resultList.push(new Result("Max Horizontal Distance", +trainingDistance.max_x.toFixed(4), +vsDistance.max_x.toFixed(4)));
-        resultList.push(new Result("Max Vertical Distance", +trainingDistance.max_y.toFixed(4), +vsDistance.max_y.toFixed(4)));
+        resultList.push(new Result("Max Horizontal Distance", +trainingDistance.max_x.toFixed(6), +vsDistance.max_x.toFixed(6)));
+        resultList.push(new Result("Max Vertical Distance", +trainingDistance.max_y.toFixed(6), +vsDistance.max_y.toFixed(6)));
 
 
         resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
@@ -788,7 +788,7 @@ app.controller('calculator', function ($scope) {
                 luma_vskb.addModifier(attacker.modifier.kb_dealt);
                 luma_trainingkb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
-				resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
+				resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(6), +luma_vskb.kb.toFixed(6)));
 				resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
 				resultList.push(new Result("Luma hitstun", LumaHitstun(luma_trainingkb.kb, windbox, electric), LumaHitstun(luma_vskb.kb, windbox, electric), luma_trainingkb.tumble, luma_vskb.tumble));
             } else {
@@ -796,7 +796,7 @@ app.controller('calculator', function ($scope) {
                 var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
-                resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(4), +luma_vskb.kb.toFixed(4)));
+                resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(6), +luma_vskb.kb.toFixed(6)));
 				resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
 				resultList.push(new Result("Luma hitstun", LumaHitstun(luma_trainingkb.kb, windbox, electric), LumaHitstun(luma_vskb.kb, windbox, electric), luma_trainingkb.tumble, luma_vskb.tumble));
             }
@@ -806,8 +806,8 @@ app.controller('calculator', function ($scope) {
 			var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
 			var sv = (StaleDamage(base_damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
             if (!powershield) {
-                resultList.push(new Result("Shield Damage", +s.toFixed(4), +sv.toFixed(4)));
-                //resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(4), +(50 * target.modifier.shield).toFixed(4)));
+                resultList.push(new Result("Shield Damage", +s.toFixed(6), +sv.toFixed(6)));
+                //resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(6), +(50 * target.modifier.shield).toFixed(6)));
 				resultList.push(new Result("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No", sv >= 50 * target.modifier.shield ? "Yes" : "No"));
 			}
 			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, electric), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric)));
@@ -815,9 +815,9 @@ app.controller('calculator', function ($scope) {
 			resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield)));
 
 			if (!is_projectile)
-				resultList.push(new Result("Attacker shield pushback", +AttackerShieldPushback(damage).toFixed(4), +AttackerShieldPushback(StaleDamage(damage, stale, ignoreStale)).toFixed(4)));
+				resultList.push(new Result("Attacker shield pushback", +AttackerShieldPushback(damage).toFixed(6), +AttackerShieldPushback(StaleDamage(damage, stale, ignoreStale)).toFixed(6)));
 
-			resultList.push(new Result("Target shield pushback", +(ShieldPushback(damage, is_projectile, powershield)).toFixed(4), +(ShieldPushback(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)).toFixed(4), s >= 50 * target.modifier.shield, sv >= 50 * target.modifier.shield));
+			resultList.push(new Result("Target shield pushback", +(ShieldPushback(damage, is_projectile, powershield)).toFixed(6), +(ShieldPushback(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)).toFixed(6), s >= 50 * target.modifier.shield, sv >= 50 * target.modifier.shield));
         } else {
             resultList.push(new Result("Unblockable attack", "Yes", "Yes"));
         }

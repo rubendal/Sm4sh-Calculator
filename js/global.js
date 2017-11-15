@@ -903,10 +903,14 @@ function changeStyle(style) {
                 $("#style4").attr("href", defaultStyle.style4);
                 checkAndChangeMedia("#style4", defaultStyle.media4);
             }
-			if (styleList[i].visualSettings)
-				settings = styleList[i].visualSettings;
-			else
-				settings = defaultStyle.visualSettings;
+			if (styleList[i].visualSettings) {
+				settings.stick_color = styleList[i].visualSettings.stick_color;
+				settings.visualizer_colors.background = styleList[i].visualSettings.visualizer_bg;
+			}
+			else {
+				settings.stick_color = defaultStyle.visualSettings.stick_color;
+				settings.visualizer_colors.background = defaultStyle.visualSettings.visualizer_bg;
+			}
             return;
         }
     }
@@ -1091,13 +1095,13 @@ class Result {
         if (typeof (this.training) == "string") {
             this.training = this.training;
         } else {
-            this.training = +this.training.toFixed(4);
+            this.training = +this.training.toFixed(6);
         }
 
         if (typeof (this.vs) == "string") {
             this.vs = this.vs;
         } else {
-            this.vs = +this.vs.toFixed(4);
+            this.vs = +this.vs.toFixed(6);
         }
 
 
@@ -1152,10 +1156,10 @@ function List(trainingvalues, vsvalues) {
     var hitstun = -1;
     for (var i = 0; i < attributes.length && i < vsvalues.length; i++) {
         if (attributes[i] == "Hitstun") {
-            hitstun = +vsvalues[i].toFixed(4);
+            hitstun = +vsvalues[i].toFixed(6);
         }
         if (hitstun != -1 && (attributes[i] == "Airdodge hitstun cancel" || attributes[i] == "Aerial hitstun cancel")) {
-            if (hitstun + 1 == +values[i].toFixed(4)) {
+            if (hitstun + 1 == +values[i].toFixed(6)) {
                 continue;
             }
             if (hitstun == 0) {
@@ -1166,7 +1170,7 @@ function List(trainingvalues, vsvalues) {
             if (values[i] == 1) {
                 continue;
             }
-            values[i] = "x" + +values[i].toFixed(4);
+            values[i] = "x" + +values[i].toFixed(6);
         }
         if (attributes[i] == "Gravity boost") {
             if (values[i] == 0) {
@@ -1176,7 +1180,7 @@ function List(trainingvalues, vsvalues) {
         if (typeof (values[i]) == "string") {
             list.push(new ListItem(attributes[i], values[i], titles[i]));
         } else {
-            list.push(new ListItem(attributes[i], +values[i].toFixed(4), titles[i]));
+            list.push(new ListItem(attributes[i], +values[i].toFixed(6), titles[i]));
         }
         if (attributes[i] == "Angle") {
             if (values[i] > 361) {
@@ -1560,8 +1564,8 @@ class Distance{
         this.max_x = this.position.x;
         this.max_y = this.position.y;
 
-        var x_speed = +this.x_launch_speed.toFixed(4);
-		var y_speed = +this.y_launch_speed.toFixed(4);
+        var x_speed = +this.x_launch_speed.toFixed(6);
+		var y_speed = +this.y_launch_speed.toFixed(6);
 
 		this.KO = false;
 
@@ -2605,8 +2609,8 @@ class PercentFromKnockback{
                 var rage = this.kb / this.wbkb_kb;
                 if (rage >= 1 && rage <= 1.15) {
                     this.vs_percent = (5 / 3) * ((460 * rage) - 439);
-                    this.vs_percent = +this.vs_percent.toFixed(4);
-                    this.rage_needed = +rage.toFixed(4);
+                    this.vs_percent = +this.vs_percent.toFixed(6);
+                    this.rage_needed = +rage.toFixed(6);
                 } else {
                     if (this.kb <= this.wbkb_kb) {
                         this.vs_percent = 0;
