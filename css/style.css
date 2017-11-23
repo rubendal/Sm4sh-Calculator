@@ -386,3 +386,15 @@ input[type=button] {
     background: #FFFFFF;
     color: #000000;
 }
+
+.stick-container{
+    width: 240px;
+}
+
+.stick-div{
+    float:left;
+}
+
+.stick-values{
+    float:right;
+}

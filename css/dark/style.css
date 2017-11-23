@@ -364,3 +364,15 @@ input,select {
 input[type=button] {
      border-color: #525252;
 }
+
+.stick-container {
+    width: 240px;
+}
+
+.stick-div {
+    float: left;
+}
+
+.stick-values {
+    float: right;
+}
