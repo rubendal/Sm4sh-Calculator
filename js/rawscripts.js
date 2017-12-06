@@ -128,7 +128,7 @@ app.controller('scripts', function ($scope) {
 			$scope.sf_code = "";
 			$scope.sf_code_css = { "display": "none" };
 		} else {
-			$scope.sf_code = script.scriptHex;
+			$scope.sf_code = script.scriptHex.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 			$scope.sf_code_css = { "display": "inline" };
 		}
     };
