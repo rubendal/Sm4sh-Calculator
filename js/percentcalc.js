@@ -31,8 +31,6 @@ app.controller('calculator', function ($scope) {
     $scope.kbType = "total";
 
     $scope.preDamage = 0;
-    $scope.di = di;
-    $scope.noDI = true;
 
     $scope.set_weight = false;
 
@@ -256,9 +254,6 @@ app.controller('calculator', function ($scope) {
                 $scope.counteredDamage = 0;
             }
             $scope.angle = attack.angle;
-            if(attack.angle < 360){
-                $scope.di = attack.angle;
-            }
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
@@ -308,9 +303,6 @@ app.controller('calculator', function ($scope) {
                     $scope.preDamage = 0;
                     $scope.unblockable = false;
                     $scope.selected_move = null;
-                    if($scope.angle < 360){
-                        $scope.di = $scope.angle;
-                    }
                 }
             }
         } else {
@@ -320,9 +312,6 @@ app.controller('calculator', function ($scope) {
                 $scope.preDamage = 0;
                 $scope.unblockable=false;
                 $scope.selected_move = null;
-                if($scope.angle < 360){
-                    $scope.di = $scope.angle;
-                }
             }
         }
         $scope.update();

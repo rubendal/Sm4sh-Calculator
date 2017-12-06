@@ -290,17 +290,38 @@
             <div id="modifiers" class="card-block collapse group">
                 <div id="attack_options">
                     <div class="pos-left">
-                        <canvas id="stickAngle"></canvas>
-                        Target DI/LSI angle:
-                        <input name="di" type="number" min="0" max="359" step="1" ng-model="di" ng-change="updateDI()" />
-                        <input type="checkbox" name="noDI" ng-model="noDI" ng-change="updateDI()" />No DI     
-                        <br/>
+                        <div class="stick-container">
+                            Controller:
+                            <select id="controllers" ng-model="game_controller" ng-change="updateController()">
+                                <option ng-selected="$first" ng:repeat="c in controllers" ng-attr-value="{{c}}">{{c.name}}</option>
+                            </select>
+                            <br />
+                            Input:
+                            <select id="stick_inputs" ng-model="stickInput" ng-change="updateStickInput()">
+                                <option ng-selected="$first" ng:repeat="i in stickInputs" ng-attr-value="{{i}}">{{i.name}}</option>
+                            </select>
+                            <br />
+                            <br />
+                            <div class="stick-div">
+                                <canvas id="stickCanvas"></canvas>
+                            </div>
+
+                            <div class="stick-values">
+                                Stick position
+                                <br />
+                                X:<input name="stickX" type="number" min="-127" max="128" step="1" ng-model="stick.X" ng-change="updateDIInput()" />
+                                <br />
+                                Y:<input name="stickY" type="number" min="-127" max="128" step="1" ng-model="stick.Y" ng-change="updateDIInput()" />
+                            </div>
+                        </div>
                         <br />
-                        <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
-                        <br />
-                        <br />  
-                        Launch Rate:
-                        <input name="launch_rate" type="number" min="0.5" max="2" step="0.1" ng-model="launch_rate" ng-change="update()" />
+                        <div style="clear:both;">
+                            <input type="checkbox" name="kbMod_bounce" ng-model="kb_modifier_bounce" ng-change="update()" />Grounded meteor/Bounce off
+                            <br />
+                            <br />
+                            Launch Rate:
+                            <input name="launch_rate" type="number" min="0.5" max="2" step="0.1" ng-model="launch_rate" ng-change="update()" />
+                        </div>
                     </div>
                     <div class="pos-right">
                         <div id="kb_modifiers">
@@ -459,14 +480,14 @@
                         <input type="button" class="btn btn-sm" value="Calculate KO %" ng-click="calculate()" />
                         <br />
                         <div style="margin-top:5px;">
-                            DI angle step: <input name="di_step" type="number" min="1" max="90" step="1" ng-model="di_step" /> <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-sm" value="Calculate KO % with best DI" ng-click="calculateDI()" />
+                            DI angle step: <input name="di_step" type="number" min="1" max="90" step="1" ng-model="di_step" /> <input type="button" ng-click="calculateDI()" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-sm" value="Calculate KO % with best DI" />
                         </div>
                         <div style="margin-top:5px;">
                             Target KO'd percent: <input name="percent_ko" type="number" min="0" max="999" step="1" ng-model="percent_ko" /> %
-                            <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-sm" value="Calculate DI based on KO %" ng-click="calculatePercentBasedDI()" />
+                            <input type="button" ng-click="calculatePercentBasedDI()" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles" class="btn btn-sm" value="Calculate DI based on KO %" />
                         </div>
                         <div style="margin-top:5px;">
-                            Vector field DI angle step: <input name="di_step" type="number" min="10" max="90" step="1" ng-model="di_step_stage" /> <input type="button" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles on multiple positions" class="btn btn-sm" value="Calculate best DI vector field" ng-click="calculateDIPositions()" />
+                            Vector field DI angle step: <input name="di_step" type="number" min="10" max="90" step="1" ng-model="di_step_stage" /> <input type="button" ng-click="calculateDIPositions()" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles on multiple positions" class="btn btn-sm" value="Calculate best DI vector field" />
                             <br />
                             <input type="checkbox" ng-model="di_ignore_collisions" /> Ignore positions with stage collisions
                             <br />

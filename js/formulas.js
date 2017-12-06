@@ -36,8 +36,8 @@
     }
 };
 
-function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, electric, set_weight, di, launch_rate) {
-	return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, electric, percent + damage, set_weight, di, 1);
+function TrainingKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, angle, in_air, windbox, electric, set_weight, stick, launch_rate) {
+	return new Knockback((((((((percent + damage) / 10) + (((percent + damage) * base_damage) / 20)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * r, angle, gravity, fall_speed, in_air, windbox, electric, percent + damage, set_weight, stick, 1);
 }
 
 function Rage(percent) {
@@ -200,13 +200,13 @@ function SakuraiAngle(kb, aerial) {
     return (kb - 60) / 0.7;
 }
 
-function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate) {
+function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate) {
     var s = StaleNegation(timesInQueue, ignoreStale);
-    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, percent + (damage * s), set_weight, di, launch_rate);
+    return new Knockback((((((((percent + damage * s) / 10 + (((percent + damage * s) * base_damage * (1 - (1 - s) * 0.3)) / 20)) * 1.4 * (200 / (weight + 100))) + 18) * (kbg / 100)) + bkb)) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, percent + (damage * s), set_weight, stick, launch_rate);
 }
 
-function WeightBasedKB(weight, bkb, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate) {
-	return new Knockback((((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, target_percent + damage, set_weight, di, launch_rate);
+function WeightBasedKB(weight, bkb, wbkb, kbg, gravity, fall_speed, r, target_percent, damage, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate) {
+	return new Knockback((((((1 + (wbkb / 2)) * (200 / (weight + 100)) * 1.4) + 18) * (kbg / 100)) + bkb) * (r * Rage(attacker_percent)), angle, gravity, fall_speed, in_air, windbox, electric, target_percent + damage, set_weight, stick, launch_rate);
 }
 
 function StaleDamage(base_damage, timesInQueue, ignoreStale) {
@@ -364,28 +364,65 @@ function DIAngleDeadzones(angle) {
 	return angle;
 }
 
-function DI(angle, move_angle){
-    if(angle == -1){
-        return 0;
-    }
-    //Value was 10, however in params is 0.17 in radians, https://twitter.com/Meshima_/status/766640794807603200
-    return (parameters.di * 180 / Math.PI) * Math.sin((DIAngleDeadzones(angle)-move_angle) * Math.PI / 180);
+function StickSensibilityPosition(value) {
+	if (value < 24 && value > -24)
+		return 0;
+	if (value > 128)
+		return 1;
+	if (value < -128)
+		return -1;
+	return value / 128;
 }
 
-function LSI(angle, launch_angle) {
-    if(angle == -1){
-        return 1;
-    }
-    if (launch_angle > 65 && launch_angle < 115) {
-        return 1;
-    }
-    if (launch_angle > 245 && launch_angle < 295) {
-        return 1;
-    }
-    if (angle >= 0 && angle <= 180) {
-		return 1 + ((parameters.lsi_max - 1) * Math.sin(DIAngleDeadzones(angle) * Math.PI / 180));
-    }
-	return 1 + ((1 - parameters.lsi_min) * Math.sin(DIAngleDeadzones(angle) * Math.PI / 180));
+function StickSensibility(value) {
+	if (value < 24 && value > -24)
+		return 0;
+	if (value > 118)
+		return 1;
+	if (value < -118)
+		return -1;
+	return value / 118;
+}
+
+function DI(stick, launchSpeed, totalLaunchSpeed) {
+	if (totalLaunchSpeed < 0.00001) //There is an if on MSC but it shouldn't happen since it requires tumble for DI to work
+		return Math.atan2(launchSpeed.Y, launchSpeed.X) * 180 / Math.PI;
+
+	if (Math.abs(Math.atan2(launchSpeed.Y, launchSpeed.X)) < parameters.di) //Cannot DI if launch angle is less than DI angle change param
+		return Math.atan2(launchSpeed.Y, launchSpeed.X) * 180 / Math.PI;
+
+	var X = StickSensibility(stick.X);
+	var Y = StickSensibility(stick.Y);
+
+	var check = Y * launchSpeed.X - X * launchSpeed.Y < 0;
+
+	var variation = Math.abs(X * launchSpeed.Y - Y * launchSpeed.X) / totalLaunchSpeed;
+
+	var di = parameters.di * variation;
+
+	var angle = 0;
+
+	if (check)
+		angle = (Math.atan2(launchSpeed.Y, launchSpeed.X) - di) * 180 / Math.PI;
+	else
+		angle = (Math.atan2(launchSpeed.Y, launchSpeed.X) + di) * 180 / Math.PI;
+
+	if (angle < 0)
+		angle += 360;
+
+	return angle;
+}
+
+function LSI(stickY, launch_angle) {
+	if (launch_angle > 65 && launch_angle < 115)
+		return 1;
+	if (launch_angle > 245 && launch_angle < 295)
+		return 1;
+
+	var Y = StickSensibility(stickY);
+	if (Y >= 0)
+		return 1 + (parameters.lsi_max - 1) * Y;
+	return 1 - (1 - parameters.lsi_min) * -Y;
 }
 
 function LaunchSpeed(kb){
@@ -450,6 +487,21 @@ function DisableTime(percent, damage, kb) {
 	if (kb == 0)
 		return 0;
 	return Math.ceil(kb + (Math.min(percent + damage, 999) * 1.1));
+}
+
+//Stick gate formulas
+
+function InsideStickGate(r, X, Y) {
+	var d = Math.sqrt(Math.pow(X, 2) + Math.pow(Y, 2));
+	return d <= r;
+}
+
+function StickAngle(X, Y) {
+	var angle = Math.atan2(Y, X) * 180 / Math.PI;
+	if (angle < 0)
+		angle += 360;
+
+	return angle;
 }
 
 //Launch visualizer formulas

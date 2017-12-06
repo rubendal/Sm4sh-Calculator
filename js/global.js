@@ -148,8 +148,8 @@ var paramsList = [
     new Parameter("witchTime", "0"),
     new Parameter("megamanFsmash", "0"),
     new Parameter("shield", "normal"),
-    new Parameter("DI", "55"),
-    new Parameter("noDI", "1"),
+    new Parameter("stickX", "0"),
+    new Parameter("stickY", "0"),
     new Parameter("unblockable", "0"),
     new Parameter("counteredDamage", "0"),
     new Parameter("counterMult", "0"),
@@ -300,11 +300,11 @@ function buildParams($scope) {
     if (paramsList[28].value != boolToString($scope.megaman_fsmash)) {
         params.push(new Parameter(paramsList[28].param, boolToString($scope.megaman_fsmash)));
     }
-    if (paramsList[30].value != $scope.di) {
-        params.push(new Parameter(paramsList[30].param, $scope.di));
+    if (paramsList[30].value != $scope.stick.X) {
+        params.push(new Parameter(paramsList[30].param, $scope.stick.X));
     }
-    if (paramsList[31].value != boolToString($scope.noDI)) {
-        params.push(new Parameter(paramsList[31].param, boolToString($scope.noDI)));
+	if (paramsList[31].value != $scope.stick.Y) {
+		params.push(new Parameter(paramsList[31].param, $scope.stick.Y));
     }
     if ($scope.app != "kbcalculator") {
         if (paramsList[20].value != $scope.hit_frame) {
@@ -613,19 +613,31 @@ function mapParams($scope) {
     param = Parameter.get(get_params, "shield");
     if (param) {
         $scope.shield = param;
-    }
-    param = Parameter.get(get_params, "DI");
-    if (param) {
-		$scope.di = parseFloat(param);
+	}
+	param = Parameter.get(get_params, "stickX");
+	if (param) {
+		$scope.stick.X = Math.floor(parseFloat(param));
 		if ($scope.app != "kbcalculator")
 			$scope.updateDI();
-    }
-    param = Parameter.get(get_params, "noDI");
-    if (param) {
-		$scope.noDI = param == 1;
+	}
+	param = Parameter.get(get_params, "stickY");
+	if (param) {
+		$scope.stick.Y = Math.floor(parseFloat(param));
 		if ($scope.app != "kbcalculator")
 			$scope.updateDI();
-    }
+	}
+  //  param = Parameter.get(get_params, "DI");
+  //  if (param) {
+		//$scope.di = parseFloat(param);
+		//if ($scope.app != "kbcalculator")
+		//	$scope.updateDI();
+  //  }
+  //  param = Parameter.get(get_params, "noDI");
+  //  if (param) {
+		//$scope.noDI = param == 1;
+		//if ($scope.app != "kbcalculator")
+		//	$scope.updateDI();
+  //  }
     param = Parameter.get(get_params, "counteredDamage");
     if (param) {
         $scope.counteredDamage = param;
@@ -1516,7 +1528,7 @@ class Collision {
 }
 
 class Distance{
-    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, di, gravity, faf, fall_speed, traction, isFinishingTouch, inverseX, onSurface, position, stage, doPlot, extraFrames){
+    constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, gravity, faf, fall_speed, traction, isFinishingTouch, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
         this.x_launch_speed = x_launch_speed;
         this.y_launch_speed = y_launch_speed;
@@ -1582,7 +1594,7 @@ class Distance{
         this.x = [this.position.x];
         this.y = [this.position.y];
         var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
-        var character_position = {'x':this.position.x,'y':this.position.y};
+		var character_position = { 'x': this.position.x, 'y': this.position.y };
 		var launch_speed = { 'x': x_speed, 'y': y_speed };
 		var next_position = { 'x': 0, 'y': 0 };
         var character_speed = { 'x': 0, 'y': 0 };
@@ -2231,7 +2243,7 @@ class Distance{
 };
 
 class Knockback {
-    constructor(kb, angle, gravity, fall_speed, aerial, windbox, electric, percent, set_weight, di, launch_rate) {
+    constructor(kb, angle, gravity, fall_speed, aerial, windbox, electric, percent, set_weight, stick, launch_rate) {
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -2267,10 +2279,10 @@ class Knockback {
             this.lsi = 1;
         }
         this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
-        if (di !== undefined) {
-            this.di = di;
+        if (stick !== undefined) {
+            this.stick = stick;
         } else {
-            this.di = -1;
+			this.stick = { X: 0, Y: 0 };
         }
         this.calculate = function () {
             this.kb = this.base_kb * this.launch_rate;
@@ -2283,19 +2295,47 @@ class Knockback {
             }
             if ((this.base_angle == 0 || this.base_angle == 180) && this.aerial) {
                 this.tumble = this.kb > 80 && !windbox;
-            }
-            this.di_able = this.tumble;
-            if (this.di_able) {
-                this.di_change = DI(this.di, this.angle);
-                this.angle += this.di_change;
-            }
-            this.angle_with_di = this.angle;
-            this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
-            this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-            this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
-			if (!this.tumble || this.set_weight){
-                this.add_gravity_speed = 0;
-            }
+			}
+
+			this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
+			if (!this.tumble || this.set_weight) {
+				this.add_gravity_speed = 0;
+			}
+
+			this.x = Math.cos(this.angle * Math.PI / 180) * this.kb;
+			this.y = Math.sin(this.angle * Math.PI / 180) * this.kb;
+			this.launch_speed = LaunchSpeed(this.kb);
+			this.horizontal_launch_speed = LaunchSpeed(this.x);
+			this.vertical_launch_speed = LaunchSpeed(this.y);
+
+			if (this.windbox && !this.aerial)
+				this.vertical_launch_speed = 0;
+
+			this.di_able = this.tumble && Math.abs(Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed)) >= parameters.di;
+			if (this.di_able) {
+
+				this.angle = DI(this.stick, { X: this.horizontal_launch_speed, Y: this.vertical_launch_speed + this.add_gravity_speed }, this.launch_speed);
+
+				this.angle_with_di = this.angle;
+
+				this.lsi = LSI(this.stick.Y, this.angle);
+
+				this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
+				this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
+				this.launch_speed = LaunchSpeed(this.kb);
+				this.launch_speed *= this.lsi;
+				this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
+				this.vertical_launch_speed = this.launch_speed * Math.sin(this.angle * Math.PI / 180);
+
+				this.horizontal_launch_speed = Math.abs(this.horizontal_launch_speed);
+				this.vertical_launch_speed = Math.abs(this.vertical_launch_speed);
+
+				if (this.windbox && !this.aerial)
+					this.vertical_launch_speed = 0;
+				
+			}
+
+
             this.can_jablock = false;
             if (this.angle == 0 || this.angle == 180 || this.angle == 360) {
                 if (this.kb != 0 && !this.windbox && !this.aerial) {
@@ -2312,32 +2352,7 @@ class Knockback {
             if (this.angle <= 70 || this.angle >= 110) {
                 this.reeling = this.tumble && !this.windbox && this.percent >= 100;
             }
-            this.launch_speed = LaunchSpeed(this.kb);
-            this.horizontal_launch_speed = LaunchSpeed(this.x);
-            this.vertical_launch_speed = LaunchSpeed(this.y);
 
-			if (this.tumble && !this.set_weight) {
-                var vls = this.vertical_launch_speed + this.add_gravity_speed;
-				//Gravity boost changes launch angle
-				var x_ref = Math.cos(this.angle * Math.PI / 180);
-				var y_ref = Math.sin(this.angle * Math.PI / 180);
-				this.angle = Math.atan2(vls, this.horizontal_launch_speed) * 180 / Math.PI;
-				if (x_ref < 0) {
-					this.angle = InvertXAngle(this.angle);
-				}
-				if (y_ref < 0) {
-					this.angle = InvertYAngle(this.angle);
-				}
-            }
-            if (this.tumble) {
-                this.lsi = LSI(this.di, this.angle);
-            } else {
-                this.lsi = 1;
-            }
-            this.horizontal_launch_speed *= this.lsi;
-			this.vertical_launch_speed *= this.lsi;
-			//LSI is applied only to launch speed, gravity boost isn't affected by it (even if it changes the angle)
-			this.vertical_launch_speed += this.add_gravity_speed;
             this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
         };
         this.addModifier = function (modifier) {
@@ -2391,7 +2406,6 @@ class PercentFromKnockback{
         this.vs_percent = 0;
         this.queue = queue;
         this.ignoreStale = ignoreStale;
-        this.lsi = lsi;
         this.wbkb_kb = -1;
         this.wbkb_modifier = 1;
         this.electric = electric;
@@ -2400,9 +2414,6 @@ class PercentFromKnockback{
         if (this.launch_rate == undefined) {
             this.launch_rate = 1;
         }
-
-        this.best_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
-        this.worst_di = {'angle_training':0, 'training':0, 'angle_vs':0, 'vs':0, 'hitstun':0, 'hitstun_dif':0 };
 
         this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r){
             var s = 1;
@@ -2523,72 +2534,6 @@ class PercentFromKnockback{
                 }
                 if (this.vs_percent > 999 || isNaN(this.vs_percent)) {
                     this.vs_percent = -1;
-                }
-
-                if (this.di_able && this.type != "total") {
-                    var di_angles = [];
-                    for (var i = 0; i < 360; i++) {
-                        var di = DI(i, this.angle);
-                        var angle = this.angle + DI(i, this.angle);
-                        var kb = this.base_kb;
-                        if (this.type == "x") {
-                            kb = Math.abs(kb / Math.cos(angle * Math.PI / 180));
-                        }
-                        if (this.type == "y") {
-                            kb -= this.add_gravity_kb;
-                            kb = Math.abs(kb / Math.sin(angle * Math.PI / 180));
-                        }
-                        var hitstun = Hitstun(kb, this.windbox, this.electric);
-                        var training = this.training_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-                        var vs = this.vs_formula(kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.queue, this.ignoreStale);
-                        di_angles.push({ 'angle': i, 'training': training, 'vs': vs, 'hitstun': hitstun });
-                    }
-                    di_angles.sort(function (a, b) {
-                        return a.training < b.training ? 1 :
-                        a.training > b.training ? -1 :
-                        0
-                    });
-                    this.best_di.angle_training = di_angles[0].angle;
-                    this.best_di.training = di_angles[0].training;
-                    this.best_di.hitstun = di_angles[0].hitstun;
-                    this.best_di.hitstun_dif = this.hitstun - di_angles[0].hitstun;
-                    this.worst_di.angle_training = di_angles[di_angles.length - 1].angle;
-                    this.worst_di.training = di_angles[di_angles.length - 1].training;
-                    this.worst_di.hitstun = di_angles[di_angles.length - 1].hitstun;
-                    this.worst_di.hitstun_dif = this.hitstun - di_angles[di_angles.length - 1].hitstun;
-                    di_angles.sort(function (a, b) {
-                        return a.vs < b.vs ? 1 :
-                        a.vs > b.vs ? -1 :
-                        0
-                    });
-                    this.best_di.angle_vs = di_angles[0].angle;
-                    this.best_di.vs = di_angles[0].vs;
-                    this.worst_di.angle_vs = di_angles[di_angles.length - 1].angle;
-                    this.worst_di.vs = di_angles[di_angles.length - 1].vs;
-                    if (this.best_di.training < 0) {
-                        this.best_di.training = 0;
-                    }
-                    if (this.best_di.training > 999 || isNaN(this.best_di.training)) {
-                        this.best_di.training = -1;
-                    }
-                    if (this.best_di.vs < 0) {
-                        this.best_di.vs = 0;
-                    }
-                    if (this.best_di.vs > 999 || isNaN(this.best_di.vs)) {
-                        this.best_di.vs = -1;
-                    }
-                    if (this.worst_di.training < 0) {
-                        this.worst_di.training = 0;
-                    }
-                    if (this.worst_di.training > 999 || isNaN(this.worst_di.training)) {
-                        this.worst_di.training = -1;
-                    }
-                    if (this.worst_di.vs < 0) {
-                        this.worst_di.vs = 0;
-                    }
-                    if (this.worst_di.vs > 999 || isNaN(this.worst_di.vs)) {
-                        this.worst_di.vs = -1;
-                    }
                 }
 
             };
@@ -2791,7 +2736,7 @@ var is_smash = false;
 
 var wbkb = false;
 var windbox = false;
-var di = 55;
+var stick = { X: 0, Y: 0 };
 var luma_percent = 0;
 
 var shieldDamage = 0;
@@ -2847,3 +2792,41 @@ function GetApps(current) {
 	}
 	return list;
 }
+
+class StickPosition {
+	constructor(name, X, Y, controllers) {
+		this.name = name;
+		this.X = X;
+		this.Y = Y;
+		this.controllers = controllers;
+	}
+
+};
+
+var Controllers = {
+	GC : 1,
+	Pro: 2,
+	Gamepad: 4,
+	Classic: 8,
+	Nunchuck: 16,
+	Wiimote: 32,
+	_3DS: 64,
+	AllControllers: 0xFFFFFFFF
+}
+
+var ControllerList = [
+	{ name: "GameCube/Other", value: Controllers.GC, gate: 35, r: 128 }, //Others for now, I will add them to the list once I get the stick values
+	{ name: "Wiimote", value: Controllers.Wiimote, gate: 0, r: 0 }
+];
+
+var StickPositions = [
+	new StickPosition("Neutral", 0, 0, Controllers.AllControllers),
+	new StickPosition("Up", 0, 128, Controllers.AllControllers),
+	new StickPosition("Down", 0, -127, Controllers.AllControllers),
+	new StickPosition("Left", -127, 0, Controllers.AllControllers),
+	new StickPosition("Right", 128, 0, Controllers.AllControllers),
+	new StickPosition("Wiimote Up-Left", -127, 128, Controllers.Wiimote),
+	new StickPosition("Wiimote Up-Right", 128, 128, Controllers.Wiimote),
+	new StickPosition("Wiimote Down-Left", -127, -127, Controllers.Wiimote),
+	new StickPosition("Wiimote Down-Right", 128, -127, Controllers.Wiimote)
+];

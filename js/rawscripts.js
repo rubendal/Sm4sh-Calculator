@@ -105,7 +105,9 @@ app.controller('scripts', function ($scope) {
     $scope.scripts = filter();
     $scope.script = JSON.stringify($scope.scripts[0]);
 
-    $scope.onlyHitboxes = onlyHitboxes;
+	$scope.onlyHitboxes = onlyHitboxes;
+
+	$scope.sf_code_css = { display: "none" };
 
     $scope.types = getTypes($scope.script);
     if ($scope.types.length > 0) {
@@ -121,7 +123,14 @@ app.controller('scripts', function ($scope) {
         $scope.types = getTypes($scope.script);
         $scope.type = $scope.types[0];
         $scope.updateType();
-        $scope.index = script.id;
+		$scope.index = script.id;
+		if (script.scriptHex == null) {
+			$scope.sf_code = "";
+			$scope.sf_code_css = { "display": "none" };
+		} else {
+			$scope.sf_code = script.scriptHex;
+			$scope.sf_code_css = { "display": "inline" };
+		}
     };
 
     $scope.updateCharacter = function () {
@@ -161,7 +170,13 @@ app.controller('scripts', function ($scope) {
                 $scope.code = script.sound;
                 break;
         }
-    };
+	};
+
+	$scope.copyCode = function () {
+		var textArea = document.getElementById("copyscriptbox");
+		textArea.select();
+		document.execCommand("Copy");
+	};
 
     $scope.updateCharacter();
 

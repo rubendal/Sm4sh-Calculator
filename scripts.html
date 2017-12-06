@@ -95,9 +95,11 @@
                     <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.display}}</option>
                 </select>
                 <input type="checkbox" name="onlyHitboxes" ng-model="onlyHitboxes" ng-change="updateFilter()" /> Only show scripts with hitboxes
+                <input type="button" class="btn btn-sm" ng-style="sf_code_css" ng-click="copyCode()" value="Copy Smash Forge game script code" />
 
                 <br />
-                <br />
+                
+                <br/>
 
                 Subaction index: {{index}}
 
@@ -109,6 +111,7 @@
 
                 <br />
                 <textarea id="scriptbox" style="font-family: 'Ubuntu Mono', monospace;" ng-model="code" readonly></textarea>
+                <textarea id="copyscriptbox" style="position: absolute; left: -9999px;" ng-model="sf_code" readonly tabindex='-1' aria-hidden='true'></textarea>
 
             </div>
         </div>

@@ -44,8 +44,7 @@ app.controller('calculator', function ($scope) {
     $scope.hitbox_active_index = 0;
 
     $scope.preDamage = 0;
-    $scope.di = di;
-    $scope.noDI = true;
+	$scope.stick = { X: 0, Y: 0 };
 
     $scope.lumaPercent = 0;
     $scope.lumaclass = { 'display': 'none' };
@@ -430,9 +429,6 @@ app.controller('calculator', function ($scope) {
                 $scope.counteredDamage = 0;
             }
             $scope.angle = attack.angle;
-            if(attack.angle < 360){
-                $scope.di = attack.angle;
-            }
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
@@ -491,9 +487,6 @@ app.controller('calculator', function ($scope) {
 					$scope.unblockable = false;
 					$scope.isFinishingTouch = false;
                     $scope.selected_move = null;
-                    if($scope.angle < 360){
-                        $scope.di = $scope.angle;
-                    }
                 }
             }
         } else {
@@ -504,9 +497,6 @@ app.controller('calculator', function ($scope) {
 				$scope.unblockable = false;
 				$scope.isFinishingTouch = false;
                 $scope.selected_move = null;
-                if($scope.angle < 360){
-                    $scope.di = $scope.angle;
-                }
             }
         }
         
@@ -610,20 +600,6 @@ app.controller('calculator', function ($scope) {
         $scope.update();
 	}
 
-	$scope.updateDIFromCanvas = function (di) {
-		$scope.di = di;
-		$scope.noDI = false;
-		$scope.$apply();
-		$scope.updateDI();
-	}
-
-	$scope.stickDI = new StickWheel($scope.updateDIFromCanvas, 'stickAngle', $scope.noDI, parseFloat($scope.di), $scope.inverseX);
-
-	$scope.updateDI = function () {
-		$scope.stickDI.drawStick($scope.noDI, parseFloat($scope.di), $scope.inverseX);
-		$scope.update();
-	}
-
     $scope.calculate = function (){
         var result = { 'training': [], 'vs': [], 'shield': [] };
 
@@ -641,24 +617,24 @@ app.controller('calculator', function ($scope) {
         preDamage *= target.modifier.damage_taken;
 
         if (wbkb == 0) {
-			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, set_weight, di);
-			vskb = VSKB(target_percent + (preDamage * StaleNegation(stale, ignoreStale)), base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate);
+			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, set_weight, stick);
+			vskb = VSKB(target_percent + (preDamage * StaleNegation(stale, ignoreStale)), base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
             trainingkb.addModifier(attacker.modifier.kb_dealt);
             vskb.addModifier(attacker.modifier.kb_dealt);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         } else {
-			trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, set_weight, di);
-			vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate);
+			trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, set_weight, stick);
+			vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         }
 
         var distance;
         if(game_mode == "training"){
-			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
+			distance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.angle, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
 		} else {
-			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
+			distance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.angle, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, graph, parseFloat($scope.extra_vis_frames));
         }
 
         //if(stage != null){
@@ -672,11 +648,11 @@ app.controller('calculator', function ($scope) {
         var trainingDistance;
         var vsDistance;
         if (game_mode == "training") {
-			vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, vskb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
+			vsDistance = new Distance(vskb.kb, vskb.horizontal_launch_speed, vskb.vertical_launch_speed, vskb.hitstun, vskb.base_angle, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
             trainingDistance = distance;
         } else {
             vsDistance = distance;
-			trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, trainingkb.di_change, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
+			trainingDistance = new Distance(trainingkb.kb, trainingkb.horizontal_launch_speed, trainingkb.vertical_launch_speed, trainingkb.hitstun, trainingkb.base_angle, target.attributes.gravity * target.modifier.gravity, ($scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf) - hitframe, target.attributes.fall_speed * target.modifier.fall_speed, target.attributes.traction * target.modifier.traction, isFinishingTouch, inverseX, onSurface, position, stage, !graph, parseFloat($scope.extra_vis_frames));
         }
         trainingkb.bounce(bounce);
         vskb.bounce(bounce);
@@ -782,8 +758,8 @@ app.controller('calculator', function ($scope) {
 
         if (target.name == "Rosalina And Luma") {
             if (!wbkb) {
-                var luma_trainingkb = TrainingKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, di);
-                var luma_vskb = VSKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, di);
+                var luma_trainingkb = TrainingKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, angle, in_air, windbox, electric, stick);
+                var luma_vskb = VSKB(15 + luma_percent, base_damage, damage, 100, kbg, bkb, target.attributes.gravity, target.attributes.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, stick);
                 luma_trainingkb.addModifier(attacker.modifier.kb_dealt);
                 luma_vskb.addModifier(attacker.modifier.kb_dealt);
                 luma_trainingkb.addModifier(target.modifier.kb_received);
@@ -792,8 +768,8 @@ app.controller('calculator', function ($scope) {
 				resultList.push(new Result("Luma launched", luma_trainingkb.tumble ? "Yes" : "No", luma_vskb.tumble ? "Yes" : "No"));
 				resultList.push(new Result("Luma hitstun", LumaHitstun(luma_trainingkb.kb, windbox, electric), LumaHitstun(luma_vskb.kb, windbox, electric), luma_trainingkb.tumble, luma_vskb.tumble));
             } else {
-                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, electric, di);
-                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, di);
+                var luma_trainingkb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, damage, 0, angle, in_air, windbox, electric, stick);
+                var luma_vskb = WeightBasedKB(100, bkb, kbg, target.attributes.gravity, target.attributes.fall_speed, r, 15 + luma_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, stick);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 luma_vskb.addModifier(target.modifier.kb_received);
                 resultList.push(new Result("Luma KB", +luma_trainingkb.kb.toFixed(6), +luma_vskb.kb.toFixed(6)));
@@ -899,11 +875,11 @@ app.controller('calculator', function ($scope) {
         stock_dif = $scope.stock_dif;
         game_format = $scope.format;
 
-        if($scope.noDI){
-            di = -1;
-        }else{
-            di = parseFloat($scope.di);
-        }
+		stick = $scope.stick;
+
+		if (inverseX)
+			stick.X *= -1;
+
         luma_percent = parseFloat($scope.lumaPercent);
 
 		unblockable = $scope.unblockable;
@@ -955,7 +931,30 @@ app.controller('calculator', function ($scope) {
         parameters.hitstunCancel.frames.aerial = Math.floor(parameters.hitstunCancel.frames.aerial);
         parameters.tumble_threshold = Math.floor(parameters.tumble_threshold);
         $scope.update();
-    }
+	}
+
+	$scope.updateStickFromCanvas = function (stick) {
+		$scope.stick = stick;
+		$scope.$apply();
+
+		$scope.detectStickPosition();
+
+		$scope.updateDI();
+	}
+
+	$scope.stickDI = new StickWheel($scope.updateStickFromCanvas, 'stickCanvas', $scope.stick);
+
+	$scope.updateDIInput = function () {
+		$scope.detectStickPosition();
+
+		$scope.updateDI();
+	}
+
+	$scope.updateDI = function () {
+		$scope.stickDI.drawStick($scope.stick);
+
+		$scope.update();
+	}
 
 
     $scope.theme = "Normal";
@@ -965,6 +964,81 @@ app.controller('calculator', function ($scope) {
 		changeStyle($scope.theme);
 		$scope.updateDI();
 	}
+
+	
+	$scope.controllers = ControllerList;
+	$scope.game_controller = JSON.stringify($scope.controllers[0]);
+
+	$scope.stickInputs = StickPositions;
+
+	$scope.stickInput = JSON.stringify(StickPositions[0]);
+
+	$scope.updateController = function () {
+		var c = JSON.parse($scope.game_controller);
+
+		var s = StickPositions;
+
+		var list = [new StickPosition("Custom", 255, 255, Controllers.AllControllers)];
+
+		var input = JSON.parse($scope.stickInput);
+		var f = false;
+
+		for (var i = 0; i < s.length; i++) {
+			if ((s[i].controllers & c.value) == c.value) {
+				list.push(s[i]);
+
+				if (s[i].name == input.name)
+					f = true;
+			}
+		}
+
+		$scope.stickInputs = list;
+
+		if (!f) {
+			var n = list[0];
+			delete n.$$hashKey; //BTW Why does angular add this? it just messes stuff
+			$scope.stickInput = JSON.stringify(n);
+		}
+
+		$scope.stickDI.gate = c.gate;
+		$scope.stickDI.controllerR = c.r;
+		$scope.stickDI.controller = c.name;
+		$scope.stickDI.drawStick($scope.stick);
+	}
+
+	$scope.updateStickInput = function () {
+		var input = JSON.parse($scope.stickInput);
+
+		if (input.name == "Custom")
+			return;
+
+		$scope.stick.X = input.X;
+		$scope.stick.Y = input.Y;
+
+		$scope.updateDI();
+	}
+
+	$scope.detectStickPosition = function () {
+
+		var input = null;
+
+		for (var i = 0; i < $scope.stickInputs.length; i++) {
+			if ($scope.stickInputs[i].X == $scope.stick.X && $scope.stickInputs[i].Y == $scope.stick.Y) {		
+				input = $scope.stickInputs[i];
+				break;
+			}
+		}
+
+		if (input != null) {
+			delete input.$$hashKey;
+			$scope.stickInput = JSON.stringify(input);
+		} else {
+			$scope.stickInput = JSON.stringify(new StickPosition("Custom", 255, 255, Controllers.AllControllers));
+		}
+
+	}
+
+	$scope.updateController();
 
 	$scope.updateStage();
 

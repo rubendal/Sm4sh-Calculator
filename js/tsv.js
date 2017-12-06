@@ -155,8 +155,7 @@ app.controller('calculator', function ($scope) {
     $scope.shieldDamage = 0;
 
     $scope.preDamage = 0;
-    $scope.di = di;
-    $scope.noDI = true;
+	$scope.stick = { X: 0, Y: 0 };
 
 	$scope.set_weight = false;
 
@@ -365,9 +364,6 @@ app.controller('calculator', function ($scope) {
                 $scope.counteredDamage = 0;
             }
             $scope.angle = attack.angle;
-            if(attack.angle < 360){
-                $scope.di = attack.angle;
-            }
             $scope.baseDamage = attack.base_damage;
             $scope.bkb = attack.bkb;
             $scope.kbg = attack.kbg;
@@ -426,9 +422,6 @@ app.controller('calculator', function ($scope) {
 					$scope.unblockable = false;
 					$scope.isFinishingTouch = false;
                     $scope.selected_move = null;
-                    if($scope.angle < 360){
-                        $scope.di = $scope.angle;
-                    }
                 }
             }
         } else {
@@ -439,9 +432,6 @@ app.controller('calculator', function ($scope) {
 				$scope.unblockable = false;
 				$scope.isFinishingTouch = false;
                 $scope.selected_move = null;
-                if($scope.angle < 360){
-                    $scope.di = $scope.angle;
-                }
             }
         }
         $scope.update();
@@ -544,20 +534,6 @@ app.controller('calculator', function ($scope) {
         $scope.update();
 	}
 
-	$scope.updateDIFromCanvas = function (di) {
-		$scope.di = di;
-		$scope.noDI = false;
-		$scope.$apply();
-		$scope.updateDI();
-	}
-
-	$scope.stickDI = new StickWheel($scope.updateDIFromCanvas, 'stickAngle', $scope.noDI, parseFloat($scope.di), false);
-
-	$scope.updateDI = function () {
-		$scope.stickDI.drawStick($scope.noDI, parseFloat($scope.di), false);
-		$scope.update();
-	}
-
     $scope.update = function () {
         $scope.check();
         $scope.encodedAttackerValue = encodeURI(attacker.name.split("(")[0].trim());
@@ -595,11 +571,7 @@ app.controller('calculator', function ($scope) {
 
         launch_rate = parseFloat($scope.launch_rate);
 
-        if($scope.noDI){
-            di = -1;
-        }else{
-            di = parseFloat($scope.di);
-        }
+		stick = $scope.stick;
 
         luma_percent = parseFloat($scope.lumaPercent);
 
@@ -749,9 +721,9 @@ app.controller('calculator', function ($scope) {
         var addRow = function () {
             calcDamage();
             if(wbkb == 0){
-				kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate);
+				kb = VSKB(target_percent + preDamage, bd, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
             }else{
-				kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, di, launch_rate);
+				kb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
             }
             kb.addModifier(attacker.modifier.kb_dealt);
             kb.addModifier(target.modifier.kb_received);
@@ -964,12 +936,112 @@ app.controller('calculator', function ($scope) {
         $("#" + id).collapse('toggle');
     }
 
-    $scope.theme = "Normal";
-    $scope.themes = styleList;
+	$scope.updateStickFromCanvas = function (stick) {
+		$scope.stick = stick;
+		$scope.$apply();
 
-    $scope.changeTheme = function () {
-        changeStyle($scope.theme);
-    }
+		$scope.detectStickPosition();
+
+		$scope.updateDI();
+	}
+
+	$scope.stickDI = new StickWheel($scope.updateStickFromCanvas, 'stickCanvas', $scope.stick);
+
+	$scope.updateDIInput = function () {
+		$scope.detectStickPosition();
+
+		$scope.updateDI();
+	}
+
+	$scope.updateDI = function () {
+		$scope.stickDI.drawStick($scope.stick);
+
+		$scope.update();
+	}
+
+
+	$scope.theme = "Normal";
+	$scope.themes = styleList;
+
+	$scope.changeTheme = function () {
+		changeStyle($scope.theme);
+		$scope.updateDI();
+	}
+
+
+	$scope.controllers = ControllerList;
+	$scope.game_controller = JSON.stringify($scope.controllers[0]);
+
+	$scope.stickInputs = StickPositions;
+
+	$scope.stickInput = JSON.stringify(StickPositions[0]);
+
+	$scope.updateController = function () {
+		var c = JSON.parse($scope.game_controller);
+
+		var s = StickPositions;
+
+		var list = [new StickPosition("Custom", 255, 255, Controllers.AllControllers)];
+
+		var input = JSON.parse($scope.stickInput);
+		var f = false;
+
+		for (var i = 0; i < s.length; i++) {
+			if ((s[i].controllers & c.value) == c.value) {
+				list.push(s[i]);
+
+				if (s[i].name == input.name)
+					f = true;
+			}
+		}
+
+		$scope.stickInputs = list;
+
+		if (!f) {
+			var n = list[0];
+			delete n.$$hashKey; //BTW Why does angular add this? it just messes stuff
+			$scope.stickInput = JSON.stringify(n);
+		}
+
+		$scope.stickDI.gate = c.gate;
+		$scope.stickDI.controllerR = c.r;
+		$scope.stickDI.controller = c.name;
+		$scope.stickDI.drawStick($scope.stick);
+	}
+
+	$scope.updateStickInput = function () {
+		var input = JSON.parse($scope.stickInput);
+
+		if (input.name == "Custom")
+			return;
+
+		$scope.stick.X = input.X;
+		$scope.stick.Y = input.Y;
+
+		$scope.updateDI();
+	}
+
+	$scope.detectStickPosition = function () {
+
+		var input = null;
+
+		for (var i = 0; i < $scope.stickInputs.length; i++) {
+			if ($scope.stickInputs[i].X == $scope.stick.X && $scope.stickInputs[i].Y == $scope.stick.Y) {
+				input = $scope.stickInputs[i];
+				break;
+			}
+		}
+
+		if (input != null) {
+			delete input.$$hashKey;
+			$scope.stickInput = JSON.stringify(input);
+		} else {
+			$scope.stickInput = JSON.stringify(new StickPosition("Custom", 255, 255, Controllers.AllControllers));
+		}
+
+	}
+
+	$scope.updateController();
 
 	mapParams($scope);
 
