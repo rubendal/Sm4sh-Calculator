@@ -705,7 +705,7 @@ app.controller('calculator', function ($scope) {
 			resultList.push(new Result("Buried removed", trainingkb.kb >= parameters.buried_kb_threshold ? "Yes" : "No", vskb.kb >= parameters.buried_kb_threshold ? "Yes" : "No"));
 		}
 
-        resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(6), +vskb.angle_with_di.toFixed(6), !trainingkb.di_able, !vskb.di_able));
+        //resultList.push(new Result("Angle with DI", +trainingkb.angle_with_di.toFixed(6), +vskb.angle_with_di.toFixed(6), !trainingkb.di_able, !vskb.di_able));
         resultList.push(new Result("Launch angle", +trainingkb.angle.toFixed(6), +vskb.angle.toFixed(6)));
         if (angle <= 361) {
             resultList.push(new Result("X", +trainingkb.x.toFixed(6), +vskb.x.toFixed(6)));
