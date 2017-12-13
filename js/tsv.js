@@ -156,6 +156,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.preDamage = 0;
 	$scope.stick = { X: 0, Y: 0 };
+	$scope.stickAngle = 0;
 
 	$scope.set_weight = false;
 
@@ -953,6 +954,18 @@ app.controller('calculator', function ($scope) {
 		$scope.updateDI();
 	}
 
+	$scope.updateDIAngle = function () {
+		var c = JSON.parse($scope.game_controller);
+
+		var p = AngleToStickPosition(c.r, parseFloat($scope.stickAngle));
+
+		$scope.stick = p;
+
+		$scope.detectStickPosition(true);
+
+		$scope.updateDI();
+	}
+
 	$scope.updateDI = function () {
 		$scope.stickDI.drawStick($scope.stick);
 
@@ -1021,7 +1034,10 @@ app.controller('calculator', function ($scope) {
 		$scope.updateDI();
 	}
 
-	$scope.detectStickPosition = function () {
+	$scope.detectStickPosition = function (ignoreAngleCheck) {
+
+		if (ignoreAngleCheck == undefined)
+			ignoreAngleCheck = false;
 
 		var input = null;
 
@@ -1038,6 +1054,9 @@ app.controller('calculator', function ($scope) {
 		} else {
 			$scope.stickInput = JSON.stringify(new StickPosition("Custom", 255, 255, Controllers.AllControllers));
 		}
+
+		if (!ignoreAngleCheck)
+			$scope.stickAngle = Math.floor(StickAngle($scope.stick.X, $scope.stick.Y));
 
 	}
 

@@ -333,7 +333,7 @@ function ShieldAdvantage(damage, hitlag, hitframe, FAF, is_projectile, electric,
 
 //Formula by Arthur https://twitter.com/BenArthur_7/status/926918804466225152
 function ShieldPushback(damage, projectile, powershield) {
-	var projectileMult = is_projectile ? 0.5 : 1;
+	var projectileMult = projectile ? 0.5 : 1;
 	var powershieldMult = powershield ? 0.66 : 1;
 	var powershieldMult2 = powershield ? 0.15 : 1;
 
@@ -489,6 +489,10 @@ function DisableTime(percent, damage, kb) {
 	return Math.ceil(kb + (Math.min(percent + damage, 999) * 1.1));
 }
 
+function PinnedTime(percent) {
+	return Math.ceil(280 + (percent * 1.5));
+}
+
 //Stick gate formulas
 
 function InsideStickGate(r, X, Y) {
@@ -502,6 +506,44 @@ function StickAngle(X, Y) {
 		angle += 360;
 
 	return angle;
+}
+
+function AngleToStickPosition(r, angle) {
+	if (r != 0) {
+		var x = Math.floor(r * Math.cos(angle * Math.PI / 180));
+		var y = Math.floor(r * Math.sin(angle * Math.PI / 180));
+
+		if (x < -127)
+			x = -127;
+		if (y < -127)
+			y = -127;
+		if (x > 128)
+			x = 128;
+		if (y > 128)
+			y = 128;
+
+		return { X: x, Y: y };
+	} else {
+
+		var x = Math.floor(128 * Math.cos(angle * Math.PI / 180));
+		var y = Math.floor(128 * Math.sin(angle * Math.PI / 180));
+
+		if (x < -24)
+			x = -127;
+		else if (x > 24)
+			x = 128;
+		else
+			x = 0;
+
+		if (y < -24)
+			y = -127;
+		else if (y > 24)
+			y = 128;
+		else
+			y = 0;
+		return { X: x, Y: y };
+	}
+	
 }
 
 //Launch visualizer formulas

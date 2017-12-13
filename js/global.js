@@ -2267,16 +2267,13 @@ class Knockback {
         this.spike = false;
         this.di_change = 0;
         this.launch_speed = LaunchSpeed(kb);
-        this.lsi = lsi;
+        this.lsi = 1;
         this.horizontal_launch_speed = 0;
         this.vertical_launch_speed = 0;
         this.launch_rate = launch_rate;
         this.electric = electric;
         if (this.launch_rate == undefined) {
             this.launch_rate = 1;
-        }
-        if(this.lsi == undefined){
-            this.lsi = 1;
         }
         this.hitstun = Hitstun(this.base_kb, this.windbox, this.electric);
         if (stick !== undefined) {
