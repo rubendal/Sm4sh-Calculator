@@ -2302,16 +2302,20 @@ class Knockback {
 			this.x = Math.cos(this.angle * Math.PI / 180) * this.kb;
 			this.y = Math.sin(this.angle * Math.PI / 180) * this.kb;
 			this.launch_speed = LaunchSpeed(this.kb);
-			this.horizontal_launch_speed = LaunchSpeed(this.x);
-			this.vertical_launch_speed = LaunchSpeed(this.y);
+			this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
+			this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180)) + this.add_gravity_speed;
+
+			this.angle = GetAngle(this.horizontal_launch_speed, this.vertical_launch_speed);
 
 			if (this.windbox && !this.aerial)
 				this.vertical_launch_speed = 0;
 
 			this.di_able = this.tumble && Math.abs(Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed)) >= parameters.di;
-			if (this.di_able) {
+			if (this.di_able && (this.stick.X != 0 || this.stick.Y != 0)) {
 
-				this.angle = DI(this.stick, { X: this.horizontal_launch_speed, Y: this.vertical_launch_speed + this.add_gravity_speed }, this.launch_speed);
+				this.launch_speed = Math.sqrt(Math.pow(this.horizontal_launch_speed, 2) + Math.pow(this.vertical_launch_speed, 2)); //Include gravity boost to the new launch speed (yes this only happens when stick isn't on neutral)
+
+				this.angle = DI(this.stick, { X: this.horizontal_launch_speed, Y: this.vertical_launch_speed }, this.launch_speed);
 
 				this.angle_with_di = this.angle;
 
@@ -2319,10 +2323,11 @@ class Knockback {
 
 				this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
 				this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
-				this.launch_speed = LaunchSpeed(this.kb);
 				this.launch_speed *= this.lsi;
+
 				this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
-				this.vertical_launch_speed = this.launch_speed * Math.sin(this.angle * Math.PI / 180);
+				this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180));
+
 
 				this.horizontal_launch_speed = Math.abs(this.horizontal_launch_speed);
 				this.vertical_launch_speed = Math.abs(this.vertical_launch_speed);

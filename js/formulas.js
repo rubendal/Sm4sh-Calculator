@@ -500,7 +500,7 @@ function InsideStickGate(r, X, Y) {
 	return d <= r;
 }
 
-function StickAngle(X, Y) {
+function GetAngle(X, Y) {
 	var angle = Math.atan2(Y, X) * 180 / Math.PI;
 	if (angle < 0)
 		angle += 360;

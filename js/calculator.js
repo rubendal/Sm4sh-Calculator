@@ -1055,7 +1055,7 @@ app.controller('calculator', function ($scope) {
 		}
 
 		if (!ignoreAngleCheck)
-			$scope.stickAngle = Math.floor(StickAngle($scope.stick.X, $scope.stick.Y));
+			$scope.stickAngle = Math.floor(GetAngle($scope.stick.X, $scope.stick.Y));
 
 	}
 
