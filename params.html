@@ -115,11 +115,17 @@
             <div id="data_pos-params">
                 <div id="extra-table">
                     <table class="result-table">
+                        <tr>
+                            <td ng-if="hasTags" class="tag-value"></td>
+                            <td class="param-value">Name</td>
+                            <td class="param-value">Type</td>
+                            <td class="param-value">Value</td>
+                        </tr>
                         <tr ng-repeat="x in param" ng-class-even="'value-even'">
                             <td class="tag-value" ng-if="x.tag">{{ x.tag }}</td>
-                            <td class="value">{{ x.id }}</td>
-                            <td class="value">{{ x.value }}</td>
-                            
+                            <td class="param-value">{{ x.id }}</td>
+                            <td class="param-value">{{ x.type }}</td>
+                            <td class="param-value">{{ x.value }}</td>
                         </tr>
                     </table>
                 </div>

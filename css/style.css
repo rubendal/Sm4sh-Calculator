@@ -311,6 +311,12 @@ table,td,tr{
     width:20%;
 }
 
+.param-value {
+    padding: 4px;
+    text-align: center;
+    width: 10%;
+}
+
 .tag-value {
     padding: 4px;
     text-align: left;

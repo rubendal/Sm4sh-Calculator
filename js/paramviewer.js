@@ -99,6 +99,7 @@ app.controller('paramviewer', function ($scope) {
 
     $scope.params = getParams(gamename);
 
+	$scope.hasTags = false;
 
     $scope.groups = $scope.params;
     $scope.group = "0";
@@ -113,8 +114,9 @@ app.controller('paramviewer', function ($scope) {
 
     $scope.updateEntry = function () {
         entry = $scope.entries[parseInt($scope.entry)];
-        $scope.param = entry.values;
-        $scope.updateTags();
+		$scope.param = entry.values;
+
+		$scope.hasTags = $scope.updateTags();
     };
 
     $scope.updateGroup = function () {
@@ -153,8 +155,10 @@ app.controller('paramviewer', function ($scope) {
                 } else {
                     $scope.param[i].tag = " ";
                 }
-            }
-        } /*else {
+			}
+			return true;
+		}
+		return false;/*else {
             for (var i = 0; i < $scope.param.length; i++) {
                 $scope.param[i].tag = "";
             }
