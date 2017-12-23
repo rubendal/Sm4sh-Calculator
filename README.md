@@ -1,11 +1,6 @@
 ## Sm4sh Calculator
 Web based Smash 4 knockback calculator
 
-### KH API and HTTPS
-To access KuroganeHammer's API it is required to navigate the webpage with http instead of https (unless you deactivate mixed content blocking on your web browser since the API doesn't support https) for move list, switching the url to http will solve this issue
-
-A label "API doesn't work with https" should appear next to move select box which is a link to http version of the web page
-
 ### How to use it
 Just input your data, the calculator will update the results when you change something
 
@@ -24,26 +19,26 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * Add stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 
 ### KO calculator
-http://rubendal.github.io/Sm4sh-Calculator/kocalc.html
+https://rubendal.github.io/Sm4sh-Calculator/kocalc.html
 
 Calculates opponent's KO percentages on inputted position on a stage, it can also calculate best DI angle the opponent can use to survive on that position or generate a vector field to get best di possible on various positions however this calculation is a heavy process so it could freeze the page for a moment or even get a popup that the page isn't responding
 
 Reminder: character models/ECBs/animations not included so KO percents are not accurate by a small margin
 
 ### Percentage Calculator
-http://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
+https://rubendal.github.io/Sm4sh-Calculator/percentcalc.html
 
 Get target percent required to obtain certain knockback, on WBKB moves calculate the minimum rage to reach specified knockback
 
 ### Move Search
-http://rubendal.github.io/Sm4sh-Calculator/movesearch.html
+https://rubendal.github.io/Sm4sh-Calculator/movesearch.html
 
 Search for moves that match certain conditions using filters
 
 Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/Move-Search
 
 ### Script Viewer
-http://rubendal.github.io/Sm4sh-Calculator/scripts.html
+https://rubendal.github.io/Sm4sh-Calculator/scripts.html
 
 View character scripts that contain hitbox/throw data
 
@@ -52,12 +47,12 @@ All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and st
 Scripts version: 1.1.6/1.1.7
 
 ### Script Diff Viewer
-http://rubendal.github.io/Sm4sh-Calculator/scriptdiff.html
+https://rubendal.github.io/Sm4sh-Calculator/scriptdiff.html
 
 View character scripts being diffed between the first version they were available (3DS 1.0.0 for non-DLC characters) and the current patch with character changes 1.1.6 to check all changes they had between patches, it also allows checking diffs of changes between patches
 
 ### Script Search
-http://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html
+https://rubendal.github.io/Sm4sh-Calculator/scriptsearch.html
 
 Search all character game.bin scripts that match certain regular expression on each line, can use a negative regular expression to make easier expressions and filter by script Name
 
@@ -75,12 +70,12 @@ Some examples:
 * `Reflectable=0x0, Absorbable=0x1` (Hitboxes that cannot be reflected but can be absorbed)
 
 ### Param Viewer
-http://rubendal.github.io/Sm4sh-Calculator/params.html
+https://rubendal.github.io/Sm4sh-Calculator/params.html
 
 See all characters fighter_param_vl files parameters online, groups before 13 have tags for known stuff, you can check Meshima's [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) to check special moves and other stuff (groups 13 and higher) for known values for each character
 
 ### TSV Generator
-http://rubendal.github.io/Sm4sh-Calculator/tsvgen.html
+https://rubendal.github.io/Sm4sh-Calculator/tsvgen.html
 
 Generate TSV files containing character, damage, knockback and distance launched data
 

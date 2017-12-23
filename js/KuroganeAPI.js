@@ -730,10 +730,10 @@ class Move {
 function getMoveset(attacker, $scope) {
     $scope.moveset = [];
 	var api_name = attacker.api_name.toLowerCase().replace("and", "").replace("&", "").split(".").join("").split(" ").join("");
-	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters/name/" + api_name, function (character) {
+	loadAsyncFunctionJSON("https://beta-api-kuroganehammer.azurewebsites.net/api/characters/name/" + api_name, function (character) {
         if (character != null) {
             var id = character.OwnerId;
-			loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters/" + id + "/moves", function (moveset) {
+			loadAsyncFunctionJSON("https://beta-api-kuroganehammer.azurewebsites.net/api/characters/" + id + "/moves", function (moveset) {
                 if (moveset != null) {
                     var moves = [];
                     var count = 1;
@@ -790,7 +790,7 @@ function getMoveset(attacker, $scope) {
 
 function getCharactersId(names, $scope) {
     $scope.charactersId = [];
-	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/characters", function (character) {
+	loadAsyncFunctionJSON("https://beta-api-kuroganehammer.azurewebsites.net/api/characters", function (character) {
         if (character != null) {
             var characters = [];
             for (var i = 0; i < character.length; i++) {
@@ -827,7 +827,7 @@ function getCharactersId(names, $scope) {
 
 function getAllMoves($scope) {
     $scope.moves = [];
-	loadAsyncFunctionJSON("http://beta-api-kuroganehammer.azurewebsites.net/api/moves", function (moveset) {
+	loadAsyncFunctionJSON("https://beta-api-kuroganehammer.azurewebsites.net/api/moves", function (moveset) {
         if (moveset != null) {
             var moves = [];
             var count = 0;
