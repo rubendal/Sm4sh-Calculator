@@ -2328,14 +2328,13 @@ class Knockback {
 				this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
 				this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180));
 
-
-				this.horizontal_launch_speed = Math.abs(this.horizontal_launch_speed);
-				this.vertical_launch_speed = Math.abs(this.vertical_launch_speed);
-
 				if (this.windbox && !this.aerial)
 					this.vertical_launch_speed = 0;
 				
 			}
+
+			this.horizontal_launch_speed = Math.abs(this.horizontal_launch_speed);
+			this.vertical_launch_speed = Math.abs(this.vertical_launch_speed);
 
 
             this.can_jablock = false;
