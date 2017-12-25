@@ -299,13 +299,15 @@ function buildParams($scope) {
     }
     if (paramsList[28].value != boolToString($scope.megaman_fsmash)) {
         params.push(new Parameter(paramsList[28].param, boolToString($scope.megaman_fsmash)));
-    }
-    if (paramsList[30].value != $scope.stick.X) {
-        params.push(new Parameter(paramsList[30].param, $scope.stick.X));
-    }
-	if (paramsList[31].value != $scope.stick.Y) {
-		params.push(new Parameter(paramsList[31].param, $scope.stick.Y));
-    }
+	}
+	if ($scope.stick != undefined) {
+		if (paramsList[30].value != $scope.stick.X) {
+			params.push(new Parameter(paramsList[30].param, $scope.stick.X));
+		}
+		if (paramsList[31].value != $scope.stick.Y) {
+			params.push(new Parameter(paramsList[31].param, $scope.stick.Y));
+		}
+	}
     if ($scope.app != "kbcalculator") {
         if (paramsList[20].value != $scope.hit_frame) {
             params.push(new Parameter(paramsList[20].param, $scope.hit_frame));
