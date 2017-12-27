@@ -2,12 +2,6 @@
   {
     "name": "Normal",
     "main": "css/style.css",
-    "style2": "css/style-1400.css",
-    "media2": "screen and (max-width: 1399px) and (min-width: 1280px)",
-    "style3": "css/style-1280.css",
-    "media3": "screen and (max-width: 1279px) and (min-width: 600px)",
-    "style4": "css/style-600.css",
-    "media4": "screen and (max-width: 599px) and (min-width: 0px)",
     "visualSettings": {
       "stick_color": "#000000",
       "visualizer_bg": "#FCFCFF"

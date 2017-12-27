@@ -20,9 +20,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
-    <link id="style2" rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
-    <link id="style3" rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
-    <link id="style4" rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Move Search</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
@@ -68,7 +65,7 @@
             </span>
             <span id="theme">
                 Theme
-                <select name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
+                <select id="themeSelect" name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
                     <option ng-selected="$first" ng:repeat="t in themes" ng-attr-value="{{t.name}}">{{t.name}}</option>
                 </select>
             </span>
@@ -76,123 +73,114 @@
 
     </div>
 
-    <!--<div id="footer" class="footer">
-        <div id="footer-cont">
-            <div id="footer-text">
-
-            </div>
-        </div>
-    </div>-->
 
     <span ng-style="loading">
         {{status}}
-        <!--<span ng-style="{'display': usingHttp ? 'none' : 'initial'}">
-            <a class="select-link" href="http://rubendal.github.io/Sm4sh-Calculator/" title="Click here to try to reload page with http">API doesn't work with https</a>
-        </span>-->
     </span> 
 
     <div name="calculator" id="calculator" ng-style="filter_interface">
 
-        <div id="main" ng-style="main_style">
-            <div>
+        <div id="main2" ng-style="main_style">
+            <span style="margin-left:10px;">
                 Name:
                 <input name="name" type="text" ng-model="name" ng-change="update()" style="width:42em;" />
-                <br/>
+            </span>
+            <br />
+            <br />
+            <a class="select-link cur-link" ng-click="collapse('filters')">
+                <div class="card header-group filters-header">
+                    <span class="cur-link header-group-text">Filters</span>
+                </div>
+            </a>
+            <div id="filters" class="card-block collapse in group">
+                Hitbox startup frame:
+                <input name="hit_start" type="number" min="0" max="300" step="1" ng-model="hitbox_start" ng-change="update()" />
+                <select name="hit_start_cond" ng-model="hitbox_start_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="hit_start2" type="number" min="0" max="300" step="1" ng-model="hitbox_start2" ng-change="update()" />
                 <br />
-                <a class="select-link cur-link" ng-click="collapse('filters')">
-                    <div class="card header-group" style="background:rgba(0, 0, 159, 0.75)">
-                        <span class="cur-link">Filters</span>
-                    </div>
-                </a>
-                <div id="filters" class="card-block collapse in group">
-                    Hitbox startup frame:
-                    <input name="hit_start" type="number" min="0" max="300" step="1" ng-model="hitbox_start" ng-change="update()" />
-                    <select name="hit_start_cond" ng-model="hitbox_start_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="hit_start2" type="number" min="0" max="300" step="1" ng-model="hitbox_start2" ng-change="update()" />
-                    <br />
-                    Hitbox active on frame:
-                    <input name="hit_frame" type="number" min="0" max="300" step="1" ng-model="hitbox_frame" ng-change="update()" />
-                    <input name="hit_frame_cond" type="checkbox" ng-model="hitbox_frame_cond" ng-change="update()" />Any
-                    <br />
-                    FAF:
-                    <input name="faf" type="number" min="0" max="300" step="1" ng-model="faf" ng-change="update()" />
+                Hitbox active on frame:
+                <input name="hit_frame" type="number" min="0" max="300" step="1" ng-model="hitbox_frame" ng-change="update()" />
+                <input name="hit_frame_cond" type="checkbox" ng-model="hitbox_frame_cond" ng-change="update()" />Any
+                <br />
+                FAF:
+                <input name="faf" type="number" min="0" max="300" step="1" ng-model="faf" ng-change="update()" />
 
-                    <select name="faf_cond" ng-model="faf_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="faf2" type="number" min="0" max="300" step="1" ng-model="faf2" ng-change="update()" />
-                    <br />
-                    Landing lag:
-                    <input name="landing_lag" type="number" min="0" max="367" step="1" ng-model="landing_lag" ng-change="update()" />
-                    <select name="landing_lag_cond" ng-model="landing_lag_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="landing_lag2" type="number" min="0" max="60" step="1" ng-model="landing_lag2" ng-change="update()" />
-                    <br />
-                    Autocancel:
-                    <input name="autocancel" type="number" min="0" max="367" step="1" ng-model="autocancel" ng-change="update()" />
-                    <input name="autocancel_cond" type="checkbox" ng-model="autocancel_cond" ng-change="update()" />Any
-                    <br />
-                    Base damage:
-                    <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="base_damage" ng-change="update()" />
-                    <select name="base_damage_cond" ng-model="base_damage_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="base_damage2" type="number" min="0" max="999" step="0.5" ng-model="base_damage2" ng-change="update()" />
-                    <br />
-                    Angle:
-                    <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
-                    <select name="angle_cond" ng-model="angle_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="angle2" type="number" min="0" max="367" step="1" ng-model="angle2" ng-change="update()" />
-                    <br />
-                    <select name="wbkb_cond" ng-model="wbkb_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in woptions" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
-                    <select name="bkb_cond" ng-model="bkb_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="bkb2" type="number" min="0" max="999" step="1" ng-model="bkb2" ng-change="update()" />
-                    <br />
-                    KBG:
-                    <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
-                    <select name="kbg_cond" ng-model="kbg_cond" ng-change="update()">
-                        <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                    <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
+                <select name="faf_cond" ng-model="faf_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="faf2" type="number" min="0" max="300" step="1" ng-model="faf2" ng-change="update()" />
+                <br />
+                Landing lag:
+                <input name="landing_lag" type="number" min="0" max="367" step="1" ng-model="landing_lag" ng-change="update()" />
+                <select name="landing_lag_cond" ng-model="landing_lag_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="landing_lag2" type="number" min="0" max="60" step="1" ng-model="landing_lag2" ng-change="update()" />
+                <br />
+                Autocancel:
+                <input name="autocancel" type="number" min="0" max="367" step="1" ng-model="autocancel" ng-change="update()" />
+                <input name="autocancel_cond" type="checkbox" ng-model="autocancel_cond" ng-change="update()" />Any
+                <br />
+                Base damage:
+                <input name="base_damage" type="number" min="0" max="999" step="0.5" ng-model="base_damage" ng-change="update()" />
+                <select name="base_damage_cond" ng-model="base_damage_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="base_damage2" type="number" min="0" max="999" step="0.5" ng-model="base_damage2" ng-change="update()" />
+                <br />
+                Angle:
+                <input name="angle" type="number" min="0" max="367" step="1" ng-model="angle" ng-change="update()" />
+                <select name="angle_cond" ng-model="angle_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="angle2" type="number" min="0" max="367" step="1" ng-model="angle2" ng-change="update()" />
+                <br />
+                <select name="wbkb_cond" ng-model="wbkb_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in woptions" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="bkb" type="number" min="0" max="999" step="1" ng-model="bkb" ng-change="update()" />
+                <select name="bkb_cond" ng-model="bkb_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="bkb2" type="number" min="0" max="999" step="1" ng-model="bkb2" ng-change="update()" />
+                <br />
+                KBG:
+                <input name="kbg" type="number" min="0" max="999" step="1" ng-model="kbg" ng-change="update()" />
+                <select name="kbg_cond" ng-model="kbg_cond" ng-change="update()">
+                    <option ng-selected="$first" ng:repeat="option in options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
+                <input name="kbg2" type="number" min="0" max="999" step="1" ng-model="kbg2" ng-change="update()" />
 
-                    <br />
+                <br />
+            </div>
+
+            <a class="select-link cur-link" ng-click="collapse('sort')">
+                <div class="card header-group sorting-header">
+                    <span class="cur-link header-group-text">Sorting</span>
                 </div>
-                <a class="select-link cur-link" ng-click="collapse('sort')">
-                    <div class="card header-res" style="background:rgba(5, 117, 65, 0.75)">
-                        <span class="cur-link">Sorting</span>
-                    </div>
-                </a>
-                <div id="sort" class="card-block collapse group">
-                    Sort by:
-                    <br />
-                    <select name="sort_by" ng-model="sort_by" ng-change="sort()">
-                        <option ng-selected="$first" ng:repeat="option in sort_options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
+            </a>
+            <div id="sort" class="card-block collapse group">
+                Sort by:
+                <br />
+                <select name="sort_by" ng-model="sort_by" ng-change="sort()">
+                    <option ng-selected="$first" ng:repeat="option in sort_options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
 
-                    <br />
-                    Order by:
-                    <br />
-                    <select name="order_by" ng-model="order_by" ng-change="sort()">
-                        <option ng-selected="$first" ng:repeat="option in order_options" ng-attr-value="{{option}}">{{option}}</option>
-                    </select>
-                </div>
+                <br />
+                Order by:
+                <br />
+                <select name="order_by" ng-model="order_by" ng-change="sort()">
+                    <option ng-selected="$first" ng:repeat="option in order_options" ng-attr-value="{{option}}">{{option}}</option>
+                </select>
             </div>
 
         </div>
 
         
 
-        <div id="results">
+        <div id="results2">
             <div id="filter">
                 <br/>
                 Results: {{noResults}} {{noResults == 1 ? "move" : "moves"}}

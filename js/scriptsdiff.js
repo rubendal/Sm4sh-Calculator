@@ -37,6 +37,19 @@ function getScripts(char) {
     return json;
 };
 
+function loadJSONPath(path) {
+	var json = null;
+	$.ajax({
+		'async': false,
+		'url': path,
+		'dataType': 'json',
+		'success': function (data) {
+			json = data;
+		}
+	});
+	return json;
+}
+
 var appSelection = [
 	{ appName: "calculator", title: "Calculator", link: "./index.html" },
 	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
@@ -114,6 +127,11 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 	$scope.v1 = "";
 	$scope.v2 = "";
 
+	$scope.sf_code_css = { display: "none" };
+	$scope.sf_code2_css = { display: "none" };
+
+	$scope.sf_code = "";
+	$scope.sf_code2 = "";
 
 	$scope.updateScript = function () {
 		script = JSON.parse($scope.script);
@@ -121,6 +139,22 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 		$scope.v2 = $sce.trustAsHtml(script.v2);
 		$scope.ver1 = script.patch1;
 		$scope.ver2 = script.patch2;
+
+		if (script.sf1 == null) {
+			$scope.sf_code = "";
+			$scope.sf_code_css = { "display": "none" };
+		} else {
+			$scope.sf_code = script.sf1.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
+			$scope.sf_code_css = { "display": "inline" };
+		}
+
+		if (script.sf2 == null) {
+			$scope.sf_code2 = "";
+			$scope.sf_code2_css = { "display": "none" };
+		} else {
+			$scope.sf_code2 = script.sf2.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
+			$scope.sf_code2_css = { "display": "inline" };
+		}
 	};
 
 	$scope.updateFilter = function () {
@@ -164,8 +198,52 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 
 		$scope.updateFilter();
         
-    };
+	};
 
-    $scope.updateCharacter();
+	$scope.copyCode = function () {
+		var textArea = document.getElementById("copyscriptbox");
+		textArea.select();
+		document.execCommand("Copy");
+	};
+
+	$scope.copyCode2 = function () {
+		var textArea = document.getElementById("copyscriptbox2");
+		textArea.select();
+		document.execCommand("Copy");
+	};
+
+	$scope.updateCharacter();
+
+	// Themes
+
+	var styleList = loadJSONPath("./css/themes.json");
+
+	$scope.themes = styleList;
+
+	$scope.theme = "Normal";
+
+	function changeStyle(style) {
+		for (var i = 0; i < styleList.length; i++) {
+			if (styleList[i].name == style) {
+				$("#mainStyle").attr("href", styleList[i].main);
+				if (styleList[i].visualSettings) {
+					settings.stick_color = styleList[i].visualSettings.stick_color;
+					settings.visualizer_colors.background = styleList[i].visualSettings.visualizer_bg;
+				}
+				else {
+					settings.stick_color = defaultStyle.visualSettings.stick_color;
+					settings.visualizer_colors.background = defaultStyle.visualSettings.visualizer_bg;
+				}
+				return;
+			}
+		}
+
+	}
+
+	$scope.changeTheme = function () {
+		changeStyle($scope.theme);
+	}
+
+	// Themes end
 
 }]);

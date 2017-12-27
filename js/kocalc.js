@@ -34,7 +34,7 @@ app.controller('calculator', function ($scope) {
     $scope.hit_frame = hitframe;
     $scope.faf = faf;
     $scope.shieldDamage = 0;
-	$scope.charging_frames_type = "Charging frames";
+	$scope.charging_frames_type = "Frames charged";
 
 	$scope.effects = effects;
 	$scope.effect = effects[0].name;
@@ -53,8 +53,8 @@ app.controller('calculator', function ($scope) {
     $scope.attacker_percent = 0;
     $scope.target_percent = 0;
 
-    $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
-    $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
+	$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
+	$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display': 'none' };
 
     $scope.attacker_damage_dealt = attacker.modifier.damage_dealt;
     $scope.attacker_kb_dealt = attacker.modifier.kb_dealt;
@@ -66,12 +66,12 @@ app.controller('calculator', function ($scope) {
     $scope.target_fall_speed = target.attributes.fall_speed;
 
     $scope.is_smash = false;
-    $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
+	$scope.is_smash_visibility = $scope.is_smash ? {} : { 'display': 'none' };
     $scope.megaman_fsmash = false;
     $scope.witch_time_charge = false;
-    $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
-    $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
-    $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+	$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
+	$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
+	$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
     $scope.is_aerial = { 'display': 'none' };
     $scope.prev_hf = { 'display': 'none' };
     $scope.next_hf = { 'display': 'none' };
@@ -198,14 +198,14 @@ app.controller('calculator', function ($scope) {
 		}
 	}
 
-    $scope.checkSmashVisibility = function () {
-        $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
-        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
-        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
-    }
+	$scope.checkSmashVisibility = function () {
+		$scope.is_smash_visibility = $scope.is_smash ? {} : { 'display': 'none' };
+		$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
+		$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
+	}
 
-    $scope.checkCounterVisibility = function () {
-        $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
+	$scope.checkCounterVisibility = function () {
+		$scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
 	}
 
 	$scope.updateEffect = function () {
@@ -233,7 +233,7 @@ app.controller('calculator', function ($scope) {
             $scope.charge_min = 0;
             $scope.charge_max = 60;
             $scope.charge_special = false;
-            $scope.charging_frames_type = "Charging frames";
+            $scope.charging_frames_type = "Frames charged";
         }else{
             $scope.hitbox_active_index = 0;
             if ($scope.delayed_landing_lag != null) {
@@ -246,9 +246,9 @@ app.controller('calculator', function ($scope) {
             } else {
                 $scope.use_landing_lag = "no";
             }
-            $scope.is_aerial = { 'display': $scope.selected_move.aerial ? 'initial' : 'none' };
-            $scope.prev_hf = { 'display': 'none' };
-            $scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
+			$scope.is_aerial = $scope.selected_move.aerial ? {} : { 'display': 'none' };
+			$scope.prev_hf = { 'display': 'none' };
+			$scope.next_hf = { 'display': $scope.selected_move.hitboxActive.length > 1 ? 'inline' : 'none' };
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
                     $scope.charge_data = $scope.selected_move.charge;
@@ -261,7 +261,7 @@ app.controller('calculator', function ($scope) {
                     }
                     $scope.charge_special = true;
                     $scope.is_smash = true;
-                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
+                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Frames charged";
                     $scope.updateCharge();
                     
                 }else{
@@ -271,7 +271,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = 60;
                     $scope.charge_special = false;
                     $scope.is_smash = $scope.selected_move.smash_attack;
-                    $scope.charging_frames_type = "Charging frames";
+                    $scope.charging_frames_type = "Frames charged";
                 }
             }else{
                 $scope.charge_data = null;
@@ -280,7 +280,7 @@ app.controller('calculator', function ($scope) {
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
-                $scope.charging_frames_type = "Charging frames";
+                $scope.charging_frames_type = "Frames charged";
             }
             $scope.checkSmashVisibility();
         }
@@ -294,8 +294,8 @@ app.controller('calculator', function ($scope) {
         } else {
             $scope.hit_frame = 0;
         }
-        $scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
-        $scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length-1 ? 'inline' : 'none' };
+		$scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
+		$scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length - 1 ? 'inline' : 'none' };
         $scope.update();
     }
 
@@ -306,8 +306,8 @@ app.controller('calculator', function ($scope) {
         } else {
             $scope.hit_frame = 0;
         }
-        $scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
-        $scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length-1 ? 'inline' : 'none' };
+		$scope.prev_hf = { 'display': $scope.hitbox_active_index != 0 ? 'inline' : 'none' };
+		$scope.next_hf = { 'display': $scope.hitbox_active_index < $scope.selected_move.hitboxActive.length - 1 ? 'inline' : 'none' };
         $scope.update();
     }
 
@@ -356,11 +356,11 @@ app.controller('calculator', function ($scope) {
 	};
 
     $scope.check = function () {
-        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+		$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
         if (attacker.name != "Mega Man") {
             $scope.megaman_fsmash = false;
         }
-        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+		$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
         if(attacker.name != "Bayonetta"){
             $scope.witch_time_charge = false;
         }
@@ -388,7 +388,7 @@ app.controller('calculator', function ($scope) {
             $scope.attackerModifiers = [];
         }
         $scope.attacker_icon = attacker.icon;
-        $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
+		$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -401,7 +401,7 @@ app.controller('calculator', function ($scope) {
         $scope.check_move(null);
         $scope.checkCounterVisibility();
         $scope.selected_move = null;
-        $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+		$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
         $scope.stock_dif = "0";
         $scope.update();
     }
@@ -598,7 +598,7 @@ app.controller('calculator', function ($scope) {
         if (target.name == "Bowser Jr") {
             $scope.targetMod = "Clown Kart";
         }
-        $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
+		$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display': 'none' };
         $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;

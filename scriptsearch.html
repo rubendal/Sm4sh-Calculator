@@ -18,9 +18,6 @@
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
-    <link id="style2" rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
-    <link id="style3" rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
-    <link id="style4" rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Script Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
@@ -64,14 +61,12 @@
                     </a>
                 </span>
             </span>
-            <!--
             <span id="theme">
                 Theme
-                <select name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
+                <select id="themeSelect" name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
                     <option ng-selected="$first" ng:repeat="t in themes" ng-attr-value="{{t.name}}">{{t.name}}</option>
                 </select>
             </span>
-            -->
         </div>
 
     </div>
@@ -79,7 +74,7 @@
 
     <div name="calculator" id="calculator">
 
-        <div id="main">
+        <div id="main-scripts">
             Regex on scripts: <input type="text" ng-model="regex" style="width:42em;" />
             <br />
             Negative Regex on scripts: <input type="text" ng-model="negate" style="width:42em;" />

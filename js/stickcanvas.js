@@ -4,13 +4,13 @@
 		this.id = id;
 		this.canvas = document.getElementById(id);
 
-		this.s = 98;
+		this.s = 130;
 		this.canvas.width = this.s;
 		this.canvas.height = this.s;
 		this.center = { x: this.s / 2, y: this.s / 2 };
-		this.r = 35;
-		this.r2 = 35;
-		this.gate = 35;
+		this.r = 40;
+		this.r2 = 40;
+		this.gate = 40;
 		this.controllerR = 128;
 		this.h = 15;
 		this.c = 118 / 128;
@@ -77,19 +77,26 @@
 			
 			context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-			context.strokeStyle = '#FF0000';
+			//context.strokeStyle = '#FF0000';
 
-			context.beginPath();
-			context.strokeRect((this.center.x - this.r), (this.center.y - this.r), this.r * 2, this.r * 2);
-			context.closePath();
-			context.stroke();
+			//context.beginPath();
+			//context.strokeRect((this.center.x - this.r), (this.center.y - this.r), this.r * 2, this.r * 2);
+			//context.closePath();
+			//context.stroke();
 
 			context.strokeStyle = settings.stick_color;
 
-			context.beginPath();
-			context.strokeRect((this.center.x - this.r * this.c), (this.center.y - this.r * this.c), this.r * 2 * this.c, this.r * 2 * this.c);
-			context.closePath();
-			context.stroke();
+			if (this.controller == "Wiimote") {
+				context.beginPath();
+				context.strokeRect((this.center.x - this.r * this.c), (this.center.y - this.r * this.c), this.r * 2 * this.c, this.r * 2 * this.c);
+				context.closePath();
+				context.stroke();
+			}
+
+			//context.beginPath();
+			//context.strokeRect((this.center.x - this.r * this.c), (this.center.y - this.r * this.c), this.r * 2 * this.c, this.r * 2 * this.c);
+			//context.closePath();
+			//context.stroke();
 			
 			context.beginPath();
 			context.arc(this.center.x, this.center.y, this.gate * this.controllerR / 128, 0, 2 * Math.PI);

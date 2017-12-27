@@ -883,40 +883,10 @@ var styleList = loadJSONPath("./css/themes.json");
 
 var defaultStyle = styleList[0];
 
-function checkAndChangeMedia(id, style) {
-    if (style == undefined) {
-        return;
-    }
-    if ($(id).attr("media") != style) {
-        $(id).attr("media", style);
-    }
-}
-
 function changeStyle(style) {
     for(var i=0;i<styleList.length;i++){
         if (styleList[i].name == style) {
             $("#mainStyle").attr("href", styleList[i].main);
-            if (styleList[i].style2) {
-                $("#style2").attr("href", styleList[i].style2);
-                checkAndChangeMedia("#style2", styleList[i].media2);
-            } else {
-                $("#style2").attr("href", defaultStyle.style2);
-                checkAndChangeMedia("#style2", defaultStyle.media2);
-            }
-            if (styleList[i].style3) {
-                $("#style3").attr("href", styleList[i].style3);
-                checkAndChangeMedia("#style3", styleList[i].media3);
-            } else {
-                $("#style3").attr("href", defaultStyle.style3);
-                checkAndChangeMedia("#style3", defaultStyle.media3);
-            }
-            if (styleList[i].style4) {
-                $("#style4").attr("href", styleList[i].style4);
-                checkAndChangeMedia("#style4", styleList[i].media4);
-            } else {
-                $("#style4").attr("href", defaultStyle.style4);
-                checkAndChangeMedia("#style4", defaultStyle.media4);
-            }
 			if (styleList[i].visualSettings) {
 				settings.stick_color = styleList[i].visualSettings.stick_color;
 				settings.visualizer_colors.background = styleList[i].visualSettings.visualizer_bg;
@@ -2313,6 +2283,7 @@ class Knockback {
 				this.vertical_launch_speed = 0;
 
 			this.di_able = this.tumble && Math.abs(Math.atan2(this.vertical_launch_speed, this.horizontal_launch_speed)) >= parameters.di;
+
 			if (this.di_able && (this.stick.X != 0 || this.stick.Y != 0)) {
 
 				this.launch_speed = Math.sqrt(Math.pow(this.horizontal_launch_speed, 2) + Math.pow(this.vertical_launch_speed, 2)); //Include gravity boost to the new launch speed (yes this only happens when stick isn't on neutral)
@@ -2322,18 +2293,16 @@ class Knockback {
 				this.angle_with_di = this.angle;
 
 				this.lsi = LSI(this.stick.Y, this.angle);
-
-				this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
-				this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
+				
 				this.launch_speed *= this.lsi;
 
 				this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
 				this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180));
-
-				if (this.windbox && !this.aerial)
-					this.vertical_launch_speed = 0;
 				
 			}
+
+			this.x = Math.abs(Math.cos(this.angle * Math.PI / 180) * this.kb);
+			this.y = Math.abs(Math.sin(this.angle * Math.PI / 180) * this.kb);
 
 			this.horizontal_launch_speed = Math.abs(this.horizontal_launch_speed);
 			this.vertical_launch_speed = Math.abs(this.vertical_launch_speed);

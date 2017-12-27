@@ -36,6 +36,19 @@ function getScripts(char) {
     return json;
 };
 
+function loadJSONPath(path) {
+	var json = null;
+	$.ajax({
+		'async': false,
+		'url': path,
+		'dataType': 'json',
+		'success': function (data) {
+			json = data;
+		}
+	});
+	return json;
+}
+
 function filter() {
     if (!onlyHitboxes) {
         return scripts;
@@ -178,6 +191,38 @@ app.controller('scripts', function ($scope) {
 		document.execCommand("Copy");
 	};
 
-    $scope.updateCharacter();
+	$scope.updateCharacter();
+
+	// Themes
+
+	var styleList = loadJSONPath("./css/themes.json");
+
+	$scope.themes = styleList;
+
+	$scope.theme = "Normal";
+
+	function changeStyle(style) {
+		for (var i = 0; i < styleList.length; i++) {
+			if (styleList[i].name == style) {
+				$("#mainStyle").attr("href", styleList[i].main);
+				if (styleList[i].visualSettings) {
+					settings.stick_color = styleList[i].visualSettings.stick_color;
+					settings.visualizer_colors.background = styleList[i].visualSettings.visualizer_bg;
+				}
+				else {
+					settings.stick_color = defaultStyle.visualSettings.stick_color;
+					settings.visualizer_colors.background = defaultStyle.visualSettings.visualizer_bg;
+				}
+				return;
+			}
+		}
+
+	}
+
+	$scope.changeTheme = function () {
+		changeStyle($scope.theme);
+	}
+
+	// Themes end
 
 });

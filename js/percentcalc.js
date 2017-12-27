@@ -41,15 +41,16 @@ app.controller('calculator', function ($scope) {
     $scope.target_damage_taken = target.modifier.damage_taken;
     $scope.target_kb_received = target.modifier.kb_received;
 
-    $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
-    $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
+	$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
+	$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display': 'none' };
 
     $scope.is_smash = false;
-    $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
+	$scope.is_smash_visibility = $scope.is_smash ? {} : { 'display': 'none' };
     $scope.megaman_fsmash = false;
     $scope.witch_time_charge = false;
-    $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
-    $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+	$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
+	$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
+	$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
     $scope.smashCharge = 0;
     $scope.wbkb = 0;
     $scope.windbox = false;
@@ -73,7 +74,6 @@ app.controller('calculator', function ($scope) {
 
     $scope.stock_dif = "0";
     $scope.stock_values = ["-2","-1","0","+1","+2"];
-    $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
@@ -87,19 +87,19 @@ app.controller('calculator', function ($scope) {
     getMoveset(attacker, $scope);
     $scope.move = "0";
 
-    $scope.charging_frames_type = "Charging frames";
+    $scope.charging_frames_type = "Frames charged";
 
     $scope.launch_rate = launch_rate;
 
-    $scope.checkSmashVisibility = function () {
-        $scope.is_smash_visibility = { 'display': $scope.is_smash ? 'initial' : 'none' };
-        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
-        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
-    }
+	$scope.checkSmashVisibility = function () {
+		$scope.is_smash_visibility = $scope.is_smash ? {} : { 'display': 'none' };
+		$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
+		$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
+	}
 
-    $scope.checkCounterVisibility = function () {
-        $scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
-    }
+	$scope.checkCounterVisibility = function () {
+		$scope.counterStyle = { "display": $scope.counterMult != 0 ? "block" : "none" };
+	}
 
     $scope.charging = function(){
         $scope.checkSmashVisibility();
@@ -121,16 +121,16 @@ app.controller('calculator', function ($scope) {
 	};
 
     $scope.check = function () {
-        $scope.is_megaman = { 'display': attacker.name == "Mega Man" ? 'initial' : 'none' };
+		$scope.is_megaman = attacker.name == "Mega Man" ? {} : { 'display': 'none' };
         if (attacker.name != "Mega Man") {
             $scope.megaman_fsmash = false;
         }
-        $scope.is_bayonetta = { 'display': attacker.name == "Bayonetta" ? 'initial' : 'none' };
+		$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
         if(attacker.name != "Bayonetta"){
             $scope.witch_time_charge = false;
         }
         var a = parseFloat($scope.angle);
-        $scope.st_jab_lock = { "display": a == 361 || (a >= 230 && a <= 310) ? 'initial' : 'none' };
+		$scope.st_jab_lock = (a == 361 || (a >= 230 && a <= 310)) ? {} : { "display": 'none' };
     }
 
     $scope.check_move = function(){
@@ -138,7 +138,7 @@ app.controller('calculator', function ($scope) {
             $scope.charge_min = 0;
             $scope.charge_max = 60;
             $scope.charge_special = false;
-            $scope.charging_frames_type = "Charging frames";
+            $scope.charging_frames_type = "Frames charged";
         }else{
             if($scope.selected_move.chargeable){
                 if($scope.selected_move.charge != null){
@@ -152,7 +152,7 @@ app.controller('calculator', function ($scope) {
                     }
                     $scope.charge_special = true;
                     $scope.is_smash = true;
-                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Charging frames";
+                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Frames charged";
                     $scope.updateCharge();
                     
                 }else{
@@ -162,7 +162,7 @@ app.controller('calculator', function ($scope) {
                     $scope.charge_max = 60;
                     $scope.charge_special = false;
                     $scope.is_smash = $scope.selected_move.smash_attack;
-                    $scope.charging_frames_type = "Charging frames";
+                    $scope.charging_frames_type = "Frames charged";
                 }
             }else{
                 $scope.charge_data = null;
@@ -171,7 +171,7 @@ app.controller('calculator', function ($scope) {
                 $scope.charge_max = 60;
                 $scope.charge_special = false;
                 $scope.is_smash = $scope.selected_move.smash_attack;
-                $scope.charging_frames_type = "Charging frames";
+                $scope.charging_frames_type = "Frames charged";
             }
             $scope.checkSmashVisibility();
         }
@@ -205,7 +205,7 @@ app.controller('calculator', function ($scope) {
         if (attacker.name == "Cloud" || attacker.name == "Bowser Jr") {
             $scope.attackerModifiers = [];
         }
-        $scope.attacker_mod = { 'display': $scope.attackerModifiers.length > 0 ? 'initial' : 'none' };
+		$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
         getMoveset(attacker, $scope);
         $scope.move = "0";
         $scope.preDamage = 0;
@@ -216,7 +216,7 @@ app.controller('calculator', function ($scope) {
         $scope.unblockable = false;
         $scope.selected_move = null;
         $scope.checkCounterVisibility();
-        $scope.is_lucario = { 'display': attacker.name == "Lucario" ? 'initial' : 'none' };
+		$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
         $scope.stock_dif = "0";
         $scope.update();
     }
@@ -396,7 +396,7 @@ app.controller('calculator', function ($scope) {
         if (target.name == "Bowser Jr") {
             $scope.targetMod = "Clown Kart";
         }
-        $scope.target_mod = { 'display': $scope.targetModifiers.length > 0 ? 'initial' : 'none' };
+		$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display': 'none' };
         $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
         $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;

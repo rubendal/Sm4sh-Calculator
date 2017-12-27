@@ -18,9 +18,6 @@
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
-    <link id="style2" rel="stylesheet" type="text/css" href="css/style-1400.css" media="screen and (max-width: 1399px) and (min-width: 1280px)" />
-    <link id="style3" rel="stylesheet" type="text/css" href="css/style-1280.css" media="screen and (max-width: 1279px) and (min-width: 600px)" />
-    <link id="style4" rel="stylesheet" type="text/css" href="css/style-600.css" media="screen and (max-width: 599px) and (min-width: 0px)" />
     <title>Sm4sh Calculator - Script Diff Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
@@ -64,14 +61,12 @@
                     </a>
                 </span>
             </span>
-            <!--
             <span id="theme">
                 Theme
-                <select name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
+                <select id="themeSelect" name="theme" class="header-select" ng-model="theme" ng-change="changeTheme()">
                     <option ng-selected="$first" ng:repeat="t in themes" ng-attr-value="{{t.name}}">{{t.name}}</option>
                 </select>
             </span>
-            -->
         </div>
 
     </div>
@@ -79,7 +74,7 @@
 
     <div name="calculator" id="calculator">
 
-        <div id="main">
+        <div id="main-scripts">
             
 
             <div>
@@ -100,30 +95,31 @@
                 <select name="script" ng-model="script" ng-change="updateScript()">
                     <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.scriptName}}</option>
                 </select>
-                <!--<input type="checkbox" name="onlyHitboxes" ng-model="ignoreNew" ng-change="updateFilter()" /> Ignore empty scripts-->
-                
+                <!--<input type="checkbox" ng-model="ignoreNew" ng-change="updateFilter()" /> Ignore empty scripts-->
 
                 <br />
                 <br />
 
                 <div style="float:left; width:48%; display:block; padding-left:5px;">
-                    {{ver1}}
+                    {{ver1}} <button ng-click="copyCode()" ng-style="sf_code_css">Copy Smash Forge script code</button>
                 </div>
 
                 <div style="float:right; width:48%; display:block; padding-left:5px;">
-                    {{ver2}}
+                    {{ver2}} <button ng-click="copyCode2()" ng-style="sf_code2_css">Copy Smash Forge script code</button>
                 </div>
 
                 <br />
 
-                <div style="font-family: 'Ubuntu Mono', monospace; float:left; width:48%; display:block; padding-left:5px; border-left:1.3px solid black;" ng-bind-html="v1">
+                <div class="script-diff" ng-bind-html="v1">
 
                 </div>
 
-                <div style="font-family: 'Ubuntu Mono', monospace; float:right; width:48%; display:block; padding-left:5px; border-left:1.3px solid black;" ng-bind-html="v2">
+                <div class="script-diff2" ng-bind-html="v2">
                     
                 </div>
 
+                <textarea id="copyscriptbox" class="hidden-box" ng-model="sf_code" readonly tabindex='-1' aria-hidden='true'></textarea>
+                <textarea id="copyscriptbox2" class="hidden-box" ng-model="sf_code2" readonly tabindex='-1' aria-hidden='true'></textarea>
             </div>
         </div>
     </div>

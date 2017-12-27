@@ -74,15 +74,6 @@ https://rubendal.github.io/Sm4sh-Calculator/params.html
 
 See all characters fighter_param_vl files parameters online, groups before 13 have tags for known stuff, you can check Meshima's [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) to check special moves and other stuff (groups 13 and higher) for known values for each character
 
-### TSV Generator
-https://rubendal.github.io/Sm4sh-Calculator/tsvgen.html
-
-Generate TSV files containing character, damage, knockback and distance launched data
-
-Use these generated data tables in another applications (R, Excel, and others) to create graphs or filter stuff
-
-Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wiki/TSV-Generator
-
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 

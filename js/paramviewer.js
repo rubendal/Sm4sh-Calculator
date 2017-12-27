@@ -51,6 +51,19 @@ function getJSON(file) {
     return json;
 };
 
+function loadJSONPath(path) {
+	var json = null;
+	$.ajax({
+		'async': false,
+		'url': path,
+		'dataType': 'json',
+		'success': function (data) {
+			json = data;
+		}
+	});
+	return json;
+}
+
 function getTag(tags, group) {
     for (var i = 0; i < tags.length; i++) {
         if (tags[i].group == group) {
@@ -163,7 +176,39 @@ app.controller('paramviewer', function ($scope) {
                 $scope.param[i].tag = "";
             }
         }*/
-    };
+	};
+
+	// Themes
+
+	var styleList = loadJSONPath("./css/themes.json");
+
+	$scope.themes = styleList;
+
+	$scope.theme = "Normal";
+
+	function changeStyle(style) {
+		for (var i = 0; i < styleList.length; i++) {
+			if (styleList[i].name == style) {
+				$("#mainStyle").attr("href", styleList[i].main);
+				if (styleList[i].visualSettings) {
+					settings.stick_color = styleList[i].visualSettings.stick_color;
+					settings.visualizer_colors.background = styleList[i].visualSettings.visualizer_bg;
+				}
+				else {
+					settings.stick_color = defaultStyle.visualSettings.stick_color;
+					settings.visualizer_colors.background = defaultStyle.visualSettings.visualizer_bg;
+				}
+				return;
+			}
+		}
+
+	}
+
+	$scope.changeTheme = function () {
+		changeStyle($scope.theme);
+	}
+
+	// Themes end
 
     $scope.updateCharacter();
 
