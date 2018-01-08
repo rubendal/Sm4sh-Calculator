@@ -937,9 +937,9 @@ app.controller('calculator', function ($scope) {
 
 			p.data.distance.doPlot();
 
-			$scope.visualizer_extra.push(new Result("Stick X", p.di.X, "", false, true));
+			$scope.visualizer_extra.push(new Result("Stick X", p.di.X * (inverseX ? -1 : 1), "", false, true));
 			$scope.visualizer_extra.push(new Result("Stick Y", p.di.Y, "", false, true));
-			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(p.X, p.Y)), "", false, true));
+			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(p.X * (inverseX ? -1 : 1), p.Y)), "", false, true));
 			$scope.visualizer_extra.push(new Result("Calculated Target %", +p.percent.toFixed(6).toString() + (using_error ? "*" : ""), "", false, false));
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
 			var max_x = p.data.distance.graph_x + 10;
@@ -1002,9 +1002,9 @@ app.controller('calculator', function ($scope) {
 
 			list[0].data.distance.doPlot();
 
-			$scope.visualizer_extra.push(new Result("Stick X", list[0].di.X, "", false, true));
+			$scope.visualizer_extra.push(new Result("Stick X", list[0].di.X * (inverseX ? -1 : 1), "", false, true));
 			$scope.visualizer_extra.push(new Result("Stick Y", list[0].di.Y, "", false, true));
-			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[0].di.X, list[0].di.Y)), "", false, true));
+			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[0].di.X * (inverseX ? -1 : 1), list[0].di.Y)), "", false, true));
 			$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
 			var max_x = list[0].data.distance.graph_x + 10;
