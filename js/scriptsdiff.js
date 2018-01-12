@@ -141,18 +141,18 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 		$scope.ver2 = script.patch2;
 
 		if (script.sf1 == null) {
-			$scope.sf_code = "";
+			//$scope.sf_code = "";
 			$scope.sf_code_css = { "display": "none" };
 		} else {
-			$scope.sf_code = script.sf1.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
+			//$scope.sf_code = script.sf1.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 			$scope.sf_code_css = { "display": "inline" };
 		}
 
 		if (script.sf2 == null) {
-			$scope.sf_code2 = "";
+			//$scope.sf_code2 = "";
 			$scope.sf_code2_css = { "display": "none" };
 		} else {
-			$scope.sf_code2 = script.sf2.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
+			//$scope.sf_code2 = script.sf2.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 			$scope.sf_code2_css = { "display": "inline" };
 		}
 	};
@@ -202,14 +202,18 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 
 	$scope.copyCode = function () {
 		var textArea = document.getElementById("copyscriptbox");
+		textArea.innerText = script.sf1.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 		textArea.select();
 		document.execCommand("Copy");
+		textArea.innerText = "";
 	};
 
 	$scope.copyCode2 = function () {
 		var textArea = document.getElementById("copyscriptbox2");
+		textArea.innerText = script.sf2.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 		textArea.select();
 		document.execCommand("Copy");
+		textArea.innerText = "";
 	};
 
 	$scope.updateCharacter();
