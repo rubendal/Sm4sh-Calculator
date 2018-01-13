@@ -138,10 +138,10 @@ app.controller('scripts', function ($scope) {
         $scope.updateType();
 		$scope.index = script.id;
 		if (script.scriptHex == null) {
-			//$scope.sf_code = "";
+			$scope.sf_code = "";
 			$scope.sf_code_css = { "display": "none" };
 		} else {
-			//$scope.sf_code = script.scriptHex.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
+			$scope.sf_code = script.scriptHex.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 			$scope.sf_code_css = { "display": "inline" };
 		}
     };
@@ -187,10 +187,9 @@ app.controller('scripts', function ($scope) {
 
 	$scope.copyCode = function () {
 		var textArea = document.getElementById("copyscriptbox");
-		textArea.innerText = script.scriptHex.replace(/{|}/g, "").replace(/(\r\n)+/g, "\n"); //.replace(/  +/g, "");
 		textArea.select();
 		document.execCommand("Copy");
-		textArea.innerText = "";
+		
 	};
 
 	$scope.updateCharacter();
