@@ -202,7 +202,7 @@ app.controller('calculator', function ($scope) {
         $scope.attackerName = attacker.name;
         $scope.attackerMod = "Normal";
         $scope.attackerModifiers = attacker.modifiers;
-        if (attacker.name == "Cloud" || attacker.name == "Bowser Jr") {
+		if (attacker.name == "Cloud" || attacker.name == "Bowser Jr" || attacker.name == "King Dedede") {
             $scope.attackerModifiers = [];
         }
 		$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
@@ -395,7 +395,7 @@ app.controller('calculator', function ($scope) {
         $scope.targetModifiers = target.modifiers;
         if (target.name == "Bowser Jr") {
             $scope.targetMod = "Clown Kart";
-        }
+		}
 		$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display': 'none' };
         $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;
@@ -462,7 +462,7 @@ app.controller('calculator', function ($scope) {
         var kb = parseFloat($scope.kb);
         var type = $scope.kbType;
 
-        var kb = new PercentFromKnockback(kb, type, base_damage, damage, preDamage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, electric, launch_rate);
+		var kb = new PercentFromKnockback(kb, type, base_damage, damage, preDamage, angle, set_weight ? 100 : target.attributes.weight, target.attributes.gravity, target.attributes.fall_speed, in_air, bkb, kbg, wbkb, attacker_percent, r, stale, ignoreStale, windbox, electric, target.modifier.name == "Character Inhaled", launch_rate);
         if (kb.wbkb == 0) {
             kb.addModifier(attacker.modifier.kb_dealt);
         }

@@ -152,10 +152,6 @@
                                     <option ng-selected="$first" ng:repeat="character in characters" ng-attr-value="{{character}}">{{character}}</option>
                                 </select>
                             </div>
-                            <div class="percent-div">
-                                <input name="target_percent" type="number" min="0" max="999" step="0.5" ng-model="targetPercent" ng-change="update()" />
-                                %
-                            </div>
                             <div id="target-mod-sel" ng-style="target_mod">
                                 <br />
                                 <select name="targetMod" ng-model="targetMod" ng-change="updateTargetMod()">

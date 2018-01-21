@@ -368,8 +368,8 @@ app.controller('calculator', function ($scope) {
         attacker = new Character($scope.attackerValue);
         $scope.attackerName = attacker.name;
         $scope.attackerMod = "Normal";
-        $scope.attackerModifiers = attacker.modifiers;
-        if (attacker.name == "Cloud" || attacker.name == "Bowser Jr") {
+		$scope.attackerModifiers = attacker.modifiers;
+		if (attacker.name == "Cloud" || attacker.name == "Bowser Jr" || attacker.name == "King Dedede") {
             $scope.attackerModifiers = [];
         }
         $scope.attacker_icon = attacker.icon;
@@ -614,15 +614,15 @@ app.controller('calculator', function ($scope) {
         preDamage *= target.modifier.damage_taken;
 
         if (wbkb == 0) {
-			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, set_weight, stick);
-			vskb = VSKB(target_percent + (preDamage * StaleNegation(stale, ignoreStale)), base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
+			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, set_weight, stick, target.modifier.name == "Character Inhaled");
+			vskb = VSKB(target_percent + (preDamage * StaleNegation(stale, ignoreStale)), base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, stale, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, target.modifier.name == "Character Inhaled", launch_rate);
             trainingkb.addModifier(attacker.modifier.kb_dealt);
             vskb.addModifier(attacker.modifier.kb_dealt);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         } else {
-			trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, set_weight, stick);
-			vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, stick, launch_rate);
+			trainingkb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, damage, 0, angle, in_air, windbox, electric, set_weight, stick, target.modifier.name == "Character Inhaled");
+			vskb = WeightBasedKB(set_weight ? 100 : target.attributes.weight, bkb, wbkb, kbg, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, target_percent, StaleDamage(damage, stale, ignoreStale), attacker_percent, angle, in_air, windbox, electric, set_weight, stick, target.modifier.name == "Character Inhaled", launch_rate);
             trainingkb.addModifier(target.modifier.kb_received);
             vskb.addModifier(target.modifier.kb_received);
         }

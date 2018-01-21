@@ -977,7 +977,10 @@ class Character {
 
         } else if (this.name == "Cloud") {
             this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15)];
-        }
+		}
+		else if (this.name == "King Dedede") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1), new Modifier("Character Inhaled", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+		}
 
         this.getModifier = function (name) {
             if (this.modifiers.length == 0) {
@@ -2277,7 +2280,14 @@ class Knockback {
 			this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
 			this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180)) + this.add_gravity_speed;
 
-			this.angle = GetAngle(this.horizontal_launch_speed, this.vertical_launch_speed);
+			if ((this.base_angle == 0 || this.base_angle == 180) && !this.aerial) {
+				this.horizontal_launch_speed = HorizontalGroundedSpeedLimit(this.horizontal_launch_speed);
+			} else {
+				this.horizontal_launch_speed = HorizontalSpeedLimit(this.horizontal_launch_speed);
+				this.angle = GetAngle(this.horizontal_launch_speed, this.vertical_launch_speed);
+			}
+
+			this.vertical_launch_speed = VerticalSpeedLimit(this.vertical_launch_speed);
 
 			if (this.windbox && !this.aerial)
 				this.vertical_launch_speed = 0;
@@ -2298,6 +2308,9 @@ class Knockback {
 
 				this.horizontal_launch_speed = this.launch_speed * Math.cos(this.angle * Math.PI / 180);
 				this.vertical_launch_speed = (this.launch_speed * Math.sin(this.angle * Math.PI / 180));
+
+				this.horizontal_launch_speed = HorizontalSpeedLimit(this.horizontal_launch_speed);
+				this.vertical_launch_speed = VerticalSpeedLimit(this.vertical_launch_speed);
 				
 			}
 
@@ -2345,7 +2358,7 @@ class Knockback {
 };
 
 class PercentFromKnockback{
-    constructor(kb, type, base_damage, damage, preDamage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, queue, ignoreStale, windbox, electric, launch_rate){
+    constructor(kb, type, base_damage, damage, preDamage, angle, weight, gravity, fall_speed, aerial, bkb, kbg, wbkb, attacker_percent, r, queue, ignoreStale, windbox, electric, dddinhale, launch_rate){
         this.base_kb = kb;
         if(this.base_kb > 2500){
             //this.base_kb = 2500;
@@ -2363,7 +2376,8 @@ class PercentFromKnockback{
         this.bkb = bkb;
         this.kbg = kbg;
 		this.wbkb = wbkb;
-        this.r = r;
+		this.r = r;
+		this.dddinhale = dddinhale;
         this.windbox = windbox;
         this.weight = weight;
         this.attacker_percent = attacker_percent;
@@ -2387,14 +2401,15 @@ class PercentFromKnockback{
             this.launch_rate = 1;
         }
 
-        this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r){
-            var s = 1;
-            return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
-        }
-        this.vs_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, attacker_percent, queue, ignoreStale){
+        this.training_formula = function(kb, base_damage, damage, weight, kbg, bkb, r, dddinhale){
+			var s = 1;
+			return ((500 * (dddinhale ? 4 : 1)) * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + (90 * (dddinhale ? 4 : 1)) * (weight + 100)) + (500 * (dddinhale ? 4 : 1)) * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
+		}
+
+		this.vs_formula = function (kb, base_damage, damage, weight, kbg, bkb, r, dddinhale, attacker_percent, queue, ignoreStale){
             var s = StaleNegation(queue, ignoreStale);
             r = r * Rage(attacker_percent) * this.launch_rate;
-            return (500 * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + 90 * (weight + 100)) + 500 * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
+			return ((500 * (dddinhale ? 4 : 1)) * kb * (weight + 100) - (r * (kbg * (7 * damage * s * (3 * base_damage * s + 7 * base_damage + 20) + (90 * (dddinhale ? 4 : 1)) * (weight + 100)) + (500 * (dddinhale ? 4 : 1)) * bkb * (weight + 100)))) / (7 * kbg * r * (base_damage * (3 * s + 7) + 20)) - preDamage;
         }
 
         if(this.wbkb == 0){
@@ -2491,8 +2506,8 @@ class PercentFromKnockback{
 
                 }
 
-                this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r);
-                this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.attacker_percent, this.queue, this.ignoreStale);
+				this.training_percent = this.training_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.dddinhale);
+				this.vs_percent = this.vs_formula(this.kb, this.base_damage, this.damage, this.weight, this.kbg, this.bkb, this.r, this.dddinhale, this.attacker_percent, this.queue, this.ignoreStale);
 
 
                 if (this.training_percent < 0) {
