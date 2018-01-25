@@ -194,7 +194,7 @@ function SakuraiAngle(kb, aerial) {
     if (kb >= 88) {
         return 40;
 	}
-    return Math.min((kb - 60) / (88-60) * 40 + 1, 40);
+	return Math.min((kb - 60) / (88 - 60) * 40 + 1, 40); //https://twitter.com/BenArthur_7/status/956316733597503488
 }
 
 function VSKB(percent, base_damage, damage, weight, kbg, bkb, gravity, fall_speed, r, timesInQueue, ignoreStale, attacker_percent, angle, in_air, windbox, electric, set_weight, stick, dddinhale, launch_rate) {
