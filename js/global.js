@@ -1537,7 +1537,7 @@ class Distance{
         if(stage !== undefined){
             this.stage = stage;
 		}
-        if(kb > 80 && angle != 0 && angle != 180){
+        if(kb >= 80 && angle != 0 && angle != 180){
             this.tumble = true;
         }
 
@@ -2263,10 +2263,10 @@ class Knockback {
             }
             this.angle = this.base_angle;
             if (this.base_angle != 0 && this.base_angle != 180) {
-                this.tumble = this.kb > 80 && !windbox;
+                this.tumble = this.kb >= 80 && !windbox;
             }
             if ((this.base_angle == 0 || this.base_angle == 180) && this.aerial) {
-                this.tumble = this.kb > 80 && !windbox;
+                this.tumble = this.kb >= 80 && !windbox;
 			}
 
 			this.add_gravity_speed = parameters.gravity.mult * (this.gravity - parameters.gravity.constant);
@@ -2475,7 +2475,7 @@ class PercentFromKnockback{
                 this.hitstun = Hitstun(this.kb, this.windbox, this.electric);
 
                 if (this.base_angle != 0 && this.base_angle != 180) {
-                    this.tumble = this.kb > 80 && !windbox;
+                    this.tumble = this.kb >= 80 && !windbox;
                     this.di_able = this.tumble;
                 }
 
