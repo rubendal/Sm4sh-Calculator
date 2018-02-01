@@ -485,6 +485,11 @@ var chargeMoves = [
 	new ChargeData(["Skull Bash"], 0, 89, function (base_damage, bkb, frames) {
 		//Formula by Arthur https://twitter.com/BenArthur_7/status/917873355386183686
 		return [base_damage + ((6/35) * (frames+1)), bkb];
+	}),
+	new ChargeData(["Rollout (Ground, Release)", "Rollout (Aerial, Release)"], 0, 7, function (base_damage, bkb, frames) {
+		if (frames < 2)
+			return [7, bkb];	
+		return [Math.max(Math.floor(frames * 1.1 * 3),1), bkb];
 	})
 ];
 
@@ -537,8 +542,8 @@ class Move {
 
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
-        this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
-		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)" || name == "Shadow Ball (Uncharged)" || name == "Skull Bash";
+		this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
+		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)" || name == "Shadow Ball (Uncharged)" || name == "Skull Bash" || name.includes("Rollout (");
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");

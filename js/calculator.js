@@ -245,8 +245,8 @@ app.controller('calculator', function ($scope) {
                         $scope.smashCharge = $scope.charge_data.max;
                     }
                     $scope.charge_special = true;
-                    $scope.is_smash = true;
-                    $scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : "Frames charged";
+					$scope.is_smash = true;
+					$scope.charging_frames_type = attacker.name == "Donkey Kong" ? "Arm swings" : (attacker.name == "Jigglypuff" ? "Speed" : "Frames charged");
                     $scope.updateCharge();
                     
                 }else{
