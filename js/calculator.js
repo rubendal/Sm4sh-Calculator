@@ -751,7 +751,7 @@ app.controller('calculator', function ($scope) {
         resultList.push(new Result("Max Vertical Distance", +trainingDistance.max_y.toFixed(6), +vsDistance.max_y.toFixed(6)));
 
 
-        resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
+		resultList.push(new Result("Hit Advantage", HitAdvantage(trainingkb.hitstun, is_projectile ? hitframe + Hitlag(damage, hitlag, electric, HitlagCrouch(crouch)) : hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf), HitAdvantage(vskb.hitstun, is_projectile ? hitframe + Hitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric, HitlagCrouch(crouch)) : hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf)));
 
         if (target.name == "Rosalina And Luma") {
             if (!wbkb) {
