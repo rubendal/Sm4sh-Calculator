@@ -198,7 +198,7 @@
                         <td>BKB/WBKB</td>
                         <td>KBG</td>
                     </tr>
-                    <tr ng-repeat="x in sortedMoves track by $index">
+                    <tr ng-repeat="x in sortedMoves track by $index" ng-class-even="'value-even'">
                         <td class="attribute" ng-style="{'background':x.color}">{{ x.character }}</td>
                         <td class="value">{{ x.move.name }}</td>
                         <td class="value">{{ x.move.hitboxActive_print}}</td>
