@@ -21,7 +21,7 @@
     <title>Sm4sh Calculator - Script Viewer</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
-    <meta name="description" content="Smash 4 hitbox script viewer" />
+    <meta name="description" content="Smash 4 ANIMCMD script viewer" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_dal" />
     <meta name="twitter:title" content="Sm4sh Calculator - Script Viewer" />
@@ -87,14 +87,12 @@
 
                 Script:
                 <select name="script" ng-model="script" ng-change="updateScript()">
-                    <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{s}}">{{s.display}}</option>
+                    <option ng-selected="$first" ng:repeat="s in scripts" ng-attr-value="{{$index}}">{{s.display}}</option>
                 </select>
                 <input type="checkbox" name="onlyHitboxes" ng-model="onlyHitboxes" ng-change="updateFilter()" /> Only show scripts with hitboxes
                 <button ng-click="copyCode()" ng-style="sf_code_css">Copy Smash Forge game script code</button>
 
                 <br />
-                
-                <br/>
 
                 Subaction index: {{index}}
 

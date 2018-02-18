@@ -52,7 +52,7 @@ app.controller('calculator', function ($scope) {
 	$scope.is_bayonetta = attacker.name == "Bayonetta" ? {} : { 'display': 'none' };
 	$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
     $scope.smashCharge = 0;
-    $scope.wbkb = 0;
+    $scope.wbkb = wbkb;
     $scope.windbox = false;
 
     $scope.ignoreStale = false;

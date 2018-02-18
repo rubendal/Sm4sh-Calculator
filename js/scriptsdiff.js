@@ -58,7 +58,8 @@ var appSelection = [
 	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
 	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
 	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
-	{ appName: "params", title: "Param Viewer", link: "./params.html" }
+	{ appName: "params", title: "Param Viewer", link: "./params.html" },
+	{ appName: "mscviewer", title: "MSC Script Viewer", link: "./msc.html" }
 ];
 
 function GetApps(current) {
@@ -111,7 +112,7 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 
 
 	$scope.scripts = scripts.scripts;
-	$scope.script = JSON.stringify($scope.scripts[0]);
+	$scope.script = 0 + "";
 
 	$scope.patches = GetPatches($scope.scripts);
 	$scope.patch = $scope.patches[0];
@@ -119,7 +120,7 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 
 	$scope.ignoreNew = true;
 
-	script = JSON.parse($scope.script);
+	script = $scope.scripts[$scope.script];
 
 	$scope.ver1 = script.patch1;
 	$scope.ver2 = script.patch2;
@@ -134,7 +135,7 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 	$scope.sf_code2 = "";
 
 	$scope.updateScript = function () {
-		script = JSON.parse($scope.script);
+		script = $scope.scripts[$scope.script];
 		$scope.v1 = $sce.trustAsHtml(script.v1);
 		$scope.v2 = $sce.trustAsHtml(script.v2);
 		$scope.ver1 = script.patch1;
@@ -161,7 +162,7 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 		patch = $scope.patch;
 		scripts = getScripts(gamename);
 		$scope.scripts = filter();
-		$scope.script = JSON.stringify($scope.scripts[0]);
+		$scope.script = 0 + "";
 		$scope.updateScript();
 		//scripts = getScripts(gamename);
 		//if (!$scope.ignoreNew) {
@@ -186,12 +187,12 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
         gamename = getCharGameName(character);
 		scripts = getScripts(gamename);
 		$scope.scripts = scripts.scripts;
-		$scope.script = JSON.stringify($scope.scripts[0]);
+		$scope.script = 0 + "";
 
 		$scope.patches = GetPatches($scope.scripts);
 		$scope.patch = $scope.patches[0];
 		patch = $scope.patch;
-		script = JSON.parse($scope.script);
+		script = $scope.scripts[$scope.script];
 
 		$scope.ver1 = script.patch1;
 		$scope.ver2 = script.patch2;

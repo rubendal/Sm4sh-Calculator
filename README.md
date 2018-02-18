@@ -18,6 +18,8 @@ Visualize launch trajectory, position per hitstun frame and distance launched in
 * Move angle can be inverted horizontally to visualize hitting opponents from the right side
 * Add stage layout with platforms and blast zones with physics (Collision, traction along surfaces, bounce off a surface angle calculation)
 
+## Tools
+
 ### KO calculator
 https://rubendal.github.io/Sm4sh-Calculator/kocalc.html
 
@@ -39,8 +41,6 @@ Read wiki page for more details: https://github.com/rubendal/Sm4sh-Calculator/wi
 
 ### Script Viewer
 https://rubendal.github.io/Sm4sh-Calculator/scripts.html
-
-View character scripts that contain hitbox/throw data
 
 All scripts were scrapped using Sammi Husky's Sm4sh Tools (SALT and FITD) and stored in json files with a flag for those that contain hitboxes
 
@@ -74,6 +74,13 @@ https://rubendal.github.io/Sm4sh-Calculator/params.html
 
 See all characters fighter_param_vl files parameters online, groups before 13 have tags for known stuff, you can check Meshima's [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) to check special moves and other stuff (groups 13 and higher) for known values for each character
 
+### MSC Script Viewer
+https://rubendal.github.io/Sm4sh-Calculator/msc.html
+
+View character MSC scripts disassembled using jam1garner's pymsc and stored on json files
+
+MSC files version: 1.1.6/1.1.7
+
 ## Issues and Feedback
 You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/issues) or DM me on [Twitter](https://twitter.com/Ruben_dal) your issues and feedback
 
@@ -83,3 +90,4 @@ You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/is
 * [ssbwiki.com](http://www.ssbwiki.com)
 * [Meshima's](https://twitter.com/Meshima_) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
 * [Sammi Husky's](https://twitter.com/sammihusky) [Sm4sh Tools](https://github.com/Sammi-Husky/Sm4sh-Tools)
+* [jam1garner's](https://twitter.com/jam1garner) [pymsc](https://github.com/jam1garner/pymsc)

@@ -86,7 +86,8 @@ var appSelection = [
 	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
 	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
 	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
-	{ appName: "params", title: "Param Viewer", link: "./params.html" }
+	{ appName: "params", title: "Param Viewer", link: "./params.html" },
+	{ appName: "mscviewer", title: "MSC Script Viewer", link: "./msc.html" }
 ];
 
 function GetApps(current) {

@@ -77,7 +77,7 @@ app.controller('calculator', function ($scope) {
     $scope.next_hf = { 'display': 'none' };
     $scope.selected_move = null;
     $scope.smashCharge = 0;
-    $scope.wbkb = 0;
+    $scope.wbkb = wbkb;
     $scope.windbox = false;
     $scope.ignoreStale = false;
 
