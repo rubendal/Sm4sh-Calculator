@@ -12,19 +12,19 @@
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-    <script src="js/scriptsearch.js"></script>
+    <script src="js/mscsearch.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
-    <title>Sm4sh Calculator - Script Search</title>
+    <title>Sm4sh Calculator - MSC Script Search</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=0.3" />
     <meta name="description" content="Smash 4 hitbox script search" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_dal" />
-    <meta name="twitter:title" content="Sm4sh Calculator - Script Search" />
+    <meta name="twitter:title" content="Sm4sh Calculator - MSC Script Search" />
     <meta name="twitter:description" content="" />
     <meta name="twitter:image:src" content="https://raw.githubusercontent.com/rubendal/Sm4sh-Calculator/gh-pages/img/icon.png" />
     <meta property="og:title" content="Sm4sh Calculator" />
@@ -37,7 +37,7 @@
         <div id="header-cont">
             <img id="header-icon" class="header-image" src="./img/icon.png" />
             <div id="header-text">
-                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#script-search" target="_blank" title="Github repository"><h3>Sm4sh Calculator - Script Search</h3></a>
+                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#msc-script-search" target="_blank" title="Github repository"><h3>Sm4sh Calculator - MSC Script Search</h3></a>
                 <br />
                 <span class="description"></span>
                 <br />
@@ -76,10 +76,6 @@
 
         <div id="main-scripts">
             Regex on scripts: <input type="text" ng-model="regex" style="width:42em;" />
-            <br />
-            Negative Regex on scripts: <input type="text" ng-model="negate" style="width:42em;" />
-            <br />
-            Regex on script name: <input type="text" ng-model="name" style="width:42em;"/>
             <br/>
             <input type="button" class="btn btn-sm" ng-click="update()" value="Search" />
             <br/>
@@ -93,11 +89,13 @@
             <table>
                 <tr>
                     <td>Character</td>
-                    <td>Script Name</td>
+                    <td>MSC</td>
+                    <td>Script</td>
                     <td>Matches</td>
                 </tr>
                 <tr ng-repeat="x in results track by $index" ng-class-even="'value-even'">
                     <td class="attribute">{{ x.character }}</td>
+                    <td class="value-left">{{ x.file }}</td>
                     <td class="value-left">{{ x.scriptName }}</td>
                     <td class="value-match">{{ x.matches }}</td>
                 </tr>

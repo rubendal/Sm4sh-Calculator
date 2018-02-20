@@ -4,7 +4,7 @@ var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "B
 
 function sorted_characters() {
     var list = [];
-    for (var i = 0; i < characters.length - 1; i++) {
+    for (var i = 0; i < characters.length-1; i++) {
         list.push({ 'character': characters[i], 'name': names[i], 'game': gameNames[i] });
     }
     list.sort(function (a, b) {
@@ -23,7 +23,7 @@ function getCharGameName(name) {
     return gameNames[names.indexOf(name)];
 };
 
-function getFiles(char) {
+function getScripts(char) {
     var json = null;
     $.ajax({
         'async': false,
@@ -48,8 +48,36 @@ function loadJSONPath(path) {
 	});
 	return json;
 }
-var character = names[0];
-var gamename = getCharGameName(character);
+
+class CharFiles {
+    constructor(character, files) {
+        this.character = character;
+        this.files = files;
+    }
+};
+
+var allScripts = [];
+
+for (var i = 0; i < gameNames.length; i++) {
+    allScripts.push(new CharFiles(names[i], getScripts(gameNames[i])));
+}
+
+class ScriptResult {
+    constructor(character, file, scriptName, lines, no) {
+		this.character = character;
+		this.file = file;
+        this.scriptName = scriptName;
+        this.lines = lines;
+        this.no = no;
+        this.matches = "";
+        for (var i = 0; i < this.lines.length; i++) {
+            this.matches += this.lines[i];
+            if (i < this.lines.length - 1) {
+                this.matches += "\n\n";
+            }
+        }
+    }
+};
 
 var appSelection = [
 	{ appName: "calculator", title: "Calculator", link: "./index.html" },
@@ -74,43 +102,103 @@ function GetApps(current) {
 }
 
 var app = angular.module('scripts', []);
-app.controller('scripts', function ($scope) {
-	$scope.app = 'mscviewer';
+
+app.controller('scriptsearch', function ($scope) {
+	$scope.app = "mscsearch";
 	$scope.apps = GetApps($scope.app);
 	$scope.appLink = $scope.apps[0].link;
+    $scope.regex = "";
+    $scope.name = "";
+    $scope.negate = "";
+    $scope.results = [];
+    $scope.resultLength = 0;
+    $scope.error = "";
+    $scope.matches = 0;
 
-    $scope.characters = names;
-    $scope.character = character;
+    $scope.update = function () {
+        $scope.error = "";
+        $scope.matches = 0;
+        $scope.results = [];
+        $scope.resultLength = 0;
+        try{
+            var regex = null;
+            var name = null;
+            var negate = null;
+            if ($scope.regex != "") {
+                regex = new RegExp($scope.regex, "g");
+            }
+            if (regex == null && negate == null && name == null) {
+                return;
+            }
+            for (var i = 0; i < allScripts.length; i++) {
+				for (var j = 0; j < allScripts[i].files.length; j++) {
+					for (var k = 0; k < allScripts[i].files[j].list.length; k++) {
+						var script = allScripts[i].files[j].list[k].script;
+						var lines = [];
 
-	//$scope.files = getFiles(gamename);
- //   $scope.file = JSON.stringify($scope.files[0]);
+						var no = 0;
 
-	//$scope.scripts = $scope.files[0].list;
-	//$scope.script = JSON.stringify($scope.scripts[0]);
+						var matches = false;
 
- //   $scope.code = $scope.scripts[0].script;
+						var m;
 
-	$scope.updateScript = function () {
-		$scope.msc = $scope.files[$scope.file].list[$scope.script].script;
+						do {
+							m = regex.exec(script);
+
+							if (m) {
+								matches = true;
+
+								var line = "";
+								var start = 1;
+								var end = 0;
+
+								//Get line beginning
+
+								for (var x = m.index; x > 0; x--) {
+									if (script.charAt(x - 1) == '\n') {
+										start = x;
+										break;
+									}
+								}
+
+								//Get line end
+
+								for (var x = m.index + m[m.length - 1].length; x < script.length; x++) {
+									if (script.charAt(x - 1) == '\n') {
+										end = x-2; //\r\n
+										break;
+									}
+								}
+
+
+								lines.push(script.substr(start, end-start));
+
+								no++;
+							}
+						} while (m);
+
+						if (matches) {
+							if (regex != null) {
+								$scope.results.push(new ScriptResult(allScripts[i].character, allScripts[i].files[j].file, allScripts[i].files[j].list[k].name, lines, no));
+								$scope.matches += no;
+							}
+						}
+
+
+
+					}
+                    
+                    
+                }
+            }
+            $scope.resultLength = $scope.results.length;
+        } catch (e) {
+            $scope.results = [];
+            $scope.resultLength = 0;
+            $scope.matches = 0;
+			$scope.error = "Error in regular expression";
+        }
 	};
-
-	$scope.updateFile = function () {
-		file = $scope.files[$scope.file];
-		$scope.script = 0 + "";
-
-		$scope.updateScript();
-	}
-
-    $scope.updateCharacter = function () {
-        character = $scope.character;
-		gamename = getCharGameName(character);
-		$scope.files = getFiles(gamename);
-		$scope.file = 0 + "";
-		$scope.script = 0 + "";
-        $scope.updateFile();
-    };
-
-	$scope.updateCharacter();
 
 	// Themes
 
@@ -143,5 +231,4 @@ app.controller('scripts', function ($scope) {
 	}
 
 	// Themes end
-
 });

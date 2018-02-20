@@ -87,7 +87,8 @@ var appSelection = [
 	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
 	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
 	{ appName: "params", title: "Param Viewer", link: "./params.html" },
-	{ appName: "mscviewer", title: "MSC Script Viewer", link: "./msc.html" }
+	{ appName: "mscviewer", title: "MSC Script Viewer", link: "./msc.html" },
+	{ appName: "mscsearch", title: "MSC Script Search", link: "./mscsearch.html" }
 ];
 
 function GetApps(current) {
@@ -109,7 +110,7 @@ app.controller('scriptsearch', function ($scope) {
     $scope.name = "";
     $scope.negate = "";
     $scope.results = [];
-    $scope.resultLenght = 0;
+    $scope.resultLength = 0;
     $scope.error = "";
     $scope.matches = 0;
 
@@ -117,7 +118,7 @@ app.controller('scriptsearch', function ($scope) {
         $scope.error = "";
         $scope.matches = 0;
         $scope.results = [];
-        $scope.resultLenght = 0;
+        $scope.resultLength = 0;
         try{
             var regex = null;
             var name = null;
@@ -188,10 +189,10 @@ app.controller('scriptsearch', function ($scope) {
                     }
                 }
             }
-            $scope.resultLenght = $scope.results.length;
+            $scope.resultLength = $scope.results.length;
         } catch (e) {
             $scope.results = [];
-            $scope.resultLenght = 0;
+            $scope.resultLength = 0;
             $scope.matches = 0;
             $scope.error = "Error in regular expression";
         }
