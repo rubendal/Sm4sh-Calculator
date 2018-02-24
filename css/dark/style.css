@@ -39,6 +39,10 @@ input, select {
         width: 5em;
     }
 
+.mod-select {
+    min-width: 90px;
+}
+
 .header-link {
     color: white;
 }

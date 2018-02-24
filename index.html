@@ -106,7 +106,7 @@
                             </div>
                             <div id="attacker-mod-sel" ng-style="attacker_mod">
                                 <br />
-                                <select name="attackerMod" ng-model="attackerMod" ng-change="updateAttackerMod()">
+                                <select name="attackerMod" class="mod-select" ng-model="attackerMod" ng-change="updateAttackerMod()">
                                     <option ng-selected="$first" ng:repeat="mod in attackerModifiers" ng-attr-value="{{mod.name}}">{{mod.name}}</option>
                                 </select>
                                 <br/>
@@ -132,7 +132,7 @@
                             </div>
                             <div id="target-mod-sel" ng-style="target_mod">
                                 <br />
-                                <select name="targetMod" ng-model="targetMod" ng-change="updateTargetMod()">
+                                <select name="targetMod" class="mod-select" ng-model="targetMod" ng-change="updateTargetMod()">
                                     <option ng-selected="$first" ng:repeat="mod in targetModifiers" ng-attr-value="{{mod.name}}">{{mod.name}}</option>
                                 </select>
                             </div>

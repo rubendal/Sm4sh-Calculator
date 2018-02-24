@@ -368,10 +368,11 @@ app.controller('calculator', function ($scope) {
         attacker = new Character($scope.attackerValue);
         $scope.attackerName = attacker.name;
         $scope.attackerMod = "Normal";
-		$scope.attackerModifiers = attacker.modifiers;
-		if (attacker.name == "Cloud" || attacker.name == "Bowser Jr" || attacker.name == "King Dedede") {
-            $scope.attackerModifiers = [];
-        }
+		$scope.attackerModifiers = [];
+		for (var i = 0; i < attacker.modifiers.length; i++) {
+			if (attacker.modifiers[i].attackerShow)
+				$scope.attackerModifiers.push(attacker.modifiers[i]);
+		}
         $scope.attacker_icon = attacker.icon;
 		$scope.attacker_mod = $scope.attackerModifiers.length > 0 ? {} : { 'display': 'none' };
         getMoveset(attacker, $scope);
@@ -409,12 +410,12 @@ app.controller('calculator', function ($scope) {
             target.modifier = mod;
             target.updateIcon();
             $scope.target_icon = target.icon;
-            $scope.target_weight = target.attributes.weight;
-            $scope.target_gravity = target.attributes.gravity * target.modifier.gravity;
+			$scope.target_weight = target.attributes.weight;
+			$scope.target_gravity = +(target.attributes.gravity * target.modifier.gravity).toFixed(6);
             $scope.target_damage_taken = target.modifier.damage_taken;
             $scope.target_kb_received = target.modifier.kb_received;
-            $scope.target_fall_speed = target.attributes.fall_speed * target.modifier.fall_speed;
-            $scope.target_traction = target.attributes.traction * target.modifier.traction;
+			$scope.target_fall_speed = +(target.attributes.fall_speed * target.modifier.fall_speed).toFixed(6);
+			$scope.target_traction = +(target.attributes.traction * target.modifier.traction).toFixed(6);
             $scope.update();
         }
     }
@@ -580,10 +581,15 @@ app.controller('calculator', function ($scope) {
     $scope.updateTarget = function () {
         target = new Character($scope.targetValue);
         $scope.targetMod = "Normal";
-        $scope.targetModifiers = target.modifiers;
-        if (target.name == "Bowser Jr") {
-            $scope.targetMod = "Clown Kart";
-        }
+        $scope.targetModifiers = [];
+        
+		for (var i = 0; i < target.modifiers.length; i++) {
+			if (target.modifiers[i].targetShow)
+				$scope.targetModifiers.push(target.modifiers[i]);
+		}
+		if (target.name == "Bowser Jr") {
+			$scope.targetMod = "Clown Kart";
+		}
 		$scope.target_mod = $scope.targetModifiers.length > 0 ? {} : { 'display' : 'none' };
         $scope.target_icon = target.icon;
         $scope.target_weight = target.attributes.weight;

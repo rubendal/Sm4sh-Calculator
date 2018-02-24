@@ -911,8 +911,8 @@ var KHcharacters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And 
 var gameNames = ["mario", "luigi", "peach", "koopa", "yoshi", "rosetta", "koopajr", "wario", "donkey", "diddy", "gamewatch", "littlemac", "link", "zelda", "sheik", "ganon", "toonlink", "samus", "szerosuit", "pit", "palutena", "marth", "ike", "reflet", "duckhunt", "kirby", "dedede", "metaknight", "fox", "falco", "pikachu", "lizardon", "lucario", "purin", "gekkouga", "robot", "ness", "captain", "murabito", "pikmin", "wiifit", "shulk", "drmario", "pitb", "lucina", "pacman", "rockman", "sonic", "mewtwo", "lucas", "roy", "ryu", "cloud", "kamui", "bayonetta", "miiswordsman", "miifighter", "miigunner"];
 
 class Modifier {
-    constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, fall_speed, shield, air_friction, traction) {
-        this.name = name;
+	constructor(name, damage_dealt, damage_taken, kb_dealt, kb_received, gravity, fall_speed, shield, air_friction, traction, attackerShow, targetShow) {
+		this.name = name;
         this.damage_dealt = damage_dealt;
         this.damage_taken = damage_taken;
         this.kb_dealt = kb_dealt;
@@ -921,7 +921,17 @@ class Modifier {
         this.fall_speed = fall_speed;
         this.shield = shield;
         this.air_friction = air_friction;
-        this.traction = traction;
+		this.traction = traction;
+
+		if (attackerShow == undefined)
+			this.attackerShow = true;
+		else
+			this.attackerShow = attackerShow;
+
+		if (targetShow == undefined)
+			this.targetShow = true;
+		else
+			this.targetShow = targetShow;
     }
 };
 
@@ -956,35 +966,38 @@ class Character {
         this.addModifier = function (modifier) {
             this.modifier = modifier;
         }
-        this.modifier = new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1);
+		this.modifier = new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1, false);
         this.modifiers = [];
         if (this.name == null) {
             this.name = name;
         }
-        if (this.name == "Shulk") {
-            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
-            this.modifiers = this.modifiers.concat(monado);
-            this.modifiers = this.modifiers.concat(decisive_monado);
-            this.modifiers = this.modifiers.concat(hyper_monado);
-        } else if (this.name == "Kirby") {
-            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
-            this.modifiers = this.modifiers.concat(monado);
-        } else if (this.name == "Bowser Jr") {
-            this.modifiers = [new Modifier("Clown Kart", 1, 0.88, 1, 1, 1, 1, 1, 1, 1), new Modifier("Body", 1, 1.15, 1, 1, 1, 1, 1, 1, 1)];
-            this.modifier = this.modifiers[0];
-        }else if (this.name == "Wii Fit Trainer") {
-            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1), new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1)];
+		if (this.name == "Shulk") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+			this.modifiers = this.modifiers.concat(monado);
+			this.modifiers = this.modifiers.concat(decisive_monado);
+			this.modifiers = this.modifiers.concat(hyper_monado);
+		} else if (this.name == "Kirby") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+			this.modifiers = this.modifiers.concat(monado);
+		} else if (this.name == "Bowser Jr") {
+			this.modifiers = [new Modifier("Clown Kart", 1, 0.88, 1, 1, 1, 1, 1, 1, 1, false), new Modifier("Body", 1, 1.15, 1, 1, 1, 1, 1, 1, 1, false)];
+			this.modifier = this.modifiers[0];
+		} else if (this.name == "Wii Fit Trainer") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1), new Modifier("Fast Deep Breathing", 1.2, 0.9, 1, 1, 1, 1, 1, 1, 1), new Modifier("Slow Deep Breathing", 1.16, 0.9, 1, 1, 1, 1, 1, 1, 1)];
 
-        } else if (this.name == "Cloud") {
-            this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1),new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15)];
+		} else if (this.name == "Cloud") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1, false), new Modifier("Limit Break", 1, 1, 1, 1, 1.1, 1.1, 1, 1.15, 1.15, false)];
 		}
 		else if (this.name == "King Dedede") {
-			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1), new Modifier("Character Inhaled", 1, 1, 1, 1, 1, 1, 1, 1, 1)];
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1, false), new Modifier("Character Inhaled", 1, 1, 1, 1, 1, 1, 1, 1, 1, false)];
+		}
+		else if (this.name == "Palutena") {
+			this.modifiers = [new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1, false), new Modifier("Lightweight", 1, 1.1, 1, 1, 1, 0.8, 1, 1, 1, false)];
 		}
 
         this.getModifier = function (name) {
             if (this.modifiers.length == 0) {
-                return new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1);
+				return new Modifier("Normal", 1, 1, 1, 1, 1, 1, 1, 1, 1, false);
             }
             for(var i=0;i<this.modifiers.length;i++){
                 if(this.modifiers[i].name == name){
