@@ -434,7 +434,7 @@ app.controller('calculator', function ($scope) {
             $scope.is_smash = attack.smash_attack;
             $scope.preDamage = attack.preDamage;
             $scope.counterMult = attack.counterMult;
-			$scope.unblockable = attack.unblockable;
+			$scope.unblockable = attack.unblockable || attack.throw;
 			$scope.isFinishingTouch = attack.isFinishingTouch;
             $scope.windbox = attack.windbox;
             $scope.shieldDamage = attack.shieldDamage;
@@ -536,7 +536,7 @@ app.controller('calculator', function ($scope) {
                         $scope.move = i.toString();
                         $scope.preDamage = attack.preDamage;
                         $scope.counterMult = attack.counterMult;
-						$scope.unblockable = attack.unblockable;
+						$scope.unblockable = attack.unblockable || attack.throw;
 						$scope.isFinishingTouch = attack.isFinishingTouch;
                         $scope.selected_move = attack;
                         $scope.check_move();
@@ -850,7 +850,15 @@ app.controller('calculator', function ($scope) {
         bkb = parseFloat($scope.bkb);
         kbg = parseFloat($scope.kbg);
         stale = $scope.stale;
-        hitlag = parseFloat($scope.hitlag);
+		hitlag = parseFloat($scope.hitlag);
+
+		if ($scope.selected_move != null) {
+			if ($scope.selected_move.calculateThrowData != null) {
+				var throwData = $scope.selected_move.calculateThrowData(target.name, target.attributes.weight);
+				$scope.hit_frame = throwData.hitFrame;
+				$scope.faf = throwData.faf;
+			}
+		}
 
         hitframe = parseFloat($scope.hit_frame);
         faf = parseFloat($scope.faf);

@@ -442,6 +442,11 @@ function HitAdvantage(hitstun, hitframe, faf) {
     return hitstun - (faf - (hitframe + 1));
 }
 
+//Formula by Arthur https://docs.google.com/spreadsheets/d/1E3kEQUOZy1C-kSzcoOSKay5gDqpo-ZZgq-8G511Bmw4/edit#gid=1810400970
+function WeightDependentThrowFrame(frame, weight, animationLength) {	
+	return Math.ceil((frame - 1) * (1 + (26 / (animationLength - 1)) * (weight * 0.01 - 1)) + 1);
+}
+
 //Effect formulas
 function ParalyzerHitlag(base_damage, hitlag_mult, crouch) {
 	var h = Math.floor(((base_damage * parameters.hitlag.mult + parameters.paralyzer.constant)) * hitlag_mult * crouch * parameters.paralyzer.mult);
@@ -605,6 +610,14 @@ function closestLine(point, surface){
         }
     }
     return line;
+}
+
+function LineMidPoint(p1, p2) {
+	return { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+}
+
+function LineLength(p1, p2) {
+	return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
 
 var LineTypes = {

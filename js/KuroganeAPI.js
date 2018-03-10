@@ -23,6 +23,8 @@
     });
 }
 
+var throwData = loadJSONPath('./Data/Throws/throws.json'); //Throw data from Arthur's spreadsheet https://docs.google.com/spreadsheets/d/1E3kEQUOZy1C-kSzcoOSKay5gDqpo-ZZgq-8G511Bmw4/edit#gid=1810400970
+
 class HitboxActiveFrames {
     constructor(start, end) {
         this.start = start;
@@ -660,7 +662,107 @@ class Move {
 		//New data
 		this.pikminColor = null;
 
+		//Throws stuff
+		this.throwApplierFrame = null;
+		this.throwFAF = null;
+		this.throwAnimationLength = null;
+		this.calculateThrowData = null;
+		this.throwDataExceptions = null;
+
 		this.updateMoveData = function () {
+
+			//Throws
+			if (this.throw) {
+				var gameName = gameNames[names.indexOf(this.character)];
+				for (var i = 0; i < throwData.length - 1; i++) {
+					if (throwData[i].Character == gameName) {
+						var td = throwData[i];
+						if (this.moveName == "Fthrow") {
+							this.throwApplierFrame = td.ThrowApplierFrame.Fthrow;
+							this.throwFAF = td.FAF.Fthrow;
+							this.throwAnimationLength = td.AnimationLength.Fthrow;
+							this.throwDataExceptions = td.Exceptions.Fthrow;
+						} else if (this.moveName == "Bthrow") {
+							this.throwApplierFrame = td.ThrowApplierFrame.Bthrow;
+							this.throwFAF = td.FAF.Bthrow;
+							this.throwAnimationLength = td.AnimationLength.Bthrow;
+							this.throwDataExceptions = td.Exceptions.Bthrow;
+						} else if (this.moveName == "Uthrow") {
+							this.throwApplierFrame = td.ThrowApplierFrame.Uthrow;
+							this.throwFAF = td.FAF.Uthrow;
+							this.throwAnimationLength = td.AnimationLength.Uthrow;
+							this.throwDataExceptions = td.Exceptions.Uthrow;
+						} else if (this.moveName == "Dthrow") {
+							this.throwApplierFrame = td.ThrowApplierFrame.Dthrow;
+							this.throwFAF = td.FAF.Dthrow;
+							this.throwAnimationLength = td.AnimationLength.Dthrow;
+							this.throwDataExceptions = td.Exceptions.Dthrow;
+						}
+						break;
+					}
+				}
+				if (gameName == "donkey") {
+					var td = throwData[throwData.length-1];
+					if (this.moveName == "Fthrow (Cargo)") {
+						this.throwApplierFrame = td.ThrowApplierFrame.Fthrow;
+						this.throwFAF = td.FAF.Fthrow;
+						this.throwAnimationLength = td.AnimationLength.Fthrow;
+						this.throwDataExceptions = td.Exceptions.Fthrow;
+					} else if (this.moveName == "Bthrow (Cargo)") {
+						this.throwApplierFrame = td.ThrowApplierFrame.Bthrow;
+						this.throwFAF = td.FAF.Bthrow;
+						this.throwAnimationLength = td.AnimationLength.Bthrow;
+						this.throwDataExceptions = td.Exceptions.Bthrow;
+					} else if (this.moveName == "Uthrow (Cargo)") {
+						this.throwApplierFrame = td.ThrowApplierFrame.Uthrow;
+						this.throwFAF = td.FAF.Uthrow;
+						this.throwAnimationLength = td.AnimationLength.Uthrow;
+						this.throwDataExceptions = td.Exceptions.Uthrow;
+					} else if (this.moveName == "Dthrow (Cargo)") {
+						this.throwApplierFrame = td.ThrowApplierFrame.Dthrow;
+						this.throwFAF = td.FAF.Dthrow;
+						this.throwAnimationLength = td.AnimationLength.Dthrow;
+						this.throwDataExceptions = td.Exceptions.Dthrow;
+					}
+				}
+
+				if (this.throwApplierFrame != null) {
+
+					//Has throw data
+
+					this.calculateThrowData = function (character, weight) {
+						var targetGameName = gameNames[names.indexOf(character)];
+						var result = {
+							hitFrame: 0,
+							faf: 0
+						};
+						if (this.weightDependent) {
+
+							if (this.throwDataExceptions.indexOf(targetGameName) < 0) {
+
+								result.hitFrame = WeightDependentThrowFrame(this.throwApplierFrame, weight, this.throwAnimationLength);
+								result.faf = WeightDependentThrowFrame(this.throwFAF, weight, this.throwAnimationLength);
+
+							}
+							else {
+								//R.O.B's Fthrow and Bthrow exceptions
+								result.hitFrame = WeightDependentThrowFrame(this.throwApplierFrame, weight, this.throwFAF);
+								result.faf = WeightDependentThrowFrame(this.throwFAF, weight, this.throwFAF);
+							}
+
+						}
+						else {
+							result.hitFrame = this.throwApplierFrame;
+							result.faf = this.throwFAF;
+						}
+
+						return result;
+
+					}
+				}
+			}
+
+			//Pikmin color and multipliers
 			if (this.character == "Olimar") {
 				if (this.name.includes("Fsmash") || this.name.includes("Dsmash") || this.name.includes("Usmash") || this.name.includes("Uair") || this.name.includes("Dair")
 					|| this.name.includes("Fair") || this.name.includes("Bair") || this.name.includes("Uthrow")) {
