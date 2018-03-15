@@ -2,30 +2,32 @@
 <html>
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
     <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-81804817-1', 'auto');
         ga('send', 'pageview');
     </script>
     <script src="js/formulas.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="js/visualizer.js"></script>
     <script src="js/global.js"></script>
     <script src="js/stickcanvas.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="js/KuroganeAPI.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="js/calculator.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link id="favicon" rel="shortcut icon" href="./img/icon.png" type="image/png" />
     <link id="mainStyle" rel="stylesheet" type="text/css" href="css/style.css" />
     <title>Sm4sh Calculator</title>
-	<meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.5"/>
-    <meta name="description" content="Web based Smash 4 knockback calculator"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.5" />
+    <meta name="description" content="Web based Smash 4 knockback calculator" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@Ruben_dal" />
     <meta name="twitter:title" content="Sm4sh Calculator" />
@@ -654,10 +656,10 @@
                 </div>
             </a>
             <div id="visualizer" class="card-block collapse group-res">
-                <div id="res_graph" class="plot">
+                <canvas id="visualizerCanvas"></canvas>
 
-                </div>
                 <br />
+
                 <div id="extra-table">
                     <table class="result-table">
                         <tr ng-repeat="x in visualizer_extra" ng-class-even="'value-even'">

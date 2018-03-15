@@ -4,7 +4,6 @@ app.controller('calculator', function ($scope) {
 	$scope.apps = GetApps($scope.app);
 	$scope.appLink = $scope.apps[0].link;
     $scope.sharing_url = "";
-    //$scope.usingHttp = inhttp;
     $scope.attacker_characters = names;
     $scope.characters = names;
     $scope.attackerValue = attacker.display_name;
@@ -25,9 +24,6 @@ app.controller('calculator', function ($scope) {
     $scope.stale = [false, false, false, false, false, false, false, false, false];
     $scope.staleness_table = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     $scope.kb_modifier = "none";
-    //$scope.training = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    //$scope.vs = List([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-    //$scope.shield = ShieldList([0, 0, 0]);
     $scope.hitlag_modifier = "none";
     $scope.hitlag = hitlag;
     $scope.shield = "normal";
@@ -149,6 +145,11 @@ app.controller('calculator', function ($scope) {
 
 	$scope.show_interpolation = true;
 
+	$scope.visualizer = new Visualizer(document.getElementById("visualizerCanvas"));
+	$scope.visualizer.SetBackground(settings.visualizer_colors.background);
+	$scope.visualizer.SetSize(45);
+
+
 	$scope.getStage = function () {
 		for (var i = 0; i < $scope.stages.length; i++) {
 			if ($scope.stages[i].stage == $scope.stageName) {
@@ -181,6 +182,7 @@ app.controller('calculator', function ($scope) {
 		for (var i = 0; i < $scope.stage.spawns.length; i++) {
 			$scope.spawns.push(i + 1);
 		}
+		$scope.visualizer.Reset();
 		$scope.spawn = "Center";
 		$scope.update();
 	}
@@ -615,124 +617,6 @@ app.controller('calculator', function ($scope) {
         $scope.update();
 	}
 
-	$scope.plotStage = function () {
-		//Stage
-		var data = [];
-		//Stage blast zones
-		var adxdata = [];
-		var adydata = [];
-
-		position = { "x": parseFloat($scope.position_x), "y": parseFloat($scope.position_y) };
-
-		if (position.x < $scope.stage.blast_zones[0]) {
-			position.x = $scope.stage.blast_zones[0];
-			$scope.position_x = position.x;
-		}
-		if (position.x > $scope.stage.blast_zones[1]) {
-			position.x = $scope.stage.blast_zones[1];
-			$scope.position_x = position.x;
-		}
-
-		if (position.y > $scope.stage.blast_zones[2]) {
-			position.y = $scope.stage.blast_zones[2];
-			$scope.position_y = position.y;
-		}
-		if (position.y < $scope.stage.blast_zones[3]) {
-			position.y = $scope.stage.blast_zones[3];
-			$scope.position_y = position.y;
-		}
-
-		//Stage blast zones
-		adxdata.push($scope.stage.blast_zones[0]);
-		adxdata.push($scope.stage.blast_zones[1]);
-		adxdata.push($scope.stage.blast_zones[1]);
-		adxdata.push($scope.stage.blast_zones[0]);
-		adxdata.push($scope.stage.blast_zones[0]);
-
-		adydata.push($scope.stage.blast_zones[2]);
-		adydata.push($scope.stage.blast_zones[2]);
-		adydata.push($scope.stage.blast_zones[3]);
-		adydata.push($scope.stage.blast_zones[3]);
-		adydata.push($scope.stage.blast_zones[2]);
-
-		data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Blast zone" });
-
-		//Stage Camera bounds
-		adxdata = [];
-		adydata = [];
-		adxdata.push($scope.stage.camera[0]);
-		adxdata.push($scope.stage.camera[1]);
-		adxdata.push($scope.stage.camera[1]);
-		adxdata.push($scope.stage.camera[0]);
-		adxdata.push($scope.stage.camera[0]);
-
-		adydata.push($scope.stage.camera[2]);
-		adydata.push($scope.stage.camera[2]);
-		adydata.push($scope.stage.camera[3]);
-		adydata.push($scope.stage.camera[3]);
-		adydata.push($scope.stage.camera[2]);
-
-		data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'blue' }, 'name': "Camera bounds" });
-
-		//Stage surface
-		adxdata = [];
-		adydata = [];
-		var adxdata2 = [];
-		var adydata2 = [];
-		var semi_tech = [];
-
-		for (var i = 0; i < $scope.stage.collisions.length; i++) {
-			adxdata = [];
-			adydata = [];
-			for (var j = 0; j < $scope.stage.collisions[i].vertex.length; j++) {
-				adxdata.push($scope.stage.collisions[i].vertex[j][0]);
-				adydata.push($scope.stage.collisions[i].vertex[j][1]);
-
-				if (j < $scope.stage.collisions[i].vertex.length - 1) {
-					//Wall jump disabled walls
-					adxdata2 = [];
-					adydata2 = [];
-					if ($scope.stage.collisions[i].materials[j].noWallJump) {
-						adxdata2.push($scope.stage.collisions[i].vertex[j][0]);
-						adydata2.push($scope.stage.collisions[i].vertex[j][1]);
-						adxdata2.push($scope.stage.collisions[i].vertex[j + 1][0]);
-						adydata2.push($scope.stage.collisions[i].vertex[j + 1][1]);
-						semi_tech.push({ 'calcValue': $scope.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'purple' }, 'name': "Wall jump disabled wall" });
-					}
-					//Small walls
-					adxdata2 = [];
-					adydata2 = [];
-					if ($scope.stage.collisions[i].materials[j].length <= 7 && ($scope.stage.collisions[i].materials[j].wall || $scope.stage.collisions[i].materials[j].ceiling) && !$scope.stage.collisions[i].materials[j].noWallJump) {
-						adxdata2.push($scope.stage.collisions[i].vertex[j][0]);
-						adydata2.push($scope.stage.collisions[i].vertex[j][1]);
-						adxdata2.push($scope.stage.collisions[i].vertex[j + 1][0]);
-						adydata2.push($scope.stage.collisions[i].vertex[j + 1][1]);
-						semi_tech.push({ 'calcValue': $scope.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': 'red' }, 'name': "Semi-techable small wall" });
-					}
-				}
-			}
-			data.push({ 'calcValue': $scope.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': "Stage" });
-		}
-
-		data = data.concat(semi_tech);
-
-
-		//Stage platforms
-		if ($scope.stage.platforms !== undefined) {
-			for (var i = 0; i < $scope.stage.platforms.length; i++) {
-				adxdata = [];
-				adydata = [];
-				for (var j = 0; j < $scope.stage.platforms[i].vertex.length; j++) {
-					adxdata.push($scope.stage.platforms[i].vertex[j][0]);
-					adydata.push($scope.stage.platforms[i].vertex[j][1]);
-				}
-				data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': 'green' }, 'name': $scope.stage.platforms[i].name });
-			}
-		}
-
-		return data;
-	}
-
 	$scope.getDistance = function (damage) {
 		if (wbkb == 0) {
 			trainingkb = TrainingKB(target_percent + preDamage, base_damage, damage, set_weight ? 100 : target.attributes.weight, kbg, bkb, target.attributes.gravity * target.modifier.gravity, target.attributes.fall_speed * target.modifier.fall_speed, r, angle, in_air, windbox, electric, set_weight, stick, target.modifier.name == "Character Inhaled");
@@ -758,16 +642,18 @@ app.controller('calculator', function ($scope) {
 		return distance;
 	}
 
-	$scope.search = function (damage, i, prev, n) {
+	$scope.search = function (damage, i, prev, n, pd) {
 		var found = false;
-		var distance;
+		var distance = pd;
 		var last;
+		var prevDistance;
 		for (var x = i; x >= i - prev; x -= n) {
 			last = x;
 			target_percent = x - n;
+			prevDistance = distance;
 			distance = $scope.getDistance(damage);
 			if (!distance.KO) {
-				return { "last": last, "distance": distance };
+				return { last: last, distance: prevDistance };
 			}
 		}
 		return null;
@@ -788,21 +674,21 @@ app.controller('calculator', function ($scope) {
 				distance = $scope.getDistance(damage);
 				if (distance.KO) {
 					if (i == 0) {
-						data = { "ko": true, "ko_percent": 0, "distance": distance };
+						data = { ko: true, ko_percent: 0, distance: distance };
 						found = true;
 						break;
 					}
 					else {
-						var t = $scope.search(damage, i, 20, 5);
+						var t = $scope.search(damage, i, 20, 5, distance);
 						if (t != null) {
-							t = $scope.search(damage, t.last, 5, 1);
+							t = $scope.search(damage, t.last, 5, 1, t.distance);
 							if (t != null) {
-								t = $scope.search(damage, t.last, 1, 0.5);
+								t = $scope.search(damage, t.last, 1, 0.5, t.distance);
 								if (t != null) {
-									t = $scope.search(damage, t.last, 0.5, 0.1);
+									t = $scope.search(damage, t.last, 0.5, 0.1, t.distance);
 									if (t != null) {
-										t = $scope.search(damage, t.last, 0.1, 0.02);
-										data = { "ko": true, "ko_percent": t.last, "distance": t.distance };
+										t = $scope.search(damage, t.last, 0.1, 0.02, t.distance);
+										data = { ko: true, ko_percent: t.last, distance: t.distance };
 										break;
 									}
 								}
@@ -813,7 +699,7 @@ app.controller('calculator', function ($scope) {
 				}
 			}
 		} else {
-			data = { "ko": false };
+			data = { ko: false };
 		}
 		return data;
 	}
@@ -838,14 +724,9 @@ app.controller('calculator', function ($scope) {
 		$scope.visualizer_extra = [];
 
 		if (data.ko) {
-			data.distance.doPlot();
 			$scope.visualizer_extra.push(new Result("Target %", data.ko_percent, "", false, true));
-			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
-			var max_x = data.distance.graph_x + 10;
-			var max_y = data.distance.graph_y + 10;
-			max_x = max_y = Math.max(max_x, max_y);
-
-			Plotly.newPlot('res_graph', data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
+			$scope.visualizer.SetStage($scope.stage);
+			$scope.visualizer.SetLaunch(data.distance.launchData);
 		}
 		else {
 			$scope.visualizer_extra.push(new Result("Can't KO", "Move doesn't KO at 999%", "", false, true));
@@ -884,7 +765,7 @@ app.controller('calculator', function ($scope) {
 
 				var data = $scope.calc(damage);
 
-				list.push({ "di": stick, "percent": data.ko_percent, "data": data });
+				list.push({ di: stick, percent: data.ko_percent, data: data });
 			}
 
 			list.sort(function (a, b) {
@@ -899,6 +780,8 @@ app.controller('calculator', function ($scope) {
 			//Compare ko percents with KO'd percent to check
 			var p = null;
 			var error = 1.4;
+
+			var percent_ko = parseFloat($scope.percent_ko);
 
 			if (list[0].percent + error < percent_ko) {
 				$scope.visualizer_extra.push(new Result("Error", "Inputted % is higher than best DI KO %", "", false, true));
@@ -941,18 +824,13 @@ app.controller('calculator', function ($scope) {
 				return;
 			}
 
-			p.data.distance.doPlot();
-
 			$scope.visualizer_extra.push(new Result("Stick X", p.di.X * (inverseX ? -1 : 1), "", false, true));
 			$scope.visualizer_extra.push(new Result("Stick Y", p.di.Y, "", false, true));
-			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(p.X * (inverseX ? -1 : 1), p.Y)), "", false, true));
+			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(p.di.X * (inverseX ? -1 : 1), p.di.Y)), "", false, true));
 			$scope.visualizer_extra.push(new Result("Calculated Target %", +p.percent.toFixed(6).toString() + (using_error ? "*" : ""), "", false, false));
-			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
-			var max_x = p.data.distance.graph_x + 10;
-			var max_y = p.data.distance.graph_y + 10;
-			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', p.data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
-
+			
+			$scope.visualizer.SetStage($scope.stage);
+			$scope.visualizer.SetLaunch(data.distance.launchData);
 			stick = $scope.stick;
 
 		}
@@ -993,7 +871,7 @@ app.controller('calculator', function ($scope) {
 
 				var data = $scope.calc(damage);
 
-				list.push({ "di": stick, "percent": data.ko_percent, "data": data });
+				list.push({ di: stick, percent: data.ko_percent, data: data });
 
 			}
 
@@ -1006,17 +884,20 @@ app.controller('calculator', function ($scope) {
 				return 0;
 			});
 
-			list[0].data.distance.doPlot();
+			//list[0].data.distance.doPlot();
 
 			$scope.visualizer_extra.push(new Result("Stick X", list[0].di.X * (inverseX ? -1 : 1), "", false, true));
 			$scope.visualizer_extra.push(new Result("Stick Y", list[0].di.Y, "", false, true));
 			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[0].di.X * (inverseX ? -1 : 1), list[0].di.Y)), "", false, true));
 			$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
-			var max_x = list[0].data.distance.graph_x + 10;
-			var max_y = list[0].data.distance.graph_y + 10;
-			max_x = max_y = Math.max(max_x, max_y);
-			Plotly.newPlot('res_graph', list[0].data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
+			//var max_x = list[0].data.distance.graph_x + 10;
+			//var max_y = list[0].data.distance.graph_y + 10;
+			//max_x = max_y = Math.max(max_x, max_y);
+			//Plotly.newPlot('res_graph', list[0].data.distance.plot, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
+
+			$scope.visualizer.SetStage($scope.stage);
+			$scope.visualizer.SetLaunch(data.distance.launchData);
 
 			stick = $scope.stick;
 			
@@ -1138,14 +1019,9 @@ app.controller('calculator', function ($scope) {
 		return true;
 	};
 
-	$scope.interpolatedPositions = function (a, b, d, color) {
+	$scope.interpolatedPositions = function (a, b) {
 		if (a.possible && b.possible) {
 			if (a.di != -1 && b.di != -1) {
-
-				if (color == undefined)
-					color = settings.visualizer_colors.interpolatedLine;
-
-				var data = [];
 
 				
 				var i_position = { x: +((a.position[0] + b.position[0]) / 2).toFixed(6), y: +((a.position[1] + b.position[1]) / 2).toFixed(6) };
@@ -1153,42 +1029,13 @@ app.controller('calculator', function ($scope) {
 				if (!$scope.checkPosition([i_position.x, i_position.y]))
 					return null;
 
-				var min_a = Math.min(a.di, b.di);
-				var max_a = Math.max(a.di, b.di);
+				var i_di = InterpolatedAngle(a.di, b.di);
 
-				var t = (max_a - min_a) % 360;
-
-				var i_di = min_a + ((((2 * t) % 360) - t) * 0.5);
-
-				data.push({ 'calcValue': "Position", 'x': [i_position.x], 'y': [i_position.y], 'mode': 'markers', 'marker': { 'color': color, 'size': 5 }, 'hoverinfo': 'none' });
-
-				var x_data = [];
-				var y_data = [];
-
-				x_data.push(i_position.x);
-				y_data.push(i_position.y);
-
-				var point = { x: i_position.x, y: i_position.y };
-				point.x += (d * Math.cos(i_di * Math.PI / 180));
-				point.y += (d * Math.sin(i_di * Math.PI / 180));
-				x_data.push(point.x);
-				y_data.push(point.y);
-
-				var head_angle = 135;
-
-				x_data.push(point.x + ((d / 3) * Math.cos((i_di + head_angle) * Math.PI / 180)));
-				y_data.push(point.y + ((d / 3) * Math.sin((i_di + head_angle) * Math.PI / 180)));
-
-				x_data.push(point.x);
-				y_data.push(point.y);
-
-				x_data.push(point.x + ((d / 3) * Math.cos((i_di - head_angle) * Math.PI / 180)));
-				y_data.push(point.y + ((d / 3) * Math.sin((i_di - head_angle) * Math.PI / 180)));
+				if (i_di < 0)
+					i_di += 360;
 
 
-				data.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': color }, 'hoverinfo': 'none' });
-
-				return { data: data, position: [i_position.x, i_position.y], di: i_di };
+				return new DILine(i_position.x, i_position.y, i_di, true);
 			}
 		}
 
@@ -1256,17 +1103,11 @@ app.controller('calculator', function ($scope) {
 
 
 		for (var i = 0; i < positions.length; i++) {
-			possible_positions.push({ "position": positions[i], "possible": $scope.checkPosition(positions[i]), "di":-1 });
+			possible_positions.push({ position: positions[i], possible: $scope.checkPosition(positions[i]), di:-1 });
 		}
 		
 
-		var distances = $scope.plotStage();
-
-		max_x = $scope.stage.blast_zones[1] + 10;
-		max_y = $scope.stage.blast_zones[2] + 10;
-
-		var max_x = 0;
-		var max_y = 0;
+		var distances = [];
 
 		for (var p = 0; p < possible_positions.length; p++) {
 			if (!possible_positions[p].possible) {
@@ -1284,7 +1125,7 @@ app.controller('calculator', function ($scope) {
 
 					var d = $scope.calc(damage);
 					if (d.ko) {
-						tempList.push({ "di": Math.floor(GetAngle(stick.X, stick.Y)), "stick": stick, "percent": d.ko_percent, "data": d });
+						tempList.push({ di: Math.floor(GetAngle(stick.X * (inverseX ? -1 : 1), stick.Y)), stick: stick, percent: d.ko_percent, data: d });
 					}
 				}
 
@@ -1315,20 +1156,14 @@ app.controller('calculator', function ($scope) {
 
 					if (list[0].percent != 0) {
 						possible_positions[p].di = list[0].di;
-						list[0].data.distance.doDIPlot(list[0].di, 30, false);
-						distances = distances.concat(list[0].data.distance.di_plot);
-
-						max_x = Math.max(max_x, list[0].data.distance.graph_x + 10);
-						max_y = Math.max(max_y, list[0].data.distance.graph_y + 10);
+						list[0].data.distance.doDILine(list[0].di, false);
+						distances = distances.concat(list[0].data.distance.diLines);
 					} else {
 						
 						possible_positions[p].di = -1;
 
-						list[0].data.distance.doDIPlot(list[0].di, 30, true);
-						distances = distances.concat(list[0].data.distance.di_plot);
-
-						max_x = Math.max(max_x, list[0].data.distance.graph_x + 10);
-						max_y = Math.max(max_y, list[0].data.distance.graph_y + 10);
+						list[0].data.distance.doDILine(list[0].di, true);
+						distances = distances.concat(list[0].data.distance.diLines);
 					}
 				}
 				
@@ -1341,10 +1176,10 @@ app.controller('calculator', function ($scope) {
 			var interpolations = [];
 			//Side interpolation
 			for (var i = 0; i < possible_positions.length - 5; i++) {
-				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 5], 30);
+				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 5]);
 				if (interpolated != null) {
-					distances = distances.concat(interpolated.data);
-					interpolations.push({ position: interpolated.position, possible: true, di: interpolated.di });
+					distances.push(interpolated);
+					interpolations.push({ position: [interpolated.position.x, interpolated.position.y], possible: true, di: interpolated.angle });
 				} else {
 					interpolations.push({ position: [0, 0], possible: false, di: -1 });
 				}
@@ -1356,9 +1191,9 @@ app.controller('calculator', function ($scope) {
 				if (i % 5 == 4) {
 					continue;
 				}
-				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 1], 30);
+				var interpolated = $scope.interpolatedPositions(possible_positions[i], possible_positions[i + 1]);
 				if (interpolated != null) {
-					distances = distances.concat(interpolated.data);
+					distances.push(interpolated);
 				}
 
 			}
@@ -1367,21 +1202,21 @@ app.controller('calculator', function ($scope) {
 				if (i % 5 == 4) {
 					continue;
 				}
-				var interpolated = $scope.interpolatedPositions(interpolations[i], interpolations[i + 1], 30);
+				var interpolated = $scope.interpolatedPositions(interpolations[i], interpolations[i + 1]);
 				if (interpolated != null) {
-					distances = distances.concat(interpolated.data);
+					distances.push(interpolated);
 				}
 
 			}
 
 		}
-		
-		max_x = max_y = Math.max(max_x, max_y);
-		Plotly.newPlot('res_graph', distances, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
 
+		$scope.visualizer.SetStage($scope.stage);
+		$scope.visualizer.SetLaunch(null);
+		$scope.visualizer.SetDILines(distances);
 		stick = $scope.stick;
 
-		position = { "x": parseFloat($scope.position_x), "y": parseFloat($scope.position_y) };
+		position = { x: parseFloat($scope.position_x), y: parseFloat($scope.position_y) };
 
 	};
 
@@ -1454,19 +1289,13 @@ app.controller('calculator', function ($scope) {
 
         paralyzer = $scope.effect == "Paralyze";
         
-        launch_rate = parseFloat($scope.launch_rate);
+		launch_rate = parseFloat($scope.launch_rate);
 
-		var data = $scope.plotStage();
+		position = { x: parseFloat($scope.position_x), y: parseFloat($scope.position_y) };
 
-		$scope.graph_x = Math.abs(position.x);
-		$scope.graph_y = Math.abs(position.y);
-
-		$scope.graph_x = Math.max($scope.graph_x, $scope.stage.blast_zones[1]) + 10;
-		$scope.graph_y = Math.max($scope.graph_y, $scope.stage.blast_zones[2]) + 10;
-
-		data.push({ 'calcValue': "Position", 'x': [position.x], 'y': [position.y], 'mode': 'markers', 'marker': { 'color': 'blue' }, 'name': "Position" });
-
-		Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-$scope.graph_x, $scope.graph_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-$scope.graph_y, $scope.graph_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
+		$scope.visualizer.SetStage($scope.stage);
+		$scope.visualizer.SetDILines(null);
+		$scope.visualizer.SetLaunch(new LaunchData([{ x: position.x, y: position.y }], { x: position.x, y: position.y }, [], -1, -1, -1, -1, -1));
 
         $scope.sharing_url = buildURL($scope);
     };
@@ -1532,6 +1361,7 @@ app.controller('calculator', function ($scope) {
 
 	$scope.changeTheme = function () {
 		changeStyle($scope.theme);
+		$scope.visualizer.SetBackground(settings.visualizer_colors.background);
 		$scope.updateDI();
 	}
 

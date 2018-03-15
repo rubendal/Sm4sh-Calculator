@@ -578,6 +578,12 @@ function InvertYAngle(angle){
     }
 }
 
+function InterpolatedAngle(a, b) {
+	var t = Math.max(a, b) - Math.min(a, b) % 360;
+	return Math.floor(Math.min(a,b) + ((((2 * t) % 360) - t) * 0.5));
+	
+}
+
 //Get the distance between a point and a line
 function LineDistance(point, line) {
 	return Math.abs(((line[1][1] - line[0][1]) * point[0]) - ((line[1][0] - line[0][0]) * point[1]) + (line[1][0] * line[0][1]) - (line[1][1] * line[0][0])) / Math.sqrt(Math.pow(line[1][1] - line[0][1], 2) + Math.pow(line[1][0] - line[0][0], 2));

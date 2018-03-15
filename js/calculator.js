@@ -134,6 +134,10 @@ app.controller('calculator', function ($scope) {
 
 	$scope.visualizer_extra = [];
 
+	$scope.visualizer = new Visualizer(document.getElementById("visualizerCanvas"));
+	$scope.visualizer.SetBackground(settings.visualizer_colors.background);
+	$scope.visualizer.SetSize(45);
+
 	$scope.getStage = function () {
 		for (var i = 0; i < $scope.stages.length; i++) {
 			if ($scope.stages[i].stage == $scope.stageName) {
@@ -165,7 +169,8 @@ app.controller('calculator', function ($scope) {
 		}
         for(var i=0;i<$scope.stage.spawns.length;i++){
             $scope.spawns.push(i+1);
-        }
+		}
+		$scope.visualizer.Reset();
         $scope.spawn = "Center";
         $scope.update();
     }
@@ -805,19 +810,8 @@ app.controller('calculator', function ($scope) {
 
         
         if(graph){
-            var max_x = distance.graph_x + 10;
-            var max_y = distance.graph_y + 10;
-            max_x = max_y = Math.max(max_x, max_y);
-            $scope.currentPlot = distance.plot;
-            var data = distance.plot;
-            for (var p = 0; p < $scope.visList.length; p++) {
-                for (var pl = 0; pl < $scope.visList[p].length; pl++) {
-                    if ($scope.visList[p][pl].calcValue == "Launch" ) {
-                        data.push($scope.visList[p][pl]);
-                    }
-                }
-			}
-			Plotly.newPlot('res_graph', data, { 'xaxis': { 'range': [-max_x, max_x], 'showgrid': false, 'zeroline': true, 'showline': false }, 'yaxis': { 'range': [-max_y, max_y], 'showgrid': false, 'zeroline': true, 'showline': false }, 'showlegend': false, 'margin': { 'l': 25, 'r': 0, 'b': 25, 't': 0, 'pad': 0 }, 'plot_bgcolor': settings.visualizer_colors.background, 'paper_bgcolor': settings.visualizer_colors.background }, { 'displayModeBar': false });
+			$scope.visualizer.SetStage(stage);
+			$scope.visualizer.SetLaunch(distance.launchData);
             $scope.visualizer_extra = distance.extra;
         } else {
             $scope.visualizer_extra = [];
@@ -987,6 +981,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.changeTheme = function () {
 		changeStyle($scope.theme);
+		$scope.visualizer.SetBackground(settings.visualizer_colors.background);
 		$scope.updateDI();
 	}
 

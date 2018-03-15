@@ -1515,6 +1515,27 @@ class Collision {
 	}
 }
 
+class LaunchData {
+	constructor(positions, finalPosition, collisions, hitstun, airdodgeCancel, aerialCancel, faf, KOFrame) {
+		this.positions = positions;
+		this.finalPosition = finalPosition;
+		this.collisions = collisions;
+		this.hitstun = hitstun;
+		this.airdodgeCancel = airdodgeCancel;
+		this.aerialCancel = aerialCancel;
+		this.faf = faf;
+		this.KOFrame = KOFrame;
+	}
+}
+
+class DILine {
+	constructor(x, y, angle, interpolated) {
+		this.position = { x: x, y: y };
+		this.angle = angle;
+		this.interpolated = interpolated;
+	}
+}
+
 class Distance{
     constructor(kb, x_launch_speed, y_launch_speed, hitstun, angle, gravity, faf, fall_speed, traction, isFinishingTouch, inverseX, onSurface, position, stage, doPlot, extraFrames){
         this.kb = kb;
@@ -1527,8 +1548,6 @@ class Distance{
         this.traction = traction;
         this.max_x = 0;
         this.max_y = 0;
-        this.graph_x = 0;
-		this.graph_y = 0;
 		this.isFinishingTouch = isFinishingTouch;
         this.inverseX = inverseX;
         this.onSurface = onSurface;
@@ -1608,6 +1627,9 @@ class Distance{
 
 		var slidingDirection = 0;
 
+		var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
+		this.launchData = new LaunchData([{ x: this.position.x, y: this.position.y }], { x: 0, y: 0 }, [], hitstun, hc.airdodge, hc.aerial, faf, -1);
+
 		for (var i = 0; i < limit; i++){
 
             var next_x = character_position.x + launch_speed.x + character_speed.x;
@@ -1638,6 +1660,7 @@ class Distance{
 				var c = new Collision(i, this.stage, [character_position.x, character_position.y], [next_x, next_y], momentum, state, this.tumble, launch_speed, angle);
 
 				if (c.collisionOccurred) {
+					this.launchData.collisions.push(c);
 					this.collisions++;
 					launch_speed = c.collision_data.launchSpeed;
 					next_x = c.collision_data.next_position[0];
@@ -1861,7 +1884,9 @@ class Distance{
             character_position.y = next_y;
 
             this.x.push(+character_position.x.toFixed(6));
-            this.y.push(+character_position.y.toFixed(6));
+			this.y.push(+character_position.y.toFixed(6));
+
+			this.launchData.positions.push({ x: +character_position.x.toFixed(6), y: +character_position.y.toFixed(6) });
 
             
             //Maximum position during hitstun
@@ -1878,8 +1903,9 @@ class Distance{
 				}
             }
 
-            if (i == hitstun) {
-                this.finalPosition = { "x": character_position.x, "y": character_position.y };
+            if (i == hitstun-1) {
+				this.finalPosition = { "x": character_position.x, "y": character_position.y };
+				this.launchData.finalPosition = { x: character_position.x, y: character_position.y };
 			}
 
 			if (i == 0) {
@@ -1889,18 +1915,9 @@ class Distance{
 
 		this.vertical_speed.push((launch_speed.y));
 
-        this.graph_x = Math.abs(this.max_x);
-        this.graph_y = Math.abs(this.max_y);
 
-        this.max_x = Math.abs(this.max_x - this.position.x);
-		this.max_y = Math.abs(this.max_y - this.position.y);
-
-		this.ko_data = [];
-
-		this.di_plot = [];
 
 		if (this.stage != null) {
-			var data = [];
 			var ko = false;
 			var crossed = false;
 			var character_size = 0;
@@ -1908,28 +1925,32 @@ class Distance{
 			//Calculate if KO in blast zones
 			for (var i = 0; i <= hitstun && !ko; i++) {
 				if (this.y[i] >= this.stage.blast_zones[2] + 30 || this.y[i] <= this.stage.blast_zones[3] - 30) {
-					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
+
 					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 					ko = true;
+					this.launchData.KOFrame = i;
 					break;
 				}
 				if (this.x[i] - character_size <= this.stage.blast_zones[0] || this.x[i] + character_size >= this.stage.blast_zones[1] || this.y[i] - character_size <= this.stage.blast_zones[3]) {
-					this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
+
 					this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 					ko = true;
+					this.launchData.KOFrame = i;
 					break;
 				} else {
 					if (this.y[i] + character_size >= this.stage.blast_zones[2]) {
 						if (this.vertical_speed[i] >= 2.4) { //If it has lower launch speed it will pass the blast zone without a KO
-							this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
+
 							this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 							ko = true;
+							this.launchData.KOFrame = i;
 							break;
 						} else {
 							if (hitstun < (2.4 / 0.03) * 0.4) { //Hitstun frames is lower than 2.4 launch speed, this is used if the target is hit ON the blast zone
-								this.ko_data.push({ 'calcValue': "KO", 'x': [this.x[i]], 'y': [this.y[i]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, size: 15 }, 'name': "KO" });
+
 								this.extra.push(new Result("KO", "Frame " + i, "", false, true));
 								ko = true;
+								this.launchData.KOFrame = i;
 								break;
 							} else {
 								//At least get launch speed the opponent had when crossing the blast zone
@@ -1949,283 +1970,21 @@ class Distance{
 			this.KO = ko;
 		}
 
-		this.doPlot = function () {
-			this.data = [];
-			var px = 0;
-			var py = 0;
-			var cx = px;
-			var cy = py;
-			var color = settings.visualizer_colors.upward;
-			var dir = 1;
-			var data = [];
-			var hc = HitstunCancel(kb, x_launch_speed, y_launch_speed, angle, false);
-			var airdodge = hc.airdodge;
-			var aerial = hc.aerial;
-			for (var i = 0; i < this.x.length; i++) {
-				var xdata = [];
-				var ydata = [];
-				var change = false;
-				do {
-					px = this.x[i];
-					py = this.y[i];
-					if (i == 0) {
-						if (i + 1 < this.x.length) {
-							if (py > this.y[i + 1]) {
-								if (dir == 1) {
-									change = true;
-									dir = -1;
-								}
-							} else {
-								if (py < this.y[i + 1]) {
-									if (dir == -1) {
-										change = true;
-										dir = 1;
-									}
-								}
-							}
-						}
-					} else {
-						if (py < cy) {
-							if (dir == 1) {
-								change = true;
-							}
-							dir = -1;
-						} else {
-							if (dir == -1) {
-								change = true;
-							}
-							dir = 1;
-						}
-					}
-					if (!change) {
-						xdata.push(px);
-						ydata.push(py);
-						cx = px;
-						cy = py;
-						i++;
-					} else {
-						if (i != 0) {
-							xdata.push(px);
-							ydata.push(py);
-						}
-						i--;
-					}
-				} while (!change && i < this.x.length);
-				if (xdata.length > 0) {
-					data.push({ 'calcValue': "Launch", 'x': xdata, 'y': ydata, 'mode': 'lines+markers', 'marker': { 'color': color }, 'line': { 'color': color }, 'name': color == 'blue' ? "" : "" });
-				}
-				switch (color) {
-					case settings.visualizer_colors.upward:
-						color = settings.visualizer_colors.downward;
-						break;
-					case settings.visualizer_colors.downward:
-						color = settings.visualizer_colors.upward;
-						break;
-				}
-			}
+		this.diLines = [];
 
-			if (hitstun < this.x.length) {
-				data.push({ 'calcValue': "Launch", 'x': [this.x[hitstun]], 'y': [this.y[hitstun]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.hitstunEnd, 'size': 14 }, 'name': "Hitstun end" });
-			}
-
-			if (faf >= 0) {
-				if (faf < this.x.length) {
-					data.push({ 'calcValue': "Launch", 'x': [this.x[faf]], 'y': [this.y[faf]], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.attackerFAF, 'size': 14 }, 'name': "Attacker FAF" });
-				}
-			}
-
-			var adxdata = [];
-			var adydata = [];
-
-			for (var i = hitstun + 1; i < this.x.length; i++) {
-				adxdata.push(this.x[i]);
-				adydata.push(this.y[i]);
-			}
-
-			if (adxdata.length > 0) {
-				data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'marker': { 'color': settings.visualizer_colors.actionable }, 'name': "Actionable frame" });
-			}
-
-			adxdata = [];
-			adydata = [];
-
-			if (airdodge < hitstun) {
-				for (var i = airdodge; i < hitstun; i++) {
-					adxdata.push(this.x[i]);
-					adydata.push(this.y[i]);
-				}
-
-
-				if (adxdata.length > 0) {
-					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'line': { 'color': settings.visualizer_colors.airdodge }, 'marker': { 'color': settings.visualizer_colors.airdodge }, 'name': "Airdodge cancel" });
-				}
-
-			}
-
-			if (aerial < hitstun) {
-				adxdata = [];
-				adydata = [];
-				for (var i = aerial; i < hitstun; i++) {
-					adxdata.push(this.x[i]);
-					adydata.push(this.y[i]);
-				}
-				if (adxdata.length > 0) {
-					data.push({ 'calcValue': "Launch", 'x': adxdata, 'y': adydata, 'mode': 'lines+markers', 'line': { 'color': settings.visualizer_colors.aerial }, 'marker': { 'color': settings.visualizer_colors.aerial }, 'name': "Aerial cancel" });
-				}
-
-			}
-
-			//Stage blast zones
-			if (this.stage != null) {
-				adxdata = [];
-				adydata = [];
-				adxdata.push(this.stage.blast_zones[0]);
-				adxdata.push(this.stage.blast_zones[1]);
-				adxdata.push(this.stage.blast_zones[1]);
-				adxdata.push(this.stage.blast_zones[0]);
-				adxdata.push(this.stage.blast_zones[0]);
-
-				adydata.push(this.stage.blast_zones[2]);
-				adydata.push(this.stage.blast_zones[2]);
-				adydata.push(this.stage.blast_zones[3]);
-				adydata.push(this.stage.blast_zones[3]);
-				adydata.push(this.stage.blast_zones[2]);
-
-				data.push({ 'calcValue': "Blast zone", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.blastzone }, 'name': "Blast zone" });
-
-				//Stage Camera bounds
-				adxdata = [];
-				adydata = [];
-				adxdata.push(this.stage.camera[0]);
-				adxdata.push(this.stage.camera[1]);
-				adxdata.push(this.stage.camera[1]);
-				adxdata.push(this.stage.camera[0]);
-				adxdata.push(this.stage.camera[0]);
-
-				adydata.push(this.stage.camera[2]);
-				adydata.push(this.stage.camera[2]);
-				adydata.push(this.stage.camera[3]);
-				adydata.push(this.stage.camera[3]);
-				adydata.push(this.stage.camera[2]);
-
-				data.push({ 'calcValue': "Camera bounds", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.camera }, 'name': "Camera bounds" });
-
-				//Stage surface
-				adxdata = [];
-				adydata = [];
-				var adxdata2 = [];
-				var adydata2 = [];
-				var semi_tech = [];
-
-				for (var i = 0; i < this.stage.collisions.length; i++) {
-					adxdata = [];
-					adydata = [];
-					for (var j = 0; j < this.stage.collisions[i].vertex.length; j++) {
-						adxdata.push(this.stage.collisions[i].vertex[j][0]);
-						adydata.push(this.stage.collisions[i].vertex[j][1]);
-
-						if (j < this.stage.collisions[i].vertex.length - 1) {
-							//Wall jump disabled walls
-							adxdata2 = [];
-							adydata2 = [];
-							if (this.stage.collisions[i].materials[j].noWallJump) {
-								adxdata2.push(this.stage.collisions[i].vertex[j][0]);
-								adydata2.push(this.stage.collisions[i].vertex[j][1]);
-								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
-								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
-								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " Wall jump disabled wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.noWallJump }, 'name': "Wall jump disabled wall" });
-							}
-							//Small walls
-							adxdata2 = [];
-							adydata2 = [];
-							if (this.stage.collisions[i].materials[j].length <= 7 && (this.stage.collisions[i].materials[j].wall || this.stage.collisions[i].materials[j].ceiling) && !this.stage.collisions[i].materials[j].noWallJump) {
-								adxdata2.push(this.stage.collisions[i].vertex[j][0]);
-								adydata2.push(this.stage.collisions[i].vertex[j][1]);
-								adxdata2.push(this.stage.collisions[i].vertex[j + 1][0]);
-								adydata2.push(this.stage.collisions[i].vertex[j + 1][1]);
-								semi_tech.push({ 'calcValue': this.stage.collisions[i].name + " small wall", 'x': adxdata2, 'y': adydata2, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.semitechable }, 'name': "Semi-techable small wall" });
-							}
-						}
-					}
-					data.push({ 'calcValue': this.stage.collisions[i].name, 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.stage }, 'name': "Stage" });
-				}
-
-				data = data.concat(semi_tech);
-
-
-
-				//Stage platforms
-				if (this.stage.platforms !== undefined) {
-					for (var i = 0; i < this.stage.platforms.length; i++) {
-						adxdata = [];
-						adydata = [];
-						for (var j = 0; j < this.stage.platforms[i].vertex.length; j++) {
-							adxdata.push(this.stage.platforms[i].vertex[j][0]);
-							adydata.push(this.stage.platforms[i].vertex[j][1]);
-						}
-						data.push({ 'calcValue': "Platform", 'x': adxdata, 'y': adydata, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.platform }, 'name': "Platform: " + this.stage.platforms[i].name });
-					}
-				}
-
-
-				data = data.concat(this.ko_data);
-				this.graph_x = Math.max(this.graph_x, this.stage.blast_zones[1]);
-				this.graph_y = Math.max(this.graph_y, this.stage.blast_zones[2]);
-			}
-
-			this.plot = data;
-		};
-
-		this.doDIPlot = function (di,d, koAtZero) {
-			//Use di angle to make the line and from there try to make the arrow head
-			var x_data = [];
-			var y_data = [];
-
+		this.doDILine = function (di, koAtZero) {
 			if (koAtZero) {
 				//KO regardless of DI
-				this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.ko, 'size': 5 }, 'hoverinfo': 'none' });
+				this.diLines.push(new DILine(this.position.x, this.position.y, -1, false));
 				return;
 			}
 
-			this.di_plot.push({ 'calcValue': "Position", 'x': [this.position.x], 'y': [this.position.y], 'mode': 'markers', 'marker': { 'color': settings.visualizer_colors.diLine, 'size': 5 }, 'hoverinfo': 'none' });
-
-			if (this.inverseX) {
-				di = InvertXAngle(di);
-			}
-
-			x_data.push(this.position.x);
-			y_data.push(this.position.y);
-
-			var point = { x: this.position.x, y: this.position.y };
-			point.x += (d * Math.cos(di * Math.PI / 180));
-			point.y += (d * Math.sin(di * Math.PI / 180));
-			x_data.push(point.x);
-			y_data.push(point.y);
-
-			var head_angle = 135;
-
-			x_data.push(point.x + ((d / 3) * Math.cos((di + head_angle) * Math.PI / 180)));
-			y_data.push(point.y + ((d / 3) * Math.sin((di + head_angle) * Math.PI / 180)));
-
-			x_data.push(point.x);
-			y_data.push(point.y);
-
-			x_data.push(point.x + ((d / 3) * Math.cos((di - head_angle) * Math.PI / 180)));
-			y_data.push(point.y + ((d / 3) * Math.sin((di - head_angle) * Math.PI / 180)));
-
-			
-			this.di_plot.push({ 'calcValue': "DI", 'x': x_data, 'y': y_data, 'mode': 'lines', 'line': { 'color': settings.visualizer_colors.diLine }, 'hoverinfo':'none' });
+			if (this.kb >= 80)
+				this.diLines.push(new DILine(this.position.x, this.position.y, di % 360, false));
+			else
+				this.diLines.push(new DILine(this.position.x, this.position.y, -2, false));
 
 		}
-
-        if(!doPlot){
-            this.data = [];
-			this.plot = [];
-			this.di_plot = [];
-            return;
-        }
-
-		this.doPlot();
 
     }
 };

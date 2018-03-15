@@ -432,8 +432,13 @@ input[type=button] {
 
 #visualizer {
     position: relative;
-    margin-top: 100px;
-    margin-left: 30px;
+}
+
+#visualizerCanvas {
+    left: 30px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 .auraParam {
