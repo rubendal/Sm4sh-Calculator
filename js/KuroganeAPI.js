@@ -760,6 +760,9 @@ class Move {
 
 					}
 				}
+
+				if (this.character == "Olimar" && this.name == "Dthrow (Purple)")
+					this.throwApplierFrame = 25;
 			}
 
 			//Pikmin color and multipliers
@@ -853,7 +856,18 @@ function getMoveset(attacker, $scope) {
                             if (!m.grab && m.valid) {
                                 moves.push(m.addCharacter(attacker.name).updateMoveData());
                                 count++;
-                            }
+							}
+
+							
+							if (attacker.name == "Olimar" && m.name == "Dthrow") {
+								//Add Purple Pikmin Dthrow
+								var m2 = Object.assign({}, m)
+								m2.id = count;
+								m2.name = "Dthrow (Purple)";
+								m2.moveName = "Dthrow (Purple)";
+								moves.push(m2.addCharacter(attacker.name).updateMoveData());
+								count++;
+							}
                         }
                     }
                     moves.unshift(new Move(0, -1,"Not selected",0,0,0,0,false,0,0,0).invalidate());
