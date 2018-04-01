@@ -371,7 +371,7 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateAttacker = function(){
         attacker = new Character($scope.attackerValue);
-        $scope.attackerName = attacker.name;
+        $scope.attackerName = attacker.display_name;
         $scope.attackerMod = "Normal";
 		$scope.attackerModifiers = [];
 		for (var i = 0; i < attacker.modifiers.length; i++) {
@@ -388,12 +388,33 @@ app.controller('calculator', function ($scope) {
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
         $scope.unblockable = false;
-        $scope.hitbox_active_index = 0;
+		$scope.hitbox_active_index = 0;
+		//
+		if (attacker.name == "Zero Suit Samus") {
+			$scope.attackerPercent = 150;
+			$scope.baseDamage = 5;
+			$scope.angle = 90;
+			$scope.bkb = 0;
+			$scope.wbkb = 150;
+			$scope.kbg = 100;
+			$scope.shieldDamage = 0;
+		}
+		if (attacker.name == "Rosalina And Luma") {
+			$scope.attackerPercent = 150;
+			$scope.baseDamage = 4;
+			$scope.angle = 108;
+			$scope.bkb = 110;
+			$scope.wbkb = 0;
+			$scope.kbg = 60;
+			$scope.shieldDamage = 0;
+		}
+		//
         $scope.check_move(null);
         $scope.checkCounterVisibility();
         $scope.selected_move = null;
 		$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
-        $scope.stock_dif = "0";
+		$scope.stock_dif = "0";
+
         $scope.update();
     }
 

@@ -854,7 +854,7 @@ function getMoveset(attacker, $scope) {
                             var m = parser.moves[c];
                             m.id = count;
                             if (!m.grab && m.valid) {
-                                moves.push(m.addCharacter(attacker.name).updateMoveData());
+                                moves.push(m.addCharacter(attacker.display_name).updateMoveData());
                                 count++;
 							}
 

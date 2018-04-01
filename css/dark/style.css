@@ -679,7 +679,8 @@ button {
 /* --------Screen sizes-------- */
 
 /*Remove floats inside stuff on smaller screens*/
-@media screen and (max-width: 1290px) {
+@media screen and (max-width: 1390px) {
+    /*1290*/
     .char-select {
         float: none;
     }
@@ -695,7 +696,8 @@ button {
     }
 }
 
-@media screen and (max-width: 1075px) {
+@media screen and (max-width: 1175px) {
+    /*1075*/
     .pos-left {
         float: none;
     }
@@ -727,7 +729,8 @@ button {
 }
 
 /*Mobile screens (or very small screens)*/
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 900px) {
+    /*800*/
     .pos-left {
         float: left;
     }
@@ -815,7 +818,8 @@ button {
     }
 }
 
-@media screen and (max-width: 635px) {
+@media screen and (max-width: 853px) {
+    /*635*/
     .pos-left {
         float: none;
     }
@@ -897,3 +901,4 @@ button {
         width: 100%;
         height: auto;
     }
+}
