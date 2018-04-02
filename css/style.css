@@ -672,10 +672,9 @@ button {
 /* --------Screen sizes-------- */
 
 /*Remove floats inside stuff on smaller screens*/
-@media screen and (max-width: 1390px) {
-    /*1290*/
-    .char-select{
-        float:none;
+@media screen and (max-width: 1290px) {
+    .char-select {
+        float: none;
     }
 
     .percent-div {
@@ -689,8 +688,7 @@ button {
     }
 }
 
-@media screen and (max-width: 1175px) {
-    /*1075*/
+@media screen and (max-width: 1075px) {
     .pos-left {
         float: none;
     }
@@ -722,8 +720,7 @@ button {
 }
 
 /*Mobile screens (or very small screens)*/
-@media screen and (max-width: 900px) {
-    /*800*/
+@media screen and (max-width: 800px) {
     .pos-left {
         float: left;
     }
@@ -811,8 +808,7 @@ button {
     }
 }
 
-@media screen and (max-width: 853px) {
-    /*635*/
+@media screen and (max-width: 635px) {
     .pos-left {
         float: none;
     }

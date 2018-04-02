@@ -907,9 +907,9 @@ var characters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Lu
 //April Fools 2017
 //var names = ["Not top 5", "Green Mario", "UpB with 180 WBKB", "Uthrow-Uair", "Egg shield", "Luma", "Clown Kart", "Wah", "Expand", "Banana-Dtilt-Usmash", "Mr. Bucket & 9", "Good frame data/horrible aerials", "Lonk", "Link?", "Can't kill past 130%", "DISRESPECT", "Bomb-Fair", "Spamus", "Zero Skill Samus", "Hot spring maniac", "Top tier with customs", "Morth", "Slow Marth", "Magical Marth", "Dog & Duck", "Hi!", "Sakurai's voice", "Not Brawl", "Honest", "Revali", "Quick Attack", "Orange flying lizard", "Aura is Broken", "Never buffed", "Nerfed", "Beep Boop", "Okay", "Dthrow to knee is not true", "Killager", "Pikmin", "Feel the burn", "Commentator's nightmare", "Doc is In", "Edgy Pit", "Female Marth", "Useless grab", "Lemons", "Sanic", "Heavier than Charizard in Pokemon", "Zair/PK Fire spacing", "Boy Marth", "Utilt", "Genkai wo Koeru", "Instapin", "BANonetta", "Nonexistant Swordfighter", "Nonexistant Brawler", "Nonexistant Gunner"];
 //April Fools 2018
-var names = ["Not top 5", "Green Mario", "Fair that deals 15%", "Pivot grabs from half stage", "Egg shield", "Luma", "Clown Kart", "Wah", "EXPAND DONG", "Hoo-Hah", "Mr. Bucket & 9", "Good frame data/horrible aerials", "Lonk", "Link?", "Can't kill past 130%", "DISRESPECT", "Bomb-Fair", "Spamus", "Rage Boost Kick", "Hot spring maniac", "Top tier with customs", "Morth", "Buffed Marth", "Magical Marth", "Dog & Duck", "Hi!", "Sakurai's idea of Perfection", "Not Brawl", "Honest", "Revali?", "Pichu?", "Orange flying lizard", "Aura + Rage is BROKEN", "Don't expect buffs on Switch", "Nerf Greninja", "50/50 reflector", "Ebola Back Throw", "Dthrow To Knee Is Not True", "Killager", "Just throw Pikmin", "Feel the burn", "I'm really feeling it", "The Doc is IN", "Edgy Pit", "Female Marth", "FAF 76 Grabs", "If life gives you lemons, shoot them", "Gotta go fast", "Fair with \"short range\"", "PK Fire/Zair spacing", "Fire Marth", "Utilts", "Genkai wo Koeru", "Dragon Marth", "Just SDI", "Nonexistant Swordfighter", "Nonexistant Brawler", "Nonexistant Gunner"];
+//var names = ["Not top 5", "Green Mario", "Fair that deals 15%", "Pivot grabs from half stage", "Egg shield", "Luma", "Clown Kart", "Wah", "EXPAND DONG", "Hoo-Hah", "Mr. Bucket & 9", "Good frame data/horrible aerials", "Lonk", "Link?", "Can't kill past 130%", "DISRESPECT", "Bomb-Fair", "Spamus", "Rage Boost Kick", "Hot spring maniac", "Top tier with customs", "Morth", "Buffed Marth", "Magical Marth", "Dog & Duck", "Hi!", "Sakurai's idea of Perfection", "Not Brawl", "Honest", "Revali?", "Pichu?", "Orange flying lizard", "Aura + Rage is BROKEN", "Don't expect buffs on Switch", "Nerf Greninja", "50/50 reflector", "Ebola Back Throw", "Dthrow To Knee Is Not True", "Killager", "Just throw Pikmin", "Feel the burn", "I'm really feeling it", "The Doc is IN", "Edgy Pit", "Female Marth", "FAF 76 Grabs", "If life gives you lemons, shoot them", "Gotta go fast", "Fair with \"short range\"", "PK Fire/Zair spacing", "Fire Marth", "Utilts", "Genkai wo Koeru", "Dragon Marth", "Just SDI", "Nonexistant Swordfighter", "Nonexistant Brawler", "Nonexistant Gunner"];
 var characterNames = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
-//var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
+var names = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina & Luma", "Bowser Jr.", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
 var KHcharacters = ["Mario", "Luigi", "Peach", "Bowser", "Yoshi", "Rosalina And Luma", "Bowser Jr", "Wario", "Donkey Kong", "Diddy Kong", "Mr. Game & Watch", "Little Mac", "Link", "Zelda", "Sheik", "Ganondorf", "Toon Link", "Samus", "Zero Suit Samus", "Pit", "Palutena", "Marth", "Ike", "Robin", "Duck Hunt", "Kirby", "King Dedede", "Meta Knight", "Fox", "Falco", "Pikachu", "Charizard", "Lucario", "Jigglypuff", "Greninja", "R.O.B", "Ness", "Captain Falcon", "Villager", "Olimar", "Wii Fit Trainer", "Shulk", "Dr. Mario", "Dark Pit", "Lucina", "PAC-MAN", "Mega Man", "Sonic", "Mewtwo", "Lucas", "Roy", "Ryu", "Cloud", "Corrin", "Bayonetta", "Mii Swordfighter", "Mii Brawler", "Mii Gunner"];
 var gameNames = ["mario", "luigi", "peach", "koopa", "yoshi", "rosetta", "koopajr", "wario", "donkey", "diddy", "gamewatch", "littlemac", "link", "zelda", "sheik", "ganon", "toonlink", "samus", "szerosuit", "pit", "palutena", "marth", "ike", "reflet", "duckhunt", "kirby", "dedede", "metaknight", "fox", "falco", "pikachu", "lizardon", "lucario", "purin", "gekkouga", "robot", "ness", "captain", "murabito", "pikmin", "wiifit", "shulk", "drmario", "pitb", "lucina", "pacman", "rockman", "sonic", "mewtwo", "lucas", "roy", "ryu", "cloud", "kamui", "bayonetta", "miiswordsman", "miifighter", "miigunner"];
 
@@ -1040,13 +1040,7 @@ class Character {
         }
 		this.attributes = loadJSON(this.name);
 
-		if (this.name == "Rosalina And Luma")
-			this.icon = "./img/stock_icons/luma.png";
-		else if (this.name == "Sonic") 
-			this.icon = "./img/stock_icons/sanic.png";
-		else
-			this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_01.png";
-        
+		this.icon = "./img/stock_icons/stock_90_" + gameNames[characters.indexOf(this.name)] + "_01.png";
         
     }
 
@@ -2445,18 +2439,12 @@ var target = new Character(names[0]);
 
 var attacker_percent = 0;
 var target_percent = 0;
-//var base_damage = 1.5;
-//var angle = 55;
-//var in_air = false;
-//var bkb = 45;
-//var wbkb = 0;
-//var kbg = 25;
-var base_damage = 3;
-var angle = 100;
+var base_damage = 1.5;
+var angle = 55;
 var in_air = false;
-var bkb = 4;
+var bkb = 45;
 var wbkb = 0;
-var kbg = 70;
+var kbg = 25;
 var stale = 0;
 var hitlag = 1;
 

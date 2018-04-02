@@ -215,26 +215,6 @@ app.controller('calculator', function ($scope) {
         $scope.counterMult = 0;
         $scope.counteredDamage = 0;
 		$scope.unblockable = false;
-		//
-		if (attacker.name == "Zero Suit Samus") {
-			$scope.attackerPercent = 150;
-			$scope.baseDamage = 5;
-			$scope.angle = 90;
-			$scope.bkb = 0;
-			$scope.wbkb = 150;
-			$scope.kbg = 100;
-			$scope.shieldDamage = 0;
-		}
-		if (attacker.name == "Rosalina And Luma") {
-			$scope.attackerPercent = 150;
-			$scope.baseDamage = 4;
-			$scope.angle = 108;
-			$scope.bkb = 110;
-			$scope.wbkb = 0;
-			$scope.kbg = 60;
-			$scope.shieldDamage = 0;
-		}
-		//
         $scope.selected_move = null;
         $scope.checkCounterVisibility();
 		$scope.is_lucario = attacker.name == "Lucario" ? {} : { 'display': 'none' };
