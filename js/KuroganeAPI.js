@@ -726,6 +726,9 @@ class Move {
 					}
 				}
 
+				if (this.throwFAF == 0)
+					this.throwFAF = this.throwAnimationLength;
+
 				if (this.throwApplierFrame != null) {
 
 					//Has throw data
