@@ -227,8 +227,8 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox, elect
     var res = { 'airdodge': hitstun + 1, 'aerial': hitstun + 1 };
     var airdodge = false;
     var aerial = false;
-    var launch_speed = { 'x': launch_speed_x, 'y': launch_speed_y };
-    var decay = { 'x': parameters.decay * Math.cos(angle * Math.PI / 180), 'y': parameters.decay * Math.sin(angle * Math.PI / 180) };
+    var launch_speed = { 'x': Math.abs(launch_speed_x), 'y': Math.abs(launch_speed_y) };
+    var decay = { 'x': Math.abs(parameters.decay * Math.cos(angle * Math.PI / 180)), 'y': Math.abs(parameters.decay * Math.sin(angle * Math.PI / 180)) };
 	var ec = electric ? 1 : 0;
     for (var i = 0; i < hitstun; i++) {
         if (launch_speed.x != 0) {
@@ -248,8 +248,8 @@ function HitstunCancel(kb, launch_speed_x, launch_speed_y, angle, windbox, elect
             } else if (y_dir == 1 && launch_speed.y < 0) {
                 launch_speed.y = 0;
             }
-        }
-        var lc = Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2));
+		}
+		var lc = Math.sqrt(Math.pow(launch_speed.x, 2) + Math.pow(launch_speed.y, 2));
         if (lc < parameters.hitstunCancel.launchSpeed.airdodge && !airdodge) {
             airdodge = true;
             res.airdodge = Math.max(i + 2, parameters.hitstunCancel.frames.airdodge + 1 + ec);

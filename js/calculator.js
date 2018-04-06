@@ -609,9 +609,7 @@ app.controller('calculator', function ($scope) {
         $scope.update();
 	}
 
-    $scope.calculate = function (){
-        var result = { 'training': [], 'vs': [], 'shield': [] };
-
+	$scope.calculate = function () {
         if($scope.charge_data == null && $scope.is_smash){
             base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
         }
