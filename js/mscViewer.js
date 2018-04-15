@@ -19,6 +19,12 @@ function sorted_characters() {
 
 sorted_characters();
 
+var ccharacters = [];
+
+for (var i = 0; i < characters.length - 1; i++) {
+	ccharacters.push(characters[i]);
+}
+
 function getCharGameName(name) {
     return gameNames[names.indexOf(name)];
 };
@@ -34,6 +40,19 @@ function getFiles(char) {
         }
     });
     return json;
+};
+
+function getCFiles(char) {
+	var json = null;
+	$.ajax({
+		'async': false,
+		'url': "./Msc/" + char + "/cmsc.json",
+		'dataType': 'json',
+		'success': function (data) {
+			json = data;
+		}
+	});
+	return json;
 };
 
 function loadJSONPath(path) {
@@ -80,7 +99,12 @@ app.controller('scripts', function ($scope) {
 	$scope.appLink = $scope.apps[0].link;
 
     $scope.characters = names;
-    $scope.character = character;
+	$scope.character = character;
+
+	$scope.codetypes = ["pymsc", "mscdec"];
+	$scope.codetype = "pymsc";
+
+	$scope.scriptSelection = {};
 
 	//$scope.files = getFiles(gamename);
  //   $scope.file = JSON.stringify($scope.files[0]);
@@ -90,21 +114,57 @@ app.controller('scripts', function ($scope) {
 
  //   $scope.code = $scope.scripts[0].script;
 
+	$scope.updateCodeType = function () {
+		if ($scope.codetype == "pymsc") {
+			$scope.characters = characters;
+			$scope.scriptSelection = {};
+			$scope.files = getFiles(gamename);
+		}
+		else {
+			$scope.characters = ccharacters;
+			if ($scope.character == "Common") {
+				$scope.character = ccharacters[0];
+				$scope.updateCharacter();
+			}
+			$scope.scriptSelection = { display: 'none' };
+			$scope.files = getCFiles(gamename);
+		}
+		$scope.file = 0 + "";
+		$scope.script = 0 + "";
+		$scope.updateFile();
+	}
+
 	$scope.updateScript = function () {
 		$scope.msc = $scope.files[$scope.file].list[$scope.script].script;
 	};
 
 	$scope.updateFile = function () {
-		file = $scope.files[$scope.file];
-		$scope.script = 0 + "";
+		if ($scope.codetype == "pymsc") {
+			file = $scope.files[$scope.file];
+			$scope.script = 0 + "";
 
-		$scope.updateScript();
+			$scope.updateScript();
+		}
+		else {
+			file = $scope.files[$scope.file];
+
+			$scope.msc = $scope.files[$scope.file].content;
+		}
+		
 	}
 
     $scope.updateCharacter = function () {
         character = $scope.character;
 		gamename = getCharGameName(character);
-		$scope.files = getFiles(gamename);
+
+		if ($scope.codetype == "pymsc") {
+			$scope.scriptSelection = {};
+			$scope.files = getFiles(gamename);
+		}
+		else {
+			$scope.scriptSelection = { display: 'none' };
+			$scope.files = getCFiles(gamename);
+		}
 		$scope.file = 0 + "";
 		$scope.script = 0 + "";
         $scope.updateFile();

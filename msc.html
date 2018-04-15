@@ -86,6 +86,13 @@
 
                 <br />
 
+                Code:
+                <select name="codeoption" ng-model="codetype" ng-change="updateCodeType()">
+                    <option ng-selected="$first" ng:repeat="c in codetypes" ng-attr-value="{{c}}">{{c}}</option>
+                </select>
+
+                <br />
+
                 MSC:
                 <select name="type" ng-model="file" ng-change="updateFile()">
                     <option ng-selected="$first" ng:repeat="f in files" ng-attr-value="{{$index}}">{{f.file}}</option>
@@ -93,10 +100,12 @@
 
                 <br />
 
-                Script:
-                <select name="script" ng-model="script" ng-change="updateScript()">
-                    <option ng-selected="$first" ng:repeat="s in files[file].list" ng-attr-value="{{$index}}">{{s.name}}</option>
-                </select>
+                <div ng-style="scriptSelection">
+                    Script:
+                    <select name="script" ng-model="script" ng-change="updateScript()">
+                        <option ng-selected="$first" ng:repeat="s in files[file].list" ng-attr-value="{{$index}}">{{s.name}}</option>
+                    </select>
+                </div>
 
 
                 <br />
