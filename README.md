@@ -77,7 +77,7 @@ See all characters fighter_param_vl files parameters online, groups before 13 ha
 ### MSC Script Viewer
 https://rubendal.github.io/Sm4sh-Calculator/msc.html
 
-View character MSC scripts disassembled using jam1garner's pymsc and stored on json files
+View character MSC scripts disassembled using jam1garner's pymsc and mscdec and stored on json files
 
 MSC files version: 1.1.6/1.1.7
 
@@ -90,4 +90,4 @@ You can [open an Issue here](https://github.com/rubendal/Sm4sh-Calculator-Web/is
 * [ssbwiki.com](http://www.ssbwiki.com)
 * [Meshima's](https://twitter.com/Meshima_) [params spreadsheet](https://docs.google.com/spreadsheets/d/1FgOsGYfTD4nQo4jFGJ22nz5baU1xihT5lreNinY5nNQ/edit#gid=305485435) (and everyone contributing here)
 * [Sammi Husky's](https://twitter.com/sammihusky) [Sm4sh Tools](https://github.com/Sammi-Husky/Sm4sh-Tools)
-* [jam1garner's](https://twitter.com/jam1garner) [pymsc](https://github.com/jam1garner/pymsc)
+* [jam1garner's](https://twitter.com/jam1garner) [pymsc](https://github.com/jam1garner/pymsc) and [mscdec](https://github.com/jam1garner/mscdec)
