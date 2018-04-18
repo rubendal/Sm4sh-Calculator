@@ -79,14 +79,18 @@
             <br />
             Negative Regex on scripts: <input type="text" ng-model="negate" style="width:42em;" />
             <br />
-            Regex on script name: <input type="text" ng-model="name" style="width:42em;"/>
-            <br/>
+            Regex on script name: <input type="text" ng-model="name" style="width:42em;" />
+            <br />
+            <select name="type" ng-model="section" style="width:300px;">
+                <option ng-selected="$first" ng:repeat="s in sections" ng-attr-value="{{s}}">{{s}}</option>
+            </select>
+            <br />
             <input type="button" class="btn btn-sm" ng-click="update()" value="Search" />
-            <br/>
+            <br />
             <span>Results: {{resultLength}}</span>
-            <br/>
+            <br />
             <span>Matches: {{matches}}</span>
-            <br/>
+            <br />
             <div ng-if="error">
                 Error: {{error}}
             </div>

@@ -68,7 +68,7 @@ class ScriptResult {
         this.scriptName = scriptName;
         this.lines = lines;
         this.no = no;
-        this.matches = "";
+		this.matches = "";
         for (var i = 0; i < this.lines.length; i++) {
             this.matches += this.lines[i];
             if (i < this.lines.length - 1) {
@@ -106,6 +106,8 @@ app.controller('scriptsearch', function ($scope) {
 	$scope.app = "scriptsearch";
 	$scope.apps = GetApps($scope.app);
 	$scope.appLink = $scope.apps[0].link;
+	$scope.section = "Game";
+	$scope.sections = ["Game","Expression","Effect","Sound"];
     $scope.regex = "";
     $scope.name = "";
     $scope.negate = "";
@@ -134,14 +136,28 @@ app.controller('scriptsearch', function ($scope) {
             }
             if (regex == null && negate == null && name == null) {
                 return;
-            }
+			}
+
+			var v = null;
+
             for (var i = 0; i < allScripts.length; i++) {
-                for (var j = 0; j < allScripts[i].scripts.length; j++) {
-                    if (allScripts[i].scripts[j].script == null) {
+				for (var j = 0; j < allScripts[i].scripts.length; j++) {
+
+					if ($scope.section == "Game") {
+						v = allScripts[i].scripts[j].script;
+					} else if ($scope.section == "Expression") {
+						v = allScripts[i].scripts[j].expression;
+					} else if ($scope.section == "Effect") {
+						v = allScripts[i].scripts[j].effect;
+					} else {
+						v = allScripts[i].scripts[j].sound;
+					}
+
+                    if (v == null) {
                         continue;
                     }
                     var pass = false;
-                    var l = allScripts[i].scripts[j].script.split('\n');
+                    var l = v.split('\n');
                     var lines = [];
                     var no = 0;
                     if (name != null) {
