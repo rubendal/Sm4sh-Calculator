@@ -121,10 +121,9 @@ app.controller('calculator', function ($scope) {
     $scope.formats = ["Singles", "Doubles"];
     $scope.format = "Singles";
 
-    $scope.stageName = "Final Destination";
+	$scope.stageName = "Final Destination";
 
-    $scope.currentPlot = {};
-    $scope.visList = [];
+    $scope.storedLaunches = [];
 
     $scope.launch_rate = launch_rate;
 
@@ -808,13 +807,13 @@ app.controller('calculator', function ($scope) {
         }
 
         
-        if(graph){
+		if (graph) {
 			$scope.visualizer.SetStage(stage);
 			$scope.visualizer.SetLaunch(distance.launchData);
-            $scope.visualizer_extra = distance.extra;
-        } else {
-            $scope.visualizer_extra = [];
-        }
+			$scope.visualizer_extra = distance.extra;
+		} else {
+			$scope.visualizer_extra = [];
+		}
 
         return new ResultList(resultList, false);
     };
@@ -919,16 +918,12 @@ app.controller('calculator', function ($scope) {
         $("#" + id).collapse('toggle');
     }
 
-    $scope.storeDistanceCalculation = function () {
-        for (var pl = 0; pl < $scope.currentPlot.length; pl++) {
-            $scope.currentPlot[pl].opacity = 0.5;
-        }
-        $scope.visList.push($scope.currentPlot);
+	$scope.storeDistanceCalculation = function () {
+		$scope.visualizer.StoreLaunch();
     }
 
-    $scope.clearVisualizerList = function () {
-        $scope.visList = [];
-        $scope.update();
+	$scope.clearVisualizerList = function () {
+		$scope.visualizer.ClearStoredLaunches();
     }
 
     $scope.updateParameters = function () {

@@ -31,6 +31,7 @@ class Visualizer {
 
 		this.stage = null;
 		this.launch = null;
+		this.storedLaunches = [];
 		this.diLines = null;
 
 		this.dataPoints = [];
@@ -253,6 +254,29 @@ class Visualizer {
 			this.Draw();
 		}
 
+		this.SetStoredLaunches = function (storedLaunches) {
+			this.storedLaunches = storedLaunches;
+
+			if (storedLaunches == null)
+				this.storedLaunches = [];
+
+			this.ClearCanvas();
+			this.Draw();
+		}
+
+		this.StoreLaunch = function () {
+			this.storedLaunches.push(this.launch);
+
+			this.ClearCanvas();
+			this.Draw();
+		}
+
+		this.ClearStoredLaunches = function () {
+			this.storedLaunches = [];
+
+			this.ClearCanvas();
+			this.Draw();
+		}
 
 
 		this.SetDILines = function (lines) {
@@ -510,6 +534,143 @@ class Visualizer {
 					}
 				}
 			}
+
+			//Stored Launches
+			if (this.storedLaunches != null) {
+				this.context.globalAlpha = 0.5;
+				for (var si = 0; si < this.storedLaunches.length; si++)
+				{
+					var r = 3 / visualizer.prevScale;
+					var r2 = 6 / visualizer.prevScale;
+
+					var style = settings.visualizer_colors.upward;
+					var prevStyle = style;
+
+					context.strokeStyle = style;
+					context.fillStyle = style;
+
+					//Lines
+					context.beginPath();
+
+					for (var i = 0; i < this.storedLaunches[si].positions.length; i++) {
+						if (i < this.storedLaunches[si].hitstun) {
+							if (i < this.storedLaunches[si].airdodgeCancel) {
+								if (i < this.storedLaunches[si].positions.length - 1) {
+									if (this.storedLaunches[si].positions[i].y > this.storedLaunches[si].positions[i + 1].y) {
+										style = settings.visualizer_colors.downward;
+									} else {
+										style = settings.visualizer_colors.upward;
+									}
+								}
+							} else {
+								if (i < this.storedLaunches[si].aerialCancel) {
+									style = settings.visualizer_colors.aerial;
+								}
+								else {
+									style = settings.visualizer_colors.airdodge;
+								}
+							}
+						} else {
+							style = settings.visualizer_colors.actionable;
+						}
+
+						if (style != prevStyle) {
+							prevStyle = style;
+
+							context.stroke();
+							context.beginPath();
+							context.strokeStyle = style;
+
+							if (i > 0)
+								this.MoveTo(this.storedLaunches[si].positions[i - 1].x, this.storedLaunches[si].positions[i - 1].y);
+						}
+
+						if (i == 0)
+							this.MoveTo(this.storedLaunches[si].positions[i].x, this.storedLaunches[si].positions[i].y);
+						else
+							this.LineTo(this.storedLaunches[si].positions[i].x, this.storedLaunches[si].positions[i].y);
+
+					}
+					context.stroke();
+
+					style = settings.visualizer_colors.upward;
+
+					//Markers
+
+					for (var i = 0; i < this.storedLaunches[si].positions.length; i++) {
+						if (i < this.storedLaunches[si].hitstun) {
+							if (i < this.storedLaunches[si].airdodgeCancel) {
+								if (i < this.storedLaunches[si].positions.length - 1) {
+									if (this.storedLaunches[si].positions[i].y > this.storedLaunches[si].positions[i + 1].y) {
+										style = settings.visualizer_colors.downward;
+									} else {
+										style = settings.visualizer_colors.upward;
+									}
+								}
+							} else {
+								if (i < this.storedLaunches[si].aerialCancel) {
+									style = settings.visualizer_colors.aerial;
+								}
+								else {
+									style = settings.visualizer_colors.airdodge;
+								}
+							}
+						} else {
+							style = settings.visualizer_colors.actionable;
+						}
+						context.fillStyle = style;
+						context.beginPath();
+
+						context.arc(this.storedLaunches[si].positions[i].x, - this.storedLaunches[si].positions[i].y, r, 0, Math.PI * 2);
+
+						context.closePath();
+						context.fill();
+
+
+					}
+
+					if (this.storedLaunches[si].hitstun < this.storedLaunches[si].positions.length) {
+						context.fillStyle = settings.visualizer_colors.hitstunEnd;
+
+						context.beginPath();
+
+						context.arc(this.storedLaunches[si].finalPosition.x, - this.storedLaunches[si].finalPosition.y, r2, 0, Math.PI * 2);
+
+						context.closePath();
+						context.fill();
+
+					}
+
+					if (this.storedLaunches[si].faf >= 0) {
+						if (this.storedLaunches[si].faf < this.storedLaunches[si].positions.length) {
+							context.fillStyle = settings.visualizer_colors.attackerFAF;
+
+							context.beginPath();
+
+							context.arc(this.storedLaunches[si].positions[this.storedLaunches[si].faf].x, - this.storedLaunches[si].positions[this.storedLaunches[si].faf].y, r2, 0, Math.PI * 2);
+
+							context.closePath();
+							context.fill();
+						}
+					}
+
+					if (this.storedLaunches[si].KOFrame != -1) {
+						if (this.storedLaunches[si].KOFrame < this.storedLaunches[si].positions.length) {
+							context.fillStyle = settings.visualizer_colors.ko;
+
+							context.beginPath();
+
+							context.arc(this.storedLaunches[si].positions[this.storedLaunches[si].KOFrame].x, - this.storedLaunches[si].positions[this.storedLaunches[si].KOFrame].y, r2, 0, Math.PI * 2);
+
+							context.closePath();
+							context.fill();
+						}
+					}
+				}
+
+				this.context.globalAlpha = 1;
+			}
+
 			context.lineWidth = 2 / visualizer.prevScale;
 
 			if (this.diLines != null) {
