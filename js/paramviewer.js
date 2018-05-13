@@ -75,9 +75,9 @@ function getTag(tags, group) {
 
 var appSelection = [
 	{ appName: "calculator", title: "Calculator", link: "./index.html" },
-	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
-	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
 	{ appName: "kocalculator", title: "KO Calculator", link: "./kocalc.html" },
+	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
+	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
 	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
 	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
 	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },

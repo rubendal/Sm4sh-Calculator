@@ -84,7 +84,13 @@
                 </select>
 
                 <br />
-                Patch: 
+
+                <select name="script" ng-model="section" ng-change="updateSection()" style="width:200px;">
+                    <option ng-selected="$first" ng:repeat="s in sections" ng-attr-value="{{s}}">{{s}}</option>
+                </select>
+
+                <br />
+                Patch:
                 <select name="script" ng-model="patch" ng-change="updateFilter()">
                     <option ng-selected="$first" ng:repeat="p in patches" ng-attr-value="{{p}}">{{p}}</option>
                 </select>
@@ -115,7 +121,7 @@
                 </div>
 
                 <div class="script-diff2" ng-bind-html="v2">
-                    
+
                 </div>
 
                 <textarea id="copyscriptbox" class="hidden-box" ng-model="sf_code" readonly tabindex='-1' aria-hidden='true'></textarea>

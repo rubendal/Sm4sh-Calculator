@@ -52,9 +52,9 @@ function loadJSONPath(path) {
 
 var appSelection = [
 	{ appName: "calculator", title: "Calculator", link: "./index.html" },
-	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
-	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
 	{ appName: "kocalculator", title: "KO Calculator", link: "./kocalc.html" },
+	{ appName: "kbcalculator", title: "Percentage Calculator", link: "./percentcalc.html" },
+	{ appName: "movesearch", title: "Move Search", link: "./movesearch.html" },
 	{ appName: "scriptviewer", title: "Script Viewer", link: "./scripts.html" },
 	{ appName: "scriptdiff", title: "Script Diff Viewer", link: "./scriptdiff.html" },
 	{ appName: "scriptsearch", title: "Script Search", link: "./scriptsearch.html" },
@@ -83,12 +83,13 @@ function GetPatches(s) {
 	return list;
 }
 
-function filter() {
+function filter(s) {
 	var list = [];
-	for (var i = 0; i < scripts.scripts.length; i++) {
+
+	for (var i = 0; i < s.length; i++) {
 		
-		if (scripts.scripts[i].patch1 + " -> " + scripts.scripts[i].patch2 == patch) {
-			list.push(scripts.scripts[i]);
+		if (s[i].patch1 + " -> " + s[i].patch2 == patch) {
+			list.push(s[i]);
 		}
 	}
 	return list;
@@ -99,6 +100,8 @@ var gamename = getCharGameName(character);
 var scripts = getScripts(gamename);
 var script = scripts.scripts[0];
 var patch = script.patch1 + " -> " + script.patch2;
+
+var sections = ["Game", "Expression", "Effect", "Sound"];
 
 var app = angular.module('scripts', []);
 
@@ -122,6 +125,9 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 	$scope.ignoreNew = true;
 
 	script = $scope.scripts[$scope.script];
+
+	$scope.section = "Game";
+	$scope.sections = ["Game", "Expression", "Effect", "Sound"];
 
 	$scope.ver1 = script.patch1;
 	$scope.ver2 = script.patch2;
@@ -161,8 +167,19 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 
 	$scope.updateFilter = function () {
 		patch = $scope.patch;
-		scripts = getScripts(gamename);
-		$scope.scripts = filter();
+		//scripts = getScripts(gamename);
+
+		if ($scope.section == "Game") {
+			$scope.scripts = scripts.scripts;
+		} else if ($scope.section == "Expression") {
+			$scope.scripts = scripts.expression;
+		} else if ($scope.section == "Effect") {
+			$scope.scripts = scripts.effect;
+		} else {
+			$scope.scripts = scripts.sound;
+		}
+
+		$scope.scripts = filter($scope.scripts);
 		$scope.script = 0 + "";
 		$scope.updateScript();
 		//scripts = getScripts(gamename);
@@ -187,6 +204,20 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
         character = $scope.character;
         gamename = getCharGameName(character);
 		scripts = getScripts(gamename);
+
+		$scope.section = "Game";
+
+		$scope.sections = ["Game"];
+
+		if (scripts.expression.length > 0)
+			$scope.sections.push("Expression");
+
+		if (scripts.effect.length > 0)
+			$scope.sections.push("Effect");
+
+		if (scripts.sound.length > 0)
+			$scope.sections.push("Sound");
+
 		$scope.scripts = scripts.scripts;
 		$scope.script = 0 + "";
 
@@ -201,6 +232,30 @@ app.controller('scripts', ['$scope', '$sce', function ngBindHtmlCtrl($scope, $sc
 		$scope.updateFilter();
         
 	};
+
+	$scope.updateSection = function () {
+		if ($scope.section == "Game") {
+			$scope.scripts = scripts.scripts;
+		} else if ($scope.section == "Expression") {
+			$scope.scripts = scripts.expression;
+		} else if ($scope.section == "Effect") {
+			$scope.scripts = scripts.effect;
+		} else {
+			$scope.scripts = scripts.sound;
+		}
+		//$scope.scripts = scripts.scripts;
+		$scope.script = 0 + "";
+
+		$scope.patches = GetPatches($scope.scripts);
+		$scope.patch = $scope.patches[0];
+		patch = $scope.patch;
+		script = $scope.scripts[$scope.script];
+
+		$scope.ver1 = script.patch1;
+		$scope.ver2 = script.patch2;
+
+		$scope.updateFilter();
+	}
 
 	$scope.copyCode = function () {
 		var textArea = document.getElementById("copyscriptbox");
