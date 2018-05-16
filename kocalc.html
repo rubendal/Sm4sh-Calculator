@@ -549,8 +549,9 @@
                         <button ng-click="calculate()">Calculate KO %</button>
                         <br />
                         <div style="margin-top:5px;">
-                            DI angle step: <input name="di_step" type="number" min="1" max="90" step="1" ng-model="di_step" /> 
+                            DI angle step: <input name="di_step" type="number" min="1" max="90" step="1" ng-model="di_step" />
                             <button ng-click="calculateDI()" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles">Calculate KO % with best DI</button>
+                            <button ng-click="calculateDI(-1)" title="Note: page can become busy and maybe get a pop up that doesn't respond due to the calculation of all KO %s with all DI angles">Calculate KO % with worst DI</button>
                         </div>
                         <div style="margin-top:5px;">
                             Target KO'd percent: <input name="percent_ko" type="number" min="0" max="999" step="1" ng-model="percent_ko" /> %

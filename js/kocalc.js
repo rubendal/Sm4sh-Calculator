@@ -840,7 +840,12 @@ app.controller('calculator', function ($scope) {
 
 	};
 
-	$scope.calculateDI = function () {
+	$scope.calculateDI = function (param) {
+		if (param == undefined)
+			param = true;
+		else
+			param = false;
+
 		$scope.update();
 		if ($scope.charge_data == null && $scope.is_smash) {
 			base_damage = ChargeSmash(base_damage, charge_frames, megaman_fsmash, witch_time_smash_charge);
@@ -886,10 +891,18 @@ app.controller('calculator', function ($scope) {
 
 			//list[0].data.distance.doPlot();
 
-			$scope.visualizer_extra.push(new Result("Stick X", list[0].di.X * (inverseX ? -1 : 1), "", false, true));
-			$scope.visualizer_extra.push(new Result("Stick Y", list[0].di.Y, "", false, true));
-			$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[0].di.X * (inverseX ? -1 : 1), list[0].di.Y)), "", false, true));
-			$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
+			if (param) {
+
+				$scope.visualizer_extra.push(new Result("Stick X", list[0].di.X * (inverseX ? -1 : 1), "", false, true));
+				$scope.visualizer_extra.push(new Result("Stick Y", list[0].di.Y, "", false, true));
+				$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[0].di.X * (inverseX ? -1 : 1), list[0].di.Y)), "", false, true));
+				$scope.visualizer_extra.push(new Result("Target % with best DI", list[0].percent, "", false, true));
+			} else {
+				$scope.visualizer_extra.push(new Result("Stick X", list[list.length - 1].di.X * (inverseX ? -1 : 1), "", false, true));
+				$scope.visualizer_extra.push(new Result("Stick Y", list[list.length - 1].di.Y, "", false, true));
+				$scope.visualizer_extra.push(new Result("Stick angle", Math.floor(GetAngle(list[list.length - 1].di.X * (inverseX ? -1 : 1), list[list.length - 1].di.Y)), "", false, true));
+				$scope.visualizer_extra.push(new Result("Target % with worst DI", list[list.length - 1].percent, "", false, true));
+			}
 			//$scope.visualizer_extra.push(new Result("KO", data.frame, "", false, true));
 			//var max_x = list[0].data.distance.graph_x + 10;
 			//var max_y = list[0].data.distance.graph_y + 10;
