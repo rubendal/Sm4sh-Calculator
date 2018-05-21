@@ -560,6 +560,10 @@ function AngleToStickPosition(r, angle) {
 	
 }
 
+function lerp(min, max, x, xMax) {
+	return (1 - (x / xMax)) * min + (x / xMax) * max;
+}
+
 //Launch visualizer formulas
 
 function InvertXAngle(angle){

@@ -411,16 +411,11 @@ class MoveParser {
 var previousMove = null;
 
 class ChargeData{
-    constructor(names,min,max,formula,variable_bkb){
+    constructor(names,min,max,formula){
         this.names = names;
         this.min = min;
         this.max = max;
 		this.formula = formula;
-		if (variable_bkb == undefined) {
-			this.variable_bkb = false;
-		} else {
-			this.variable_bkb = variable_bkb;
-		}
     }
 
     static get(list, move_name){
@@ -436,63 +431,76 @@ class ChargeData{
 };
 
 var chargeMoves = [
-    new ChargeData(["Palutena's Bow (No Charge)","Palutena's Bow (No Charge, Aerial)"],1,60,function(base_damage, bkb, frames){
-		return [3.2 + (frames * 0.09), bkb];
-    }),
-	new ChargeData(["Silver Bow (No Charge)", "Silver Bow (No Charge, Aerial)"], 1, 60, function (base_damage, bkb, frames){
-		return [4.2 + (frames * 0.1125), bkb];
-    }),
-	new ChargeData(["Flare Blade (Uncharged)"], 0, 239, function (base_damage, bkb, frames){
-		return [6 + (frames * 5 / 30), bkb];
-    }),
-	new ChargeData(["Shield Breaker (No Charge)"], 0, 60, function (base_damage, bkb, frames){
-		return [base_damage * ((60 - frames) / 60 + (frames * 2.2 / 60)), bkb];
-    }),
-	new ChargeData(["Eruption"], 0, 119, function (base_damage, bkb, frames){
-		return [10 + (frames * 4 / 30), bkb];
-    }),
-	new ChargeData(["Quickdraw (Attack)"], 0, 70, function (base_damage, bkb, frames) {
-		return [base_damage + (frames * 0.1), bkb];
-    }),
-	new ChargeData(["Giant Punch (Uncharged"], 0, 9, function (base_damage, bkb, frames){
-        if(frames == 1){
-            frames = 0;
-        }
-		return [base_damage + (2 * (frames - 1)), bkb];
-    }),
-	new ChargeData(["Charge Shot"], 0, 111, function (base_damage, bkb, frames){
-		return [base_damage + (frames / 112 * 22), bkb];
-    }),
-	new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, bkb, frames) {
-		return [4 + (12 - 4) * (frames / 60), bkb];
-    }),
-	new ChargeData(["Spin Attack (No Charge,"], 0, 60, function (base_damage, bkb, frames) {
-		return [base_damage * ((60 - frames) / 60 + (frames * 1.6 / 60)), bkb];
-    }),
-	new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"], 0, 105, function (base_damage, bkb, frames){
-		return [5 + (((frames + 15) / 120) * .32 * 100), bkb];
+	new ChargeData(["Palutena's Bow (No Charge)", "Palutena's Bow (No Charge, Aerial)"], 1, 60, function (base_damage, bkb, kbg, frames) {
+		return [3.2 + (frames * 0.09), bkb, kbg];
 	}),
-	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, bkb, frames) {
-		return [base_damage + (7.7 * (frames / 30)), bkb];
+	new ChargeData(["Silver Bow (No Charge)", "Silver Bow (No Charge, Aerial)"], 1, 60, function (base_damage, bkb, kbg, frames) {
+		return [4.2 + (frames * 0.1125), bkb, kbg];
 	}),
-	new ChargeData(["Dragon Fang Shot (Shot, No Charge)"], 0, 29, function (base_damage, bkb, frames) {
+	new ChargeData(["Flare Blade (Uncharged)"], 0, 239, function (base_damage, bkb, kbg, frames) {
+		return [6 + (frames * 5 / 30), bkb, kbg];
+	}),
+	new ChargeData(["Shield Breaker (No Charge)"], 0, 60, function (base_damage, bkb, kbg, frames) {
+		return [base_damage * ((60 - frames) / 60 + (frames * 2.2 / 60)), bkb, kbg];
+	}),
+	new ChargeData(["Eruption"], 0, 119, function (base_damage, bkb, kbg, frames) {
+		return [10 + (frames * 4 / 30), bkb, kbg];
+	}),
+	new ChargeData(["Quickdraw (Attack)"], 0, 70, function (base_damage, bkb, kbg, frames) {
+		return [base_damage + (frames * 0.1), bkb, kbg];
+	}),
+	new ChargeData(["Giant Punch (Uncharged"], 0, 9, function (base_damage, bkb, kbg, frames) {
+		if (frames == 1) {
+			frames = 0;
+		}
+		return [base_damage + (2 * (frames - 1)), bkb, kbg];
+	}),
+	new ChargeData(["Charge Shot"], 0, 111, function (base_damage, bkb, kbg, frames) {
+		return [lerp(base_damage, 25, frames, 112), lerp(bkb, 30, frames,112), lerp(kbg,62,frames, 112)];
+	}),
+	new ChargeData(["Charge Blast (No Charge)"], 0, 119, function (base_damage, bkb, kbg, frames) {
+		return [lerp(base_damage, 22, frames, 120), lerp(bkb, 20, frames, 120), kbg];
+	}),
+	new ChargeData(["Hero's Bow (No Charge)"], 0, 60, function (base_damage, bkb, kbg, frames) {
+		return [4 + (12 - 4) * (frames / 60), bkb, kbg];
+	}),
+	new ChargeData(["Spin Attack (No Charge,"], 0, 60, function (base_damage, bkb, kbg, frames) {
+		return [base_damage * ((60 - frames) / 60 + (frames * 1.6 / 60)), bkb, kbg];
+	}),
+	new ChargeData(["PK Flash (No Charge)", "PK Trash (No Charge)"], 0, 105, function (base_damage, bkb, kbg, frames) {
+		return [5 + (((frames + 15) / 120) * .32 * 100), bkb, kbg];
+	}),
+	new ChargeData(["Dragon Fang Shot (Bite, No Charge)"], 0, 30, function (base_damage, bkb, kbg, frames) {
+		return [base_damage + (7.7 * (frames / 30)), bkb, kbg];
+	}),
+	new ChargeData(["Dragon Fang Shot (Shot, No Charge)"], 0, 29, function (base_damage, bkb, kbg, frames) {
 		//21 and 27 frames charged have floating point precision error in-game, so they are rounded down
 		if (frames == 21 || frames == 27)
 			return [base_damage * (1 + (1.25 * (frames / 30))), Math.floor(bkb + (frames * 0.6666667)) - 1];
-		return [base_damage * (1 + (1.25 * (frames / 30))), Math.floor(bkb + (frames * 0.6666667))];
-	}, true),
-	new ChargeData(["Aura Sphere (Release from Charge)"], 0, 89, function (base_damage, bkb, frames) {
-		return [6.9 * ((90 - frames)/ 90 + (frames * 2.5 / 90)), bkb];
+		return [base_damage * (1 + (1.25 * (frames / 30))), bkb + (frames * 0.6666667), kbg];
 	}),
-	new ChargeData(["Skull Bash"], 0, 89, function (base_damage, bkb, frames) {
+	new ChargeData(["Aura Sphere (Release from Charge)"], 0, 89, function (base_damage, bkb, kbg, frames) {
+		return [lerp(10, 25, frames, 90) * 0.69, lerp(bkb, 35, frames,90), lerp(kbg, 69, frames,90)];
+	}),
+	new ChargeData(["Skull Bash"], 0, 89, function (base_damage, bkb, kbg, frames) {
 		//Formula by Arthur https://twitter.com/BenArthur_7/status/917873355386183686
-		return [base_damage + ((6/35) * (frames+1)), bkb];
+		return [base_damage + ((6 / 35) * (frames + 1)), bkb, kbg];
 	}),
-	new ChargeData(["Rollout (Ground, Release)", "Rollout (Aerial, Release)"], 0, 7, function (base_damage, bkb, frames) {
+	new ChargeData(["Rollout (Ground, Release)", "Rollout (Aerial, Release)"], 0, 7, function (base_damage, bkb, kbg, frames) {
 		if (frames < 2)
-			return [7, bkb];	
-		return [Math.max(Math.floor(frames * 1.1 * 3),1), bkb];
+			return [7, bkb];
+		return [Math.max(Math.floor(frames * 1.1 * 3), 1), bkb, kbg];
+	}),
+	new ChargeData(["Water Shuriken (Uncharged)"], 0, 39, function (base_damage, bkb, kbg, frames) {
+		return [lerp(3, 11, frames, 40), lerp(bkb, 20, frames, 40), kbg];
+	}),
+	new ChargeData(["Sun Salutation"], 0, 85, function (base_damage, bkb, kbg, frames) {
+		return [lerp(5, 18, frames, 85), bkb, kbg];
+	}),
+	new ChargeData(["Shadow Ball"], 0, 119, function (base_damage, bkb, kbg, frames) {
+		return [lerp(2.5, 25, frames, 120), lerp(bkb, 30, frames, 120), lerp(kbg, 67, frames, 120)];
 	})
+
 ];
 
 class Move {
@@ -545,7 +553,7 @@ class Move {
         this.valid = true;
         this.smash_attack = name.includes("Fsmash") || name.includes("Usmash") || name.includes("Dsmash");
 		this.throw = name.includes("Fthrow") || name.includes("Bthrow") || name.includes("Uthrow") || name.includes("Dthrow");
-		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)" || name == "Shadow Ball (Uncharged)" || name == "Skull Bash" || name.includes("Rollout (");
+		this.chargeable = name.includes("No Charge") || name.includes("Uncharged") || (name.includes("Eruption") && !name.includes("Fully Charged")) || name == "Charge Shot" || name == "Quickdraw (Attack)" || name == "Aura Sphere (Release from Charge)" || name == "Shadow Ball (Uncharged)" || name == "Skull Bash" || name.includes("Rollout (") || name == "Water Shuriken (Uncharged)" || name == "Sun Salutation";
         this.grab = this.name == "Standing Grab" || this.name == "Dash Grab" || this.name == "Pivot Grab";
         this.tilt = this.name.includes("Utilt") || this.name.includes("Ftilt") || this.name.includes("Dtilt");
         this.jab = this.name.includes("Jab");
@@ -564,10 +572,13 @@ class Move {
         if(this.chargeable){
             this.charge = ChargeData.get(chargeMoves, this.name);
             this.charge_damage = function(frames){
-                return +this.charge.formula(this.base_damage, this.bkb, frames)[0].toFixed(4);
+				return +this.charge.formula(this.base_damage, this.bkb, this.kbg, frames)[0].toFixed(4);
 			}
 			this.charge_bkb = function (frames) {
-				return +this.charge.formula(this.base_damage, this.bkb, frames)[1].toFixed(4);
+				return Math.floor(this.charge.formula(this.base_damage, this.bkb, this.kbg, frames)[1]);
+			}
+			this.charge_kbg = function (frames) {
+				return Math.floor(this.charge.formula(this.base_damage, this.bkb, this.kbg, frames)[2]);
 			}
         }
 

@@ -413,7 +413,9 @@ app.controller('calculator', function ($scope) {
 
     $scope.updateCharge = function(){
         if($scope.charge_data != null){
-            $scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
+			$scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
+			$scope.bkb = $scope.selected_move.charge_bkb(parseFloat($scope.smashCharge));
+			$scope.kbg = $scope.selected_move.charge_kbg(parseFloat($scope.smashCharge));
         }
         $scope.update();
     }
