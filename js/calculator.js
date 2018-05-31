@@ -558,13 +558,13 @@ app.controller('calculator', function ($scope) {
                 attack = $scope.moveset[i];
                 if (attack.valid) {
                     if ($scope.angle == attack.angle &&
-                        parseFloat($scope.baseDamage) >= parseFloat(attack.base_damage) &&
-                        $scope.bkb == attack.bkb &&
-                        $scope.kbg == attack.kbg &&
-                        $scope.wbkb == attack.wbkb &&
+						parseFloat($scope.baseDamage) >= parseFloat(attack.base_damage) &&
+                        parseInt($scope.bkb) >= attack.bkb &&
+                        parseInt($scope.kbg) >= attack.kbg &&
+						parseInt($scope.wbkb) >= attack.wbkb &&
                         $scope.is_smash == (attack.smash_attack || attack.chargeable) &&
                         $scope.windbox == attack.windbox &&
-                        $scope.shieldDamage == attack.shieldDamage &&
+						parseInt($scope.shieldDamage) >= attack.shieldDamage &&
                         (attack.chargeable || attack.counterMult != 0)) {
                             $scope.preDamage = attack.preDamage;
                             $scope.counterMult = attack.counterMult;
@@ -823,6 +823,7 @@ app.controller('calculator', function ($scope) {
 			$scope.baseDamage = $scope.selected_move.charge_damage(parseFloat($scope.smashCharge));
 			$scope.bkb = $scope.selected_move.charge_bkb(parseFloat($scope.smashCharge));
 			$scope.kbg = $scope.selected_move.charge_kbg(parseFloat($scope.smashCharge));
+			$scope.shieldDamage = $scope.selected_move.charge_shieldDamage(parseFloat($scope.smashCharge));
             $scope.hit_frame = $scope.selected_move.hitboxActive[$scope.hitbox_active_index].start + parseFloat($scope.smashCharge);
             $scope.faf = $scope.selected_move.faf + parseFloat($scope.smashCharge);
         }

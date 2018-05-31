@@ -368,9 +368,9 @@ app.controller('calculator', function ($scope) {
                 if (attack.valid) {
                     if ($scope.angle == attack.angle &&
                         parseFloat($scope.baseDamage) >= parseFloat(attack.base_damage) &&
-                        $scope.bkb == attack.bkb &&
-                        $scope.kbg == attack.kbg &&
-                        $scope.wbkb == attack.wbkb &&
+						parseInt($scope.bkb) >= attack.bkb &&
+						parseInt($scope.kbg) >= attack.kbg &&
+						parseInt($scope.wbkb) >= attack.wbkb &&
                         $scope.is_smash == attack.smash_attack &&
                         $scope.windbox == attack.windbox &&
                         (attack.chargeable || attack.counterMult != 0)) {
