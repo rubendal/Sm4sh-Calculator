@@ -785,22 +785,23 @@ app.controller('calculator', function ($scope) {
         }
 
 		if (!unblockable) {
-			var s = (base_damage * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
-			var sv = (StaleDamage(base_damage, stale, ignoreStale) * attacker.modifier.damage_dealt * 1.19) + (shieldDamage * 1.19);
+			var damageOnShield = base_damage * attacker.modifier.damage_dealt;
+			var s = (damageOnShield * 1.19) + (shieldDamage * 1.19);
+			var sv = (StaleDamage(damageOnShield, stale, ignoreStale) * 1.19) + (shieldDamage * 1.19);
             if (!powershield) {
                 resultList.push(new Result("Shield Damage", +s.toFixed(6), +sv.toFixed(6)));
                 //resultList.push(new Result("Full HP shield", +(50 * target.modifier.shield).toFixed(6), +(50 * target.modifier.shield).toFixed(6)));
 				resultList.push(new Result("Shield Break", s >= 50 * target.modifier.shield ? "Yes" : "No", sv >= 50 * target.modifier.shield ? "Yes" : "No"));
 			}
-			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damage, hitlag, electric), ShieldHitlag(StaleDamage(damage, stale, ignoreStale), hitlag, electric)));
-            resultList.push(new Result("Shield stun", ShieldStun(damage, is_projectile, powershield), ShieldStun(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)));            
-			resultList.push(new Result("Shield Advantage", ShieldAdvantage(damage, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield), ShieldAdvantage(StaleDamage(damage, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield)));
+			resultList.push(new Result("Shield Hitlag", ShieldHitlag(damageOnShield, hitlag, electric), ShieldHitlag(StaleDamage(damageOnShield, stale, ignoreStale), hitlag, electric)));
+			resultList.push(new Result("Shield stun", ShieldStun(damageOnShield, is_projectile, powershield), ShieldStun(StaleDamage(damageOnShield, stale, ignoreStale), is_projectile, powershield)));            
+			resultList.push(new Result("Shield Advantage", ShieldAdvantage(damageOnShield, hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield), ShieldAdvantage(StaleDamage(damageOnShield, stale, ignoreStale), hitlag, hitframe, $scope.use_landing_lag == "yes" ? faf + landing_lag : $scope.use_landing_lag == "autocancel" ? faf + attacker.attributes.hard_landing_lag : faf, is_projectile, electric, powershield)));
 
 			if (!windbox) {
 				if (!is_projectile)
-					resultList.push(new Result("Attacker shield pushback", +AttackerShieldPushback(damage).toFixed(6), +AttackerShieldPushback(StaleDamage(damage, stale, ignoreStale)).toFixed(6)));
+					resultList.push(new Result("Attacker shield pushback", +AttackerShieldPushback(damageOnShield).toFixed(6), +AttackerShieldPushback(StaleDamage(damageOnShield, stale, ignoreStale)).toFixed(6)));
 
-				resultList.push(new Result("Target shield pushback", +(ShieldPushback(damage, is_projectile, powershield)).toFixed(6), +(ShieldPushback(StaleDamage(damage, stale, ignoreStale), is_projectile, powershield)).toFixed(6), s >= 50 * target.modifier.shield, sv >= 50 * target.modifier.shield));
+				resultList.push(new Result("Target shield pushback", +(ShieldPushback(damageOnShield, is_projectile, powershield)).toFixed(6), +(ShieldPushback(StaleDamage(damageOnShield, stale, ignoreStale), is_projectile, powershield)).toFixed(6), s >= 50 * target.modifier.shield, sv >= 50 * target.modifier.shield));
 			}
         } else {
             resultList.push(new Result("Unblockable attack", "Yes", "Yes"));
