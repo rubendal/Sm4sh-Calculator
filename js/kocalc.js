@@ -712,7 +712,11 @@ app.controller('calculator', function ($scope) {
         if (attacker.name == "Lucario") {
             base_damage *= Aura(attacker_percent, stock_dif, game_format);
             preDamage *= Aura(attacker_percent, stock_dif, game_format);
-        }
+		}
+
+		base_damage *= attacker.modifier.base_damage;
+		preDamage *= attacker.modifier.base_damage;
+
         var damage = base_damage;
         damage *= attacker.modifier.damage_dealt;
         damage *= target.modifier.damage_taken;
@@ -743,6 +747,10 @@ app.controller('calculator', function ($scope) {
 			base_damage *= Aura(attacker_percent, stock_dif, game_format);
 			preDamage *= Aura(attacker_percent, stock_dif, game_format);
 		}
+
+		base_damage *= attacker.modifier.base_damage;
+		preDamage *= attacker.modifier.base_damage;
+
 		var damage = base_damage;
 		damage *= attacker.modifier.damage_dealt;
 		damage *= target.modifier.damage_taken;
@@ -854,6 +862,10 @@ app.controller('calculator', function ($scope) {
 			base_damage *= Aura(attacker_percent, stock_dif, game_format);
 			preDamage *= Aura(attacker_percent, stock_dif, game_format);
 		}
+
+		base_damage *= attacker.modifier.base_damage;
+		preDamage *= attacker.modifier.base_damage;
+
 		var damage = base_damage;
 		damage *= attacker.modifier.damage_dealt;
 		damage *= target.modifier.damage_taken;
@@ -1065,6 +1077,10 @@ app.controller('calculator', function ($scope) {
 			base_damage *= Aura(attacker_percent, stock_dif, game_format);
 			preDamage *= Aura(attacker_percent, stock_dif, game_format);
 		}
+
+		base_damage *= attacker.modifier.base_damage;
+		preDamage *= attacker.modifier.base_damage;
+
 		var damage = base_damage;
 		damage *= attacker.modifier.damage_dealt;
 		damage *= target.modifier.damage_taken;
