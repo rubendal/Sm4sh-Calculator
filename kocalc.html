@@ -39,14 +39,14 @@
 </head>
 <body ng-app="calculator" ng-controller="calculator">
 
-    <div id="header" class="header">
+    <div id="header" class="header" style="padding-bottom:8px;">
         <div id="header-cont">
             <img id="header-icon" class="header-image" src="./img/icon.png" />
             <div id="header-text">
-                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#ko-calculator" target="_blank" title="Github repository"><h3>Sm4sh Calculator - KO Calculator</h3></a>
-                <br/>
+                <a class="hide-link" href="https://github.com/rubendal/Sm4sh-Calculator#ko-calculator" target="_blank"><h3>Sm4sh Calculator - KO Calculator</h3></a>
+                <br />
                 <span class="description">Calculate % a move KO's an opponent</span>
-                <br/>
+                <br />
                 <div class="header-links">
                     <select id="appSelect" ng-model="appLink">
                         <option ng-selected="$first" ng:repeat="a in apps" ng-attr-value="{{a.link}}">{{a.title}}</option>
@@ -71,8 +71,14 @@
                 Theme
                 <select id="themeSelect" name="theme" ng-model="theme" ng-change="changeTheme()">
                     <option ng-selected="$first" ng:repeat="t in themes" ng-attr-value="{{t.name}}">{{t.name}}</option>
-                </select>    
+                </select>
             </span>
+            <span style="clear: right;float: right;margin-right: 20px;margin-top: 5px;line-height:0px;font-size:14px;">
+                <a href="https://rubendal.github.io/SSBU-Calculator" target="_blank" class="hide-link">
+                    <img class="header-link-icon" style="position:relative;top:-2px" src="./img/ssbu-icon.png" /> Try out the Smash Ultimate Calculator
+                </a>
+            </span>
+            
         </div>
         
     </div>
@@ -353,11 +359,11 @@
                                 <table>
                                     <tr>
                                         <td>X</td>
-                                        <td><input name="stickX" type="number" min="-127" max="128" step="1" ng-model="stick.X" ng-change="updateDIInput()" /></td>
+                                        <td><input name="stickX" type="number" min="-127" max="127" step="1" ng-model="stick.X" ng-change="updateDIInput()" /></td>
                                     </tr>
                                     <tr>
                                         <td>Y</td>
-                                        <td><input name="stickY" type="number" min="-127" max="128" step="1" ng-model="stick.Y" ng-change="updateDIInput()" /></td>
+                                        <td><input name="stickY" type="number" min="-127" max="127" step="1" ng-model="stick.Y" ng-change="updateDIInput()" /></td>
                                     </tr>
                                     <tr>
                                         <td>Angle</td>

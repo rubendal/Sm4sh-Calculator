@@ -2580,12 +2580,12 @@ var ControllerList = [
 
 var StickPositions = [
 	new StickPosition("Neutral", 0, 0, Controllers.AllControllers),
-	new StickPosition("Up", 0, 128, Controllers.AllControllers),
+	new StickPosition("Up", 0, 127, Controllers.AllControllers),
 	new StickPosition("Down", 0, -127, Controllers.AllControllers),
 	new StickPosition("Left", -127, 0, Controllers.AllControllers),
-	new StickPosition("Right", 128, 0, Controllers.AllControllers),
-	new StickPosition("Wiimote Up-Left", -127, 128, Controllers.Wiimote),
-	new StickPosition("Wiimote Up-Right", 128, 128, Controllers.Wiimote),
+	new StickPosition("Right", 127, 0, Controllers.AllControllers),
+	new StickPosition("Wiimote Up-Left", -127, 127, Controllers.Wiimote),
+	new StickPosition("Wiimote Up-Right", 127, 127, Controllers.Wiimote),
 	new StickPosition("Wiimote Down-Left", -127, -127, Controllers.Wiimote),
-	new StickPosition("Wiimote Down-Right", 128, -127, Controllers.Wiimote)
+	new StickPosition("Wiimote Down-Right", 127, -127, Controllers.Wiimote)
 ];
