@@ -562,8 +562,8 @@ class Move {
         this.dashAttack = this.name.includes("Dash Attack");
         this.counter = this.counterMult != 0 || this.name.includes("Counter (Attack)") || this.name.includes("Substitute (Attack") || this.name.includes("Toad (Attack") || this.name.includes("Witch Time");
         this.commandGrab = !this.grab && (this.name.includes("Grab") || this.name.includes("Confusion") || (this.name.includes("Inhale") && !this.name.includes("Spit")) || (this.name.includes("Chomp") && !this.name.includes("Food") && !this.name.includes("Eating")) || this.name.includes("Egg Lay") || this.name.includes("Flame Choke")) && !this.name.includes("Attack") && !this.name.includes("(Hitbox)");
-        this.unblockable = this.grab || this.throw || this.commandGrab || (this.name.includes("Vision") && this.name.includes("Attack")) || this.name.includes("Witch Time") || this.name.includes("KO Punch") || this.name == "Focus Attack (Stage 3)" || this.name == "Reflect Barrier"; 
-        this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)";
+		this.unblockable = this.grab || this.throw || this.commandGrab || (this.name.includes("Vision") && this.name.includes("Attack")) || this.name.includes("Witch Time") || this.name.includes("KO Punch") || this.name == "Focus Attack (Stage 3)" || this.name == "Reflect Barrier";
+		this.windbox = this.name.includes("Windbox") || this.name.includes("Flinchless") || this.name == "Hydro Pump" || this.name == "F.L.U.D.D (Attack)" || (this.name == "PSI Magnet" && this.base_damage == 0);
         this.multihit = /(Hit [0-9]+)/gi.test(this.name) || /(Hits [0-9]+\-[0-9]+)/gi.test(this.name) || this.name.includes("Final Hit") || this.rehitRate != 0;
 		this.spike = this.angle >= 230 && this.angle <= 310;
 		this.isFinishingTouch = this.name.includes("Finishing Touch") && !this.name.includes("Windbox");
@@ -844,6 +844,16 @@ class Move {
 					if (this.pikminColor != null) {
 						this.name = this.moveName + " (" + this.pikminColor + ")";
 					}
+				}
+			}
+
+			//Hardcoded fixes for KH stuff
+
+			if (this.character == "Ness") {
+				if (this.name == "PK Thunder (Tail)") {
+					this.bkb = 20;
+					this.kbg = 60;
+					this.angle = 361;
 				}
 			}
 
