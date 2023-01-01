@@ -867,10 +867,10 @@ class Move {
 function getMoveset(attacker, $scope) {
     $scope.moveset = [];
 	var api_name = attacker.api_name.toLowerCase().replace("and", "").replace("&", "").split(".").join("").split(" ").join("");
-	loadAsyncFunctionJSON("https://api.kuroganehammer.com/api/characters/name/" + api_name + "?game=smash4", function (character) {
+	loadAsyncFunctionJSON("./KH_API/Data/Characters/" + api_name + ".json", function (character) {
         if (character != null) {
             var id = character.OwnerId;
-			loadAsyncFunctionJSON("https://api.kuroganehammer.com/api/characters/" + id + "/moves?game=smash4", function (moveset) {
+			loadAsyncFunctionJSON("./KH_API/Data/Moves/" + id + ".json", function (moveset) {
                 if (moveset != null) {
                     var moves = [];
                     var count = 1;
@@ -938,7 +938,7 @@ function getMoveset(attacker, $scope) {
 
 function getCharactersId(names, $scope) {
     $scope.charactersId = [];
-	loadAsyncFunctionJSON("https://api.kuroganehammer.com/api/characters?game=smash4", function (character) {
+	loadAsyncFunctionJSON("./KH_API/characters.json", function (character) {
         if (character != null) {
             var characters = [];
             for (var i = 0; i < character.length; i++) {
@@ -975,7 +975,7 @@ function getCharactersId(names, $scope) {
 
 function getAllMoves($scope) {
     $scope.moves = [];
-	loadAsyncFunctionJSON("https://api.kuroganehammer.com/api/moves?game=smash4", function (moveset) {
+	loadAsyncFunctionJSON("./KH_API/moves.json", function (moveset) {
         if (moveset != null) {
             var moves = [];
             var count = 0;
